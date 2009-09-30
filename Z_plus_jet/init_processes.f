@@ -1,5 +1,6 @@
       subroutine init_processes
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       integer i1,i2,i3,i4,i5,i6,k,ii(6)
@@ -12,7 +13,7 @@ c     check nlegborn. This is only a sanity check while we are TESTING
 c     the code and we change often from one process to the other
       if (nlegborn.ne.5) then
          write(*,*) ' ERROR: set nlegborn to the appropriate value'
-         write(*,*) ' for this process in include/pwhg_flst.h '
+         write(*,*) ' for this process in nlegborn.h'
          stop
       endif
 

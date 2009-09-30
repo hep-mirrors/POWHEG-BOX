@@ -1,5 +1,6 @@
       subroutine btildeborn(res)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_br.h'
@@ -20,6 +21,7 @@
       subroutine sigborn_rad(born)
       implicit none
       real * 8 born
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_br.h'
@@ -38,6 +40,7 @@
 
       subroutine allborn
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_br.h'
@@ -133,8 +136,10 @@
       subroutine setborn0(p,bflav,born,bornjk,bmunu)
 c provide the flux factor to the user Born routine
       implicit none
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_flst.h'
+      include 'include/pwhg_math.h'
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs)
@@ -143,9 +148,11 @@ c provide the flux factor to the user Born routine
       integer j,k,mu,nu
       call setborn(p,bflav,born,bornjk,bmunu)
       born=born/(2*kn_sborn)
-      do mu=0,3
-         do nu=0,3
-            bbmunu(mu,nu)=bbmunu(mu,nu)/(2*kn_sborn)
+      do j=1,nlegs
+         do mu=0,3
+            do nu=0,3
+               bmunu(mu,nu,j)=bmunu(mu,nu,j)/(2*kn_sborn)
+            enddo
          enddo
       enddo
       do j=1,nlegs

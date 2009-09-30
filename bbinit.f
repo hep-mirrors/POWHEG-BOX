@@ -1,5 +1,6 @@
       subroutine bbinit
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_flg.h'
       include 'include/pwhg_rad.h'
@@ -194,6 +195,7 @@ c fill radiation common block with cross sections
 
       subroutine gen_btilde(mcalls,icalls)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer mcalls,icalls
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
@@ -214,6 +216,7 @@ c fill radiation common block with cross sections
 
       subroutine gen_sigremnant
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
@@ -237,6 +240,7 @@ c fill radiation common block with cross sections
      #            xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_pdf.h'
@@ -271,6 +275,7 @@ c fill radiation common block with cross sections
      #               xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_pdf.h'

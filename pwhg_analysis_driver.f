@@ -3,6 +3,7 @@
       real * 8 dsig0
       integer ikin
       integer jpart,mu
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/hepevt.h'

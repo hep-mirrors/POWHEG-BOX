@@ -5,6 +5,7 @@ c or, when damping of R/B value is adopted, from the remnant of the
 c damping
       function sigremnant(xx,ww,ifirst)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -90,6 +91,7 @@ c     No need to generate phase space; it is already available
       subroutine sigreal_reg(xjac,sig,r0)
 c contributions from real graphs that do not have a singular region
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -157,6 +159,7 @@ c ----------------
 
       subroutine compare_vecs_reg(nmomset,lreg,res,lregpr,cprop,iret)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
@@ -184,6 +187,7 @@ c ----------------
 
       subroutine sigreal_damp_rem(xjac,sig,r0)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'

@@ -1,6 +1,7 @@
       subroutine gen_leshouches
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -144,6 +145,7 @@ c     change mothers of decaying particles
       subroutine born_lh
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -330,6 +332,7 @@ c first conjugate incoming colors
       subroutine gen_leshouches_reg
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'

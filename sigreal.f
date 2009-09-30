@@ -1,5 +1,6 @@
       subroutine btildereal(xrad,resreal,www)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
@@ -151,6 +152,7 @@ c     to avoid divergent integral
       subroutine checklims(iun)
       implicit none
       integer iun
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       external sigreal,soft,collfsr,softcollfsr,
@@ -193,6 +195,7 @@ c     to avoid divergent integral
       subroutine checksoft(sig,sigs,label,iun)
       implicit none
       include 'include/pwhg_dbg.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       character *(*) label
@@ -289,6 +292,7 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
       implicit none
       integer iun
       include 'include/pwhg_dbg.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       character *(*) label
@@ -396,6 +400,7 @@ c               if(r0(alr,jexp).ne.0) isnonzero=.true.
       subroutine sigreal_rad(sig)
       implicit none
       real * 8 sig
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -536,6 +541,7 @@ c by csi^2 (1-y^2) for ISR regions
 c    csi^2 (1-y)   for FSR regions
       subroutine sigreal(r0)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
@@ -690,6 +696,7 @@ c We should have the masses as a function of flavour id, somewhere!
 
       subroutine compare_vecs_rad(nmomset,alr,res,alrpr,cprop,iret)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
@@ -720,6 +727,7 @@ c We should have the masses as a function of flavour id, somewhere!
 
       subroutine compare_vecs(nmomset,alr,res,alrpr,cprop,iret)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
@@ -749,6 +757,7 @@ c We should have the masses as a function of flavour id, somewhere!
 
       subroutine realgr(rflav,p,res)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer rflav(nlegreal)
       real * 8 p(0:3,nlegreal),res

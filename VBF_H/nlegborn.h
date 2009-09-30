@@ -12,4 +12,9 @@ c     if there are undecayed resonances, we need extra variables to pilot
 c     the resonance's masses
 
       integer ndiminteg
-      parameter (ndiminteg=(nlegreal-2)*3-4+2-1)
+      parameter (ndiminteg=(nlegreal-2)*3-4+2-1
+     1    + 1 )  ! one resonance
+ 
+
+      integer maxprocborn,maxprocreal
+      parameter (maxprocborn=200,maxprocreal=500)

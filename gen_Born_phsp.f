@@ -1,5 +1,6 @@
       subroutine gen_born_phsp(xborn)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       real * 8 xborn(ndiminteg-3)
       call born_phsp(xborn)
@@ -12,6 +13,7 @@
 c Compute csimax for all possible final state emitters;
 c for initial state emitters it is not possible, since
 c csimax depends upon y in this case.
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       integer j

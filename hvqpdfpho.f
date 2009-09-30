@@ -5221,7 +5221,7 @@ C  !!! Be aware of our numbering scheme when you declare the dimension
 C  !!! of this array in the calling program!!... In particular,
 C  !!! the ascending/descending order!! 
 
-C  \\  A parallel (independent) program (not included in this file) in
+C  \  A parallel (independent) program (not included in this file) in
 C  ||  Function form is also available.  There, the function CteqPd returns
 C  ||   d, u, g, u_bar, ... etc. INDIVIDUALLY by a parton label parameter;
 C  ||  and the function CtqPdf returns d_val, u_val, ... etc. as above.
@@ -9684,8 +9684,8 @@ C     ------------------------------
 C   1xx  CTEQ6M1xx  +/- w.r.t. CTEQ6M     0.118     326   226    cteq6m1xx.tbl
 C    (where xx=01--40)
 C ---------------------------------------------------------------------------
-C   ** ALL fits are obtained by using the same coupling strength \alpha_s(Mz)=0.118;
-C   and the NLO running \alpha_s formula.  For the LO fit, the evolution of the PDF
+C   ** ALL fits are obtained by using the same coupling strength alpha_s(Mz)=0.118;
+C   and the NLO running alpha_s formula.  For the LO fit, the evolution of the PDF
 C   and the hard cross sections are calculated at LO.  More detailed discussions are
 C   given in hep-ph/0201195.
 C
@@ -10240,8 +10240,8 @@ C        e.g. 200      is CTEQ61.00 (=CTEQ6.1M),
 C             201/202 are CTEQ61.01/02, +/- sets of 1st eigenvector, ... etc.
 C ===========================================================================
 C   ** ALL fits are obtained by using the same coupling strength
-C   \alpha_s(Mz)=0.118 and the NLO running \alpha_s formula, except CTEQ6L1
-C   which uses the LO running \alpha_s and its value determined from the fit.
+C   alpha_s(Mz)=0.118 and the NLO running alpha_s formula, except CTEQ6L1
+C   which uses the LO running alpha_s and its value determined from the fit.
 C   For the LO fits, the evolution of the PDF and the hard cross sections are
 C   calculated at LO.  More detailed discussions are given in the references.
 C

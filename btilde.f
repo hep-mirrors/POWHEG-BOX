@@ -1,5 +1,6 @@
       function btilde(xx,www0,ifirst)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       include 'include/pwhg_flg.h'

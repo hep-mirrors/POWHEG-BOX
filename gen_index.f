@@ -1,5 +1,6 @@
       subroutine gen_uborn_idx
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -23,6 +24,7 @@
 
       subroutine gen_real_idx
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -53,6 +55,7 @@
 
       subroutine gen_remnant(iret)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'

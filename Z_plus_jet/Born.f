@@ -1,6 +1,7 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include '../include/pwhg_math.h'
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
@@ -41,6 +42,7 @@ c     Example
 c     q q~ -> e- e+ g  
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c -*- Fortran -*-
 c      character *2 flav(-5:5)
@@ -144,9 +146,8 @@ c         q  --->----------->------ g
 c                     |
 c                     |            l
 c                     |          /  
-c         aq ---<-----/\/\/\/\/\/
-c                       Z/gamma \
-c                                \ lbar
+c         aq ---<-----//////
+c                       Z/gamma c                                 lbar
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3
@@ -337,9 +338,8 @@ c   OUTPUT: the amplitude squared (born) averaged over initial
 c           polarization     
 c                                l  
 c                               /  
-c         q --->----\/\/\/\/\/\/
-c                   |  Z/gamma \
-c                   |           \ lbar
+c         q --->----//////
+c                   |  Z/gamma c                   |            lbar
 c                   |   
 c         g  --->------->---- q
 c                     
@@ -574,6 +574,7 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
       include '../include/LesHouches.h'
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c colours of incoming quarks, antiquarks
       integer icolqi(2),icolai(2),icolgi(2),

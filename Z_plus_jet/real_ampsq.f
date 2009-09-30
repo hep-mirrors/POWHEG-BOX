@@ -1,5 +1,6 @@
       subroutine real_ampsq(p,rflav,amp2)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal),rflavs(nlegreal)
@@ -35,6 +36,7 @@ c     Example
 c     q q -> e- e+ g g 
       subroutine real_ampsq_g_last(p,realflav,amp2)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c      include '../include/QuarkFlavs.h'
 c -*- Fortran -*-
@@ -163,14 +165,13 @@ c
 c                            / g 
 c                           / 
 c         q  --->------->--<
-c                     |     \ g
-c                     |      \  
+c                     |      g
+c                     |        
 c                     |
 c                     |            l-
 c                     |          /  
-c         aq ---<-----/\/\/\/\/\/
-c                       Z/gamma \
-c                                \ l+
+c         aq ---<-----//////
+c                       Z/gamma c                                 l+
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3
@@ -569,9 +570,8 @@ c                     |
 c                   g |       q           
 c                     |      /          
 c         q  --->-----------<       / l-  
-c                            \//\/\/
-c                       Z/gamma    \
-c                                   \ l+
+c                            ////
+c                       Z/gamma    c                                    l+
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3
@@ -1019,9 +1019,8 @@ c                     |
 c                   g |       qp           
 c                     |      /          
 c         qp --->-----------<       / l-  
-c                            \//\/\/
-c                       Z/gamma    \
-c                                   \ l+
+c                            ////
+c                       Z/gamma    c                                    l+
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3
@@ -1271,12 +1270,11 @@ c     if it's not the case MUST use q_aq_to_l_al_q_aq
 c     
 c                        g       / qp   
 c         q  --->----------->--<
-c                     |         \ aqp
+c                     |          aqp
 c                     |            
 c                     |          / l- 
-c         aq ---<-----/\/\/\/\/\/
-c                       Z/gamma \
-c                                \ l+
+c         aq ---<-----//////
+c                       Z/gamma c                                 l+
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3

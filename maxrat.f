@@ -1,6 +1,7 @@
       subroutine do_maxrat(mcalls,icalls)
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -128,6 +129,7 @@ c     final state radiation
       subroutine inc_norms
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -218,6 +220,7 @@ c     fill the norm array
       subroutine printevent
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -252,6 +255,7 @@ c      write(*,*) ' cosine decay angle', kn_cthdec
 
       subroutine printhistnorms
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       real * 8 ptsq,born,sig,xnorm
@@ -269,7 +273,7 @@ c      write(*,*) ' cosine decay angle', kn_cthdec
             write(iun,*)'set scale x log'
             write(iun,*)'set order x dx y'
             write(iun,*)'set limits x 1e-14 1e14'
-            write(iun,*)'title top \"region=',ireg,', born=',iborn,'\"'
+            write(iun,*)'title top "region=',ireg,', born=',iborn,'"'
             do j=1,100
                x1=exp(j-50d0)
                x2=exp(j+1-50d0)
@@ -279,9 +283,9 @@ c      write(*,*) ' cosine decay angle', kn_cthdec
             enddo
             write(iun,*)' hist'
             if (rad_norms(ireg,iborn).ne.0d0) then
-               write(iun,*) 'title bottom \" efficiency',
+               write(iun,*) 'title bottom " efficiency',
      1              efficiencies(ireg,iborn)/powheginput('nubound')/
-     2              rad_norms(ireg,iborn),'\"'
+     2              rad_norms(ireg,iborn),'"'
             endif
             write(iun,*)' newplot'
          enddo
@@ -298,6 +302,7 @@ c      enddo
 
       subroutine zerohistnorms
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       real * 8 ptsq,born,sig,xnorm
@@ -321,6 +326,7 @@ c when the gluon density is not zero; cannot use these points to compute
 c maxrat
       implicit none
       logical refuse_pdf
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -372,6 +378,7 @@ c in FKS, for final state radiation, pdf always cancel in real/born
       subroutine uboundfct(fct,icsi,iy)
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'

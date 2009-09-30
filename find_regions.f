@@ -41,6 +41,7 @@ c by the original flavour numbers (routine unmapflavour)
 c
       implicit none
       include 'include/pwhg_flg.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
@@ -76,6 +77,7 @@ c Replace internal flavour numbers with real ones
 c in all relevant flavour arrays
       implicit none
       include 'include/pwhg_flg.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       call unmaparr(flst_nreal,nlegreal,flst_real)
       call unmaparr(flst_nalr,nlegreal,flst_alr)
@@ -87,6 +89,7 @@ c in all relevant flavour arrays
       subroutine unmaparr(n,nlegs,arr)
       implicit none
       integer n,nlegs,arr(nlegs,n)
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
@@ -104,6 +107,7 @@ c in all relevant flavour arrays
       function getrealflav(fl)
       implicit none
       include 'include/pwhg_flg.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer getrealflav,fl
       integer fllist(nlegreal*maxprocreal),
@@ -133,6 +137,7 @@ c the corresponding intfl.
       implicit none
       integer flav,tag
       include 'include/pwhg_flg.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer getrealflav,fl
       integer fllist(nlegreal*maxprocreal),
@@ -199,6 +204,7 @@ c It calls: logical validBorn(n-1,bflav), that returns true if the flavour
 c                                         configuration bflav admits
 c                                         a non-vanishing Born amplitude.
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer nleg,rflav(nleg),nregions,iregions(2,maxregions)
       integer nlight
@@ -335,6 +341,7 @@ c                   j>2 final state sing.
       logical flavequiv
       integer n, aflav(n),bflav(n)
 c we need the parameter nlegreal
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer j,k,kb,itmp,ib(nlegreal)
       call intassign(n,bflav,ib)
@@ -365,6 +372,7 @@ c Find if the flavour structure bflav is equivalent to an element
 c in the list of Born processes. Equivalence means that it can be
 c made identical with a permutation of final state particles.
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer n, bflav(n)
       logical validBorn
@@ -466,6 +474,7 @@ c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t
       implicit none
       include 'include/pwhg_flg.h'
       include 'include/pwhg_st.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer nregions,iregions(2,maxregions)
       integer iflregl,k,l,ipart,j,itmp,nreg,iblist,iret
@@ -709,6 +718,7 @@ c     debug information
 
       subroutine print_flst
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer j,k,l
       integer iunit
@@ -789,6 +799,7 @@ c     debug information
       subroutine pretty_print_flst
       implicit none
       character * 35 string,stringb
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer j,k,l,iun1,iun2
       call newunit(iun1)
@@ -921,6 +932,7 @@ c reorder
 
       function valid_emitter(j)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       logical valid_emitter
       integer j,alr

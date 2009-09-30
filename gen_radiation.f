@@ -1,6 +1,7 @@
       subroutine pwhgevent
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -50,6 +51,7 @@ c     remember to set st_muren2 for scalup value for regular contributions
       subroutine gen_radiation
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -119,6 +121,7 @@ c Generate a Born like event
       implicit none
       real * 8 pwhg_pt2
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -135,6 +138,7 @@ c Generate a Born like event
       implicit none
       real * 8 pwhg_upperb_rad
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -178,9 +182,10 @@ c for now use the same
 
 
       function pt2solve(pt2,i)
-c Returns  xlr - log(\Delta^{(\tilde{V})}) , see eq. D14, D15 in ZZ paper
+c Returns  xlr - log(Delta^{(tilde{V})}) , see eq. D14, D15 in ZZ paper
 c We use it to find its zero in pt2.
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -262,6 +267,7 @@ c  common/cptmin/ptminsq: minimum pt^2 accepted
 c 
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -332,7 +338,7 @@ c vetoes:
       rv=random()
       xp=(sqrt(1+t/sborn)+sqrt(t/sborn))**2
       xm=(sqrt(1+t/sborn)-sqrt(t/sborn))**2
-c tmp1: V(t)/\tilde{V}(t) in appendix D of ZZ paper;
+c tmp1: V(t)/tilde{V}(t) in appendix D of ZZ paper;
 c (typo: in D.13, log log -> log
       xmin=min(x1b,x2b)/(2*sqrt(1+t/sborn))
       if(iupperisr.eq.1) then
@@ -419,6 +425,7 @@ c Notes/upperbounding-fsr.pdf
 c 
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -557,6 +564,7 @@ c      write(*,*) ' genrad_fsr: y and csi ',y,csi
 
       subroutine add_azimuth
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_math.h'
       include 'include/pwhg_kn.h'

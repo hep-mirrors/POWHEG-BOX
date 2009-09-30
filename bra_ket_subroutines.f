@@ -652,7 +652,7 @@ c sig^mu = <bra, helbra| gamma^mu |ket, helket>
       sig(0) = b(1)*k(1)+k(2)*b(2)
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c PLEASE NOTE the sign of the next components!!!!
-c in fact  slash_p = gamma_0*p_0 - \vec{gamma} dot \vec(p)
+c in fact  slash_p = gamma_0*p_0 - vec{gamma} dot vec(p)
 c here we have just all the indexes up or down ==> the minus sign on the
 c previous equation IS NOT there!!!
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

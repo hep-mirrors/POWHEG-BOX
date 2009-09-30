@@ -5,6 +5,7 @@ c     The as/(2pi) factor is attached at a later point
 c     Use MCFM subroutines
       subroutine setvirtual(p,vflav,virtual)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_st.h'
 c     MCFM include
@@ -47,6 +48,7 @@ c     setvirtual(p,vflav,virtual) in a smart way
 
       subroutine setvirtual_fast(virt_arr)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       include '../include/pwhg_br.h'
@@ -148,6 +150,7 @@ c      as = 0.118d0
 
       subroutine mom_to_MCFM(cmpborn,pmcfm)
       implicit none
+      include 'nlegborn.h'
 c      include '../include/pwhg_flst.h'
 c      include '../include/pwhg_kn.h'
       include 'MCFM_include/constants.f'
@@ -172,6 +175,7 @@ c FOURTH momentum must be the antilepton
 
       subroutine mom_to_MCFM_not_used(pmcfm)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       include 'MCFM_include/constants.f'
@@ -920,7 +924,7 @@ c---- Eq 71
 c---- Lsm1_2me notation follows from 
 c----  Z.~Bern, L.~J.~Dixon and D.~A.~Kosower,
 c----  %``Dimensionally regulated pentagon integrals,''
-c----  Nucl.\ Phys.\ B {\bf 412}, 751 (1994)
+c----  Nucl. Phys. B {bf 412}, 751 (1994)
 c----  [arXiv:hep-ph/9306240].
 c----  %%CITATION = HEP-PH 9306240;%%
 c----  Eqs. (I.13)
@@ -1012,15 +1016,15 @@ C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
       double complex function I3m(s1,s2,s3)
 C     This is the function I3m, a massless triangle with all three external 
 C     lines offshell defined in BDK
-C     %\cite{Bern:1997sc}
-C     \bibitem{Bern:1997sc}
+C     %cite{Bern:1997sc}
+C     bibitem{Bern:1997sc}
 C     Z.~Bern, L.~J.~Dixon and D.~A.~Kosower,
 C     %``One-loop amplitudes for e+ e- to four partons,''
-C     Nucl.\ Phys.\ B {\bf 513}, 3 (1998)
+C     Nucl. Phys. B {bf 513}, 3 (1998)
 C     [arXiv:hep-ph/9708239].
 C     %%CITATION = HEP-PH 9708239;%%
 C     defined in their equation II.9
-C     \int da_1 da_2 da_3 /(-a_1*a_2*s1-a_2*a_3*s2-a_3*a_1*s3)
+C     int da_1 da_2 da_3 /(-a_1*a_2*s1-a_2*a_3*s2-a_3*a_1*s3)
        implicit none
       include 'MCFM_include/constants.f'
       double precision s1,s2,s3,smax,smid,smin,del3,rtdel3
@@ -1069,8 +1073,8 @@ c---case all positive
       double precision function I3m1a(s1,s2,s3,rtmdel)
       implicit none
 C     symmetric form of Lu and Perez
-C     %\cite{Lu:1992ny}
-c     \bibitem{Lu:1992ny}
+C     %cite{Lu:1992ny}
+c     bibitem{Lu:1992ny}
 c     H.~J.~Lu and C.~A.~Perez,
 c     %``Massless one loop scalar three point integral and associated Clausen,
 c     %Glaisher and L functions,''
@@ -1093,11 +1097,11 @@ c     SLAC-PUB-5809
       double complex function I3m1b(s1,s2,s3,rtdel,flag)
       implicit none
 C     form of Ussyukina and Davydychev
-C %\cite{Usyukina:1994iw}
-C \bibitem{Usyukina:1994iw}
+C %cite{Usyukina:1994iw}
+C bibitem{Usyukina:1994iw}
 C   N.~I.~Usyukina and A.~I.~Davydychev,
 C   %``New results for two loop off-shell three point diagrams,''
-C  Phys.\ Lett.\ B {\bf 332}, 159 (1994)
+C  Phys. Lett. B {bf 332}, 159 (1994)
 C  [arXiv:hep-ph/9402223].
 C  %%CITATION = HEP-PH 9402223;%%
 

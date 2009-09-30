@@ -25,6 +25,7 @@ c gen_real_phsp_isr: mapping for the initial state radiation
       real * 8 xrad(3),jac_over_csi,
      #        jac_over_csi_coll,jac_over_csi_soft
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -62,6 +63,7 @@ c     instead of kn_csi.
 c     Used in the generation of radiation
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -86,6 +88,7 @@ c the underlying Born jacobian is the phase space volume
       subroutine gen_real_phsp_fsr_rad
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -201,6 +204,7 @@ c ISR:
       real * 8 xrad(3),
      #    jac_over_csi,jac_over_csi_p,jac_over_csi_m,jac_over_csi_s
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
@@ -232,6 +236,7 @@ c      call checkmomzero(nlegreal,kn_preal)
       end
 
       subroutine compcsimax
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       real * 8 y,xb1,xb2
@@ -251,6 +256,7 @@ c     instead of kn_csi.
       subroutine gen_real_phsp_isr_rad0
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       call compcsimax
@@ -261,6 +267,7 @@ c     instead of kn_csi.
       subroutine gen_real_phsp_isr_rad
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       real * 8 y,xb1,xb2,x1,x2,betal,betat,vecl(3),vect(3),
@@ -338,6 +345,7 @@ c      call printtot(nlegreal,kn_preal(0,1))
 
       subroutine compcmkin
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       real * 8 vecl(3),betal
@@ -349,6 +357,7 @@ c      call printtot(nlegreal,kn_preal(0,1))
 
       subroutine compdij
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       integer j,k
@@ -381,6 +390,7 @@ c to the direction of k+j
 
       subroutine compdijsoft
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       integer k
@@ -422,6 +432,7 @@ c to the direction of k+j
 
       subroutine setsoftvec
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       integer em,j

@@ -15,6 +15,7 @@
       implicit none
       real * 8 ptsq
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_rad.h'
@@ -67,6 +68,7 @@ cccccccccccccccccccccccccccccccccc
       implicit none
       include 'include/pwhg_math.h'
       include 'include/pwhg_st.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       real * 8 b0,mu0sq,as,pwhg_alphas
@@ -102,6 +104,7 @@ c flavors with mass less then q.
 c
       function pwhg_alphas(q2,xlam,inf)
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       real * 8 pwhg_alphas,q2,xlam

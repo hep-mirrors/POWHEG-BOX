@@ -1,5 +1,6 @@
       subroutine init_phys
       implicit none
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_pdf.h'

@@ -9,6 +9,7 @@ c This is related to the no-emission probability (1-m the above).
 c the two results are compared.
       implicit none
       include 'include/pwhg_math.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'

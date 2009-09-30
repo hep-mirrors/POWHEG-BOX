@@ -1,5 +1,6 @@
       implicit none
       include 'include/LesHouches.h'
+      include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       include 'include/pwhg_st.h'

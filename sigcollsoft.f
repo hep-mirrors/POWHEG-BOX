@@ -313,8 +313,8 @@ c     suppress soft term
       endif
 c     1/(p_em . p_ra) = 1/(p_bar_em(0,em)**2* x * (1-x) * (1-y);
 c     we multiply everything by (1-y) csi^2; one csi is included
-c     above; the other here. Divide also by the flux factor
-      res=ap/kn_cmpborn(0,em)**2/(xocsi*(1-x)) / (2*q0**2)
+c     above; the other here.
+      res=ap/kn_cmpborn(0,em)**2/(xocsi*(1-x))
      #*(4*pi*st_alpha)
       end
 
@@ -373,9 +373,9 @@ c     the last expression being boost invariant.
 c     Supplying che csi^2 (1-y^2) factor in the collinear limit,
 c     using csi=1-x we get
       res=ap/(kn_pborn(0,1)*kn_pborn(0,2)/x) * 2
-c     flux factor:
-     #/(2*4*kn_pborn(0,1)*kn_pborn(0,2))*(4*pi*st_alpha)
-c     the remaining csi=1-x factor having been applied earlier
+c     strong coupling:
+     # *(4*pi*st_alpha)
+c     The remaining csi=1-x factor has been applied earlier
       end
 
 
@@ -431,9 +431,8 @@ c     factor 4/q0^2
                res=result*4/
      #(4*kn_cmpborn(0,1)*kn_cmpborn(0,2))*(1-y**2)
             endif
-c     Born flux factor
-            res=(4*pi*st_alpha)*res/
-     #(2*4*kn_cmpborn(0,1)*kn_cmpborn(0,2))
+c     Coupling:
+            res=res*(4*pi*st_alpha)
 c     The case of the emitter being a gluon requires no special treatment here!
 c     the extra (1-x) factor is simply 1!
          else

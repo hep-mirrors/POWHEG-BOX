@@ -17,6 +17,7 @@ c pdfb: born pdf's, pdfs: pdfs with scaled x->x/z
       real * 8 z,omzpgg,omzpqq,ppqq,omzpqg,ppqg,omzpgq,ppgq,
      #         sb,tot,plfrc,plfr0,z1,z2,xjac1,xjac2,rm1,rm2,res1,res2
       integer j,jb,fl1,fl2
+c Statement Functions
 c omz:(1-z)*pgg(z), 2.106 of FNO2007
       omzpgg(z)=2*ca*(z+(1-z)**2/z+z*(1-z)**2)
 c 2.103
@@ -33,7 +34,7 @@ c log coeff., from 2.102, with partonic s=sb/z
       plfrc(z)=1/(1-z)*log(sb/z/st_mufact2)+2*log(1-z)/(1-z)
 c same, with soft limit s
       plfr0(z)=1/(1-z)*log(sb/st_mufact2)+2*log(1-z)/(1-z)
-c
+c End Statement Functions
       z1=1-(1-kn_xb1)*xrad
       xjac1=(1-kn_xb1)
       z2=1-(1-kn_xb2)*xrad
@@ -107,7 +108,7 @@ c gq remnant
      #                           - ppgq(z2))/z2   * pdfs2(0)*xjac2 
          endif
          rescoll(jb)=( res1*pdfb2(fl2)+res2*pdfb1(fl1) )
-     #    *br_born(jb)/(2*kn_sborn)*st_alpha/(2*pi)*kn_jacborn
+     #    *br_born(jb)*st_alpha/(2*pi)*kn_jacborn
          tot=tot+rescoll(jb)
       enddo
       if(flg_nlotest) then

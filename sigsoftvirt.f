@@ -123,7 +123,7 @@ c         write(*,*) 'jb,Q,I',jb,Q,I
 c we only summed over j>i, multiply by 2
          I=I*2
          resvirt(jb)=(Q+I+virt_arr(jb))*st_alpha/(2*pi)
-     #       *pdfb1(fl1)*pdfb2(fl2)/(2*kn_sborn)*kn_jacborn
+     #       *pdfb1(fl1)*pdfb2(fl2)*kn_jacborn
          tot=tot+resvirt(jb)
       enddo
       end

@@ -11,7 +11,7 @@
       call pdfcall(2,kn_xb2,pdf2)
       tot=0
       do j=1,flst_nborn
-         res(j)=br_born(j)/(2*kn_sborn) *
+         res(j)=br_born(j) *
      #  pdf1(flst_born(1,j))*pdf2(flst_born(2,j))*kn_jacborn
          tot=tot+res(j)
       enddo
@@ -28,9 +28,9 @@
      #         bmunu(0:3,0:3,nlegborn)
       call pdfcall(1,kn_xb1,pdf1)
       call pdfcall(2,kn_xb2,pdf2)
-      call setborn(kn_cmpborn,flst_born(1,rad_ubornidx),born,
+      call setborn0(kn_cmpborn,flst_born(1,rad_ubornidx),born,
      #        bornjk,bmunu)
-      born=born/(2*kn_sborn) *
+      born=born *
      #  pdf1(flst_born(1,rad_ubornidx))*pdf2(flst_born(2,rad_ubornidx))
       end
 
@@ -61,7 +61,7 @@
             call fillmomenta(nlegborn,nmomset,kn_masses,pborn)
             do iborn=1,flst_nborn
                do j=1,nmomset
-                  call setborn(pborn(0,1,j),flst_born(1,iborn),
+                  call setborn0(pborn(0,1,j),flst_born(1,iborn),
      1                 born(j,iborn),br_bornjk(1,1,iborn),
      2                 br_bmunu(0,0,1,iborn))
                enddo
@@ -80,7 +80,7 @@
       endif
       do iborn=1,flst_nborn
          if(equivto(iborn).lt.0) then
-            call setborn(kn_cmpborn,flst_born(1,iborn),br_born(iborn),
+            call setborn0(kn_cmpborn,flst_born(1,iborn),br_born(iborn),
      #        br_bornjk(1,1,iborn),br_bmunu(0,0,1,iborn))
          else
             br_born(iborn)=br_born(equivto(iborn))*equivcoef(iborn)
@@ -128,3 +128,29 @@
       iret=-1
       end
 
+
+
+      subroutine setborn0(p,bflav,born,bornjk,bmunu)
+c provide the flux factor to the user Born routine
+      implicit none
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_flst.h'
+      integer nlegs
+      parameter (nlegs=nlegborn)
+      real * 8 p(0:3,nlegs)
+      integer bflav(nlegs)
+      real * 8 born,bornjk(nlegs,nlegs),bmunu(0:3,0:3,nlegs)
+      integer j,k,mu,nu
+      call setborn(p,bflav,born,bornjk,bmunu)
+      born=born/(2*kn_sborn)
+      do mu=0,3
+         do nu=0,3
+            bbmunu(mu,nu)=bbmunu(mu,nu)/(2*kn_sborn)
+         enddo
+      enddo
+      do j=1,nlegs
+         do k=1,nlegs
+            bornjk(j,k)=bornjk(j,k)/(2*kn_sborn)
+         enddo
+      enddo
+      end

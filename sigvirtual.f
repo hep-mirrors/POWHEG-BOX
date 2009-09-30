@@ -45,6 +45,7 @@
          if(equivto(iborn).lt.0) then
             call setvirtual(kn_cmpborn,flst_born(1,iborn),
      #           virt_arr(iborn))
+            virt_arr(iborn)=virt_arr(iborn)/(2*kn_sborn)
          else
             virt_arr(iborn)=virt_arr(equivto(iborn))*equivcoef(iborn)
          endif

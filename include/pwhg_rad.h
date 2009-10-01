@@ -47,6 +47,8 @@ c filled with contributions of the regular real graphs (graphs with no singular
 c regions), filled after a call to sigremnants;
 c rad_reg_tot=Sum rad_reg_arr
       real * 8 rad_reg_arr(maxprocreal),rad_reg_tot
+c radiation variables in sigremnant call
+      real * 8 rad_xradremn(3)
 c user provided factor, to increase the upper bounding ratios
       real * 8 rad_normfact
 c minimum pt-squared
@@ -58,7 +60,7 @@ c LambdaLL for upper bounding coupling (see notes: running_coupling)
      #     rad_damp_rem_arr,rad_damp_rem_tot,rad_reg_arr,rad_reg_tot,
      #     rad_csiynorms,rad_norms,rad_btilde_arr,rad_real_arr,
      #     rad_normfact,rad_ptsqmin,rad_charmthr2,rad_bottomthr2,
-     #     rad_lamll,
+     #     rad_lamll,rad_xradremn,
 c     integers
      #     rad_ubornidx,rad_alr_list,rad_alr_nlist,
      #     rad_realidx,rad_realalr,rad_realreg,

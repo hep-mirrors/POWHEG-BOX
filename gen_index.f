@@ -60,6 +60,7 @@
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
       integer iret
+      real * 8 dum1,dum2,dum3,dum4
       real * 8 random
       external random
 c Remnant or regular?
@@ -70,14 +71,14 @@ c remnant
          rad_ubornidx=flst_alr2born(rad_realalr)
          kn_emitter=flst_emitter(rad_realalr)
          if(kn_emitter.le.2) then
-            call gen_real_phsp_isr_rad
+            call gen_real_phsp_isr(rad_xradremn,dum1,dum2,dum3,dum4)
          else
-            call gen_real_phsp_fsr_rad
+            call gen_real_phsp_fsr(rad_xradremn,dum1,dum2,dum3)
          endif
       else
 c regular
          iret=2
          call pick_random(flst_nregular,rad_reg_arr,rad_realreg)
-         call gen_real_phsp_isr_rad
+         call gen_real_phsp_isr(rad_xradremn,dum1,dum2,dum3,dum4)
       endif
       end

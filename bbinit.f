@@ -158,10 +158,11 @@ c Output NLO histograms
       endif
       close(iunstat)
       call flush
-c initialize gen
+c initialize gen; the array xmmm is set up at this stage.
       negflag=.false.
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,0,
      #    mcalls,icalls,xx)
+c compute normalization of upper bounding function for radiation
       call do_maxrat(mcalls,icalls)
 c print statistics
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,3,
@@ -169,10 +170,10 @@ c print statistics
       if(xx(1).gt.0) write(*,*) 'POWHEG: efficiency in the generation'
      # //' of the Born variables =',xx(1)
       if(flg_withreg.or.flg_withdamp) then
-c initialize gen
+c initialize gen for remnants
          call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,
      #            0,mcalls,icalls,xx)
-CAVEAT    100 ???
+c generate few events from remnants, just to determine the generation efficiency
          do j=1,min(powheginput('nubound'),100d0)
             call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,
      #            1,mcalls,icalls,xx)

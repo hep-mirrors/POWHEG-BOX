@@ -32,6 +32,7 @@ c damping
       enddo
       do j=1,3
          xrad(j)=xx(ndiminteg-3 + j)
+         rad_xradremn(j)=xrad(j)
       enddo
 c regular contributions; any phase space parametrization should be OK
       kn_emitter=0
@@ -156,7 +157,6 @@ c ----------------
       enddo
       end
 
-
       subroutine compare_vecs_reg(nmomset,lreg,res,lregpr,cprop,iret)
       implicit none
       include 'nlegborn.h'
@@ -184,122 +184,25 @@ c ----------------
       iret=-1
       end
 
-
-      subroutine sigreal_damp_rem(xjac,sig,r0)
+      subroutine sigreal_damp_rem(xjac,sig,r1)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_flg.h'
       real * 8 xjac,sig
-      real * 8 r0(maxalr),rc(maxalr),rs(maxalr)
-      integer alr,alrpr,iret,em
-      integer nmomset
-      parameter (nmomset=10)
-      real * 8 res(nmomset,maxalr),preal(0:3,nlegreal,nmomset),cprop
-      integer equivto(maxalr)
-      real * 8 equivcoef(maxalr)
-      integer k,j
-      real * 8 r,sumdijinv,dampfac
-      real * 8 pdf1(-6:6),pdf2(-6:6)
-      real * 8 ptsq,pwhg_pt2
-      logical ini
-      data ini/.true./
-      save ini,equivto,equivcoef
-      external pwhg_pt2
-      if(ini) then
-         do alr=1,flst_nalr
-            equivto(alr)=-1
-         enddo
-         if(flg_smartsig) then
-            call randomsave
-c     generate "nmomset" random real-phase space configurations
-            call fillmomenta(nlegreal,nmomset,kn_masses,preal)
-            do alr=1,flst_nalr
-               do j=1,nmomset
-                  call realgr(
-     1                 flst_alr(1,alr),preal(0,1,j),res(j,alr))
-               enddo
-               call compare_vecs_rad(nmomset,alr,res,alrpr,cprop,iret)
-               if(iret.eq.0) then
-c     they are equal
-                  equivto(alr)=alrpr
-                  equivcoef(alr)=1
-               elseif(iret.eq.1) then
-c     they are proportional
-                  equivto(alr)=alrpr
-                  equivcoef(alr)=cprop
-               endif
-            enddo
-            call randomrestore
-         endif
-         ini=.false.
-      endif
-c End initialization phase; compute graphs
-      call pdfcall(1,kn_x1,pdf1)
-      call pdfcall(2,kn_x2,pdf2)
-      if(flg_withdamp) then
-         call collbtl(rc)
-         call softbtl(rs)
-      endif
+      real * 8 r0(maxalr),r1(maxalr)
+      integer alr
       sig=0
+      call sigreal_btl0(r0,1)
       do alr=1,flst_nalr
-         em=flst_emitter(alr)
-         if(em.eq.kn_emitter) then
-c check if we have a g -> Q Qbar splitting below threshold:
-c            if(flst_alr(em,alr)+flst_alr(nlegreal,alr).eq.0.and.
-c     #        abs(flst_alr(em,alr)).ge.4) then
-c               ptsq=pwhg_pt2()
-c               if(abs(flst_alr(em,alr)).eq.4.and.ptsq.lt.rad_charmthr2
-c     #                                 .or.
-c     #       abs(flst_alr(em,alr)).eq.5.and.ptsq.lt.rad_bottomthr2) then
-c                  goto 995
-c               endif
-c            endif
-c ----------------
-            if(equivto(alr).lt.0) then
-               call realgr(flst_alr(1,alr),kn_cmpreal,r0(alr))
-               sumdijinv=0
-               do k=1,flst_allreg(1,0,alr)
-                  sumdijinv=sumdijinv
-     #+1/kn_dijterm(flst_allreg(1,k,alr),flst_allreg(2,k,alr))
-               enddo
-               r0(alr)=r0(alr)/kn_dijterm(em,nlegreal)/sumdijinv
-c If the emitter is in the final state, and if the emitted and emitter
-c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
-               if(em.gt.2.and.flst_alr(em,alr).eq.0.and.
-     #              flst_alr(nlegreal,alr).eq.0) then
-                  r0(alr)=r0(alr)*2
-     #         *kn_cmpreal(0,em)/
-     #         (kn_cmpreal(0,em)+kn_cmpreal(0,nlegreal))
-               endif
-               r0(alr)=r0(alr)*flst_mult(alr)
-c supply Born zero damping factor, if required
-               if(flg_withdamp) then
-                  if(kn_emitter.gt.2) then
-                     r=r0(alr)*(1-kn_y)*kn_csi**2
-                  else
-                     r=r0(alr)*(1-kn_y**2)*kn_csi**2
-                  endif
-                  call bornzerodamp(alr,r,rc(alr),rs(alr),dampfac)
-c                  if(kn_y.gt.0.99.and.kn_emitter.eq.1) then
-c                     write(*,*) alr,kn_emitter,kn_y,r,rc(alr),
-c     #                  kn_csi,kn_azi
-c                  endif
-                  r0(alr)=r0(alr) * (1-dampfac)
-               endif
+         if(kn_emitter.eq.flst_emitter(alr)) then
+            if(kn_emitter.le.2) then
+               r0(alr)=r0(alr)/((1-kn_y**2)*kn_csi**2)
             else
-               r0(alr)=r0(equivto(alr))*equivcoef(alr)
+               r0(alr)=r0(alr)/((1-kn_y)*kn_csi**2)
             endif
-         endif
-c 995     continue
-      enddo
-      do alr=1,flst_nalr
-         em=flst_emitter(alr)
-         if(em.eq.kn_emitter) then
-            r0(alr)=xjac*r0(alr)
-     #         *pdf1(flst_alr(1,alr))*pdf2(flst_alr(2,alr))
+            r0(alr)=r0(alr)*xjac
+            r1(alr)=r1(alr)+r0(alr)
             sig=sig+r0(alr)
          endif
       enddo

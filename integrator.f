@@ -50,7 +50,8 @@ c     the array xgrid is setup at this stage; ans and err are the integral and i
 c     No folding is allowed at this stage;
 c     imode=1 (in fact #0)
 c     When called with imode=1, the routine performs the integral of the function fun
-c     using the grid xgrid. Folding, if present, is used at this stage.
+c     using the grid xgrid. Folding, if present, is used at this stage. The upper bounding
+c     envelope of the function is set up, so as to allow event generation by gen.
 c
 c xgrid(0:nintervals,ndim)
 c     integration grid; initialized and updated with the call to mint with imode=0

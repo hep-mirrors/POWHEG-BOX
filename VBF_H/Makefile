@@ -78,26 +78,8 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
-PWHGNEW=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
-	gen_Born_phsp.o find_regions.o test_Sudakov.o \
-	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
-	Bornzerodamp.o sigremnants-new.o random.o boostrot.o \
-	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
-        pdfcalls.o  sigreal-new.o sigcollremn.o \
-        pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
-	setstrongcoupl.o integrator.o newunit.o mwarn.o \
-	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
-	fastjetsisconewrap.o fastjetktwrap.o \
-	$(PDFPACK) $(USER) $(SYSOBJ)
-
 pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
-#	$(FF) $^ -o $@ $(LIBS) $(LIBSFASTJET)
-
-pwhg_main_new:$(PWHGNEW)
-	$(FF) $(patsubst %,obj/%,$(PWHGNEW)) $(LIBS) $(LIBSFASTJET) -o $@
-#	$(FF) $^ -o $@ $(LIBS) $(LIBSFASTJET)
-
 
 LHEFANAL=lhef_analysis.o boostrot.o \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o  lhefread.o newunit.o \

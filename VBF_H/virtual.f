@@ -5,21 +5,20 @@ c     The as/(2pi) factor is attached at a later point
 c
 c  The vertex correction depicted below is given by:
 c                    -----
-c                   /     \ <- virtual gluon
-c                  /       \
-c         q1 --->------------>------ q3
+c                   /      <- virtual gluon
+c                  /       c         q1 --->------------>------ q3
 c                      |
 c                      V q 
 c                      |
 c   q1^2 = q2^2 = 0         q = q1-q3  
 c   q^2 < 0
 c
-c   V^\nu = (4*Pi)^ep * Gamma(1+ep) * CF * as/(4*Pi) * 
-c           (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+Pi^2/3-7)*B^\nu
+c   V^nu = (4*Pi)^ep * Gamma(1+ep) * CF * as/(4*Pi) * 
+c           (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+Pi^2/3-7)*B^nu
 c         = (4*Pi)^ep / Gamma(1-ep) * CF * as/(4*Pi) * 
-c           (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+Pi^2/3-7-Pi^2/3)*B^\nu
+c           (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+Pi^2/3-7-Pi^2/3)*B^nu
 c
-c     where B^\nu is the Born vertex and r = mu^2/(-q^2)
+c     where B^nu is the Born vertex and r = mu^2/(-q^2)
 c     See my formula (2.11) in Phys.Rev.D68:073005,2003 [hep-ph/0306109] 
 c
 c     The factor  (4*Pi)^ep/Gamma(1-ep) IS NOT RETURNED by this subroutine
@@ -27,6 +26,7 @@ c     and it's thought as factorized in front of the real counterterms too.
 
       subroutine setvirtual(p,vflav,virtual)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'

@@ -38,15 +38,14 @@ FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
 
-VPATH= $(DIRECTORIES)
+WDNAME=$(shell basename $(PWD))
 
-DIRECTORIES=$(PWD)/:$(PWD)/user:$(PWD)/obj
-
+VPATH= ./:../:obj/
 
 FF=$(F77) $(OPT) $(DEBUG)
 
 
-INCLUDE =$(shell echo include/*)
+INCLUDE =$(shell echo ../include/*.h *.h)
 
 PDFPACK=mlmpdfif.o hvqpdfpho.o
 #PDFPACK=lhapdfif.o
@@ -54,6 +53,7 @@ LIBS=-L/home/nason/Pheno/PDFpacks/lib -lLHAPDF -static
 
 
 %.o: %.f $(INCLUDE)
+	ln -sf $(WDNAME)/nlegborn.h ../
 	$(FF) -c -o obj/$@ $<
 
 %.o: %.c
@@ -63,7 +63,7 @@ LIBS=-L/home/nason/Pheno/PDFpacks/lib -lLHAPDF -static
 	$(CC) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 
-USER=init_couplings.o init_processes.o Born_phsp.o Born.o madamp.o virtual.o \
+USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
 		      real_ampsq.o pwhg_analysis.o 
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \

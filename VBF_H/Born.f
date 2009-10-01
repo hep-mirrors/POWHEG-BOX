@@ -1,6 +1,7 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include '../include/pwhg_math.h'
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
@@ -42,6 +43,7 @@ c where k#i,j
 c     q q -> H q q 
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include 'PhysPars.h'
       integer nleg
@@ -124,6 +126,7 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
       include '../include/LesHouches.h'
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c colours of incoming quarks, antiquarks
       integer icolqi(2),icolai(2),icolgi(2),
@@ -498,9 +501,8 @@ c       averaged over initial polarization and
 c       color, and summed over final polarization and color
 c                     
 c                    -----
-c                   /     \ <- virtual gluon
-c                  /       \
-c         q1 --->------------>------ q3
+c                   /      <- virtual gluon
+c                  /       c         q1 --->------------>------ q3
 c                      |
 c                      | V
 c                      |
@@ -515,19 +517,18 @@ c
 c
 c  The vertex correction depicted below is given by:
 c                    -----
-c                   /     \ <- virtual gluon
-c                  /       \
-c         q1 --->------------>------ q3
+c                   /      <- virtual gluon
+c                  /       c         q1 --->------------>------ q3
 c                      |
 c                      V q 
 c                      |
 c   q1^2 = q2^2 = 0         q = q1-q3  
 c   q^2 < 0
 c
-c     V^\nu = Gamma(1+ep) (4*Pi)^ep * CF * as/(4*Pi) * 
-c             (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+1/3*Pi^2-7)*B^\nu
+c     V^nu = Gamma(1+ep) (4*Pi)^ep * CF * as/(4*Pi) * 
+c             (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+1/3*Pi^2-7)*B^nu
 c
-c     where B^\nu is the Born vertex and r = mu^2/(-q^2)
+c     where B^nu is the Born vertex and r = mu^2/(-q^2)
 c     See my formula (2.11) in Phys.Rev.D68:073005,2003 [hep-ph/0306109] 
 c
 c     The factor Gamma(1+ep) (4*Pi)^ep IS NOT RETURNED by this subroutine

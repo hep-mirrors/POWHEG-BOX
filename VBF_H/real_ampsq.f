@@ -1,5 +1,6 @@
       subroutine real_ampsq(p,rflav,amp2)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal),rflavs(nlegreal)

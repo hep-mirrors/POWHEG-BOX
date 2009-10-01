@@ -1,5 +1,6 @@
       subroutine born_phsp(xborn)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       include '../include/pwhg_math.h'
@@ -210,6 +211,7 @@ c     boost in the CM frame
 
       subroutine born_suppression(fact)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       logical ini
@@ -239,6 +241,7 @@ c      endif
       subroutine set_fac_ren_scales(muf,mur)
       implicit none
       include 'PhysPars.h'
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       real * 8 muf,mur

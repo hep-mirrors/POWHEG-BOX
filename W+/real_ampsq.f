@@ -1,5 +1,6 @@
       subroutine real_ampsq(p,fermion_flav,amp2)
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c -*- Fortran -*-
 c      character *2 flav(-5:5)
@@ -104,9 +105,8 @@ c         q  --->----------->------ g
 c                     |
 c                     |            l
 c                     |           /  
-c         aqp ---<-----/\/\/\/\/\/
-c                           W    \
-c                                 \ vl 
+c         aqp ---<-----//////
+c                           W    c                                  vl 
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3

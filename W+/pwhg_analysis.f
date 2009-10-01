@@ -241,9 +241,9 @@ c-----------------------------------
             write(*,*) 'Error when looking for leptons from W decay'
             write(*,*) 'Wrong inv mass: ',sqrt(mV2ref),
      #           '<--',jeminus,jeplus
-            write(*,*) '\t e+ -->',phep(4,jeminus),phep(1,jeminus),
+            write(*,*) 't e+ -->',phep(4,jeminus),phep(1,jeminus),
      #           phep(2,jeminus),phep(3,jeminus)
-            write(*,*) '\t ve -->',phep(4,jeplus),phep(1,jeplus),
+            write(*,*) 't ve -->',phep(4,jeplus),phep(1,jeplus),
      #           phep(2,jeplus),phep(3,jeplus)
             write(*,*) 'True inv mass: ',sqrt(
      #           (phep(4,jem_true)+phep(4,jep_true))**2
@@ -251,12 +251,12 @@ c-----------------------------------
      #           -(phep(2,jem_true)+phep(2,jep_true))**2
      #           -(phep(3,jem_true)+phep(3,jep_true))**2   ),
      #           '<--',jem_true,jep_true
-            write(*,*) '\t e+ -->',phep(4,jem_true),phep(1,jem_true),
+            write(*,*) 't e+ -->',phep(4,jem_true),phep(1,jem_true),
      #           phep(2,jem_true),phep(3,jem_true)
-            write(*,*) '\t ve -->',phep(4,jep_true),phep(1,jep_true),
+            write(*,*) 't ve -->',phep(4,jep_true),phep(1,jep_true),
      #           phep(2,jep_true),phep(3,jep_true)
             call hwuepr
-            write(*,*) '\n !!!! Event dropped !!!!\n '
+            write(*,*) 'n !!!! Event dropped !!!!n '
             return
          endif
 c     assign correct values

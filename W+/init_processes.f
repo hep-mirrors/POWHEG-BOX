@@ -1,5 +1,6 @@
       subroutine init_processes
       implicit none
+      include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       integer i1,i2,i3,i4,i5,k,ii(nlegreal)

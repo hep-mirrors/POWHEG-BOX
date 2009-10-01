@@ -30,7 +30,7 @@ c     final state radiation
 c sigreal fills the array r0 with the value of the R_alpha contribution
 c that have emitter equal to kn_emitter. All other contributions are set
 c to zero. 
-               call sigreal(r0)
+               call sigreal_btl(r0)
                if(flg_withsubtr) then
                   call collfsr(rc)
 c     soft subtraction
@@ -76,7 +76,7 @@ c     zero rm (rp).
                call gen_real_phsp_isr
      #(xrad,jac_over_csi,jac_over_csi_p,jac_over_csi_m,
      #jac_over_csi_soft)
-               call sigreal(r0)
+               call sigreal_btl(r0)
                if(flg_withsubtr) then
                   call soft(r0s)
                   if(kn_emitter.ne.2) then
@@ -155,11 +155,11 @@ c     to avoid divergent integral
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
-      external sigreal,soft,collfsr,softcollfsr,
+      external sigreal_btl,soft,collfsr,softcollfsr,
      #collisrp,softcollisrp,collisrm,softcollisrm
       call randomsave
       do kn_emitter=0,nlegborn
-         call checksoft(sigreal,soft,' soft',iun)
+         call checksoft(sigreal_btl,soft,' soft',iun)
       enddo
       do kn_emitter=3,nlegborn
          call checksoft(collfsr,softcollfsr,' soft-coll',iun)
@@ -173,16 +173,16 @@ c     to avoid divergent integral
      #   ' soft-coll-minus',iun)
       enddo
       do kn_emitter=3,nlegborn
-         call checkcoll(sigreal,collfsr,1,' coll',iun)
+         call checkcoll(sigreal_btl,collfsr,1,' coll',iun)
       enddo
       do kn_emitter=3,nlegborn
          call checkcoll(soft,softcollfsr,1,' coll-soft',iun)
       enddo
       do kn_emitter=0,2
          if(kn_emitter.ne.2)
-     #    call checkcoll(sigreal,collisrp,1,' coll-plus',iun)
+     #    call checkcoll(sigreal_btl,collisrp,1,' coll-plus',iun)
          if(kn_emitter.ne.1)
-     #    call checkcoll(sigreal,collisrm,-1,' coll-minus',iun)
+     #    call checkcoll(sigreal_btl,collisrm,-1,' coll-minus',iun)
       enddo
       do kn_emitter=0,2
          if(kn_emitter.ne.2)
@@ -435,7 +435,7 @@ c     generate "nmomset" random real-phase space configurations
                   call realgr(
      1                 flst_alr(1,alr),preal(0,1,j),res(j,alr))
                enddo
-               call compare_vecs_rad(nmomset,alr,res,alrpr,cprop,iret)
+               call compare_vecs(nmomset,alr,res,1,alrpr,cprop,iret)
                if(iret.eq.0) then
 c     they are equal
                   equivto(alr)=alrpr
@@ -536,23 +536,30 @@ c supply Born zero damping factor, if required
       end
 
 
+      subroutine sigreal_btl(r0)
+      implicit none
+      real * 8 r0(*)
+      call sigreal_btl0(r0,0)
+      end
+
 c Real cross section, required by btilde;
 c fills the array r0(alr) with the invariant cross section, multiplied
 c by csi^2 (1-y^2) for ISR regions
 c    csi^2 (1-y)   for FSR regions
-      subroutine sigreal(r0)
+      subroutine sigreal_btl0(r0,imode)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
+      integer imode
       real * 8 r0(maxalr)
       real * 8 rc(maxalr),rs(maxalr),r
       integer alr,alrpr,iret
       integer nmomset
       parameter (nmomset=10)
       real * 8 res(nmomset,maxalr),preal(0:3,nlegreal,nmomset),cprop
-      integer equivto(maxalr)
+      integer equivto(maxalr),markused(maxalr)
       real * 8 equivcoef(maxalr)
       integer j,k
       real * 8 sumdijinv,dampfac
@@ -573,7 +580,7 @@ c     generate "nmomset" random real-phase space configurations
                   call realgr(
      1                 flst_alr(1,alr),preal(0,1,j),res(j,alr))
                enddo
-               call compare_vecs(nmomset,alr,res,alrpr,cprop,iret)
+               call compare_vecs(nmomset,alr,res,0,alrpr,cprop,iret)
                if(iret.eq.0) then
 c     they are equal:
                   equivto(alr)=alrpr
@@ -594,6 +601,7 @@ c     < 0 for unequal:
 c End initialization phase; compute graphs
       do alr=1,flst_nalr
          r0(alr)=0
+         markused(alr)=0
       enddo
       if(flg_withdamp) then
          call collbtl(rc)
@@ -603,7 +611,9 @@ c End initialization phase; compute graphs
 c Only R_alpha (namely alr) with the current emitter: 
          if(flst_emitter(alr).eq.kn_emitter) then
             if(equivto(alr).lt.0) then
-c Not equal to any previous one, compute explicitly:
+c Not equal to any previous one, compute explicitly.
+c First mark as being computed
+               markused(alr)=1
                call realgr(flst_alr(1,alr),kn_preal,r0(alr))
 c Supply FKS factor to separate singular region:
                sumdijinv=0
@@ -631,9 +641,19 @@ c supply Born zero damping factor, if required
                   endif
                   r=r*flst_mult(alr)
                   call bornzerodamp(alr,r,rc(alr),rs(alr),dampfac)
-                  r0(alr) =r0(alr) * dampfac
+                  if(imode.eq.0) then
+                     r0(alr) =r0(alr) * dampfac
+                  elseif(imode.eq.1) then
+                     r0(alr) =r0(alr) * (1-dampfac)
+                  else
+                     write(*,*) ' sigreal_btl0: improper call'
+                  endif
                endif
             else
+               if(markused(equivto(alr)).ne.1) then
+                  write(*,*) ' error: sigreal_btl flg_smartsig bug'
+                  call exit(1)
+               endif
                r0(alr)=r0(equivto(alr))*equivcoef(alr)
             endif
          endif
@@ -695,66 +715,39 @@ c We should have the masses as a function of flavour id, somewhere!
       end
          
 
-      subroutine compare_vecs_rad(nmomset,alr,res,alrpr,cprop,iret)
+      subroutine compare_vecs(nmomset,alr,res,imode,alrpr,cprop,iret)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
-      integer nmomset,alr,alrpr,iret,j,k
+      integer nmomset,alr,alrpr,imode,iret,j,k
       real * 8 res(nmomset,*),cprop,rat
+c imode=0 when called from btilde,
+c imode=1 when called for radiation. In the latter
+c case, graphs that do not have the same underlying Born
+c are not considered.
       do j=1,alr-1
-         if(flst_emitter(j).eq.flst_emitter(alr)
-     #   .and. flst_alr2born(j).eq.flst_alr2born(alr)) then
-            rat=res(1,alr)/res(1,j)
-            do k=1,nmomset
-               if(abs(1-res(k,alr)/res(k,j)/rat).gt.ep) goto 10
-            enddo
-            if(abs(1-rat).lt.ep) then
-               iret=0
-               cprop=1
-            else
-               iret=1
-               cprop=rat
-            endif
-            alrpr=j
-            return
- 10         continue
+         if(flst_emitter(j).ne.flst_emitter(alr)) goto 10
+         if(imode.eq.1.and.flst_alr2born(j).ne.flst_alr2born(alr))
+     1        goto 10
+         rat=res(1,alr)/res(1,j)
+         do k=1,nmomset
+            if(abs(1-res(k,alr)/res(k,j)/rat).gt.ep) goto 10
+         enddo
+         if(abs(1-rat).lt.ep) then
+            iret=0
+            cprop=1
+         else
+            iret=1
+            cprop=rat
          endif
+         alrpr=j
+         return
+ 10      continue
       enddo
       iret=-1
       end
-
-
-      subroutine compare_vecs(nmomset,alr,res,alrpr,cprop,iret)
-      implicit none
-      include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      real * 8 ep
-      parameter (ep=1d-12)
-      integer nmomset,alr,alrpr,iret,j,k
-      real * 8 res(nmomset,*),cprop,rat
-      do j=1,alr-1
-         if(flst_emitter(j).eq.flst_emitter(alr)) then
-            rat=res(1,alr)/res(1,j)
-            do k=1,nmomset
-               if(abs(1-res(k,alr)/res(k,j)/rat).gt.ep) goto 10
-            enddo
-            if(abs(1-rat).lt.ep) then
-               iret=0
-               cprop=1
-            else
-               iret=1
-               cprop=rat
-            endif
-            alrpr=j
-            return
- 10         continue
-         endif
-      enddo
-      iret=-1
-      end
-
 
       subroutine realgr(rflav,p,res)
       implicit none

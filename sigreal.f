@@ -157,7 +157,7 @@ c     to avoid divergent integral
       include 'include/pwhg_kn.h'
       external sigreal,soft,collfsr,softcollfsr,
      #collisrp,softcollisrp,collisrm,softcollisrm
-      call resetrandom
+      call randomsave
       do kn_emitter=0,nlegborn
          call checksoft(sigreal,soft,' soft',iun)
       enddo
@@ -190,6 +190,7 @@ c     to avoid divergent integral
          if(kn_emitter.ne.1)
      #    call checkcoll(soft,softcollisrm,-1,' coll-minus-soft',iun)
       enddo
+      call randomrestore
       end
 
       subroutine checksoft(sig,sigs,label,iun)
@@ -200,7 +201,7 @@ c     to avoid divergent integral
       include 'include/pwhg_kn.h'
       character *(*) label
       integer iun
-      real * 8 xborn((nlegborn-2)*3-4+2-1),xrad(3)
+      real * 8 xborn(ndiminteg-3),xrad(3)
       integer nexp
       parameter (nexp=5)
       real * 8 jac_over_csi,
@@ -213,7 +214,7 @@ c     to avoid divergent integral
       external random,dotp
       logical valid_emitter,iszero,isnonzero,isequal
       external valid_emitter
-      do j=1,(nlegborn-2)*3-4+2-1
+      do j=1,ndiminteg-3
          xborn(j)=random()
       enddo
       write(iun,*) ' ### ',xborn
@@ -297,7 +298,7 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
       include 'include/pwhg_kn.h'
       character *(*) label
       integer idir
-      real * 8 xborn((nlegborn-2)*3-4+2-1),xrad(3)
+      real * 8 xborn(ndiminteg-3),xrad(3)
       integer nexp
       parameter (nexp=8)
       real * 8 jac_over_csi,
@@ -310,7 +311,7 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
       character * 8 flag
       logical valid_emitter,iszero,isnonzero,isequal
       external valid_emitter
-      do j=1,(nlegborn-2)*3-4+2-1
+      do j=1,ndiminteg-3
          xborn(j)=random()
       enddo
       write(iun,*) ' ### ',xborn

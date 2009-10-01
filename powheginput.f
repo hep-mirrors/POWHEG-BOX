@@ -24,9 +24,11 @@
          stop
       endif
       k=100
- 2    if(k.gt.0.and.line(k:k).eq.' ') then
-         k=k-1
-         goto 2
+ 2    if(k.gt.0) then
+         if(line(k:k).eq.' ') then
+            k=k-1
+            goto 2
+         endif
       endif
       if(k.eq.0) k=1
       write(nlf,'(a)') line(1:k)

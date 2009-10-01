@@ -14,7 +14,7 @@ c damping
       real * 8 sigremnant,xx(ndiminteg),ww
       integer ifirst
       real * 8 xrad(3)
-      real * 8 xborn((nlegborn-2)*3-4+2-1)
+      real * 8 xborn(ndiminteg-3)
       integer j,alr
       real * 8 ttt
       real * 8 jac_over_csi,jac_over_csi_p,jac_over_csi_m,

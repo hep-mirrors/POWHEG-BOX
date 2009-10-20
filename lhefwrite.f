@@ -1,6 +1,6 @@
 c...lhefheader(nlf)
 c...writes initialization information to a les houches events file on unit nlf. 
-      subroutine lhefheader(nlf)
+      subroutine lhefwritehdr(nlf)
       implicit none
       integer nlf
       real * 8 version
@@ -33,12 +33,12 @@ c...writes initialization information to a les houches events file on unit nlf.
 
       subroutine printleshouches
 c useful for debugging
-      call lhefevent(6)
+      call lhefwritev(6)
       end
 
 c...lhefeader(nlf)
 c...writes event information to a les houches events file on unit nlf. 
-      subroutine lhefevent(nlf)
+      subroutine lhefwritev(nlf)
       implicit none
       integer nlf
       include 'include/LesHouches.h'
@@ -57,7 +57,7 @@ c...writes event information to a les houches events file on unit nlf.
 
 c...lheftrailer(nlf)
 c...writes trailer to a les houches events file on unit nlf. 
-      subroutine lheftrailer(nlf)
+      subroutine lhefwritetrailer(nlf)
       implicit none
       integer nlf,iran,n1ran,n2ran
       write(nlf,'(a)') '</LesHouchesEvents>'
@@ -65,5 +65,20 @@ c     save last random number
       call rm48ut(iran,n1ran,n2ran)
       write(nlf,*) '#Random number generator exit values: ',
      # iran,' ',n1ran,' ',n2ran
+      end
+
+      subroutine lhefwritextra(nlf)
+      implicit none
+      include 'include/LesHouches.h'
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_flg.h'
+      integer nlf
+      write(nlf,*) '<extra-info-previous-event>'
+      write(nlf,*) rad_kinreg,'      ! rad_kinreg'
+      write(nlf,*) '</extra-info-previous-event>'
       end
 

@@ -169,7 +169,7 @@ c print statistics
      #    mcalls,icalls,xx)
       if(xx(1).gt.0) write(*,*) 'POWHEG: efficiency in the generation'
      # //' of the Born variables =',xx(1)
-      if(flg_withreg.or.flg_withdamp) then
+      if((flg_withreg.or.flg_withdamp).and..not.flg_bornonly) then
 c initialize gen for remnants
          call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,
      #            0,mcalls,icalls,xx)

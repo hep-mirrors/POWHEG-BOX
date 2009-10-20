@@ -53,8 +53,6 @@ c remember: no csimax in the jacobian factor, we are integrating in csitilde
       jac_over_csi_coll=xjac*q2/(4*pi)**3
      #                *(1-kn_csi/2*q0/kn_cmpborn(0,kn_emitter))
       jac_over_csi_soft=xjac*q2/(4*pi)**3
-      call setsoftvec
-      call compdijsoft
       end
 
       subroutine gen_real_phsp_fsr_rad0
@@ -113,6 +111,8 @@ c remember: no csimax factor, we are integrating in csitilde
       call checkmomzero(nlegreal,kn_preal)
       call compcmkin
       call compdij
+      call setsoftvecfsr
+      call compdijsoft
       end
 
 c This routine performs the inverse mapping from barred and radiation
@@ -231,8 +231,6 @@ c ISR:
 c here we need the Born s (real s is function of Born s via csi)
       jac_over_csi_s=xjac*(kn_sborn)/(4*pi)**3
 c      call checkmomzero(nlegreal,kn_preal)
-      call setsoftvec
-      call compdijsoft
       end
 
       subroutine compcsimax
@@ -340,6 +338,8 @@ c      call printtot(nlegreal,kn_preal(0,1))
       kn_jacreal=kn_sreal/(4*pi)**3*csi/(1-csi)
       call compcmkin
       call compdij
+      call setsoftvecisr
+      call compdijsoft
       end
 
 
@@ -374,15 +374,14 @@ c      call printtot(nlegreal,kn_preal(0,1))
          kn_dijterm(2,j)=(kn_cmpreal(0,j)**2
      # *2*(1+y))**par_diexp
       enddo
-c Here we use the transverse momentum of k or j relative
-c to the direction of k+j
       do j=flst_lightpart,nlegreal
          do k=j+1,nlegreal
-            kn_dijterm(j,k)=
-     #(crossp(kn_cmpreal(1,k),kn_cmpreal(1,j))**2
-     #/  ((kn_cmpreal(1,k)+kn_cmpreal(1,j))**2+
-     #(kn_cmpreal(2,k)+kn_cmpreal(2,j))**2+
-     #(kn_cmpreal(3,k)+kn_cmpreal(3,j))**2))**par_dijexp
+            kn_dijterm(j,k)=(2*dotp(kn_cmpreal(0,k),kn_cmpreal(0,j))*
+     1       kn_cmpreal(0,k)*kn_cmpreal(0,j)
+     2    /  (kn_cmpreal(0,k)+kn_cmpreal(0,j))**2)**par_dijexp
+c     2    /  ((kn_cmpreal(1,k)+kn_cmpreal(1,j))**2+
+c     3        (kn_cmpreal(2,k)+kn_cmpreal(2,j))**2+
+c     4        (kn_cmpreal(3,k)+kn_cmpreal(3,j))**2))**par_dijexp
          enddo
       enddo
       end
@@ -411,12 +410,11 @@ c to the direction of k+j
      #*2*(1-y))**par_diexp
       kn_dijterm_soft(2)=(kn_softvec(0)**2
      #*2*(1+y))**par_diexp
-c Here we use the transverse momentum of k or j relative
-c to the direction of k+j
       do k=flst_lightpart,nlegreal-1
          kn_dijterm_soft(k)=
-     #(crossp(kn_cmpborn(1,k),kn_softvec(1))**2
-     #/ kn_cmpborn(0,k)**2)**par_dijexp
+     1   (2*dotp(kn_cmpborn(0,k),kn_softvec(0))*
+     2        kn_cmpborn(0,k)*kn_softvec(0)
+     3     / kn_cmpborn(0,k)**2)**par_dijexp
       enddo
       end
 
@@ -430,7 +428,7 @@ c to the direction of k+j
       end
 
 
-      subroutine setsoftvec
+      subroutine setsoftvecfsr
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
@@ -439,27 +437,33 @@ c to the direction of k+j
       real * 8 y,norm,dir(3)
       em=kn_emitter
       y=kn_y
-      if(em.le.2) then
-         kn_softvec(0)=1
-         kn_softvec(1)=sqrt(1-y**2)*sin(kn_azi)
-         kn_softvec(2)=sqrt(1-y**2)*cos(kn_azi)
-         kn_softvec(3)=y
-      else
 c set soft vector parallel to the emitter
-         do j=0,3
-            kn_softvec(j)=kn_cmpborn(j,em)/kn_cmpborn(0,em)
-         enddo
+      do j=0,3
+         kn_softvec(j)=kn_cmpborn(j,em)/kn_cmpborn(0,em)
+      enddo
 c Set up a unit vector orthogonal to p_em and to the z axis
-         dir(3)=0
-         norm=sqrt(kn_cmpborn(1,em)**2+kn_cmpborn(2,em)**2)
-         dir(1)=kn_cmpborn(2,em)/norm
-         dir(2)=-kn_cmpborn(1,em)/norm
-         call mrotate(dir,sqrt(1-y**2),y,kn_softvec(1))
-         do j=1,3
-            dir(j)=kn_cmpborn(j,em)/kn_cmpborn(0,em)
-         enddo
+      dir(3)=0
+      norm=sqrt(kn_cmpborn(1,em)**2+kn_cmpborn(2,em)**2)
+      dir(1)=kn_cmpborn(2,em)/norm
+      dir(2)=-kn_cmpborn(1,em)/norm
+      call mrotate(dir,sqrt(1-y**2),y,kn_softvec(1))
+      do j=1,3
+         dir(j)=kn_cmpborn(j,em)/kn_cmpborn(0,em)
+      enddo
 c Rotate kn_softvec around dir of an amount azi
-         call mrotate(dir,sin(kn_azi),cos(kn_azi),kn_softvec(1))
-      endif
+      call mrotate(dir,sin(kn_azi),cos(kn_azi),kn_softvec(1))
+      end
+
+      subroutine setsoftvecisr
+      implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      real * 8 y
+      y=kn_y
+      kn_softvec(0)=1
+      kn_softvec(1)=sqrt(1-y**2)*sin(kn_azi)
+      kn_softvec(2)=sqrt(1-y**2)*cos(kn_azi)
+      kn_softvec(3)=y
       end
 

@@ -35,7 +35,7 @@
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
       integer ios
-      character * 6 string
+      character * 8 string
       real * 8 powheginput
       external powheginput
       integer nev,maxev
@@ -51,7 +51,7 @@ c     this call is necessary to read the prefix of the file
       endif
  1    continue
       read(unit=97,fmt='(a)',end=2) string
-      if(string.eq.'<event') then
+      if(string.eq.'</event>') then
          maxev=maxev+1
          goto 1
       endif

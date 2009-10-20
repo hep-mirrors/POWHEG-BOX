@@ -7,6 +7,6 @@ c flg_withreg: if regular regions exist or not
 c flg_smartsig: remember or not equal suqred amplitude
 c flg_bornonly: do the Born contribution only
       logical flg_nlotest,flg_withsubtr,flg_withdamp,flg_withreg,
-     1     flg_smartsig,flg_bornonly
+     1     flg_smartsig,flg_bornonly,flg_debug
       common/pwhg_flg/flg_nlotest,flg_withsubtr,flg_withdamp,
-     2     flg_withreg,flg_smartsig,flg_bornonly
+     2     flg_withreg,flg_smartsig,flg_bornonly,flg_debug

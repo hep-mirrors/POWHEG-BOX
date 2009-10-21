@@ -4,15 +4,15 @@
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       logical debug
-      parameter (debug=.false.)
+      parameter (debug=.true.)
       integer j,i,ii,jj,k
       integer charge3(-6:6)
       data charge3 /-2,1,-2,1,-2,1,0,-1,2,-1,2,-1,2/
       logical condition
       integer ferm_charge(5)
-
-c      data (flav(i),i=-5,5) 
-c     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
+      character *3 flav(-5:5)
+      data (flav(i),i=-5,5) 
+     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
 c      data (charge(i),i=-5,5) 
 c     #     / 0.33333333333333333333d0, !   1d0/3
 c     #      -0.66666666666666666667d0, !  -2d0/3
@@ -35,6 +35,23 @@ c     #      -0.33333333333333333333d0/ !   -1d0/3
       integer flst_real_tmp(nlegreal,maxprocreal)
       logical flavequiv
       external flavequiv
+      logical tag,newtag
+      
+      tag = .true.
+      newtag = .true.
+
+      if (.not.tag) then
+         do i=1,nlegborn
+            do j=1,maxprocborn
+               flst_borntags(i,j)=0
+            enddo
+         enddo
+         do i=1,nlegreal
+            do j=1,maxprocreal
+               flst_realtags(i,j)=0
+            enddo
+         enddo
+      endif
 
 
 c     index of the first coloured particle in the final state
@@ -101,7 +118,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c      do i=1,flst_nborn
 c         write(*,*) (flst_born(k,i),k=1,5)
 c      enddo
-
 
       ii=1
       call intassign(nlegreal,flst_real(1,1),flst_real_tmp(1,ii))
@@ -234,11 +250,20 @@ c     W+ emission from lower leg
                         flst_born(3,flst_nborn)=HWW ! Higgs
                         flst_born(4,flst_nborn)=ii
                         flst_born(5,flst_nborn)=jj
-                        flst_borntags(1,flst_nborn)=1
-                        flst_borntags(2,flst_nborn)=2
-                        flst_borntags(3,flst_nborn)=0
-                        flst_borntags(4,flst_nborn)=4
-                        flst_borntags(5,flst_nborn)=5
+                        if (tag) then
+                           flst_borntags(1,flst_nborn)=1
+                           flst_borntags(2,flst_nborn)=2
+                           flst_borntags(3,flst_nborn)=0
+                           flst_borntags(4,flst_nborn)=4
+                           flst_borntags(5,flst_nborn)=5
+                           if (newtag) then
+                              flst_borntags(1,flst_nborn)=1
+                              flst_borntags(2,flst_nborn)=2
+                              flst_borntags(3,flst_nborn)=0
+                              flst_borntags(4,flst_nborn)=1 !4
+                              flst_borntags(5,flst_nborn)=2 !5
+                           endif
+                        endif
                      endif
                   endif
                enddo
@@ -270,11 +295,20 @@ c     ZZ -> H case
                flst_born(3,flst_nborn)=HZZ ! Higgs
                flst_born(4,flst_nborn)=i
                flst_born(5,flst_nborn)=j
-               flst_borntags(1,flst_nborn)=1
-               flst_borntags(2,flst_nborn)=2
-               flst_borntags(3,flst_nborn)=0
-               flst_borntags(4,flst_nborn)=4
-               flst_borntags(5,flst_nborn)=5
+               if (tag) then
+                  flst_borntags(1,flst_nborn)=1
+                  flst_borntags(2,flst_nborn)=2
+                  flst_borntags(3,flst_nborn)=0
+                  flst_borntags(4,flst_nborn)=4
+                  flst_borntags(5,flst_nborn)=5
+                  if (newtag) then
+                     flst_borntags(1,flst_nborn)=1
+                     flst_borntags(2,flst_nborn)=2
+                     flst_borntags(3,flst_nborn)=0
+                     flst_borntags(4,flst_nborn)=1 !4
+                     flst_borntags(5,flst_nborn)=2 !5
+                  endif
+               endif
             endif
          enddo
       enddo
@@ -334,12 +368,22 @@ c     W+ emission from lower leg
                         flst_real(4,flst_nreal)=ii
                         flst_real(5,flst_nreal)=jj
                         flst_real(6,flst_nreal)=0 ! gluon
-                        flst_realtags(1,flst_nreal)=1
-                        flst_realtags(2,flst_nreal)=2
-                        flst_realtags(3,flst_nreal)=0
-                        flst_realtags(4,flst_nreal)=4
-                        flst_realtags(5,flst_nreal)=5
-                        flst_realtags(6,flst_nreal)=0
+                        if (tag) then
+                           flst_realtags(1,flst_nreal)=1
+                           flst_realtags(2,flst_nreal)=2
+                           flst_realtags(3,flst_nreal)=0
+                           flst_realtags(4,flst_nreal)=4
+                           flst_realtags(5,flst_nreal)=5
+                           flst_realtags(6,flst_nreal)=0
+                           if (newtag) then
+                              flst_realtags(1,flst_nreal)=1
+                              flst_realtags(2,flst_nreal)=2
+                              flst_realtags(3,flst_nreal)=0
+                              flst_realtags(4,flst_nreal)=1 !4
+                              flst_realtags(5,flst_nreal)=2 !5
+                              flst_realtags(6,flst_nreal)=0
+                           endif
+                        endif
                      endif
                   endif
                enddo
@@ -392,12 +436,22 @@ c     W+ emission from lower leg
                         flst_real(4,flst_nreal)=ii
                         flst_real(5,flst_nreal)=jj
                         flst_real(6,flst_nreal)=-i
-                        flst_realtags(1,flst_nreal)=0
-                        flst_realtags(2,flst_nreal)=2
-                        flst_realtags(3,flst_nreal)=0
-                        flst_realtags(4,flst_nreal)=4
-                        flst_realtags(5,flst_nreal)=5
-                        flst_realtags(6,flst_nreal)=1
+                        if (tag) then
+                           flst_realtags(1,flst_nreal)=0
+                           flst_realtags(2,flst_nreal)=2
+                           flst_realtags(3,flst_nreal)=0
+                           flst_realtags(4,flst_nreal)=4
+                           flst_realtags(5,flst_nreal)=5
+                           flst_realtags(6,flst_nreal)=1
+                           if (newtag) then
+                              flst_realtags(1,flst_nreal)=0
+                              flst_realtags(2,flst_nreal)=2
+                              flst_realtags(3,flst_nreal)=0
+                              flst_realtags(4,flst_nreal)=1 !4
+                              flst_realtags(5,flst_nreal)=2 !5
+                              flst_realtags(6,flst_nreal)=1
+                           endif
+                        endif
                      endif
                   endif
                enddo
@@ -450,12 +504,22 @@ c     W+ emission from lower leg
                         flst_real(4,flst_nreal)=ii
                         flst_real(5,flst_nreal)=jj
                         flst_real(6,flst_nreal)=-j
-                        flst_realtags(1,flst_nreal)=1
-                        flst_realtags(2,flst_nreal)=0
-                        flst_realtags(3,flst_nreal)=0
-                        flst_realtags(4,flst_nreal)=4
-                        flst_realtags(5,flst_nreal)=5
-                        flst_realtags(6,flst_nreal)=2
+                        if (tag) then
+                           flst_realtags(1,flst_nreal)=1
+                           flst_realtags(2,flst_nreal)=0
+                           flst_realtags(3,flst_nreal)=0
+                           flst_realtags(4,flst_nreal)=4
+                           flst_realtags(5,flst_nreal)=5
+                           flst_realtags(6,flst_nreal)=2
+                           if (newtag) then
+                              flst_realtags(1,flst_nreal)=1
+                              flst_realtags(2,flst_nreal)=0
+                              flst_realtags(3,flst_nreal)=0
+                              flst_realtags(4,flst_nreal)=1 !4
+                              flst_realtags(5,flst_nreal)=2 !5
+                              flst_realtags(6,flst_nreal)=2
+                           endif                           
+                        endif
                      endif
                   endif
                enddo
@@ -467,7 +531,7 @@ c     W+ emission from lower leg
       if (debug) then
          write(*,*) ' real processes: WW -> H ',flst_nreal
          do j=1,flst_nreal
-            write(*,*) 'proc ',j,' ', (flst_real(k,j),k=1,nlegreal)
+            write(*,*) 'proc ',j,' ',(flav(flst_real(k,j)),k=1,nlegreal)
          enddo
       endif
       flst_nreal_WW = flst_nreal
@@ -492,12 +556,22 @@ c     q q -> H q q g
                flst_real(4,flst_nreal)=i
                flst_real(5,flst_nreal)=j
                flst_real(6,flst_nreal)=0 ! gluon
-               flst_realtags(1,flst_nreal)=1
-               flst_realtags(2,flst_nreal)=2
-               flst_realtags(3,flst_nreal)=0
-               flst_realtags(4,flst_nreal)=4
-               flst_realtags(5,flst_nreal)=5
-               flst_realtags(6,flst_nreal)=0
+               if (tag) then
+                  flst_realtags(1,flst_nreal)=1
+                  flst_realtags(2,flst_nreal)=2
+                  flst_realtags(3,flst_nreal)=0
+                  flst_realtags(4,flst_nreal)=4
+                  flst_realtags(5,flst_nreal)=5
+                  flst_realtags(6,flst_nreal)=0
+                  if (newtag) then
+                     flst_realtags(1,flst_nreal)=1
+                     flst_realtags(2,flst_nreal)=2
+                     flst_realtags(3,flst_nreal)=0
+                     flst_realtags(4,flst_nreal)=1 !4
+                     flst_realtags(5,flst_nreal)=2 !5
+                     flst_realtags(6,flst_nreal)=0
+                  endif
+               endif
             endif
          enddo
       enddo
@@ -522,12 +596,22 @@ c     In fact, the real-radiation term contains TWO Feynman diagrams.
                flst_real(4,flst_nreal)=i
                flst_real(5,flst_nreal)=j
                flst_real(6,flst_nreal)=-i
-               flst_realtags(1,flst_nreal)=0
-               flst_realtags(2,flst_nreal)=2
-               flst_realtags(3,flst_nreal)=0
-               flst_realtags(4,flst_nreal)=4
-               flst_realtags(5,flst_nreal)=5
-               flst_realtags(6,flst_nreal)=1
+               if (tag) then
+                  flst_realtags(1,flst_nreal)=0
+                  flst_realtags(2,flst_nreal)=2
+                  flst_realtags(3,flst_nreal)=0
+                  flst_realtags(4,flst_nreal)=4
+                  flst_realtags(5,flst_nreal)=5
+                  flst_realtags(6,flst_nreal)=1
+                  if (newtag) then
+                     flst_realtags(1,flst_nreal)=0
+                     flst_realtags(2,flst_nreal)=2
+                     flst_realtags(3,flst_nreal)=0
+                     flst_realtags(4,flst_nreal)=1 !4
+                     flst_realtags(5,flst_nreal)=2 !5
+                     flst_realtags(6,flst_nreal)=1
+                  endif
+               endif
             endif
          enddo
       enddo
@@ -553,20 +637,31 @@ c     In fact, the real-radiation term contains TWO Feynman diagrams.
                flst_real(4,flst_nreal)=i
                flst_real(5,flst_nreal)=j
                flst_real(6,flst_nreal)=-j
-               flst_realtags(1,flst_nreal)=1
-               flst_realtags(2,flst_nreal)=0
-               flst_realtags(3,flst_nreal)=0
-               flst_realtags(4,flst_nreal)=4
-               flst_realtags(5,flst_nreal)=5
-               flst_realtags(6,flst_nreal)=2
+               if (tag) then
+                  flst_realtags(1,flst_nreal)=1
+                  flst_realtags(2,flst_nreal)=0
+                  flst_realtags(3,flst_nreal)=0
+                  flst_realtags(4,flst_nreal)=4
+                  flst_realtags(5,flst_nreal)=5
+                  flst_realtags(6,flst_nreal)=2
+                  if (newtag) then
+                     flst_realtags(1,flst_nreal)=1
+                     flst_realtags(2,flst_nreal)=0
+                     flst_realtags(3,flst_nreal)=0
+                     flst_realtags(4,flst_nreal)=1 !4
+                     flst_realtags(5,flst_nreal)=2 !5
+                     flst_realtags(6,flst_nreal)=2
+                  endif
+               endif
             endif
          enddo
       enddo              
 
       if (debug) then
-         write(*,*) ' real processes: ZZ -> H ',flst_nreal
+         write(*,*) ' real processes: ZZ -> H ',flst_nreal-flst_nreal_WW
          do j=flst_nreal_WW+1,flst_nreal
-            write(*,*) 'proc ',j,' ', (flst_real(k,j),k=1,nlegreal)
+            write(*,*) 'proc ',j-flst_nreal_WW,' ',
+     #           (flav(flst_real(k,j)),k=1,nlegreal)
          enddo
       endif
 
@@ -582,14 +677,3 @@ c      stop
       
 
 
-
-      subroutine particle_identif(HWW,HZZ)
-      implicit none
-      integer pdg_Higgs,pdg_Z,pdg_W,HZZ,HWW
-      pdg_Higgs = 25
-      pdg_Z = 23
-      pdg_W = 24      
-c     build an identifier for Higgs production in WW and ZZ fusion 
-      HWW = 10000*pdg_W + pdg_Higgs
-      HZZ = 10000*pdg_Z + pdg_Higgs
-      end

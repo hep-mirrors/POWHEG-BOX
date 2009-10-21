@@ -1,0 +1,2062 @@
+<html><head><title>LHAPDF :: HepForge</title><link rel="shortcut icon" type="image/x-icon" href="/common/include/cedar-favicon.ico" /><link rel="stylesheet" type="text/css" href="/common/css/cedar-hepforge-common.css" /><style>hr { border:0; background:#cca; }</style><style type="text/css">
+td.dark {background-color:#DDDDDD}
+td.title {background-color:#CCCCCC}
+.pageholder td { margin:1; padding:1; }
+.pageholder td { border:1; }
+</style></head><body style="margin:0; padding-top:0; padding-left:0em; padding-right:0em; "><table id="hepforge-topbar" class="hepforge-pageholder" width="100%" style="border-collapse:collapse; margin-bottom:0.5em;"><tr style="background:#ddb"><td class="noprint" style="margin:0; padding:0.2em; border-bottom:#996 solid 2px; font-family:sans-serif; font-size:small; text-align:right; vertical-align:middle"><div style="float:left;"><form method="get" id="hepforge-projselect" style="margin:0; padding:0;"><select style="border:1px solid #996; padding:0; padding-right:0; background:#eec; color:#933;" name="gotoproj"><option value="agile">AGILe</option><option value="applgrid">APPLgrid</option><option value="biteme">biteME</option><option value="blackhat">BlackHat</option><option value="blackmax">BlackMax</option><option value="cadabra">Cadabra</option><option value="cascade">CASCADE</option><option value="cedar">CEDAR</option><option value="charybdis2">Charybdis 2</option><option value="dataharvester">DataHarvester</option><option value="etmac">ETMAC</option><option value="eudaq">EUDAQ</option><option value="exhume">ExHuME</option><option value="fastnlo">FastNLO</option><option value="feynml">FeynML</option><option value="fftjet">FFTJet</option><option value="fherwig">Fortran Herwig</option><option value="hepdata">HepData</option><option value="hepforge">HepForge</option><option value="hepjet">HepJet</option><option value="hepmcvisual">HepMCVisual</option><option value="hepml">HepML</option><option value="heptex">HepTeX</option><option value="herwig">Herwig++</option><option value="hoppet">HOPPET</option><option value="hzsteer">HZSteer</option><option value="hztool">HZTool</option><option value="jetweb">JetWeb</option><option value="jhepwork">jHepWork</option><option value="jimmy">Jimmy</option><option value="jminhep">JMinHEP</option><option value="ktjet">KtJet</option><option value="lctpcdaq">LCTPC-Altro-DAQ</option><option value="lhapdf" selected="selected">LHAPDF</option><option value="mbtools">MB Tools</option><option value="mcnet">mcnet</option><option value="mctlib">MctLib</option><option value="mstwpdf">MSTWPDF</option><option value="multinest">MultiNest</option><option value="nnhep">NNHEP</option><option value="professor">Professor</option><option value="proffit">PROFFIT</option><option value="pyfeyn">PyFeyn</option><option value="pythia6">Pythia 6</option><option value="radical">RADICAL</option><option value="rapgap">RAPGAP</option><option value="rivet">Rivet</option><option value="runmc">RunMC</option><option value="sherpa">SHERPA</option><option value="siscone">SISCone</option><option value="softsusy">SoftSUSY</option><option value="spartyjet">SpartyJet</option><option value="statpattrec">StatPatternRecognition</option><option value="superbayes">SuperBayeS</option><option value="tglaubermc">TGlauberMC</option><option value="thepeg">ThePEG</option><option value="vscape">Vscape</option><option value="w2pho">W2Pho</option><option value="whizard">WHIZARD</option></select><input style="border:0; border-right:1px solid #663; border-bottom:1px solid #663; background:#996; font-weight:bolder; color:white; -moz-border-radius:0.3em; border-radius:0.3em; margin-left:0.5em; padding:0; cursor:pointer" value="Go!" type="submit" /></form></div><div style="float:right; padding-top:0.3em;">hosted by <a style="text-decoration:none; font-size:inherit; font-weight:bold; color:#933; :hover {text-decoration:none; font-size:inherit; font-weight:bold; color:#63f;}" href="http://www.hepforge.org">CEDAR HepForge</a></div></td></tr></table><div id="hepforge-content">
+<h1>LHAPDF <span style="font-size:x-large; color:blue;">the Les Houches Accord PDF Interface</span></h1>
+<hr />
+<table><tr>
+<td style="vertical-align:top; padding-top:1em;">
+<ul class="nowrap" style="background:#eec; border:#cca 5px solid; padding:1em; padding-left:2em; margin-right:2em;">
+<li><a href="/lhapdf/">LHAPDF Home</a></li>
+<li><a href="/lhapdf/pubs">Publications</a></li>
+<li><a href="/lhapdf/install">Installation</a></li>
+<li><a href="/lhapdf/pdfsets">PDF sets</a></li>
+<li><a href="http://www.hepforge.org/downloads/lhapdf">Downloads</a></li>
+<li><a href="/lhapdf/manual">User manual</a></li>
+<li><a href="/lhapdf/theory">Theory review</a></li>
+<li><a href="/lhapdf/cc">C++ wrapper (v5.4)</a></li>
+<li><a href="/lhapdf/cc53">C++ wrapper (old - v5.3))</a></li>
+<li><a href="/lhapdf/py">Python wrapper (v5.4)</a></li>
+<li><a href="/lhapdf/lhpdf_file">.LHpdf files</a></li>
+<li><a href="/lhapdf/lhgrid_file">.LHgrid files</a></li>
+<li><a href="http://www.hepforge.org/lists/listinfo/lhapdf-announce">Mailing list</a></li>
+<li><a href="http://svn.hepforge.org/lhapdf/tags/lhapdf-v5.7.1/ChangeLog">ChangeLog</a></li>
+<li><a href="/lhapdf/trac/browser/">Subversion repo</a></li>
+<li><a href="mailto:lhapdf@projects.hepforge.org">Contact</a></li>
+</ul>
+</td>
+<td>
+<h2>LHAPDF manual</h2>
+<p>LHAPDF version 5 User Guide
+<a name="tthFrefAAB" href="manual#tthFtNtAAB"><sup>1</sup></a> </p>
+<p>
+<a name="tth_sEc0"><h1>Contents </h1>
+</a></p><p><a href="manual#tth_sEc1">1&nbsp; Introduction</a><br />
+<a href="manual#tth_sEc2">2&nbsp; Installing LHAPDF</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc2.1">2.1&nbsp; Version 4.1 onwards</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc2.2">2.1&nbsp; Version 4.0 and earlier</a><br />
+<a href="manual#tth_sEc3">3&nbsp; Interfacing LHAPDF with a Code</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc3.1">3.1&nbsp; Using the LHAPDF routines directly</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc3.2">3.2&nbsp; Using the LHAGLUE inteface</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc3.3">3.3&nbsp; Whether to use .LHpdf or .LHgrid files?</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc3.4">3.4&nbsp; Nuclear PDFs</a><br />
+<a href="manual#tth_sEc4">4&nbsp; Multiset Initialization with Version 5</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc4.1">4.1&nbsp; How many sets can be initialised </a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc4.2">4.2&nbsp; Using multiset initialization with LHAglue </a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEc4.3">4.3&nbsp; Using multiset initialization with native LHAPDF  routines </a><br />
+<a href="manual53#tth_sEc5">5&nbsp; C++ wrapper </a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="cc">5.1&nbsp; Documentation for new version 5.4 onwards </a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual53#tth_sEc5.1">5.2&nbsp; Description (old version 5.3) </a><br />
+<h2>Appendices</h2>
+<a href="manual#tth_sEcA">A&nbsp; PDF set numbers and names</a><br />
+<a href="manual#tth_sEcB">B&nbsp; Examples</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEcB.1">B.1&nbsp; Example 1: A PDF table</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEcB.2">B.2&nbsp; Example 2: Calculating Uncertainties for Monte Carlo PDF sets</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEcB.3">B.3&nbsp; Example 3: A Convenient Wrap</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEcB.4">B.4&nbsp; Example 4: Using LHAGLUE to do Example 1</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="manual#tth_sEcB.5">B.4&nbsp; Example 5: Using Multiset Initalisation</a><br />
+</p>
+<h2> Abstract</h2>
+<p>
+<i><font size="-1">The Les Houches Accord PDF (LHAPDF) interface package is designed to work with
+PDF sets. A PDF set can consist of many individual member PDFs. While
+the interpretation of the member PDFs depends on the particular set,
+the LHAPDF interface is specifically 
+designed to accommodate PDFs with uncertainties.
+For PDFs with uncertainties the PDF set represents one ``fit'' to the
+data. 
+The individual member of a PDF set are needed to calculate
+the PDF uncertainty of the observable. </font></i></p>
+<p>
+All PDF sets are defined through
+external files. This means that in many cases a new set can be added by simply downloading
+its file while the LHAPDF interface code does not change. The user has, since  LHAPDF version 2,
+ the option of using
+parameter files (.LHpdf) and doing the evolution "on the fly" or of  using the 
+interpolation grid files (.LHgrid) as supplied by the PDF set authors. The evolution
+code is not part of LHAPDF. Currently, QCDNUM [<a name="CITEBotje:1997" href="manual#Botje:1997">1</a>] 
+is the default evolution code fully interfaced with LHAPDF.
+Other evolution codes can easily be interfaced with the LHAPDF.
+
+</p><p>
+Since version 3 the LHAGLUE package <a name="tthFrefAAC" href="manual#tthFtNtAAC"><sup>2</sup></a> 
+has been included as an alternative, and PDFLIB-like, inteface to the LHAPDF code.
+
+</p><p>
+The major changes in version 4 are the additional of the photon and pion PDF sets and the access to the QCD parameters Lamdba4/5
+quoted by the authors of the PDF sets as applicable to that set. 
+
+</p><p>
+Version 4.1 introduces a more standard "configure; make; makeinstall" installation procedure
+ using gnu autoconf tools with and has some small changes for compatibility with f90/95 compilers.
+
+</p><p>
+Version 5 introduces multiset initialisation whereby several PDFs can be initialised a the beginning and then
+used interchangeably without incurring the cpu penalty of re-initialization.
+
+
+<h2><a name="tth_sEc1">
+1</a>&nbsp;&nbsp;Introduction</h2>
+</p><p>The Les Houches Accord Parton Density Function interface
+originated at the Les Houches 2001 workshop [<a name="CITELesHouches" href="manual#LesHouches">2</a>] 
+in the PDF working group to
+enable the usage of Parton Density Functions with uncertainties
+in a uniform manner. 
+When PDFs with uncertainties are considered, a ``fit'' to
+the data no longer is described by a single PDF. Instead in its
+most flexible implementation, a fit is represented by a PDF set
+consisting of many individual members. Calculating the observable
+for all the PDF members enables one to reconstruct the uncertainty
+on the observable. The LHAPDF interface was made with this in mind 
+and manipulates PDF
+sets. </p>
+<p>
+The LHAPDF interface can be viewed as a successor to PDFLIB [<a name="CITEPDFLIB" href="manual#PDFLIB">3</a>].
+Many improvements were added, to list some of the features:
+
+<ul><p>
+</p><li>  The handling of PDF sets to enable PDF fits that include uncertainties.</li>
+<p>
+</p><li>
+  All PDF sets are defined through external files in either parameterized or grid form. 
+The parameterized files are compact compared to the grid files, but the latter allow 
+faster usage when multiple PDF sets are called frequently and also allow older PDF sets 
+to be made available in LHAPDF. New PDF sets can be defined by constructing the PDF defining 
+parameter or grid files. The actual LHAPDF code does not have to be changed unless, in the 
+grid file case, the authors of the PDFs use new interpolation methods.
+</li>
+<p>
+</p><li>
+  The LHAPDF code is modular and default choices  can be easily altered.</li>
+</ul>
+</p><p>
+Note that the current ``best fit'' PDFs can be viewed as sets with
+one member PDF and can be easily defined through the PDF set external
+file definition. Alternatively one can group these ``fits'' is single
+sets (e.g. MRST98 set) as they often represent best fits given different
+model assumptions and as such reflect theoretical modeling uncertainties.
+
+
+</p><p>
+As mentioned above, using LHAPDF to determine the PDF uncertainty
+on an observable will involve evaluating N different PDFs in a 
+single set.
+How to use the N predictions of the observable depends on the
+method used in the PDF set for propagation of errors.
+During the fitting of the PDFs many approximations can be made.
+An overview is given in the Les Houches proceedings [<a name="CITELesHouches" href="manual#LesHouches">2</a>].
+The relevant section is reproduced <a href="/lhapdf/LH2001pdf.ps">here</a>.
+http://projects.hepforge.org/lhapdf/manual
+
+</p><p>
+<h2><a name="tth_sEc2">
+
+2</a>&nbsp;&nbsp;Installing LHAPDF</h2>
+</p><p> The method of installing changed between versions 4.0 and 4.1.  These are desribed below:
+<h2><a name="tth_sEc2.1">
+2.1</a>&nbsp;&nbsp; LHAPDF Installation (4.1 onwards)</h2>
+</p><p>
+First download the required gzipped tar file (eg lhapdf-<i><strong>v.r</strong></i>.tar.gz) from the downloads section (either with or without the PDFsets as
+required). Then do the following:-
+</p>
+<kbd class="display">tar -xvzf lhapdf-<i><strong>v.r</strong></i>.tar.gz</kbd> to unpack this into the directory lhapdf-<i><strong>v.r</strong></i>.
+<p>
+<kbd class="display">cd lhapdf-<i><strong>v.r</strong></i></kbd> to change directory (<i><strong>v.r</strong></i> = version.revision, eg
+4.1).
+</p><p>If you have root priviledge and want the installed files to go by default into /usr/local then do:
+</p><p>
+<kbd class="display">./configure</kbd>
+</p><p>
+If you do not have root priviledge and/or want the files installed into a different directory then do:
+</p><p>
+<kbd class="display">./configure --prefix=/path/to/directory</kbd>
+</p><p>
+<strong>note:</strong> this should be a different directory to the 
+'lhapdf-<i><strong>v.r.p</strong></i>' 
+directory, otherwise the install step will not work.
+</p><p>
+If you want to install a memory light version to work with mainly single pdfs then use:
+</p><p>
+<kbd class="display">./configure --prefix=/path/to/directory --enable-low-memory</kbd>
+</p><p>
+If you want to install with as max number of set different from the default of 3 then use:
+</p><p>
+<kbd class="display">./configure --prefix=/path/to/directory --with-max-num-pdfsets=N</kbd>
+</p><p>
+
+Then do:
+</p><p>
+<kbd class="display">./make</kbd>
+</p><p>
+<kbd class="display">./make install</kbd>
+</p><p>
+The following directories/files should now have been installed in your selected installation directory.
+<list>
+<dt><strong>lib/libLHAPDF.a</strong></dt>
+<dd>The library of LHAPDF (and LHAGLUE) routines to link against your program.</dd>
+<dt><strong>share/lhapdf/PDFsets/</strong></dt>
+<dd>The directory containing all the PDF parameter/grid data sets.  Note that these can be
+download in their entirety from the full tar file, or <a href="/lhapdf/pdfsets">selected individually</a> after installation.  In the latter case
+they should be put into this directory.</dd>
+<dt><strong>bin/lhapdf-config</strong></dt>
+<dd>A script (which must be in the users execution path) used by the LHAPDF routine "InitPDFbyName" to
+determine the correct path to the PDF data sets.</dd>
+</list>
+</p><p>
+From version 5.2.3 onwards additionally the following files are installed:
+<list>
+<dt><strong>lib/libLHAPDF.so</strong>
+<dd>The dynamic LHAPDF library 
+</dd></dt></list><list>
+</list></p><p>
+From version 5.3.0 onwards additionally the following files are installed:
+<list>
+<dt><strong>lib/libLHAPDFWrap.a</strong>.
+<dd>The static  C++ wrapper library 
+<dt><strong>lib/libLHAPDFWrap.so</strong>
+<dd>The dynamic C++ wrapper library 
+<dt><strong>share/lhapdf/PDFsets.index</strong>
+<dd>A text file detailing the LHaglue PDF numbers and, where applicable, the old PDFLIB equivalent numbers as well as the
+max and min ranges of X and Q**2.
+</dd></dt></dd></dt></dd></dt></list>
+</p><p>
+If you wish to install the various components into different directories than above, the following options to ./configure
+(as well as --prefix=) can be used:
+</p><p>
+<kbd class="display">--bindir=DIR  --datadir=DIR  --libdir=DIR</kbd>
+</p><p>
+More details are given in the INSTALL file in the downloaded package.
+</p><p>
+<h2><a name="tth_sEc2.2">
+
+2.2</a>&nbsp; &nbsp;LHAPDF Installation (up to version 4.0)</h2>
+</p><p>Installing LHAPDF is simple and can be accomplished in two ways: </p>
+<ol type="1"><p>
+<ol>
+<li>Download all the LHAPDF files (including LHAGLUE) in one go from the download page on the web site.
+Un-tarring this file will create a directory LHAPDFv3 with all the files and makefiles
+in a subdirectory structure beneath this.  There is a Makefile in this directory
+which will create (with the 'make'  or 'make all' command) a library 'libLHAPDF.a',
+in this same
+directory, which can then be linked to  external programmes. 
+
+
+<p>
+</p></li><li> Alternatively the programme code and input parameter/grid files can be downloaded
+separately.</li>
+<p>
+</p></ol>
+</p></ol>
+<p>
+The Makefile has other options for compiling only the code relevant to the  
+EVLCTEQ (make evlcteq) evolution code programmes.  This is included mainly for 
+compatibility with
+LHAPDF version 1 and in general it is better to compile the complete code as this 
+will allow different PDF sets from the different authors and also the different
+type of input files (parameter or grid) to be used seamlessly without recompiling
+any code.
+</p><p>
+The 'make clean' command will remove the .o files from the directories once the
+installation has been successfully accompished. 
+</p><p>
+Thus in its simplest form <br />
+<blockquote>
+download the file 'LHAfullv4.0'<br />
+tar -xvf LHAfullv4.0.tar<br />
+cd LHAPDFv4<br />
+make<br />
+make clean<br />
+</blockquote>
+should suffice to install LHAPDF version 4.
+
+
+
+
+
+
+<h2><a name="tth_sEc3">3</a>&nbsp;&nbsp;Interfacing LHAPDF with a Code</h2>
+</p><p>
+Since version 3 there are two ways of interfacing the LHAPDF code into a user program.
+
+</p><p>
+1) Using the LHAPDF routines directly.<br />
+2) Using the LHAGLUE interface.
+
+
+<h3><a name="tth_sEc3.1"> 3.1</a>&nbsp;&nbsp;Using the LHAPDF routines directly</h3>
+</p><p>
+The interface of LHAPDF with an external code is easy. We will
+describe the basic steps sufficient for most applications. In this
+section we describe single set intitalization. In a following section
+we describe how to use multiset initialization introduced in 
+version 5. The function calls described here will not
+be altered in any way in future versions. 
+
+Including the LHAPDF code into a program involves 
+three steps:
+
+<ol type="1"><p>
+</p><li> First one has to setup the LHAPDF interface code:
+
+<center>
+</center><p><b><tt>call InitPDFset(<i>name</i>)</tt></b></p>
+<p>&nbsp;
+  It is called only once at the beginning of the code.
+  The string variable <i>name</i> is the <strong> fully qualified </strong>
+   file name of the 
+  external PDF file (i.e. including specific directory path) that defines the PDF set.
+  For the default evolution code QCDNUM it will 
+  either calculate or read from file the LO/NLO splitting 
+  function weights. The calculation of the weights might
+  take some time depending on the chosen grid size. However,
+  after the first run a grid file is created. Subsequent
+  runs will use this file to read in the weights so that the lengthy 
+  calculation of these weights is avoided. The file depends
+  on the grid parameters and flavor thresholds. This means different
+  PDF sets can have different grid files. The name of the grid file
+  is specified in the PDF setup file.  
+ <a href="manual#tth_sEcB">Appendix B </a> gives a table showing the names of all 
+ the available files. 
+ </p><p>
+ As emphasised above, when using <b><tt>call InitPDFset</tt></b> the parameter
+ <b><tt><i>name</i></tt></b> is the full path qualified name of the set.
+ From version 4.1 onwards and additional routine:
+ <center>
+</center></p><p><b><tt>call InitPDFsetByName(<i>name</i>)</tt></b></p>
+
+has been added which uses the "lhapdf-config" script generated during
+the LHAPDF installation to determine and use the correct path so that in
+this case <b><tt><i>name</i></tt></b> is only the specific PDFset name
+itself (eg MRST2001nlo.LHpdf).    
+
+ <p>
+</p></li> </ol></p>
+<p>
+<li> To use a individual PDF member it has to be initialized:
+  
+<center>
+</center><p><b><tt>call InitPDF(<i>mem)</i></tt></b></p>
+<p>&nbsp;
+  The integer <i>mem</i> specifies the member PDF number. This
+  routine only needs to be called when changing to a new PDF
+  member. The time needed to setup depends on the evolution code used.
+  For QCDNUM the grid size is the determining factor. Note that 
+  <i>mem</i>=0 selects the ``best fit'' PDF.</p></li> </p>
+<p>
+<li> Once the PDF member is initialized one can call the evolution
+  codes which will use the selected member. 
+
+<p>
+  The subroutine call
+  
+<center>
+</center></p><p><b><tt>call evolvePDF(<i>x,Q,f</i>)</tt></b></p>
+<p>returns the PDF momentum densities f (i.e. x &times; PDF number density)
+  at double precision momentum fraction x and double precision scale Q.
+  The double precision array <i>f(-6:6)</i> will contain the momentum PDFs
+  using the labeling convention of table 1. </p></li></p>
+<p>
+<a name="tth_tAb1">
+</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a name="tab:pdf;qcdsm;labeling">
+</a>
+<center>
+<table border="1">
+<tr><td class="title"></td>
+<td width="35" class="dark"><center>-6</center> </td>
+<td align="center" width="35" class="title"><center>-5</center> </td>
+<td align="center" width="35" class="dark"><center>-4</center> </td>
+<td align="center" width="35" class="title"><center>-3 </center></td>
+<td align="center" width="35" class="dark"><center>-2</center> </td>
+<td align="center" width="35" class="title"><center>-1</center> </td>
+<td align="center" width="35" class="dark"><center>&nbsp;0</center> </td>
+<td align="center" width="35" class="title"><center>1</center> </td>
+<td align="center" width="35" class="dark"><center>2</center> </td>
+<td align="center" width="35" class="title"><center>3</center> </td>
+<td align="center" width="35" class="dark"><center>4</center> </td>
+<td align="center" width="35" class="title"><center>5</center> </td>
+<td align="center" width="35" class="dark"><center>6</center> </td>
+</tr>
+<tr><td class="title" width="50"><i>Parton</i> </td>
+<td align="center" class="dark"><center>tbar </center></td>
+<td align="center" class="title"><center>bbar</center> </td>
+<td align="center" class="dark"><center>cbar</center> </td>
+<td align="center" class="title"><center>sbar</center> </td>
+<td align="center" class="dark"><center>ubar</center> </td>
+<td align="center" class="title"><center>dbar</center> </td>
+<td align="center" class="dark"><center>g </center></td>
+<td align="center" class="title"><center>d</center> </td>
+<td align="center" class="dark"><center>u</center> </td>
+<td align="center" class="title"><center>s</center> </td>
+<td align="center" class="dark"><center>c</center> </td>
+<td align="center" class="title"><center>b</center> </td>
+<td align="center" class="dark"><center>t</center> </td>
+</tr>
+</table>
+</center>
+<center>
+</center></p><p>Table 1: The flavor enumeration convention used in the LHAPDF interface.</p>
+<p>
+  As long as the member PDF is not changed (by the 
+  <b><tt>call InitPDF</tt></b> of step 2)
+  the evolution calls will always use the same PDF member.</p>
+<p>
+  A different subroutine call
+  
+<center>
+</center></p><p><b><tt>call evolvePDFp(<i>x,Q,P2,IP2,f</i>)</tt></b></p>
+<p> is available for the photon PDFs where <i>Q</i> is the QCD scale in GeV,
+<i>P2</i> is the vitruality of the photon in GeV<sup>2</sup>, which should by 0 for an on-shell photon,
+and <i>IP2</i> is the parameter to evaluate the off-shell anomalous component.
+<i>x</i> and <i>f</i> are as above.
+Note that all inputs and outputs are defined in <b>DOUBLE PRECISION</b>
+</p><p>A few additional calls listed below can be useful: </p>
+<table border="1">
+<tr>
+<td width="35%" valign="top"><b><tt>function alphasPDF(<i>Q</i>)</tt></b></td>
+<td> This double precision function call returns the values of <font face="symbol">a</font><sub>S</sub>(Q) at double precision scale Q. 
+  Note that its value can change between different PDF members.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt> call GetLam4(<i>mem,qcdl4</i>)</tt></b><br /> <b><tt>call GetLam5(<i>mem,qlam5</i>)</tt></b></td>
+<td>return the values of <font face="symbol"><i>qcdl4</i> and <i>qcdl5</i> for the member number <i>mem</i> of the current set.</font>. 
+  Note that the values should be used with care due to the differing defintions of lambda.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt> call GetXmin(<i>mem,xmin</i>)</tt></b><br />
+<b><tt>call GetXmin(<i>mem,xmin</i>)</tt></b><br />
+<b><tt>call GetQ2max(<i>mem,q2max</i>)</tt></b><br />
+<b><tt>call GetQ2min(<i>mem,q2min</i>)</tt></b></td>
+<td>return the minimum and maximum values of <font face="symbol"><i>x</i> and <i>Q**2</i> as defined by the
+PDF authors for the member number <i>mem</i> of the current set (version 5.3.0 onwards)
+.</font>. 
+</td>
+</tr>
+<tr>
+<td valign="top"><b><tt>call numberPDF(<i>Nmem</i>)</tt></b></td>
+<td> Returns as <i>Nmem</i> the number of PDF members in the set:(excluding
+  the special ``best fit'' member, i.e. the member numbers run
+  from 0 to <i>Nmem</i>)</td>
+</tr>
+<tr>
+<td valign="top"> <b><tt>call GetOrderPDF(<i>order</i>)</tt></b></td>
+<td> To get the evolution order of the PDFs. The integer variable <i>order</i> is 0 for Leading Order, 1 for
+  Next-to-Leading Order, etc.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt>call GetOrderAs(<i>order</i>)</tt></b></td>
+<td>To get the evolution order of <font face="symbol">a</font><sub>S</sub>.
+ The integer variable <i>order</i> is 0 for Leading Order, 1 for
+  Next-to-Leading Order, etc.</td>
+</tr>
+<tr>
+<td valign="top"> <b><tt>call GetRenFac(muf)</tt></b> </td>
+<td>Gives the ratio of the renormalization scale over the factorization
+  scale used in the ``fit''. The double precision variable <i>muf</i> contains the ratio.
+  Usually <i>muf</i> is equal to unity.</td></tr>
+<tr>
+<td valign="top"> <b><tt>call GetDesc()</tt></b></td>
+<td> This call will print the PDF description to the default output stream.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt>call GetQmass(nf,mass)</tt></b></td>
+<td>The mass <i>mass</i> is returned for quark flavor <i>nf</i>.
+  The quark masses are used in the <font face="symbol">a</font><sub>S</sub> evolution.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt>call GetThreshold(nf,Q)</tt></b></td>
+<td> The flavor threshold <i>Q</i> is returned for flavor <i>nf</i>.
+  If <i>Q=-1d0</i> the flavor is not in the evolution (e.g. the top quark
+  is usually not included in the evolution).
+  If <i>Q=0d0</i> the flavor is parametrized at the parametrization scale.
+  For positive non-zero values of <i>Q</i> the value is set to the
+  flavor threshold at which the PDF starts to evolve.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt>call GetNf(nfmax)</tt></b></td>
+<td>For the PDF sets of the .LHpdf type, returns the number of flavor thresholds in the PDF evolution.
+ Usually the returned value for <i>nfmax</i> 
+  is equal to five as the top quark is usually not considered in the PDFs.
+  For the PDF sets of the .LHgrid type -1 is returned. </td>
+</tr>
+</table>
+<h3><a name="tth_sEc3.2"> 3.2</a>&nbsp;&nbsp;Using the LHAGLUE interface</h3>
+<p>
+The LHAGLUE interface 
+<a name="tthFrefAAC" href="manual#tthFtNtAAC"><sup>2</sup></a>
+has been designed as a PDFLIB look alike interface to LHAPDF.
+
+</p><p>
+The interface contains four subroutines (similar to PDFLIB) and can be used
+seamlessly by Monte Carlo generators interfaced to PDFLIB or in stand-alone mode.
+
+</p><p>
+<ul>
+<li> For initialization (called once):
+  
+<center>
+</center><p><b><tt>call PDFSET(<i>parm,value)</i></tt></b></p>
+</li>
+<li> For the proton and pion structure functions:
+  
+<center>
+</center><p><b><tt>call STRUCTM(<i>X,Q,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)</i></tt></b></p>
+</li>
+<li> For the photon structure function:
+  
+<center>
+</center><p><b><tt>call STRUCTP(<i>X,Q2,P2,IP2,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)</i></tt></b></p>
+</li>
+<li> For statistics on PDF under/overflows:
+  
+<center>
+</center><p><b><tt>call PDFSTA</tt></b></p>
+</li>
+</ul>
+</p><p>
+Of course any of the LHAPDF routines, <b>except the initialization routines
+InitPDFset and InitPDF</b>,
+  described in the previous subsection can also be used, for example to return
+  the value of alphas (<b>alphasPDF(<i>Q</i>)</b>) or print the file description (<b>GetDesc()</b>).
+   
+</p><p>
+The interface can be invoked 3 ways depending on the value of  <i>parm(</i>1)
+provided by the user when calling <b><tt>PDFSET(<i>parm,value)</i></tt></b>
+<ul>
+<li> for <b><tt>PYTHIA:  PARM(1).EQ.'NPTYPE'</tt></b>
+<br />(this is set automatically by PYTHIA)
+</li>
+<li> for <b><tt>HERWIG:  PARM(1).EQ.'HWLHAPDF'</tt></b>
+<br />(set by the user)
+     <br /> e.g. in the main program like this:
+     <br /><tt>AUTPDF(1) = 'HWLHAPDF'</tt>
+<br /><tt>AUTPDF(2) = 'HWLHAPDF'</tt>
+</li>
+<li> for <b>Stand-alone<tt>:  PARM(1).EQ.'DEFAULT'</tt></b>
+<br />(can be used for PDF studies or interfacing with a new generator.)
+</li>
+</ul>
+</p><p>
+The LHAPDF set/number is selected depending on the value of:
+<ul>
+<li><b><tt>PYTHIA:  ABS(MSTP(51)) - proton</tt></b></li>
+<li><b><tt>PYTHIA:  ABS(MSTP(53)) - pion</tt></b></li>
+<li><b><tt>PYTHIA:  ABS(MSTP(55)) - photon</tt></b></li>
+<br />
+<li><b><tt>HERWIG:  ABS(INT(<i>value</i>(1))</tt></b></li>
+<br />
+<li><b><tt>Stand-alone:  ABS(INT(<i>value</i>(1))</tt></b></li>
+</ul>
+</p><p> 
+There are other <b>CONTROL switches</b> which determine how the interface operates. The
+location of the LHAPDF library  has to be specified as described below, the rest are
+optional.If the user does nothing, sensible defaults are active. To change the behaviour the
+corresponding <i>values</i> of <i>parm()</i> should be set to the values given below.
+
+</p><p>
+<h4>1) Location of the LHAPDF library of PDFs (pathname): </h4>
+</p><p>
+From version LHAPDF v4.1 onwards, and the LHAglue routines distributed with it, the
+location of the PDFsets data files is set automatically using the "lhapdf-config" script, 
+provided that the precribed 
+installation instructions have been used.
+
+</p><p> Alternatively from version 5.0 onwards the PDFsets path can also be specified</p><p> 
+
+(a) with the call
+<ul>
+<li>
+<b><tt> CALL SetPDFPath('/path/to/PDFsets')</tt></b>
+</li>
+</ul>
+</p><p>
+(b) with the environmental variable 
+<ul>
+<li>
+<b>$LHAPATH</b>
+</li>
+</ul>
+The order of precedence is (a), (b) then, lhapdf-config
+</p><p>
+The maximum length of the path is set to 232.  Should this need to be increased then it can
+be changed in the include file "src/pathsetup.inc", followed by a complete recompilation.
+</p><p>
+For previous version (4.0 and earlier) the following describes the situation:
+
+<ul>
+<li><b>uses common block <tt>COMMON/LHAPDFC/LHAPATH</tt></b>
+<ul>
+<li>
+ If the user does nothing => default path is
+       subdir <tt>'PDFsets'</tt> of the current directory (can be a real subdir OR a soft link to the real location)
+</li>
+<li>
+The user sets LHAPATH  in COMMON/LHAPDFC/LHAPDFC <b>  - before </b> calling PDFSET 
+</li>
+</ul>
+</li></ul>
+</p><p>
+</p><p>
+<b>The following use the common block</b><br /><br />
+<tt>CHARACTER*20 LHAPARM(20)<br />
+REAL*8 LHAVALUE(20)</tt><br />
+<tt>COMMON/LHACONTROL/LHAPARM,LHAVALUE</tt><br /><br />
+which can be used directly in the user's program.<br /><br /> Alternatively the various 
+flags can be set and reset using the  <b><tt>CALL SetLHAPARM(string)</tt></b> 
+function call, thus removing the need to include the common block in the user's program.
+
+
+
+
+<h4>2) Collect statistics on under/over-low requests for PDFs outside their validity ranges in X and Q**2.</h4>
+<ul>
+<li><b><tt> LHAPARM(16).EQ.'NOSTAT'</tt></b> ==> No statistics (faster) 
+</li><li><b><tt> LHAPARM(16).NE.'NOSTAT'</tt></b> ==> Default: collect statistics
+</li></ul>
+or
+<ul>
+<li><b><tt> call SetLHAPARM('NOSTAT') </tt></b> ==> No statistics (faster)
+</li><li><b><tt> call SetLHAPARM('16') </tt></b> ==> Default: collect statistics
+</li></ul>
+then
+<ul>
+<li><b><tt> call PDFSTA</tt></b> at end to print out statistics
+</li></ul>
+</p><p>
+<h4>3) Option to use the values for the strong coupling alpha_s as computed in LHAPDF</h4>
+<ul>
+<li><b><tt> LHAPARM(17).EQ.'LHAPDF'</tt></b> ==> Use alpha_s from LHAPDF 
+</li><li><b><tt> LHAPARM(17).NE.'LHAPDF'</tt></b> ==> Default (same as LHAPDF v1/v3) 
+</li></ul>
+or
+<ul>
+<li><b><tt> call SetLHAPARM('LHAPDF') </tt></b> ==> Use alpha_s from LHAPDF
+</li><li><b><tt> call SetLHAPARM('17') </tt></b> ==> Default (same as LHAPDF v1/v3)
+</li></ul>
+</p><p>
+<h4>4) Extrapolation of PDFs outside the LHAPDF validity range given by <tt>[Xmin,Xmax]</tt> and <tt>[Q2min,Q2max]</tt>:</h4>
+<ul>
+<li>
+<b>Default</b> ==> PDFs "frozen" at the boundaries.
+</li>
+<li>
+<b><tt>LHAPARM(18).EQ.'EXTRAPOLATE'</tt></b> ==> Extrapolate PDFs at <b>own risk</b>
+<br /> (Warning - crazy values can be returned!)
+</li>
+</ul>
+or
+<ul>
+<li><b><tt> call SetLHAPARM('EXTRAPOLATE') </tt></b> ==> Extrapolate PDFs at <b>own risk</b>
+</li><li><b><tt> call SetLHAPARM('18') </tt></b> ==> Default: PDFs "frozen" at the boundaries. 
+</li></ul>
+&nbsp;&nbsp; The values <tt>[Xmin,Xmax]</tt> and <tt>[Q2min,Q2max]</tt> are available in the common block <br />
+&nbsp;&nbsp; <b><tt>COMMON/W50513/XMIN,XMAX,Q2MIN,Q2MAX</tt></b> as in PDFLIB
+</p><p>
+<h4>5) Printout of initialization information in PDFSET (by default):</h4>
+<ul>
+<li>
+<b><tt>LHAPARM(19).EQ.'SILENT'</tt></b> ==> No printout (silent mode).
+</li><li>
+<b><tt>LHAPARM(19).EQ.'LOWKEY'</tt></b> ==> Print 5 times (almost silent).
+</li>
+</ul>
+or
+<ul>
+<li><b><tt> call SetLHAPARM('SILENT') </tt></b> ==> No printout (silent mode).
+</li><li><b><tt> call SetLHAPARM('LOWKEY') </tt></b> ==> Print 5 times (almost silent).
+</li><li><b><tt> call SetLHAPARM('19') </tt></b> ==> Default: Print everything 
+</li></ul>
+</p><p>
+<h4>6) Double Precision values of qcdl4 and qcdl5 relevant to the selected PDF are available in the COMMON block</h4>
+<ul>
+<li>
+<b><tt>COMMON/W50512/QCDL4,QCDL5</tt></b> ==> as in PDFLIB.
+</li>
+</ul>
+&nbsp;&nbsp; Note that these are read-only and changing these values in this common block has no effect in the program.
+</p><p>
+<h3><a name="tth_sEc3.3"> 3.3</a>&nbsp;&nbsp;Whether to use the ".LHpdf" or ".LHgrid" files ?</h3>
+
+The way in which the PDFs are calculated depends on whether the user selects  ".LHpdf" or ".LHgrid" files (either
+by name or LHAGLUE number).
+<ul>
+<li><b>.LHpdf files</b> - the PDFs are generated "on-the-fly" using an evolution package (eg QCDNUM or EVLCTEQ) from
+a parameterisation in X at an initial Q0 value.  The form of the parameterisation is given by the PDF authors.  
+</li><li><b>.LHgrid files</b> - the PDFs are generated by interpolation inside the pre-calculated tables produced the PDF authors and with the
+same interpolation codes used by the authors.  This is closer to the methods used in PDFLIB. 
+</li></ul>
+
+In some cases only one type exists, but in others the user has a choice of either. Generally once the initialisation is done
+the LHgrid files are faster.  This is particularly true when using QCDNUM (for example with the MRST sets) especially if 
+the user makes repeated initialisations of different members of the same set using for example PDFSET(mem).  This 
+could be the case in using the PDF error sets.  
+
+</p><p>
+The advantage of the .LHpdf files is that they are much smaller than the equivalent .LHgrid files. 
+
+</p><p>
+Whichever the user chooses the method of using the LHAPDF and LHAGLUE routines is exactly the same.
+
+</p><p>
+<h3><a name="tth_sEc3.4"> 3.4</a>&nbsp;&nbsp;Using Nuclear PDFs</h3>
+</p><p>
+LHAPDF provides the ability to add nuclear corrections to PDFs in the same way as in PDFLIB
+<br />
+By default the native LHAPDF routines
+<ul>
+<li> <b><tt> call evolvePDFa(x,Q,a,f)</tt></b>
+</li><li> <b><tt> call evolvePDFaM(nset,x,Q,a,f)</tt></b>
+</li></ul>
+togther with the lhaglue routine
+<ul>
+<li><b><tt> call STRUCTA(x,a,.....)</tt></b>
+</li></ul>
+add the nuclear corrections using the ESK98 formula as in PDFLIB.
+</p><p>
+From version 5.4 onwards the latest EPS08 corrections can be used instead by preceding 
+the call with
+<ul>
+<li><b><tt>call setlhaparm('EPS08') </tt></b>
+</li></ul>
+</p><p>
+<h2><a name="tth_sEc4"> 4</a>&nbsp;&nbsp;Multiset initialization with Version 5 </h2>
+
+Version 5 introduces the concept holding more than one PDF set initialized  in memory at the same time.
+This is implemented to speed up the running of programmes where it is necessary to switch frequently
+between PDF sets, for example to use nucleon,photon and possibly pion PDF sets together.
+Speed has been shown to be a particular issue when using the .LHpdf sets.
+
+<h3></h3></p><p><a name="tth_sEc4.1"> 4.1</a>&nbsp;&nbsp;How many sets can be initialised? 
+
+This is determined by the parameter <i>nmxset</i> in the file <i>src/parmsetup.inc</i>.  It is
+set as a default to 3 but can be set to whatever the user wishes.  Obviously the larger it is the
+larger will be the size of the executable programme. When changing this parameter it is necessary 
+to recompile all the routines since the file is included in most of them.  To do this do  
+<i>make clean</i> followed by <i>make</i> then <i>make install</i>
+<h3></h3></p><p><a name="tth_sEc4.2"> 4.2</a>&nbsp;&nbsp;Using multiset initialization with LHAglue 
+
+The LHAglue in version 5 program will do multiset initialization automatically with no changes to 
+the users routines. Of course the parameter <i>nmxset</i> in the file <i>src/parmsetup.inc</i>
+described in the previous subsection the has to be large enough for the maximum number of sets. 
+
+<h3></h3></p><p><a name="tth_sEc4.3"> 4.3</a>&nbsp;&nbsp;Using multiset initialization with the native LHAPDF routines 
+
+Version 5 contains a set of subroutines  which perform the same functions as those described in 
+section 3.1 (using LHADF routines dirtectly) but with the additional parameter <i>nset</i>. 
+This allows specific PDF sets/members to be assigned to <i>nset</i> and used interchangeably once
+they have been intialized. The table below lists those routines and their use.
+</p><p>
+<table border="1">
+<tr>
+<td width="35%" valign="top"><b><tt>call InitPDFsetM(<i>nset,name</i>)</tt></b><br /> or
+  <br /><b><tt>call InitPDFsetByNameM(<i>nset,name</i>)</tt></b></td>
+<td>  Called once per PDF set to allocate <i>nset</i> to a specific set</td>
+</tr><tr>
+<td width="35%" valign="top"><b><tt>call InitPDFM(<i>nset,mem)</i></tt></b></td>
+<td>  Called once per PDF set/member to allocate the member number (<i>mem</i>) to <i>nset</i>.</td>
+</tr><tr>
+<td colspan="2" align="center">The above two calls are each made only ONCE per run no matter how many times a PDF set is used thereafter</td>
+</tr><tr>
+<td width="35%" valign="top"><b><tt>call evolvePDFM(<i>nset,x,Q,f</i>)</tt></b></td>
+<td>  Returns the PDF momentum density (<i>f </i>) for the nucleon or pion 
+  PDF set initialised as <i>nset</i> for the given <i>x</i> and <i>Q</i>.</td>
+</tr><tr>
+<td width="35%" valign="top"><b><tt>call evolvePDFpM(<i>nset,x,Q,P2,IP2,f</i>)</tt></b></td>
+<td>  Returns the PDF momentum density (<i>f </i>) for the photon 
+  PDF set initialised as <i>nset</i> for the given <i>x</i>,<i>Q</i>,<i>P2</i>and <i>IP2</i>.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt> call GetLam4M(<i>nset,mem,qcdl4</i>)</tt></b><br /> <b><tt>call GetLam5M(<i>nset,mem,qcdl5</i>)</tt></b></td>
+<td>Return the values of <font face="symbol"><i>qcdl4</i> and <i>qcdl5</i> for the member number <i>mem</i> 
+  of the set <i>nset</i></font>. 
+  Note that the values should be used with care due to the differing defintions of lambda.</td>
+</tr>
+<tr>
+<td valign="top"><b><tt> call GetXminM(<i>nset,mem,xmin</i>)</tt></b><br />
+<b><tt>call GetXmaxM(<i>nset,mem,xmax</i>)</tt></b><br />
+<b><tt>call GetQ2minM(<i>nset,mem,q2min</i>)</tt></b><br />
+<b><tt>call GetQ2maxM(<i>nset,mem,q2max</i>)</tt></b></td>
+<td>Return the minimum and maximum values of <font face="symbol"><i>x</i> and <i>Q**2</i> for the member number <i>mem</i> 
+  of the set <i>nset</i></font> (version 5.3.0 onwards)  
+  </td>
+</tr>
+<tr>
+<td valign="top"><b><tt>call numberPDFM(<i>nset,Nmem</i>)</tt></b></td>
+<td> Returns as <i>Nmem</i> the number of PDF members in the set <i>nset</i>:(excluding
+  the special ``best fit'' member, i.e. the member numbers run
+  from 0 to <i>Nmem</i>)</td>
+</tr><tr>
+<td valign="top"> <b><tt>call GetOrderPDFM(<i>nset,order</i>)</tt></b></td>
+<td> To get the evolution order of the PDFs in set <i>nset</i>. The integer variable <i>order</i> is 0 for Leading Order, 1 for
+  Next-to-Leading Order, etc.</td>
+</tr><tr>
+<td valign="top"><b><tt>call GetOrderAsM(<i>nset,order</i>)</tt></b></td>
+<td>To get the evolution order of <font face="symbol">a</font><sub>S</sub>
+ in set <i>nset</i>. The integer variable <i>order</i> is 0 for Leading Order, 1 for
+  Next-to-Leading Order, etc.</td>
+</tr><tr>
+<td valign="top"> <b><tt>call GetRenFacM(nset,muf)</tt></b> </td>
+<td>Gives the ratio of the renormalization scale over the factorization
+  scale used in the ``fit'' for set <i>nset</i>. The double precision variable <i>muf</i> contains the ratio.
+  Usually <i>muf</i> is equal to unity.</td>
+</tr><tr>
+<td valign="top"> <b><tt>call GetDescM(nset)</tt></b></td>
+<td> This call will print the PDF description of set <i>nset</i> to the default output stream.</td><td>
+</td></tr><tr>
+<td valign="top"><b><tt>call GetQmassM(nset,nf,mass)</tt></b></td>
+<td>The mass <i>mass</i> is returned for quark flavor <i>nf</i> for set <i>nset</i>.
+  The quark masses are used in the <font face="symbol">a</font><sub>S</sub> evolution.</td>
+</tr><tr>
+<td valign="top"><b><tt>call GetThresholdM(nset,nf,Q)</tt></b></td>
+<td> The flavor threshold <i>Q</i> is returned for flavor <i>nf</i> for set <i>nset</i>.
+  If <i>Q=-1d0</i> the flavor is not in the evolution (e.g. the top quark
+  is usually not included in the evolution).
+  If <i>Q=0d0</i> the flavor is parametrized at the parametrization scale.
+  For positive non-zero values of <i>Q</i> the value is set to the
+  flavor threshold at which the PDF starts to evolve.</td>
+</tr><tr>
+<td valign="top"><b><tt>call GetNfM(nset,nfmax)</tt></b></td>
+<td>For the PDF sets of type .LHpdf returns the number of flavor thresholds in the PDF 
+evolution for set <i>nset</i>.
+ Usually the returned value for <i>nfmax</i> 
+  is equal to five as the top quark is usually not considered in the PDFs
+For the PDF sets of the .LHgrid type it returns -1.</td>
+</tr>
+</table>
+</p><p>
+<h2><a name="tth_sEc5"> 5</a>&nbsp;&nbsp;The C++ wrapper class LHAPDFWrap </h2>
+
+A C++ class (LHAPDFwrap) and methods are provided to allow interfacing with
+a users C++ code.  Since version 5.3.0 this code is now bundled into the tarball
+and the libraries LHAPDFWrap.a and LHAPDFWrap.so are built and installed, along with the 
+fortran libraries, during the "make"/"make install" procedures.  The methods follow broadly the
+same functionality as the fortran subroutines. 
+
+<h3><a name="tth_sEc5.1"> 5.1</a>&nbsp;&nbsp;Description</h3>
+
+class LHAPDFWrap
+</p><p>
+  // constructors
+  <kbd class="display"><b>LHAPDFWrap();</b>
+<br />&nbsp;&nbsp;// std c'tor d'tor
+  <br /><b>LHAPDFWrap(char *name);</b>  // (uses initPDFSetByName)
+  <br />&nbsp;&nbsp;// typical constructor with pdfset 'name', where 'name' is the name 
+  <br />&nbsp;&nbsp;// of the data file of the desired set.
+  <br /><b>LHAPDFWrap(char *name, int memset);</b>   // (uses initPDFSetByName)
+  <br />&nbsp;&nbsp;// typical constructor with pdfset 'name' and subset 'memset' 
+  <br />&nbsp;&nbsp;// 'name' is the name of the pdf set and 'memset' the subset member number.
+  </kbd>
+
+
+  // intialisers
+  <kbd class="display"><b> void initPDFSet(char *name);</b>
+<br />&nbsp;&nbsp;// initialises the pdfset by full name (including the path directory)
+  <br /><b>void initPDFSetByName(char *name);</b>
+<br />&nbsp;&nbsp;// initialises the pdfset by name only
+  <br /><b>void initPDF(int memset);</b>
+<br />&nbsp;&nbsp;// selects the pdf subset out of the initialised pdf distribution
+  </kbd>
+
+
+  // methods for nucleon pdfs
+  <kbd class="display"><b>std::vector< double > xfx(const double &x;, const double &Q;);</b>
+<br />&nbsp;&nbsp;// returns a vector xf(x, Q) with index 0 < i < 12.
+  <br />&nbsp;&nbsp;// 0..5 = tbar, ..., ubar, dbar; 
+  <br />&nbsp;&nbsp;// 6 = g; 
+  <br />&nbsp;&nbsp;// 7..12 = d, u, ..., t
+  <br /><b>double xfx(const double &x;, const double &Q;, int fl);</b>
+<br />&nbsp;&nbsp;// returns xf(x, Q) for flavour fl - this time the flavour encoding
+  <br />&nbsp;&nbsp;// is as in the LHAPDF manual...
+  <br />&nbsp;&nbsp;// -6..-1 = tbar,...,ubar, dbar
+  <br />&nbsp;&nbsp;// 1..6 = duscbt
+  <br />&nbsp;&nbsp;// 0 = g
+  </kbd>
+
+  // methods for pion pdfs ($P2 and ip are )
+  <kbd class="display"><b>std::vector< double > xfxp(const double &x;, const double &Q;, const double &P2;, int ip);
+  <br />&nbsp;&nbsp;// returns a vector xf(x, Q) with index 0 < i < 12.
+  <br />&nbsp;&nbsp;// 0..5 = tbar, ..., ubar, dbar; 
+  <br />&nbsp;&nbsp;// 6 = g; 
+  <br />&nbsp;&nbsp;// 7..12 = d, u, ..., t
+  <br /></b><b>double xfxp(const double &x;, const double &Q;, const double &P2;, int ip, int fl);</b>
+<br />&nbsp;&nbsp;// returns xf(x, Q) for flavour fl - this time the flavour encoding
+  <br />&nbsp;&nbsp;// is as in the LHAPDF manual...
+  <br />&nbsp;&nbsp;// -6..-1 = tbar,...,ubar, dbar
+  <br />&nbsp;&nbsp;// 1..6 = duscbt
+  <br />&nbsp;&nbsp;// 0 = g
+  </kbd>
+
+  // methods for nuclear pdfs (&a; is the atomic number)
+  <kbd class="display"><b>std::vector< double > xfxa(const double &x;, const double &Q;, const double &a;);</b>
+<br />&nbsp;&nbsp;// returns a vector xf(x, Q) with index 0 < i < 12.
+  <br />&nbsp;&nbsp;// 0..5 = tbar, ..., ubar, dbar; 
+  <br />&nbsp;&nbsp;// 6 = g; 
+  <br />&nbsp;&nbsp;// 7..12 = d, u, ..., t
+  <br /><b>double xfxa(const double &x;, const double &Q;, const double &a;, int fl);</b>
+<br />&nbsp;&nbsp;// returns xf(x, Q) for flavour fl - this time the flavour encoding
+  <br />&nbsp;&nbsp;// -6..-1 = tbar,...,ubar, dbar
+  <br />&nbsp;&nbsp;// is as in the LHAPDF manual...
+  <br />&nbsp;&nbsp;// -6..-1 = tbar,...,ubar, dbar
+  <br />&nbsp;&nbsp;// 1..6 = duscbt
+  <br />&nbsp;&nbsp;// 0 = g
+  </kbd>
+
+  // methods for photon pdfs (MRST2004qed.LHgrid)
+  <kbd class="display"><b>std::vector< double > xfxphoton(const double &x;, const double &Q;);</b>
+<br />&nbsp;&nbsp;// returns a vector xf(x, Q) with index 0 < i < 14.
+  <br />&nbsp;&nbsp;// 0..5 = tbar, ..., ubar, dbar; 
+  <br />&nbsp;&nbsp;// 6 = g; 
+  <br />&nbsp;&nbsp;// 7..12 = d, u, ..., t
+  <br />&nbsp;&nbsp;// 13 = photon
+  <br /><b>double xfxphoton(const double &x;, const double &Q;, int fl);</b>
+<br />&nbsp;&nbsp;// returns xf(x, Q) for flavour fl - this time the flavour encoding
+  <br />&nbsp;&nbsp;// is as in the LHAPDF manual...
+  <br />&nbsp;&nbsp;// -6..-1 = tbar,...,ubar, dbar
+  <br />&nbsp;&nbsp;// 1..6 = duscbt
+  <br />&nbsp;&nbsp;// 0 = g
+  <br />&nbsp;&nbsp;// 7 = photon
+  </kbd>
+  
+ // other methods
+  <kbd class="display"><b> void getDescription();</b>
+<br />&nbsp;&nbsp;// prints a brief description of the current pdf set to stdout
+  <br /><b>int numberPDF();</b>
+<br />&nbsp;&nbsp;// return the number of subsets available in the current distribution.
+  <br /><b>double alphasPDF(double Q);</b>
+<br />&nbsp;&nbsp;// return the alphas used by the current pdf.
+  <br /><b>int getOrderPDF();</b>
+<br />&nbsp;&nbsp;// returns the order (LO, NLO, NNLO) of the current pdf 
+  <br /><b>int getOrderAlphaS();</b>
+<br />&nbsp;&nbsp;// return is order (LO, NLO, NNLO) of  alpha_S.
+  <br /><b>double getQMass(int f);</b>
+<br />&nbsp;&nbsp;// returns quark mass used for flavour f.
+  <br /><b>double getThreshold(int f);</b>
+<br />&nbsp;&nbsp;// returns the threshold for flavour f.
+  <br /><b>int getNf();</b>
+<br />&nbsp;&nbsp;// returns the number of flavours used in the current pdf set.
+  <br /><b>double getLam4(int m);</b>
+<br />&nbsp;&nbsp;// returns the value of qcd lambda4 for member m 
+  <br /><b>double getLam5(int m);</b>
+<br />&nbsp;&nbsp;// returns the value of qcd lambda5 for member m 
+  <br /><b>double getXmin(int m);</b>
+<br />&nbsp;&nbsp;// returns the value of Xmin for member m 
+  <br /><b>double getXmax(int m);</b>
+<br />&nbsp;&nbsp;// returns the value of Xmax for member m 
+  <br /><b>double getQ2min(int m);</b>
+<br />&nbsp;&nbsp;// returns the value of Q2min for member m 
+  <br /><b>double getQ2max(int m);</b>
+<br />&nbsp;&nbsp;// returns the value of Q2max for member m 
+  <br /><b>void extrapolate();</b>
+<br />&nbsp;&nbsp;// sets the flag to extrapolate beyond the x and Q2 limits of the pdf set.
+  </kbd>
+
+  // Equivalent methods for multiset pdf use 
+
+  <kbd class="display"><b> LHAPDFWrap(int nset, char *name);</b>
+<br /><b>LHAPDFWrap(int nset, char *name, int memset);</b>
+<br />
+<br /><b> void initPDFSetM(int nset, char *name);</b>
+<br /><b>void initPDFSetByNameM(int nset, char *name);</b>
+<br /><b> void initPDFM(int nset, int memset);
+  <br />
+<br /></b><b>std::vector< double > xfxM(int nset, const double &x;, const double &Q;);</b>
+<br /><b>double xfxM(int nset, const double &x;, const double &Q;, int fl);</b>
+<br />
+<br /><b>std::vector< double > xfxpM(int nset, const double &x;, const double &Q;, const double &P2;, int ip);</b>
+<br /><b>double xfxpM(int nset, const double &x;, const double &Q;, const double &P2;, int ip, int fl);</b>
+<br />
+<br /><b>std::vector< double > xfxaM(int nset, const double &x;, const double &Q;, const double &a;);</b>
+<br /><b>double xfxaM(int nset, const double &x;, const double &Q;, const double &a;, int fl);</b>
+<br />
+<br /><b>std::vector< double > xfxphotonM(int nset, const double &x;, const double &Q;);</b>
+<br /><b>double xfxphotonM(int nset, const double &x;, const double &Q;, int fl);</b>
+<br />
+<br /><b>void getDescriptionM(int nset);</b>
+<br /><b> int numberPDFM(int nset);</b>
+<br /><b>double alphasPDFM(int nset, double Q);</b>
+<br /><b>int getOrderPDFM(int nset);</b>
+<br /><b>int getOrderAlphaSM(int nset);
+  <br /></b><b> double getQMassM(int nset, int f);</b>
+<br /><b> double getThresholdM(int nset, int f);</b>
+<br /><b>int getNfM(int nset);</b>
+<br /><b>double getLam4M(int nset, int m);</b>
+<br /><b>double getLam5M(int nset, int m);</b>
+<br /><b>double getXminM(int nset, int m);</b>
+<br /><b>double getXmaxM(int nset, int m);</b>
+<br /><b>double getQ2minM(int nset, int m);</b>
+<br /><b>double getQ2maxM(int nset, int m);</b>
+</kbd>
+<h2>Appendices</h2>
+<h2><a name="tth_sEcA">A</a>&nbsp;&nbsp;PDF set numbers and names</h2>
+</p><p>
+Notes:
+<ul>
+<li> <b> When using the LHAGLUE initialization method:</b></li>
+<ul>
+<li> The columns headed .LHpdf and .LHgrid give the set numbers to use with LHAGLUE</li>
+</ul>
+</ul>
+<ul>
+<li> <b> When Using the direct LHAPDF initialization routines:</b></li>
+<ul>
+<li> The .LHpdf and .LHgrid columns show the availablity of the respective files</li>
+<li> The File Name and Member columns give the names to use in the direct LHAPDF initialization routines.</li>
+<li> .LHpdf or .LHgrid has to be appended to the File Name depending the availability of that file (as indicated in the table) and wishes of the user.</li>
+</ul>
+</ul>
+</p><p>
+<b>Proton PDFs</b><br />
+<table border="1" cellspacing="0" cellpadding="2">
+<tr>
+<td class="title">PDF set</td>
+<td class="title"> .LHpdf</td>
+<td class="title"> .LHgrid</td>
+<td class="title"> File Name</td>
+<td class="title"> Member</td>
+<td class="title"> Xmin</td>
+<td class="title"> Xmax</td>
+<td class="title"> Q2min GeV<sup>2</sup></td>
+<td class="title"> Q2max GeV<sup>2</sup></td>
+</tr>
+<tr> <td colspan="9"></td></tr>
+<tr><td> CTEQ6m (central value) </td> <td> 10000  </td> <td> 10050  </td> <td> cteq6m  </td><td>0  </td> <td> 10<sup>-6</sup> </td> <td> 1 </td> <td> 1.69  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> CTEQ6 (40 error sets) </td> <td> 10001-10040 </td> <td> 10051-10090 </td> <td> cteq6 | cteq6mE</td><td> 1-40</td> <td> 10<sup>-6</sup></td> <td> 1 </td> <td> 1.69  </td> <td> 10<sup>8</sup> </td></tr>
+<tr><td> CTEQ6l (LO fit/NLO alphas) </td><td> 10041 </td><td>  - </td><td> cteq6l  </td><td>0/1 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 1.69  </td><td> 10<sup>8</sup></td></tr>
+<tr><td> CTEQ6ll (LO fit/LO alphas) </td><td> 10042 </td><td>  - </td><td> cteq6ll  </td><td>0/1 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 1.69  </td><td> 10<sup>8</sup> </td></tr>
+<tr></tr>
+<tr><td>CTEQ61 (central value) </td><td> 10100 </td><td> 10150 </td><td> cteq61 </td><td> 0 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 1.69  </td><td> 10<sup>8</sup> </td></tr>
+<tr><td>CTEQ61 (40 error sets)</td> <td> 10101-10140 </td><td> 10151-10190</td> <td> cteq61 </td><td> 1-40 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 1.69  </td><td>10<sup>8</sup></td></tr>
+<tr></tr>
+<tr><td>CTEQ6AB (20 sets, variable alphas)</td> <td> - </td> <td> 10250-10269 </td><td> cteq6AB </td><td> 0-19 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 1.69 </td> <td> 10<sup>8</sup></td></tr>
+<tr></tr>
+<tr><td>CTEQ65 (40 sets)</td> <td> - </td> <td> 10350-10390 </td><td> cteq65 </td><td> 0-40 </td><td> 10<sup>-7</sup></td><td> 1 </td> <td> 1.69 </td> <td> 10<sup>10</sup></td></tr>
+<tr>
+<td>CTEQ65c (6 sets)</td>
+<td> - </td>
+<td> 10450-10456 </td>
+<td> cteq65c </td>
+<td> 0-6 </td>
+<td> 10<sup>-7</sup></td>
+<td> 1 </td>
+<td> 1.69 </td>
+<td> 10<sup>10</sup></td>
+</tr>
+<tr>
+<td>CTEQ65s (8 sets)</td>
+<td> - </td>
+<td> 10460-10467 </td>
+<td> cteq65s </td>
+<td> 0-7 </td>
+<td> 10<sup>-7</sup></td>
+<td> 1 </td>
+<td> 1.69 </td>
+<td> 10<sup>10</sup></td>
+</tr>
+<tr><td>CTEQ66 (44 sets)</td> <td> - </td> <td> 10550-10594 </td><td> cteq66 </td><td> 0-44 </td><td> 10<sup>-8</sup></td><td> 1 </td> <td> 1.69 </td> <td> 10<sup>10</sup></td></tr>
+<tr><td>CTEQ66c (4 sets)</td> <td> - </td> <td> 10650-10653 </td><td> cteq66c </td><td> 0-3 </td><td> 10<sup>-8</sup></td><td> 1 </td> <td> 1.69 </td> <td> 10<sup>10</sup></td></tr>
+<tr>
+<td>CTEQ66a (4 sets)</td>
+<td> - </td>
+<td> 10660-10663 </td>
+<td> cteq66a </td>
+<td> 0-3 </td>
+<td> 10<sup>-8</sup></td>
+<td> 1 </td>
+<td> 1.69 </td>
+<td> 10<sup>10</sup></td>
+</tr>
+<tr>
+<td>CTEQ66lg (light-gluino 8 sets)</td>
+<td> - </td>
+<td> 10670-10677 </td>
+<td> cteq66lg </td>
+<td> 0-7 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.69 </td>
+<td> 10<sup>6</sup></td>
+</tr>
+<tr><td>CTEQ5m (Standard MSbar) </td><td> - </td><td> 19050 </td><td> cteq5m</td> <td> 0/1 </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.00  </td><td> 10<sup>8</sup> </td></tr>
+<tr><td>CTEQ5m1 (updated CTEQ5m) </td><td> - </td><td> 19051 </td><td> cteq5m1 </td><td> 0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.00 </td> <td> 10<sup>8</sup> </td></tr>
+<tr><td>CTEQ5f3 (3-flav-DIS) </td><td> - </td><td> 19053 </td><td> cteq5f3  </td><td>0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.00 </td> <td> 10<sup>8</sup> </td></tr>
+<tr><td>CTEQ5f4 (4-flav-DIS) </td><td> - </td><td> 19054 </td><td> cteq5f4  </td><td>0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.00 </td> <td> 10<sup>8</sup> </td></tr>
+<tr><td>CTEQ5d (Standard DIS) </td><td> - </td><td> 19060 </td><td> cteq5d  </td><td>0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.00 </td> <td> 10<sup>8</sup> </td></tr>
+<tr><td>CTEQ5l (LO fit) </td><td> - </td><td> 19070 </td><td> cteq5l </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.00  </td><td> 10<sup>8</sup> </td><t>r>
+</t></tr><tr></tr><tr>
+</tr><tr><td>CTEQ4m (Standard MSbar) </td><td> - </td><td> 19150</td> <td> cteq4m </td> <td>0/1</td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 2.56  </td><td> 10<sup>8</sup></td></tr>
+<tr><td>CTEQ4d (Standard DIS) </td><td> -</td> <td> 19160 </td><td> cteq4d </td><td> 0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 2.56  </td><td> 10<sup>8</sup></td></tr>
+<tr><td>CTEQ4l (LO fit) </td><td> - </td><td> 19170 </td><td> cteq4l </td><td> 0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 2.56  </td><td> 10<sup>8</sup> </td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td>MRST2001nlo (Standard MSbar)</td> <td> 20000</td> <td> 20050 </td><td> MRST2001nlo  </td><td>0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2001nlo (lower $\alpha_S$)</td> <td> 20002</td> <td> 20052 </td><td> MRST2001nlo </td><td> 2 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2001nlo (higher $\alpha_S$)</td> <td> 20003  </td><td> 20053</td> <td> MRST2001nlo </td> <td>3 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25 </td> <td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2001nlo (Jet Fit)</td> <td> 20004 </td><td> 20054</td> <td> MRST2001nlo </td><td> 4 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25 </td> <td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2001lo (LO fit) </td><td> - </td><td> 20060</td> <td> MRST2001lo </td><td> 0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25 </td> <td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2001nnlo (NNLO fit) </td><td> - </td><td> 20070 </td><td> MRST2001nnlo  </td><td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr></tr>
+<tr><td>MRST2001E (central value) </td><td> 20100 </td><td> 20150 </td><td> MRST2001E </td><td> 0 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2001E (30 error sets) </td><td> 20101-20130 </td><td> 20151-20180 </td><td> MRST2001E  </td><td>1-30 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25 </td> <td> 10<sup>7</sup> </td></tr>
+<tr></tr>
+<tr><td>MRST2002nlo (Standard MSbar)</td> <td> 20200 </td><td> 20250</td> <td> MRST2002nlo  </td><td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2002nnlo (NNLO fit)</td> <td> -</td> <td> 20270 </td><td> MRST2002nnlo</td> <td> 0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr></tr>
+<tr><td>MRST2003cnlo (NLO - restricted ) </td><td> 20300 </td><td> 20350 </td><td> MRST2003cnlo</td> <td> 0/1  </td><td> 10<sup>-3</sup></td><td> 1 </td> <td> 10.0  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2003cnnlo (NNLO - restricted) </td><td> - </td><td> 20370 </td><td> MRST2003cnnlo </td><td> 0/1 </td> <td> 10<sup>-3</sup></td><td> 1 </td> <td> 7.0  </td><td> 10<sup>7</sup> </td></tr>
+<tr></tr>
+<tr><td>MRST2004nlo (Standard MSbar)</td> <td> 20400 </td><td> 20450 </td><td> MRST2004nlo </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2004FF3lo (fixed flavour) </td> <td> - </td><td> 20452 </td><td> MRST2004FF3lo </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2004FF4lo (fixed flavour) </td> <td> - </td><td> 20454 </td><td> MRST2004FF4lo </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2004FF3nlo (fixed flavour) </td> <td> - </td><td> 20456 </td><td> MRST2004FF3nlo </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2004FF4nlo (fixed flavour) </td> <td> - </td><td> 20458 </td><td> MRST2004FF4nlo </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2004qed (photon)</td> <td> -</td><td> 20460 </td><td> MRST2004qed </td> <td>0/1  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST2004nnlo (NNLO fit) </td><td> - </td><td> 20470 </td><td> MRST2004nnlo </td><td> 0/1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25 </td> <td> 10<sup>7</sup> </td></tr>
+<tr>
+<td>MRST2006nnlo (NNLO fit) </td>
+<td> - </td>
+<td> 20550-20580 </td>
+<td> MRST2006nnlo </td>
+<td> 0-30 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MRST2007lomod (LO* for MC) </td>
+<td> - </td>
+<td> 20650</td>
+<td> MRST2007lomod </td>
+<td> 0 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.25  </td>
+<td> 10<sup>7</sup> </td>
+</tr>
+<tr>
+<td>MRSTMCal (for MC) </td>
+<td> - </td>
+<td> 20651</td>
+<td> MRSTMCal </td>
+<td> 0 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.25  </td>
+<td> 10<sup>7</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008 (LO central)</td>
+<td> - </td>
+<td> 21000</td>
+<td> MSTW2008lo68cl </td>
+<td> 0 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008lo68cl</td>
+<td> - </td>
+<td> 21001-21040</td>
+<td> MSTW2008lo68cl </td>
+<td> 1-40 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008lo90cl</td>
+<td> - </td>
+<td> 21041-21080</td>
+<td> MSTW2008lo90cl </td>
+<td> 1-40 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008 (NLO central)</td>
+<td> - </td>
+<td> 21100</td>
+<td> MSTW2008nlo68cl </td>
+<td> 0 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008nlo68cl</td>
+<td> - </td>
+<td> 21101-21140</td>
+<td> MSTW2008nlo68cl </td>
+<td> 1-40 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008nlo90cl</td>
+<td> - </td>
+<td> 21141-21180</td>
+<td> MSTW2008nlo90cl </td>
+<td> 1-40 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008 (NNLO central)</td>
+<td> - </td>
+<td> 21200</td>
+<td> MSTW2008nnlo68cl </td>
+<td> 0 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008nnlo68cl</td>
+<td> - </td>
+<td> 21201-21240</td>
+<td> MSTW2008nnlo68cl </td>
+<td> 1-40 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008nnlo90cl</td>
+<td> - </td>
+<td> 21241-21280</td>
+<td> MSTW2008nnlo90cl </td>
+<td> 1-40 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008nlo_asmzrange</td>
+<td> - </td>
+<td> 22000-22021</td>
+<td> MSTW2008nlo_asmzrange</td>
+<td> 0-21 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr>
+<td>MSTW2008nnlo_asmzrange</td>
+<td> - </td>
+<td> 22000-22021</td>
+<td> MSTW2008nlo_asmzrange</td>
+<td> 0-21 </td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 10<sup>9</sup> </td>
+</tr>
+<tr><td>MRST98 (central gluon/alphas)</td> <td> 29000</td> <td> - </td><td> MRST98</td> <td> 0/2  </td><td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25  </td><td> 10<sup>7</sup> </td></tr>
+<tr><td>MRST98 (lower gluon) </td><td> 29001</td> <td> -</td> <td> MRST98 </td><td> 1 </td> <td> 10<sup>-5</sup></td><td> 1 </td> <td> 1.25 </td> <td> 10<sup>7</sup> </td></tr>
+<tr>
+<td>MRST98lo (LO)</td>
+<td> -</td>
+<td> 29041-29045</td>
+<td> MRST98lo</td>
+<td> 1-5 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.25 </td>
+<td> 10<sup>7</sup> </td>
+</tr>
+<tr>
+<td>MRST98nlo (NLO)</td>
+<td> -</td>
+<td> 29051-29055</td>
+<td> MRST98nlo</td>
+<td> 1-5 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.25 </td>
+<td> 10<sup>7</sup> </td>
+</tr>
+<tr>
+<td>MRST98dis (DIS)</td>
+<td> -</td>
+<td> 29061-29065</td>
+<td> MRST98dis</td>
+<td> 1-5 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.25 </td>
+<td> 10<sup>7</sup> </td>
+</tr>
+<tr>
+<td>MRST98ht (HT)</td>
+<td> -</td>
+<td> 29071</td>
+<td> MRST98dis</td>
+<td> 1 </td>
+<td> 10<sup>-5</sup></td>
+<td> 1 </td>
+<td> 1.25 </td>
+<td> 10<sup>7</sup> </td>
+</tr>
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr>
+<td>Fermi2002_100 (101 sets)</td> <td> 30100-30200</td> <td> - </td><td> Fermi2002_100 </td><td> 0-100 </td><td> 10<sup>-6</sup> </td><td> 1 </td> <td> 1.00 </td><td> 10<sup>10</sup> </td></tr>
+<tr><td>Fermi2002_1000 (1001 sets)</td> <td> 31000-32000</td> <td> - </td><td> Fermi2002_1000</td> <td> 0-1000 </td><td> 10<sup>-6</sup></td> <td> 1 </td> <td> 1.00  </td><td> 10<sup>10</sup> </td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td>Alekhin_100 (101 sets)</td> <td> 40100-40200 </td><td> - </td><td> Alekhin_100 </td> <td>0-100  </td><td> 10<sup>-6</sup> </td><td> 1 </td> <td> 1.00 </td><td> 10<sup>10</sup> </td></tr>
+<tr><td>Alekhin_1000 (1000 sets)</td> <td> 41000-41999 </td><td> - </td><td> Alekhin_1000 </td><td> 0-999 </td> <td> 10<sup>-6</sup></td> <td> 1 </td> <td> 1.00</td> <td> 10<sup>10</sup> </td></tr>
+<tr><td>Alekhin2002 (LO - cent val) </td><td> - </td><td> 40350</td> <td> a02m_lo </td> <td>0</td> <td> 10<sup>-7</sup></td><td> 1 </td> <td> 0.8  </td><td> 2 x 10<sup>8</sup> </td></tr>
+<tr><td>Alekhin2002 (NLO - cent val) </td><td> -</td> <td> 40450</td> <td> a02m_nlo  </td><td>0 </td><td> 10<sup>-7</sup></td><td> 1 </td> <td> 0.8  </td><td> 2 x 10<sup>8</sup> </td></tr>
+<tr><td>Alekhin2002 (NNLO - cent val) </td><td> -</td> <td> 40550 </td><td> a02m_nnlo </td> <td>0 </td><td> 10<sup>-7</sup></td><td> 1 </td> <td> 0.8 </td> <td> 2 x 10<sup>8</sup> </td></tr>
+<tr><td>Alekhin2002 (LO VFN 17 sets) </td><td> -</td> <td> 40351-40367</td> <td> a02m_lo  </td><td>1-15</td> <td> 10<sup>-7</sup></td><td> 1 </td> <td> 0.8 </td> <td> 2 x 10<sup>8</sup> </td></tr>
+<tr><td>Alekhin2002 (NLO VFN 17 sets) </td><td> - </td><td> 40451-40467 </td><td> a02m_nlo </td><td> 1-15</td><td> 10<sup>-7</sup></td><td> 1 </td> <td> 0.8  </td><td> 2 x 10<sup>8</sup> </td></tr>
+<tr><td>Alekhin2002 (NNLO VFN 17 sets) </td><td> - </td><td> 40551-40567</td> <td> a02m_nnlo </td> <td>1-15 </td><td> 10<sup>-7</sup></td><td> 1 </td> <td> 0.8 </td> <td> 2 x 10<sup>8</sup> </td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td>Botje_100 (101 sets) </td><td> 50100-50200</td> <td> - </td><td> Botje_100</td> <td> 0-100</td> <td> 10<sup>-6</sup></td> <td> 1 </td> <td> 1.00</td> <td> 10<sup>10</sup> </td></tr>
+<tr><td>Botje_1000 (1000 sets) </td><td> 51000-51999 </td><td> - </td><td> Botje_1000  </td><td>0-999</td> <td> 10<sup>-6</sup> </td><td> 1 </td> <td> 1.00 </td><td> 10<sup>10</sup> </td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td>ZEUS2002 (VFN/TR cent value)</td> <td> 60000</td> <td> - </td><td> ZEUS2002_TR </td> <td>0 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3  </td><td> 2 x 10<sup>5</sup> </td></tr>
+<tr><td>ZEUS2002 (ZM cent value) </td><td> 60100 </td><td> - </td><td> ZEUS2002_ZM  </td><td>0 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3 </td> <td> 2 x 10<sup>5</sup> </td></tr>
+<tr><td>ZEUS2002 (FF cent value) </td><td> 60200 </td><td> - </td><td> ZEUS2002_FF </td><td> 0</td> <td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3 </td> <td> 2 x 10<sup>5</sup> </td></tr>
+<tr><td>ZEUS2005 (ZJ cent value) </td><td> 60300 </td><td> -</td> <td> ZEUS2005_ZJ </td><td> 0</td> <td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3  </td><td> 2 x 10<sup>5</sup> </td></tr>
+<tr><td>ZEUS2002 (VFN/TR 22 sets) </td><td> 60001-60022</td> <td> - </td><td> ZEUS2002_TR  </td><td>1-22 </td><td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3  </td><td> 2 x 10<sup>5</sup> </td></tr>
+<tr><td>ZEUS2002 (ZM 22 sets)</td> <td> 60101-60122 </td><td> - </td><td> ZEUS2002_ZM</td> <td> 1-22</td> <td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3 </td> <td> 2 x 10<sup>5</sup> </td></tr>
+<tr><td>ZEUS2002 (FF 22 sets) </td><td> 60201-60222 </td><td> - </td><td> ZEUS2002_FF</td> <td> 1-22</td> <td> 10<sup>-6</sup></td><td> 1 </td> <td> 0.3  </td><td> 2 x 10<sup>5</sup> </td></tr>
+<tr>
+<td>ZEUS2005 (ZJ 22 sets)</td>
+<td> 60301-60322 </td>
+<td> - </td>
+<td> ZEUS2005_ZJ </td>
+<td> 1-22</td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 0.3  </td>
+<td> 2 x 10<sup>5</sup> </td>
+</tr>
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr>
+<td>HERAPDF01 (Combined ZEUS+H1 central value)</td>
+<td> 60400 </td>
+<td> - </td>
+<td> HERAPDF01 </td>
+<td> 0</td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 2 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>HERAPDF01 (Combined ZEUS+H1 22 sets)</td>
+<td> 60401-60422 </td>
+<td> - </td>
+<td> HERAPDF01 </td>
+<td> 1-22</td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 2 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>HERAPDF01 (Combined ZEUS+H1 central value)</td>
+<td> - </td>
+<td> 60430 </td>
+<td> HERAPDF01 </td>
+<td> 0</td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 2 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>HERAPDF01 (Combined ZEUS+H1 14 variation sets)</td>
+<td> - </td>
+<td> 60431-60444 </td>
+<td> HERAPDF01 </td>
+<td> 1-14</td>
+<td> 10<sup>-6</sup></td>
+<td> 1 </td>
+<td> 1.0  </td>
+<td> 2 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr><td>H12000 (nlo msbar cent value)</td> <td> - </td><td> 70050</td> <td> H12000ms </td><td> 0 </td><td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5  </td><td> 10<sup>6</sup> </td></tr>
+<tr><td>H12000E (nlo msbar 20 sets)  </td> <td> - </td><td> 70051-70070 </td><td> H12000msE </td> <td>1-20</td> <td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5 </td> <td> 10<sup>6</sup> </td></tr>
+<tr><td>H12000 (nlo dis cent value) </td><td> - </td><td> 70150 </td><td> H12000dis </td><td> 0 </td><td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5 </td> <td> 10<sup>6</sup> </td></tr>
+<tr><td>H12000E (nlo dis 20 sets)  </td> <td> - </td><td> 70151-70170 </td><td> H12000disE </td><td> 1-20 </td><td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5  </td><td> 10<sup>6</sup> </td></tr>
+<tr><td>H12000 (lo cent value) </td><td> -</td> <td> 70250 </td><td> H12000lo </td><td> 0 </td><td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5 </td> <td> 10<sup>6</sup> </td></tr>
+<tr><td>H12000E (lo  20 sets)  </td> <td> - </td><td> 70251-70270 </td><td> H12000loE </td><td> 1-20 </td><td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5  </td><td> 10<sup>6</sup> </td></tr>
+<!--
+<tr><td>H12000 (lo +nlo alphas cent value) </td><td> - </td><td> 70350</td> <td> H12000lo2 </td><td> 0 </td><td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5  </td><td> 10<sup>6</sup>  </td></tr>
+<tr><td>H12000E (lo +nlo alphas 20 sets)   </td><td> - </td><td> 70351-70370</td> <td> H12000lo2E  </td><td>1-20</td> <td> 5.7 x 10<sup>-5</sup></td><td> 1 </td> <td> 1.5 </td> <td> 10<sup>6</sup>  </td></tr>
+<tr><td colspan='9'></td></tr>
+-->
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr><td>GRV98 (nlo msbar)</td> <td> -</td> <td> 80050</td> <td> GRV98nlo</td> <td> 0</td> <td> 10<sup>-9</sup></td><td> 1 </td> <td> 0.8  </td><td> 2 x 10<sup>6</sup> </td></tr>
+<tr><td>GRV98 (nlo dis)  </td> <td> - </td><td> 80051  </td><td> GRV98nlo  </td> <td>1 </td> <td> 10<sup>-9</sup> </td><td> 1 </td> <td> 0.8 </td> <td> 2 x 10<sup>6</sup> </td></tr>
+<tr>
+<td>GRV98 (lo) </td>
+<td> - </td>
+<td> 80060</td>
+<td> GRV98lo </td>
+<td> 0 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1 </td> <td> 0.8  </td>
+<td> 2 x 10<sup>6</sup> </td>
+</tr>
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr>
+<td>GJR08 (FF lo) </td>
+<td> - </td>
+<td> 80150</td>
+<td> GJR08lo </td>
+<td> 0 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.3  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>GJR08 (VF lo) </td>
+<td> - </td>
+<td> 80151</td>
+<td> GJR08lo </td>
+<td> 1 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.3  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>GJR08 (FF nlo/DIS) </td>
+<td> - </td>
+<td> 80152</td>
+<td> GJR08FFdis </td>
+<td> 1 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.5  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>GJR08 (FF nlo/MSbar central value) </td>
+<td> - </td>
+<td> 80160</td>
+<td> GJR08FFnloE </td>
+<td> 0 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.5  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>GJR08 (FF nlo/MSbar 26 sets) </td>
+<td> - </td>
+<td> 80161-80186</td>
+<td> GJR08FFnloE </td>
+<td> 1-26 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.5  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>GJR08 (VF nlo/MSbar central value) </td>
+<td> - </td>
+<td> 80260</td>
+<td> GJR08VFnloE </td>
+<td> 0 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.5  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>GJR08 (VF nlo/MSbar 26 sets) </td>
+<td> - </td>
+<td> 80261-80286</td>
+<td> GJR08VFnloE </td>
+<td> 1-26 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.5  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>JR09 (FF nnlo central value) </td>
+<td> - </td>
+<td> 80360</td>
+<td> JR09FFnloE </td>
+<td> 0 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.55  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>JR09 (FF 26 sets) </td>
+<td> - </td>
+<td> 80361-80386</td>
+<td> JR09FFnloE </td>
+<td> 1-26 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td> <td> 0.55  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr>
+<td>NNPDF10 (Neutral Network 100 sets) </td>
+<td> 90000-90100 </td>
+<td> 90200-90300</td>
+<td> NNPDF10_100 </td>
+<td> 0-100 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td>
+<td> 2.0  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td>NNPDF10 (Neutral Network 1000 sets) </td>
+<td> 91000-92000 </td>
+<td> 93000-95000</td>
+<td> NNPDF10_1000 </td>
+<td> 0-1000 </td>
+<td> 10<sup>-9</sup> </td>
+<td> 1.0 </td>
+<td> 2.0  </td>
+<td> 1 x 10<sup>8</sup> </td>
+</tr>
+<tr>
+<td colspan="9"></td>
+</tr>
+<tr><td>Unused</td> <td> 95000-99999 </td><td> 95000-93999</td> <td> - </td> <td> -</td><td> -</td><td>  -</td><td> -</td><td> -</td></tr>
+</table>
+</p><p>
+<b>Pion PDFs</b><br />
+<table border="1" cellspacing="0" cellpadding="2">
+<tr>
+<td class="title">PDF set</td>
+<td class="title"> .LHpdf</td>
+<td class="title"> .LHgrid</td>
+<td class="title"> File Name </td>
+<td class="title"> Member </td>
+<td class="title"> Xmin </td>
+<td class="title"> Xmax </td>
+<td class="title"> Q2min GeV<sup>2</sup> </td>
+<td class="title"> Q2max GeV<sup>2</sup></td></tr>
+<tr> <td colspan="9"></td></tr>
+<tr><td> OW-P Set 1 LO </td> <td> -  </td> <td> 211  </td> <td> OWPI   </td><td>0/1  </td> <td> 5 x 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2 x 10<sup>3</sup></td></tr>
+<tr><td> OW-P Set 2 LO </td> <td> -  </td> <td> 212  </td> <td> OWPI  </td><td>2    </td> <td> 5 x 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2 x 10<sup>3</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> SMRS-P 1 NLO </td> <td> -  </td> <td> 231  </td> <td> SMRSPI   </td><td>1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 5.0  </td> <td> 1.31 x 10<sup>6</sup></td></tr>
+<tr><td> SMRS-P 2 NLO </td> <td> -  </td> <td> 232  </td> <td> SMRSPI  </td> <td>0/2  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 5.0  </td> <td> 1.31 x 10<sup>6</sup></td></tr>
+<tr><td> SMRS-P 2 NLO </td> <td> -  </td> <td> 233  </td> <td> SMRSPI   </td><td>3  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 5.0  </td> <td> 1.31 x 10<sup>6</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> GRV-P HO NLO </td> <td> -  </td> <td> 251  </td> <td> GRVPI1   </td><td>0/1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.3  </td> <td> 10<sup>6</sup></td></tr>
+<tr><td> GRV-P HO LO  </td> <td> -  </td> <td> 252  </td> <td> GRVPI0   </td><td>0/1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.25  </td> <td> 10<sup>6</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> ABFKW-P Set 1 NLO </td> <td> -  </td> <td> 261  </td> <td> ABFKWPI   </td><td>0/1  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 2.0  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> ABFKW-P Set 2 NLO </td> <td> -  </td> <td> 262  </td> <td> ABFKWPI   </td><td>2  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 2.0  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> ABFKW-P Set 3 NLO </td> <td> -  </td> <td> 263  </td> <td> ABFKWPI   </td><td>3  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 2.0  </td> <td> 10<sup>8</sup></td></tr>
+</table>
+</p><p>
+<b>Photon PDFs</b><br />
+<table border="1" cellspacing="0" cellpadding="2">
+<tr>
+<td class="title">PDF set </td>
+<td class="title"> .LHpdf</td>
+<td class="title"> .LHgrid</td>
+<td class="title"> File Name </td>
+<td class="title"> Member </td>
+<td class="title"> Xmin </td>
+<td class="title"> Xmax </td>
+<td class="title"> Q2min GeV<sup>2</sup> </td>
+<td class="title"> Q2max GeV<sup>2</sup></td>
+</tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> DO-G Set 1 LO </td> <td> -  </td> <td> 311  </td> <td> DOG0   </td><td>0/1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9 </td> <td> 10.0  </td> <td> 10<sup>4</sup></td></tr>
+<tr><td> DO-G Set 2 NLO </td> <td> -  </td> <td> 312  </td> <td> DOG1  </td> <td>0/1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9 </td> <td> 10.0  </td> <td> 10<sup>4</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> DG-G Set 1 LO </td> <td> -  </td> <td> 321  </td> <td> DGG  </td> <td>0/1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 1.0  </td> <td> 10<sup>4</sup></td></tr>
+<tr><td> DG-G Set 2 LO </td> <td> -  </td> <td> 322  </td> <td> DGG   </td><td>2    </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 1.0  </td> <td> 50.0</td></tr>
+<tr><td> DG-G Set 3 LO </td> <td> -  </td> <td> 323  </td> <td> DGG   </td><td>3    </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 20.0  </td> <td> 500.0</td></tr>
+<tr><td> DG-G Set 4 LO </td> <td> -  </td> <td> 324  </td> <td> DGG   </td><td>4    </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 200.0 </td> <td> 10<sup>4</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> LAC-G Set 1 LO </td> <td> -  </td> <td> 331  </td> <td> LACG   </td><td>0/1  </td> <td> 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 10<sup>5</sup></td></tr>
+<tr><td> LAC-G Set 2 LO </td> <td> -  </td> <td> 332  </td> <td> LACG   </td><td>2  </td> <td> 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 10<sup>5</sup></td></tr>
+<tr><td> LAC-G Set 3 LO </td> <td> -  </td> <td> 333  </td> <td> LACG   </td><td>3  </td> <td> 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 1.0  </td> <td> 10<sup>5</sup></td></tr>
+<tr><td> GAL-G LO       </td> <td> -  </td> <td> 334  </td> <td> LACG   </td><td>4  </td> <td> 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 10<sup>5</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> GS-G NLO </td> <td> -  </td> <td> 341  </td> <td> GSG1   </td><td>0/1  </td> <td> 5 x 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 5.3  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> GS-G LO Set 1 </td> <td> -  </td> <td> 342  </td> <td> GSG0  </td> <td>0/1  </td> <td> 5 x 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 5.3  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> GS-G LO Set 2 </td> <td> -  </td> <td> 343  </td> <td> GSG0  </td> <td>2  </td> <td> 5 x 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 5.3  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> GS-G-96 NLO </td> <td> -  </td> <td> 344  </td> <td> GSG961   </td><td>0/1  </td> <td> 5 x 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 5.3  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td> GS-G-96 LO  </td> <td> -  </td> <td> 345  </td> <td> GSG960   </td><td>0/1  </td> <td> 5 x 10<sup>-4</sup> </td> <td> 0.9998 </td> <td> 5.3  </td> <td> 10<sup>8</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> GRV-G 1HO DIS NLO </td> <td> -  </td> <td> 351  </td> <td> GRVG1  </td> <td>1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.3  </td> <td> 10<sup>6</sup></td></tr>
+<tr><td> GRV-G HO DIS NLO </td> <td> -  </td> <td> 352  </td> <td> GRVG1   </td><td>0/2  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.3  </td> <td> 10<sup>6</sup></td></tr>
+<tr><td> GRV-G LO </td> <td> -  </td> <td> 353  </td> <td> GRVG0   </td><td>1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.25  </td> <td> 10<sup>6</sup></td></tr>
+<tr><td> GRS-G LO </td> <td> -  </td> <td> 354  </td> <td> GRVG0   </td><td>0/2  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.6  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> ACFGP-G HO NLO </td> <td> -  </td> <td> 361  </td> <td> ACFGPG  </td> <td>1  </td> <td> 1.37 x 10<sup>-3</sup> </td> <td> 0.9986 </td> <td> 2.0  </td> <td> 5.5 x 10<sup>5</sup></td></tr>
+<tr><td> ACFGP-G HO-mc NLO </td> <td> -  </td> <td> 362  </td> <td> ACFGPG  </td> <td>2  </td> <td> 1.37 x 10<sup>-3</sup> </td> <td> 0.9986 </td> <td> 2.0  </td> <td> 5.5 x 10<sup>5</sup></td></tr>
+<tr><td> ACFGP-G HO NLO </td> <td> -  </td> <td> 363  </td> <td> ACFGPG  </td> <td>0/3  </td> <td> 1.37 x 10<sup>-3</sup> </td> <td> 0.9986 </td> <td> 2.0  </td> <td> 5.5 x 10<sup>5</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> WHIT-G 1 LO </td> <td> -  </td> <td> 381  </td> <td> WHITG  </td> <td>0/1  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2.5 x 10<sup>3</sup></td></tr>
+<tr><td> WHIT-G 2 LO </td> <td> -  </td> <td> 382  </td> <td> WHITG  </td> <td>2  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2.5 x 10<sup>3</sup></td></tr>
+<tr><td> WHIT-G 3 LO </td> <td> -  </td> <td> 383  </td> <td> WHITG  </td> <td>3  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2.5 x 10<sup>3</sup></td></tr>
+<tr><td> WHIT-G 4 LO </td> <td> -  </td> <td> 384  </td> <td> WHITG  </td> <td>4  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2.5 x 10<sup>3</sup></td></tr>
+<tr><td> WHIT-G 5 LO </td> <td> -  </td> <td> 385  </td> <td> WHITG  </td> <td>5  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2.5 x 10<sup>3</sup></td></tr>
+<tr><td> WHIT-G 6 LO </td> <td> -  </td> <td> 386  </td> <td> WHITG  </td> <td>6  </td> <td> 10<sup>-3</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 2.5 x 10<sup>3</sup></td></tr>
+<tr><td colspan="9"></td></tr>
+<tr><td> SaS-G 1D (ver.1) LO </td> <td> -  </td> <td> 391  </td> <td> SASG  </td> <td>1  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.36  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 1M (ver.1) LO </td> <td> -  </td> <td> 392  </td> <td> SASG  </td> <td>2  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.36  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 2D (ver.1) LO </td> <td> -  </td> <td> 393  </td> <td> SASG  </td> <td>3  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 2M (ver.1) LO </td> <td> -  </td> <td> 394  </td> <td> SASG  </td> <td>4  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 1D (ver.2) LO </td> <td> -  </td> <td> 395  </td> <td> SASG  </td> <td>5  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.36  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 1M (ver.2) LO </td> <td> -  </td> <td> 396  </td> <td> SASG  </td> <td>0/6  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 0.36  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 2D (ver.2) LO </td> <td> -  </td> <td> 397  </td> <td> SASG  </td> <td>7  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 5 x 10<sup>4</sup></td></tr>
+<tr><td> SaS-G 2M (ver.2) LO </td> <td> -  </td> <td> 398  </td> <td> SASG  </td> <td>8  </td> <td> 10<sup>-5</sup> </td> <td> 0.9998 </td> <td> 4.0  </td> <td> 5 x 10<sup>4</sup></td></tr>
+</table>
+<h2><a name="tth_sEcB">B</a>&nbsp;&nbsp;Examples</h2>
+</p><p>The example tar file can be downloaded from the website. Untarring the
+file will create the directory Examples which contains the source code 
+of the 3 examples together with the makefile to generate the executables. 
+Note that
+the pathnames in the makefile have to be edited for proper execution.
+When running an example for the first time with 
+the evolution code QCDNUM a grid has to be calculated. 
+This might take some time depending on the grid size. 
+Running with the PDF set after that the initialization time is much
+shorter as everything can be read in from an external file. </p>
+<h3><a name="tth_sEcB.1">
+B.1</a>&nbsp;&nbsp;Example 1: A PDF table</h3>
+<p>The executable <b>example.x</b> is made by the command <i>make 1</i>.
+The first example code simply runs through all 100 PDF members
+of the Alekhin set [<a name="CITEAlekhin" href="manual#Alekhin">6</a>], printing out
+<font face="symbol">a</font><sub>S</sub>(M<sub>Z</sub>) and the gluon PDF momentum densities at a few (x,Q)
+points: </p>
+<pre>  
+      program example1
+      implicit real*8(a-h,o-z)
+      character name*64
+      real*8 f(-6:6)
+*
+      name='cteq61.LHpdf'
+      call InitPDFsetByName(name)
+*
+      QMZ=91.18d0
+      write(*,*)
+      call numberPDF(N)
+       do i=0,N
+         write(*,*) '---------------------------------------------'
+         call InitPDF(i)
+         write(*,*) 'PDF set ',i
+         write(*,*)
+         a=alphasPDF(QMZ)
+         write(*,*) 'alpha_S(M_Z) = ',a
+         write(*,*)
+         write(*,*) 'x*up'
+         write(*,*) '   x     Q=10 GeV     Q=100 GeV    Q=1000 GeV'
+         do x=0.1d0,0.95d0,0.1d0
+            Q=10d0
+            call evolvePDF(x,Q,f)
+            u1=f(2)
+            Q=100d0
+            call evolvePDF(x,Q,f)
+            u2=f(2)
+            Q=1000d0
+            call evolvePDF(x,Q,f)
+            u3=f(2)
+            write(*,*) x,u1,u2,u3
+         enddo
+      enddo
+*
+     end
+
+</pre>
+<h3><a name="tth_sEcB.2">
+B.2</a>&nbsp;&nbsp;Example 2: Calculating Uncertainties for Monte Carlo PDF sets</h3>
+<p><b>Warning: only use the following on the Botje99, Fermi02 and Alekhin00 sets!</b></p>
+<p><b>The method os NOT appiclable to other error sets such as MRST and CTEQ</b></p>
+<p>The executable <b>example.x</b> is made by the command <i>make 2</i>.
+The second example calculates the average value of the gluon PDF and
+its standard deviation for several x values at Q=100 GeV 
+using the Botje set [<a name="CITEBotje" href="manual#Botje">7</a>]. Note that the program calculates
+the quantities in two manners. First by placing the loop over the
+PDF members inside the loop over the parton momentum fractions.
+Second, by exchanging this order and storing the first and second moments
+in an array depending on the x value.
+The second method is considerably faster in computing time as each
+PDF member is only initialized once. </p>
+<p>
+Also calculated is the correlation of the gluon momentum PDF between 
+x=0.001 and x=0.01 and the correlation between the strange quark
+momentum PDF at x=0.001 and <font face="symbol">a</font><sub>S</sub>(Q) at Q=10 GeV.  
+
+<pre>      program example2
+      implicit real*8(a-h,o-z)
+      character*32 name
+      real*8 f(-6:6),mom1(9),mom2(9)
+*
+      Q=100d0
+      name='../PDFsets/Botje_100.LHpdf'
+      call InitPDFset(name)
+*
+      call numberPDF(Nmem)
+      write(*,*)
+      write(*,*) 'Calculating the gluon momentum PDF average &lt;g&#62;'
+      write(*,*) 'and standard deviaton SD(g) for several x values'
+      write(*,*) 'at Q=100 GeV'
+      write(*,*)
+      write(*,*) '1. The slow way:'
+      write(*,*) 
+      write(*,*) '   x       &lt;g&#62;         SD(g)'
+      do x=0.01d0,0.095d0,0.01d0
+         gmom1=0d0
+         gmom2=0d0
+         do i=1,Nmem
+            call InitPDF(i)
+            call evolvePDF(x,Q,f)
+            gmom1=gmom1+f(0)
+            gmom2=gmom2+f(0)**2
+         enddo
+         av=gmom1/Nmem
+         sd=sqrt(gmom2/Nmem-av**2)
+         write(*,*) x,av,sd
+      enddo
+      write(*,*) 
+      write(*,*) '2. The fast way:'
+      write(*,*) 
+      write(*,*) '   x       &lt;g&#62;         SD(g)'
+      do i=1,9
+         mom1(i)=0d0
+         mom2(i)=0d0
+      enddo
+      do i=1,Nmem
+         call InitPDF(i)
+         ic=0
+         do x=0.01d0,0.095d0,0.01d0
+            call evolvePDF(x,Q,f)
+            ic=ic+1
+            mom1(ic)=mom1(ic)+f(0)
+            mom2(ic)=mom2(ic)+f(0)**2
+         enddo
+      enddo
+      ic=0
+      do x=0.01d0,0.095d0,0.01d0
+         ic=ic+1
+         av=mom1(ic)/Nmem
+         sd=sqrt(mom2(ic)/Nmem-av**2)
+         write(*,*) x,av,sd
+      enddo
+*
+      Q=10d0
+      x1=0.001d0
+      x2=0.01d0
+      write(*,*)
+      write(*,*) 'Calculating the normalized correlation coefficient'
+      write(*,*) '&lt;g1g2&#62; between g(x=0.001) and g(x=0.01) and'
+      write(*,*) '&lt;sAlpha&#62; between the strange quark momentum PDF'
+      write(*,*) 'at x=0.001 and alpha_S(Q) for Q=10 GeV'
+      write(*,*)
+      avg1=0d0
+      avg2=0d0
+      avs=0d0
+      avAs=0d0
+      sdg1=0d0
+      sdg2=0d0
+      sds=0d0
+      sdAs=0d0
+      Cg1g2=0d0
+      CsAs=0d0
+      j=3
+      do i=1,Nmem
+         call InitPDF(i)
+         As=alphasPDF(Q)
+         call evolvePDF(x1,Q,f)
+         g1=f(0)
+         s=f(j)
+         call evolvePDF(x2,Q,f)
+         g2=f(0)
+         avAs=avAs+As
+         avg1=avg1+g1
+         avg2=avg2+g2
+         avs=avs+s
+         sdAs=sdAs+As**2
+         sdg1=sdg1+g1**2
+         sdg2=sdg2+g2**2
+         sds=sds+s**2
+         CsAs=CsAs+s*As
+         Cg1g2=Cg1g2+g1*g2
+      enddo
+      avAs=avAs/Nmem
+      avs=avs/Nmem
+      avg1=avg1/Nmem
+      avg2=avg2/Nmem
+      sdAs=sdAs/Nmem-avAs**2
+      sds=sds/Nmem-avs**2
+      sdg1=sdg1/Nmem-avg1**2
+      sdg2=sdg2/Nmem-avg2**2
+      CsAs=CsAs/Nmem-avs*avAs
+      Cg1g2=Cg1g2/Nmem-avg1*avg2
+      write(*,*) '&lt;g1g2&#62;    = ',Cg1g2/sqrt(sdg1*sdg2)
+      write(*,*) '&lt;sAlpha&#62; = ',CsAs/sqrt(sds*sdAs)
+      end
+
+</pre>
+<h3><a name="tth_sEcB.3">B.3</a>&nbsp;&nbsp;Example 3: A Convenient Wrap</h3>
+</p><p>The executable <b>example.x</b> is made by the command <i>make 3</i>.
+The third example prints out the same  as the first example. However it
+uses a wrapper around the LHAPDF code. The single call wrapper takes 
+care of the initialization calls. Note that the number of PDF members
+is only known after the first call to the subroutine <tt><b>parden</b></tt>. 
+Also the <font face="symbol">a</font><sub>S</sub> value is
+only known after the first call to the subroutine <tt><b>parden</b></tt>
+for a specific member PDF. </p>
+<pre>      program example3
+      implicit real*8(a-h,o-z)
+      real*8 f(-6:6)
+*
+      QMZ=91.71d0
+      Nmem=100
+      write(*,*)
+      do i=1,Nmem
+         write(*,*) '---------------------------------------------'
+         write(*,*) 'PDF set ',i
+         write(*,*)
+         write(*,*) 'x*Gluon'
+         write(*,*) '   x     Q=10 GeV     Q=100 GeV    Q=1000 GeV'
+         do x=0.01d0,0.095d0,0.01d0
+            Q=10d0
+            call parden(x,Q,f,i)
+            g1=f(0)
+            Q=100d0
+            call parden(x,Q,f,i)
+            g2=f(0)
+            Q=1000d0
+            call parden(x,Q,f,i)
+            g3=f(0)
+            write(*,*) x,g1,g2,g3
+         enddo
+         a=alphasPDF(QMZ)
+         write(*,*)
+         write(*,*) 'alpha_S(M_Z) = ',a
+         write(*,*)
+      enddo
+*
+      end
+*
+      subroutine parden(x,Q,f,imem)
+      implicit none
+      character*32 name/'../PDFsets/Alekhin_100.LHpdf'/
+      real*8 x,Q,f(-6:6),alfas
+      integer imem,init/0/,lmem/-1/
+      save init,lmem
+*
+      if (init.eq.0) then
+         init=1
+         call InitPDFset(name)
+      endif
+      if (imem.ne.lmem) then
+         lmem=imem
+         call InitPDF(lmem)
+      endif
+      call evolvePDF(x,Q,f)
+      return
+*
+      end
+
+</pre>
+<h3><a name="tth_sEcB.4">B.4</a>&nbsp;&nbsp;Example 4: Using LHAGLUE to do Example 1</h3>
+<p>
+This program illustrates using the LHAGLUE routines ro repeat Example 1. 
+<pre>
+
+      program example4
+c
+c using lhaglue to do example 1
+c
+      implicit real*8(a-h,o-z)
+      character*20 parm(20)
+      double precision value(20)
+*
+      parm(1)='DEFAULT'
+      call SetLHAPARM('SILENT')
+c      parm(19)='SILENT'
+      val = 10100
+      do i=0,40
+      value(1)=val+i
+        write(*,*) '---------------------------------------------'
+        call pdfset(parm,value)
+        if (i.eq.0) call getdesc()
+        qmz = 91.71d0
+        a = alphasPDF(qmz)
+        print *,'Alpha_s(Mz)=',a
+         write(*,*) 'x*up'
+         write(*,*) '   x     Q2=10 GeV     Q=100 GeV    Q=1000 GeV'
+         do x=0.1d0,0.95d0,0.1d0
+            Q=10.0d0
+            call structm(x,q,upv,dnv,usea,dsea,str,chm,bot,top,glu)
+            g1=upv+usea
+            Q=100d0
+            call structm(x,q,upv,dnv,usea,dsea,str,chm,bot,top,glu)
+            g2=upv+usea
+            Q=1000d0
+            call structm(x,q,upv,dnv,usea,dsea,str,chm,bot,top,glu)
+            g3=upv+usea
+            write(*,*) x,g1,g2,g3
+         enddo
+      enddo
+*
+      end
+</pre>
+</p><p>
+<h3><a name="tth_sEcB.5">B.4</a>&nbsp;&nbsp;Example 5: Using Multiset Initialisation</h3>
+</p><p>
+This program illustrates multiset initialisation LHAglue/LHAPDF. 
+<pre>
+      program example5
+c
+c using lhaglue for 3 different PDF sets proton/photon/pion
+c using lhaglue for 3 different PDF sets proton/photon/pion
+c using setpdfpath to define the path
+c using PDFsta for statistics
+c
+      implicit real*8(a-h,o-z)
+      character*20 parm(20)
+      character name*64
+      double precision value(20),g(3)
+      integer inset(3)
+      data inset/20200,391,231/
+      common/W50513/xmin,xmax,q2min,q2max
+*
+      parm(1)='DEFAULT'
+
+      call setlhaparm('SILENT')
+      call setpdfpath('../PDFsets')
+      qmz = 91.180d0
+      ip2 = 0
+      p2 = 0.0d0
+      do j=1,3
+        print *,'PDF set ',j,' is PDF set number ',inset(j)
+        value(1)=inset(j)
+        call pdfset(parm,value)
+        call getdescm(j)
+        call getlam4m(j,0,xlam4)
+        call getlam5m(j,0,xlam5)
+        a=alphasPDF(QMZ)
+        print *,'PDF number, alpha_s(mz), xmin, xmax, q2min, q2max, lambda4, lambda5'
+        print *,value(1),a,xmin,xmax,q2*
+      call PDFsta
+      end
+wmin,q2max,xlam4,xlam5
+      write(*,*) '---------------------------------------------'
+      enddo
+      Q=100.0d0
+      print *,'x*gluon at Q = 100 GeV'
+      print *,'PDF sets: ',(inset(j),j=1,3)
+      write(*,*) '---------------------------------------------'
+      do x=0.1d0,0.95d0,0.1d0
+       do j=1,3
+        value(1)=inset(j)
+        call pdfset(parm,value)
+        if(value(1).ge.300.and.value(1).le.399) then
+          call structp(x,q2,p2,ip2,upv,dnv,usea,dsea,str,chm,bot,top,glu)
+        else
+          call structm(x,q,upv,dnv,usea,dsea,str,chm,bot,top,glu)
+        endif
+            g(j)=glu
+       enddo
+         write(*,*) x,(g(j),j=1,3)
+      enddo
+*
+      call PDFsta
+      end
+
+</pre>
+</p><p>
+<h2>References</h2>
+<dl compact="compact">
+<dt><a name="Botje:1997" href="manual#CITEBotje:1997">[1]</a></dt><dd>
+M.&nbsp;Botje, QCDNUM version 16.12, preprint ZEUS-97-066, <br />
+<tt><b><a href="http://www.nikhef.nl/~h24/qcdnum" target="_blank">
+http://www.nikhef.nl/<font face="symbol"> ~ </font>h24/qcdnum</a></b></tt>.
+</dd>
+<dt><a name="LesHouches" href="manual#CITELesHouches">[2]</a></dt><dd>
+S.&nbsp;Alekhin, M.&nbsp;Botje, W.&nbsp;Giele, J.&nbsp;Pumplin, F.&nbsp;Olness, G.&nbsp;Salam and A.&nbsp;Vogt, <br />
+Physics at TeV Colliders II Workshop, Les Houches, France, May 2001.
+</dd>
+<dt><a name="PDFLIB" href="manual#CITEPDFLIB">[3]</a></dt><dd>
+H.&nbsp;Plothow-Besch, Comput.&nbsp;Phys.&nbsp;Commun.&nbsp;<b>75</b>, 396 (1993).
+</dd>
+<dt><a name="RandomSampling" href="manual#CITERandomSampling">[4]</a></dt><dd>
+W.&nbsp;Giele, S.&nbsp;Keller and D.&nbsp;Kosower, 
+<a href="http://lanl.arXiv.org/abs/hep-ph/0104052" target="_blank">hep-ph/0104052</a>; <br />
+W.&nbsp;Giele and S.&nbsp;Keller, 
+<a href="http://lanl.arXiv.org/abs/hep-ph/9803393" target="_blank">hep-ph/9803393</a> [Phys. Rev. <b>D58</b>, 1997, 094023].
+</dd>
+<dt><a name="LumUncertainty" href="manual#CITELumUncertainty">[5]</a></dt><dd>
+W.&nbsp;Giele and S.&nbsp;Keller, 
+<a href="http://lanl.arXiv.org/abs/hep-ph/0104053" target="_blank">hep-ph/0104053</a>.
+</dd>
+<dt><a name="Alekhin" href="manual#CITEAlekhin">[6]</a></dt><dd>
+S.&nbsp;I.&nbsp;Alekhin, 
+<a href="http://lanl.arXiv.org/abs/hep-ph/0011002" target="_blank">hep-ph/0011002</a>, [Phys. Rev. <b>D63</b>, 2001, 094022]. <br />
+</dd>
+<dt><a name="Botje" href="manual#CITEBotje">[7]</a></dt><dd> 
+M.&nbsp;Botje, 
+<a href="http://lanl.arXiv.org/abs/hep-ph/9912439" target="_blank">hep-ph/9912439</a>, [Eur. Phys. J. <b>C14</b>, 2000, 285]. <br /></dd>
+</dl>
+</p><p>
+<hr /><h3>Footnotes:</h3>
+</p><p>
+<a name="tthFtNtAAB"></a><a href="manual#tthFrefAAB"><sup>1</sup></a>W.&nbsp;Giele, Fermilab, giele@fnal.gov and M.R.&nbsp;Whalley, Durham U,
+m.r.whalley@durham.ac.uk
+</p><p>
+<a name="tthFtNtAAC"></a><a href="manual#tthFrefAAC"><sup>2</sup></a>Developed by D.&nbsp;Bourilkov and C.&nbsp;Group, University of Florida  <a href="http://arxiv.org/ps/hep-ph/0305126">hep-ph/0305126</a>.
+<br /><br /><hr />
+</p><p><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 3.06.<br />On  5 Apr 2002, 11:34.</small> </p>
+<!-- msnavigation--></td></tr><!-- msnavigation--></table><!-- msnavigation--><table width="100%" cellspacing="0" border="0" cellpadding="0"><tr><td>
+<!--
+<HR COLOR="#427ABF">
+
+<H6 ALIGN="right">
+<A TITLE="m.r.whalley@durham.ac.uk" HREF="mailto:m.r.whalley@durham.ac.uk?subject=LHAPDFWebsiteComments&cc=giele@fnal.gov">Comments and/or Problems</A></H6>
+<H6 ALIGN="center"><FONT FACE="Webdings" COLOR="#BF4249">=</FONT><FONT FACE="Arial"><A HREF="./">The 
+LHAPDF home page</A></FONT><FONT FACE="Webdings" COLOR="#BF4249">=</FONT><FONT COLOR="#BF4249"> </FONT>
+<A HREF="theory">Theory</A><FONT FACE="Webdings" COLOR="#BF4249"> =
+</FONT><A HREF="examples"><FONT COLOR="#BF4249">LHAPDF ready MC's</FONT></A><FONT FACE="Webdings" COLOR="#BF4249"> =
+</FONT><FONT FACE="Arial">
+<A HREF="http://www.cedar.ac.uk/downloads">Downloads</A> </FONT><FONT FACE="Webdings" COLOR="#BF4249">= </FONT>
+<A HREF="manual">online manual</A><FONT FACE="Webdings" COLOR="#BF4249"> =
+</FONT></H6>
+-->
+</td>
+</tr></table>
+<hr />
+<font size="-1">LHAPDF is maintained by Mike Whalley and Andy Buckley at Durham University (UK)<br /> 
+email: <a href="mailto:lhapdf@projects.hepforge.org">lhapdf@projects.hepforge.org</a>
+phone: +44-191-334-3807 fax:+44-191-334-3658
+</font>
+</div><div style="font-size:smaller; color:grey; float:right; margin-right:1em;" id="hepforge-lastupdated">Last updated: Thu Jul 16 17:36:15 2009</div></body></html>

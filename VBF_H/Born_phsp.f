@@ -20,7 +20,7 @@
       logical check
       parameter(check=.false.)
       logical BW
-      parameter (BW=.false.)
+      parameter (BW=.true.)
       real * 8 epsilon
       parameter (epsilon=1d-10)
       real * 8 pt1cut,pt2cut,pt1,pt2,m2jjmin
@@ -34,8 +34,9 @@ c     set initial- and final-state masses for Born and real
          ini=.false.
          pt1cut = 0d0
          pt2cut = 0d0
-         m2jjmin = 0d0**2
-         if ((pt1cut.ne.0d0).or.(pt2cut.ne.0d0)) then
+c         m2jjmin = 0.1d0**2
+         m2jjmin = 0d0
+         if ((pt1cut.ne.0d0).or.(pt2cut.ne.0d0).or.(m2jjmin.ne.0)) then
             write(*,*) '*************************************'
             write(*,*) '****       CUTS IN PLACE!!!      ****' 
             write(*,*) '*************************************'
@@ -50,7 +51,7 @@ c     set initial- and final-state masses for Born and real
       if (BW) then
          zlow=atan((Vmass2low  - Vmass2)/VmVw)
          zhigh=atan((min(Vmass2high,kn_sbeams)  - Vmass2)/VmVw)
-         z=zlow+(zhigh-zlow)*xborn(7)
+         z=zlow+(zhigh-zlow)*xborn(1)
          xjac=zhigh-zlow
          m2=VmVw*tan(z)+Vmass2
 c     The BW integrates to Pi ==> divide by Pi
@@ -64,16 +65,16 @@ c     The BW integrates to Pi ==> divide by Pi
 
 c     d x1 d x2 = d tau d y;
       taumin=m2/kn_sbeams
-      tau=exp(log(taumin)*(1-xborn(1)**2))
-      xjac=xjac*tau*abs(log(taumin))*2*xborn(1)
+      tau=exp(log(taumin)*(1-xborn(2)**2))
+      xjac=xjac*tau*abs(log(taumin))*2*xborn(2)
       s=kn_sbeams*tau
       kn_sborn=s
 c     ymax=|log(tau)|/2
-      y=-(1-2*xborn(2))*log(tau)/2
+      y=-(1-2*xborn(3))*log(tau)/2
       xjac=-xjac*log(tau)
 
 c     generate dijet squared mass m2jj
-      m2jj = xborn(3)*(sqrt(s)-sqrt(m2))**2
+      m2jj = xborn(4)*(sqrt(s)-sqrt(m2))**2
       xjac = xjac * (sqrt(s)-sqrt(m2))**2
       
       pV(0)=(s+m2-m2jj)/(2*sqrt(s))
@@ -86,7 +87,7 @@ c         write(*,*) '============================>',pVmod2
          pVmod = sqrt(pVmod2)
       endif
       
-      z=1-2*xborn(4)
+      z=1-2*xborn(5)
       xjac=xjac*2
       cth=1.5d0*(z-z**3/3)
       xjac=xjac*1.5d0*(1-z**2)
@@ -118,11 +119,12 @@ c     build jet momenta in the jet CM frame
       pJ(0,1) = sqrt(m2jj)/2
       pJ(0,2) = pJ(0,1)
 c     azimuth and polar angle of a jet
-      z=1-2*xborn(5)
+      z=1-2*xborn(6)
       xjac=xjac*2
       cthj=1.5d0*(z-z**3/3)
       xjac=xjac*1.5d0*(1-z**2)
-      phij = 2*pi*xborn(6)
+
+      phij = 2*pi*xborn(7)
       xjac=xjac*2*pi
 
       kn_jacborn = xjac
@@ -197,6 +199,8 @@ c     boost in the CM frame
             write(*,*) 'mom ',j,(kn_cmpborn(mu,j),mu=0,3)
          enddo
       endif
+
+      kn_minmass=ph_Hmass
       
       end
 

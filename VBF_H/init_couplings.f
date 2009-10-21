@@ -3,6 +3,9 @@
       include 'PhysPars.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
+      include 'nlegborn.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
       real * 8 masswindow
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
@@ -14,12 +17,12 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 c      ph_Hmass  = 100d0
 c      ph_Hwidth = 0.0033d0
-c      ph_Hmass  = 120d0
-c      ph_Hwidth = 0.00437d0 
+      ph_Hmass  = 120d0
+      ph_Hwidth = 0.00437d0 
 c      ph_Hmass  = 150d0
 c      ph_Hwidth = 0.0182d0
-      ph_Hmass  = 300d0
-      ph_Hwidth = 8.4086d0
+c      ph_Hmass  = 300d0
+c      ph_Hwidth = 8.4086d0
 
 
       ph_alphaem = 1d0/128.930d0
@@ -58,14 +61,15 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     set mass windows around Z-mass peak in unit of ph_Zwidth
 c     It is used in the generation of the Born phase space
       masswindow = 30
-      ph_Zmass2low=(ph_Zmass-masswindow*ph_Zwidth)**2
-      ph_Zmass2high=(ph_Zmass+masswindow*ph_Zwidth)**2
+c      ph_Zmass2low=(ph_Zmass-masswindow*ph_Zwidth)**2
+c      ph_Zmass2high=(ph_Zmass+masswindow*ph_Zwidth)**2
 
       ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)**2
       ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)**2
+c      ph_Hmass2low=0d0
+c      ph_Hmass2high=kn_sbeams/4
     
       ph_unit_e = sqrt(4*pi*ph_alphaem)
-
       end
 
 

@@ -125,67 +125,76 @@ c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
+
+C We deal here with the CKM matrix elements for VBF Higgs boson production
       include '../include/LesHouches.h'
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c colours of incoming quarks, antiquarks
       integer icolqi(2),icolai(2),icolgi(2),
      #        icolqf(2),icolaf(2),icolgf(2)
+c      data icolqi/ 501, 0   /
+c      data icolai/ 0  , 502 /
+c      data icolgi/ 502, 501 /
+c      data icolqf/ 502, 0   /
+c      data icolaf/ 0  , 501 /
+c      data icolgf/ 501, 502 /
+
       data icolqi/ 501, 0   /
       data icolai/ 0  , 502 /
-      data icolgi/ 502, 501 /
-      data icolqf/ 502, 0   /
-      data icolaf/ 0  , 501 /
-      data icolgf/ 501, 502 /
+      data icolqf/ 501, 0   /
+      data icolaf/ 0  , 502 /
       save icolqi,icolai,icolgi,icolqf,icolaf,icolgf
+      integer HWW,HZZ
+      integer flin_ret,flout_ret
 c neutral particles
+c      icolup(1,3)=0
+c      icolup(2,3)=0
+c      icolup(1,4)=0
+c      icolup(2,4)=0
+
+c     fix CKM for VBF WW -> H 
+      call particle_identif(HWW,HZZ)
+      if (idup(3).eq.HWW) then   
+         call CKM_reshuffling(idup(1),idup(4))
+         call CKM_reshuffling(idup(2),idup(5))
+      endif
+      
+      if(idup(1).gt.0) then
+         icolup(1,1)=501
+         icolup(2,1)=0
+      else
+         icolup(1,1)=0
+         icolup(2,1)=501
+      endif
+      
+      if(idup(2).gt.0) then
+         icolup(1,2)=502
+         icolup(2,2)=0
+      else
+         icolup(1,2)=0
+         icolup(2,2)=502
+      endif
+c     Higgs Boson                
       icolup(1,3)=0
       icolup(2,3)=0
-      icolup(1,4)=0
-      icolup(2,4)=0
-      do j=1,nlegborn
-         if(j.eq.3.or.j.eq.4) then
-            icolup(1,j)=0
-            icolup(2,j)=0
-         else
-            if(idup(j).gt.0.and.idup(j).le.5) then
-               if(j.le.2) then
-                  icolup(1,j)=icolqi(1)
-                  icolup(2,j)=icolqi(2)
-               else
-                  icolup(1,j)=icolqf(1)
-                  icolup(2,j)=icolqf(2)
-               endif
-            elseif(idup(j).lt.0.and.idup(j).ge.-5) then
-               if(j.le.2) then
-                  icolup(1,j)=icolai(1)
-                  icolup(2,j)=icolai(2)
-               else
-                  icolup(1,j)=icolaf(1)
-                  icolup(2,j)=icolaf(2)
-               endif
-            elseif(idup(j).eq.21) then
-               if(j.le.2) then
-                  icolup(1,j)=icolgi(1)
-                  icolup(2,j)=icolgi(2)
-               else
-                  icolup(1,j)=icolgf(1)
-                  icolup(2,j)=icolgf(2)
-               endif
-            else
-               write(*,*) ' invalid flavour'
-               stop
-            endif
-         endif
+c     change my Higgs boson codification back to PDG
+      idup(j) = 25
+      
+      do i=1,2
+         icolup(i,4)=icolup(i,1)
+         icolup(i,5)=icolup(i,2)
       enddo
       end
+
+
 
       subroutine resonances_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
 c     Resonance Z -> e-(3) e+(4)
-      call add_resonance(23,3,4)
+c      call add_resonance(23,3,4)
       end
 
 
@@ -501,8 +510,9 @@ c       averaged over initial polarization and
 c       color, and summed over final polarization and color
 c                     
 c                    -----
-c                   /      <- virtual gluon
-c                  /       c         q1 --->------------>------ q3
+c                   /     \ <- virtual gluon
+c                  /       \
+c         q1 --->------------>------ q3
 c                      |
 c                      | V
 c                      |
@@ -517,18 +527,19 @@ c
 c
 c  The vertex correction depicted below is given by:
 c                    -----
-c                   /      <- virtual gluon
-c                  /       c         q1 --->------------>------ q3
+c                   /     \ <- virtual gluon
+c                  /       \
+c         q1 --->------------>------ q3
 c                      |
 c                      V q 
 c                      |
 c   q1^2 = q2^2 = 0         q = q1-q3  
 c   q^2 < 0
 c
-c     V^nu = Gamma(1+ep) (4*Pi)^ep * CF * as/(4*Pi) * 
-c             (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+1/3*Pi^2-7)*B^nu
+c     V^\nu = Gamma(1+ep) (4*Pi)^ep * CF * as/(4*Pi) * 
+c             (-2/ep^2+(-2*ln(r)-3)/ep-ln(r)^2-3*ln(r)+1/3*Pi^2-7)*B^\nu
 c
-c     where B^nu is the Born vertex and r = mu^2/(-q^2)
+c     where B^\nu is the Born vertex and r = mu^2/(-q^2)
 c     See my formula (2.11) in Phys.Rev.D68:073005,2003 [hep-ph/0306109] 
 c
 c     The factor Gamma(1+ep) (4*Pi)^ep IS NOT RETURNED by this subroutine
@@ -597,3 +608,31 @@ c     2 * Re[M_V * M_B^*]
       end
 
 
+
+      subroutine CKM_reshuffling(flin,flout)
+      implicit none
+      integer flin,flout
+      integer i,j
+      logical ini
+      real * 8 CKM_sq(5,5)
+      include 'PhysPars.h' 
+      integer signn
+      external signn
+      save CKM_sq,ini
+      data ini/.true./
+c     no initial or final state t quark!!
+c      write(*,*) ph_CKM_matrix
+c      stop
+      if (ini) then
+         do j=1,5
+            do i=1,5
+               CKM_sq(i,j) = ph_CKM_matrix(i,j)**2
+            enddo
+         enddo
+         ini = .false.
+      endif
+      
+      call pick_random(5,CKM_sq(1,abs(flin)),flout)
+      flout = flout * signn(flin)
+
+      end

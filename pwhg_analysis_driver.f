@@ -55,15 +55,5 @@ c     call analysis routine
       call analysis(dsig0)
       end
 
-      subroutine pwhgtopout(n)
-      implicit none
-      include 'include/hepevt.h'
-      integer n
-c     simple interface to call topout in pwhg_bookhist.f      
-      nevhep=n
-      call topout
-      nevhep=0
-      end     
-
 
      

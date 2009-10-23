@@ -13,12 +13,14 @@
          if (mod(j,20000).eq.0) then
             write(*,*) "# of events processed =",j
             open(unit=99,file='LHEF_analysis.top')
-            call pwhgtopout(j)
+            call pwhgsetout
+            call pwhgtopout
             close(99)
          endif
       enddo
       open(unit=99,file='LHEF_analysis.top')
-      call pwhgtopout(nev)
+      call pwhgsetout
+      call pwhgtopout
       close(99)
       end
       

@@ -31,7 +31,8 @@ c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
       enddo
       if (powheginput('#testplots').eq.1d0) then
          open(unit=99,file=pwgprefix(1:lprefix)//'pwhgalone-output.top')
-         call pwhgtopout(nev)
+         call pwhgsetout
+         call pwhgtopout
          close(99)
       endif
       call lhefwritetrailer(iun)

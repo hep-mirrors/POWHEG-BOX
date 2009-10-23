@@ -89,6 +89,8 @@ c
          imode=1
          call mint(btilde,ndiminteg,ncall2,itmx2,ifold,imode,iun,
      #        xgrid,xint,ymax,sigbtl,errbtl)
+c finalize btilde output in histograms
+         call pwhgaddout
          flg_nlotest=.false.
          write(*,*) 'pos. weights:', sigbtl,' +-', errbtl
          sigbtl=sigbtl-signeg
@@ -118,6 +120,8 @@ c No folding for remnants:
             imode=1
             call mint(sigremnant,ndiminteg,ncall2,itmx2,ifoldrm,imode,
      #         iun,xgridrm,xint,ymaxrm,sigrm,errrm)
+c add finalized remnant contributions in histograms
+            call pwhgaddout
             flg_nlotest=.false.
             write(*,*) 'remnants', sigrm,' +-', errrm
          else
@@ -135,8 +139,7 @@ c
 c Output NLO histograms
          if (powheginput('#testplots').eq.1d0) then
             open(unit=99,file=pwgprefix(1:lprefix)//'NLO.top')
-            n=powheginput('itmx2')*powheginput('ncall2')
-            call pwhgtopout(n)
+            call pwhgtopout
             close(99)
          endif
       else

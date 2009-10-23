@@ -9,7 +9,7 @@ C    LAST REVISED oct 1990 (Add multi-plots on one page, routines MULTITOP,
 C         			PWHGTFILL,...)
 C**********************************************************************
 C
-C Fills up to 100 histograms with up to 100 bins. 
+C Fills up to nmh histograms with up to nxm bins. 
 C Gives a data file (to be specified in the calling program by assigning 
 C a file name to unit 98) and a topdrawer file (to be specified in the 
 C calling program by assigning a file name to unit 99).
@@ -1203,21 +1203,46 @@ C This may happen if PWHGFINAL is called prior to PWHGCOPY
 
 
 
-      subroutine pwhgbookup(n,string,del,xl,xu)
+      subroutine pwhgbookup(n,string,scale,del,xl,xu)
       implicit none
+      include 'pwhg_book.h'
       real * 8 del,xl,xu
       integer n
       character * (*) string
-c     For each required histogram n, 3 histograms are booked. Values in
-c     analysis are accumulated in n.  For each integration step, the
-c     histogram n is summed into n+100, and the square of its value is
-c     summed into n+200. Statistical errors are put into n+300.
+      character * 3 scale
+c     For each required histogram n, 5 histograms are booked:
+c     n, n+nmh,n+nmh2,n+nmh3,n+nmh4 (nmh2=2*nmh, etc.)
+c     Results from a correlated set of output configurations
+c     are accumulated in n.
+c     A call to pwhgaccumup causes
+c     the histogram n to be summed to the n+nmh, its square is
+c     summed into n+nmh2. and n is zeroed.
+c
+c     When the subroutine pwhgaddout is called, the statistical
+c     analysis of the n+nmh and n+nmh2 content is performed, the
+c     average (with respect to the number of calls to pwhgaccumup)
+c     is added to the n+nmh3, and the error is summed in quadrature
+c     to the n+nmh4; n+nmh and n+nmh2 are zeroed.
+c
+c     If instead pwhgsetout is called, the statistical
+c     analysis of the n+nmh and n+nmh2 content is performed, the
+c     average (with respect to the number of calls to pwhgaccumup)
+c     is stored in the n+nmh3, and the error is stored in the n+nmh4;
+c     n+nmh and n+nmh2 are left untouched
+c.
+      if(n.gt.nmh) then
+         write(*,*) ' error: no more than ',nmh,' histograms'
+         write(*,*) ' increase nmh in pwhg_book.h'
+         call exit(1)
+      endif
       call pwhgbook(n,  string,del,xl,xu)
-      call pwhgbook(n+100,'tmp ',del,xl,xu)
-      call pwhgbook(n+200,'tmp square',del,xl,xu)
-      call pwhgbook(n+300,'error ',del,xl,xu)
+      call pwhgbook(n+nmh,'tmp ',del,xl,xu)
+      call pwhgbook(n+nmh2,'tmp square',del,xl,xu)
+c this is the histogram that will be output
+      call pwhgbook(n+nmh3,string,del,xl,xu)
+c the scale for plotting (log or lin) is encoded in the title
+      call pwhgbook(n+nmh4,scale//'error ',del,xl,xu)
       call pwhgputtag(n,'YST')
-      call pwhgputtag(n+300,'NST')
       return
       end
 
@@ -1229,57 +1254,137 @@ c     summed into n+200. Statistical errors are put into n+300.
       integer j
       character * 3 tag
       real *8 dummy
+      integer l
+      real * 8 xxx
 C
 c     nmb and nxm defined in  pwhg_book.h 
 c     nmb is the number of histograms, nxm the number of bins   
 c
-c     Accumulates values (j+100) and squared values (j+200) for
+c     Accumulates values (j+nmh) and squared values (j+nmh2) for
 c     statistical analysis, then empty the original histogram j.
 c
       do j=1,nmb
          call pwhggettag(j,tag)
          if(tag.eq.'YST') then
-             call pwhgopera(j,'A',j+100,j+200,dummy,dummy)
+            do l=1,nbin(j)
+               hist(j+nmh,l)=hist(j+nmh,l)+hist(j,l)
+               hist(j+nmh2,l)=hist(j+nmh2,l)+hist(j,l)**2
+               hist(j,l)=0
+            enddo
+            ient(j+nmh)=ient(j+nmh)+1
+            uscore(j+nmh)=uscore(j+nmh)+uscore(j)
+            uscore(j+nmh2)=uscore(j+nmh2)+uscore(j)**2
+            oscore(j+nmh)=oscore(j+nmh)+oscore(j)
+            oscore(j+nmh2)=oscore(j+nmh2)+oscore(j)**2
+            uscore(j)=0
+            oscore(j)=0
          endif
       enddo
       return
       end
 
-      subroutine pwhgstatup
+      subroutine pwhgaddout
+c     When the subroutine pwhgaddout is called, the statistical
+c     analysis of the n+nmh and n+nmh2 content is performed, the
+c     average (with respect to the number of calls to pwhgaccumup)
+c     is added to the n+nmh3, and the error is summed in quadrature
+c     to the n+nmh4; n+nmh and n+nmh2 are zeroed.
       implicit none
       include 'pwhg_book.h'
-      include 'include/pwhg_flg.h'
       integer j
       character * 3 tag
       real *8 dummy
+      integer l
+      real * 8 xxx,xsum,xsumsq
+      logical set
+      set=.false.
+      goto 10
+      entry pwhgsetout
+c     If instead pwhgsetout is called, the statistical
+c     analysis of the n+nmh and n+nmh2 content is performed, the
+c     average (with respect to the number of calls to pwhgaccumup)
+c     is stored in the n+nmh3, and the error is stored in the n+nmh4;
+c     n+nmh and n+nmh2 are left untouched
+      set=.true.
+ 10   continue
 c
       do j=1,nmb
 c     finish statistical analysis
          call pwhggettag(j,tag)
          if(tag.eq.'YST') then
-            if(flg_withdamp.or.flg_withreg) then
-c     CAVEAT: Workaround in case of regular or remnants.  Since
-c     pwhgaccumup is called twice (once by btiltde and once by
-c     sigremnants) for each iteration, the number of entries of the
-c     first bin of the j+200-th histogram, that is the number of
-c     pwhgaccumup calls, must be divided by two.
-               ihis(j+200,1)=ihis(j+200,1)/2 
-            endif
-c     accumulates j+100 rescaled in j (mean value) and set in j+200 the
+c     accumulates j+nmh rescaled in j (mean value) and set in j+nmh2 the
 c     error estimate (squared standard deviation).  The rescaling factor
 c     for the mean value is the number of calls to pwhgaccumup, which in
-c     turn corresponds to the number of entries of any bin of the j+200-th
+c     turn corresponds to the number of entries of any bin of the j+nmh2-th
 c     histogram, as filled by pwhgaccumup.
-            call pwhgopera(j+100,'E',j+200,j,dummy,dummy)
-c     accumulates in j+300 errors in quadrature (standard deviation)
-c     in this case works trivially!
-            call pwhgopera(j+200,'Q',j+300,j+300,dummy,dummy)               
-c     now we have in the j-th histogram the mean values and in the
-c     j+300-th the errors, these two must be passed to topout
+            if(set) then
+               do l=1,nbin(j)
+                  hist(j+nmh3,l)=0
+                  hist(j+nmh4,l)=0
+               enddo
+               oscore(j+nmh3)=0
+               uscore(j+nmh3)=0
+               oscore(j+nmh4)=0
+               uscore(j+nmh4)=0
+               ient(j+nmh3)=0
+            endif
+            xxx=1d0/ient(j+nmh)
+            do l=1,nbin(j)
+               xsum=hist(j+nmh,l)
+               xsumsq=hist(j+nmh2,l)
+               hist(j+nmh3,l)=hist(j+nmh3,l)+xxx*xsum
+               hist(j+nmh4,l)=sqrt(hist(j+nmh4,l)**2
+     1             + xxx**2*(abs(xsumsq-xsum**2*xxx)))
+               
+            enddo
+            xsum=oscore(j+nmh)
+            xsumsq=oscore(j+nmh2)
+            oscore(j+nmh3)=oscore(j+nmh3)+xxx*xsum
+            oscore(j+nmh4)=sqrt(oscore(j+nmh4)**2
+     1             + xxx**2*(abs(xsumsq-xsum**2*xxx)))
+            xsum=uscore(j+nmh)
+            xsumsq=uscore(j+nmh2)
+            uscore(j+nmh3)=uscore(j+nmh3)+xxx*xsum
+            uscore(j+nmh4)=sqrt(uscore(j+nmh4)**2
+     1             + xxx**2*(abs(xsumsq-xsum**2*xxx)))
+            ient(j+nmh3)=ient(j+nmh3)+ient(j+nmh)
+            if(.not.set) then
+               do l=1,nbin(j)
+                  hist(j+nmh,l)=0
+                  hist(j+nmh2,l)=0
+               enddo
+               oscore(j+nmh)=0
+               oscore(j+nmh2)=0
+               uscore(j+nmh)=0
+               uscore(j+nmh2)=0
+               ient(j+nmh)=0
+            endif
          endif
       enddo
       end
       
+
+
+      subroutine pwhgtopout
+      implicit none
+      include 'pwhg_book.h'
+      character * 50 title0,scale
+      character * 3 tag
+      integer i
+      do i=1,nmb
+         call pwhggettag(i,tag)
+         if(tag.eq.'YST') then
+            call pwhgfinal(i+nmh3)
+            call pwhgfinal(i+nmh4)
+            call pwhggettitle(i,title0)
+            call pwhggettitle(i+nmh4,scale)
+            call pwhgmultitop(i+nmh3,i+nmh4,2,3,title0,' ',scale(2:4))
+         endif
+      enddo
+      end            
+
+
+
 C*******************************************************************
 C     END OF THE HISTOGRAMMING PACKAGE
 C*******************************************************************

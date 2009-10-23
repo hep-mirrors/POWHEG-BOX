@@ -125,7 +125,8 @@ c     this call is necessary to read the prefix of the file
       common/cpwgprefix/pwgprefix,lprefix
       open(unit=99,file=pwgprefix(1:lprefix)//'POWHEG+HERWIG-output.top'
      #     ,status='unknown')
-      call topout
+      call pwhgsetout
+      call pwhgtopout
       close(99)
       end
       
@@ -138,4 +139,5 @@ c     this call is necessary to read the prefix of the file
       endif
       xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
+      call pwhgaccumup 
       end

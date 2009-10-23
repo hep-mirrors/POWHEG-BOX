@@ -9,8 +9,6 @@ c  pwhgfill  :  fills the histograms with data
       implicit none
       real * 8 pi,pi2
       parameter(pi = 3.141592653589793D0, pi2 = 9.869604401089358D0)
-      integer maxnumplot
-      common/cmaxnumplot/maxnumplot
       real * 8 ptvbcut
       common/cptvbcut/ptvbcut
       character * 10 cut
@@ -19,76 +17,98 @@ c  pwhgfill  :  fills the histograms with data
       write(unit=cut,fmt="(f5.2)") ptvbcut
       call pwhginihist
 
-      call pwhgbookup(1,'pt W ptW>'//cut,20d0,0d0,800d0)
-      call pwhgbookup(2,'pt J1 ptW>'//cut,20d0,0d0,800d0)
-      call pwhgbookup(3,'pt J2 ptW>'//cut,20d0,0d0,800d0)
-      call pwhgbookup(4,'inv mass W ptW>'//cut,1d0,60d0,120d0)
+      call pwhgbookup(1,'pt W ptW>'//cut,'LOG',20d0,0d0,800d0)
+      call pwhgbookup(2,'pt J1 ptW>'//cut,'LOG',20d0,0d0,800d0)
+      call pwhgbookup(3,'pt J2 ptW>'//cut,'LOG',20d0,0d0,800d0)
+      call pwhgbookup(4,'inv mass W ptW>'//cut,'LOG',1d0,60d0,120d0)
 
-      call pwhgbookup(5,'y W, ptW>10 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(6,'y W, ptW>20 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(7,'y W, ptW>40 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(8,'y W, ptW>60 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(9,'y W, ptW>80 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(10,'y W, ptW>100 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(11,'y W, ptW>150 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(12,'y W, ptW>200 ',0.4d0,-5d0,5d0)
-      call pwhgbookup(13,'y W, ptW>300 ',0.4d0,-5d0,5d0)
+      call pwhgbookup(5,'y W, ptW>10 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(6,'y W, ptW>20 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(7,'y W, ptW>40 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(8,'y W, ptW>60 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(9,'y W, ptW>80 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(10,'y W, ptW>100 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(11,'y W, ptW>150 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(12,'y W, ptW>200 ','LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(13,'y W, ptW>300 ','LOG',0.4d0,-5d0,5d0)
 
-      call pwhgbookup(14,'y WJ1, ptJ1>10 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(15,'y WJ1, ptJ1>20 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(16,'y WJ1, ptJ1>40 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(17,'y WJ1, ptJ1>60 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(18,'y WJ1, ptJ1>80 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(19,'y WJ1, ptJ1>100 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(20,'y WJ1, ptJ1>150 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(21,'y WJ1, ptJ1>200 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(22,'y WJ1, ptJ1>300 ptW>'//cut,0.4d0,-5d0,5d0)
+      call pwhgbookup(14,'y WJ1, ptJ1>10 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(15,'y WJ1, ptJ1>20 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(16,'y WJ1, ptJ1>40 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(17,'y WJ1, ptJ1>60 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(18,'y WJ1, ptJ1>80 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(19,'y WJ1, ptJ1>100 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(20,'y WJ1, ptJ1>150 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(21,'y WJ1, ptJ1>200 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(22,'y WJ1, ptJ1>300 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
 
-      call pwhgbookup(23,'dy W-J1, ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(24,'dy W-J1, ptJ1>20 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(25,'dy W-J1, ptJ1>40 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(26,'dy W-J1, ptJ1>60 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(27,'dy W-J1, ptJ1>80 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(28,'dy W-J1, ptJ1>100 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(29,'dy W-J1, ptJ1>150 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(30,'dy W-J1, ptJ1>200 ptW>'//cut,0.4d0,-10d0,10d0)
-      call pwhgbookup(31,'dy W-J1, ptJ1>300 ptW>'//cut,0.4d0,-10d0,10d0)
+      call pwhgbookup(23,'dy W-J1, ptW>'//cut,'LOG',0.4d0,-10d0,10d0)
+      call pwhgbookup(24,'dy W-J1, ptJ1>20 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(25,'dy W-J1, ptJ1>40 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(26,'dy W-J1, ptJ1>60 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(27,'dy W-J1, ptJ1>80 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(28,'dy W-J1, ptJ1>100 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(29,'dy W-J1, ptJ1>150 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(30,'dy W-J1, ptJ1>200 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
+      call pwhgbookup(31,'dy W-J1, ptJ1>300 ptW>'//cut,'LOG',
+     1     0.4d0,-10d0,10d0)
 
 
-      call pwhgbookup(32,'pt e+ ptW>'//cut,20d0,0d0,800d0)
-      call pwhgbookup(33,'pt ve ptW>'//cut,20d0,0d0,800d0)
-      call pwhgbookup(34,'y e+, pt e+>10 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(35,'y e+, pt e+>20 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(36,'y e+, pt e+>40 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(37,'y e+, pt e+>60 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(38,'y e+, pt e+>80 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(39,'y ve, pt ve>100 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(40,'y ve, pt ve>10 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(41,'y ve, pt ve>20 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(42,'y ve, pt ve>40 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(43,'y ve, pt ve>60 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(44,'y ve, pt ve>80 ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(45,'y ve, pt ve>100 ptW>'//cut,0.4d0,-5d0,5d0)     
+      call pwhgbookup(32,'pt e+ ptW>'//cut,'LOG',20d0,0d0,800d0)
+      call pwhgbookup(33,'pt ve ptW>'//cut,'LOG',20d0,0d0,800d0)
+      call pwhgbookup(34,'y e+, pt e+>10 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(35,'y e+, pt e+>20 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(36,'y e+, pt e+>40 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(37,'y e+, pt e+>60 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(38,'y e+, pt e+>80 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(39,'y ve, pt ve>100 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(40,'y ve, pt ve>10 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(41,'y ve, pt ve>20 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(42,'y ve, pt ve>40 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(43,'y ve, pt ve>60 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(44,'y ve, pt ve>80 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)
+      call pwhgbookup(45,'y ve, pt ve>100 ptW>'//cut,'LOG',
+     1     0.4d0,-5d0,5d0)     
 
-      call pwhgbookup(46,'y e+,ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(47,'y ve,ptW>'//cut,0.4d0,-5d0,5d0)
-      call pwhgbookup(48,'pt e+, zoom ptW>'//cut,4d0,0d0,100d0)
-      call pwhgbookup(49,'pt ve, zoom ptW>'//cut,4d0,0d0,100d0)
-      call pwhgbookup(50,'pt W, zoom ptW>'//cut,2.5d0,0d0,100d0)
-      call pwhgbookup(51,'pt W, zoom2 ptW>'//cut,0.5d0,0d0,20d0)
-      call pwhgbookup(52,'pt J1, zoom ptW>'//cut,0.5d0,0d0,20d0)
-      call pwhgbookup(53,'pt J2, zoom ptW>'//cut,0.5d0,0d0,20d0)
-      call pwhgbookup(54,'pt_rel J1',0.5d0,0d0,15d0)
-      call pwhgbookup(55,'pt_rel J2',0.5d0,0d0,15d0)
-      call pwhgbookup(56,'azimuth W+',0.1d0,-3.15d0,3.15d0)
-      call pwhgbookup(57,'total x-sec',1d0,0d0,1d0)    
-      maxnumplot = 57
-
-      if (maxnumplot.ge.100) then
-         write(*,*) 'Booking more than 100 histograms'
-         write(*,*) 'Errors may occur in hisogramming package'
-         stop
-      endif
+      call pwhgbookup(46,'y e+,ptW>'//cut,'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(47,'y ve,ptW>'//cut,'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(48,'pt e+, zoom ptW>'//cut,'LOG',4d0,0d0,100d0)
+      call pwhgbookup(49,'pt ve, zoom ptW>'//cut,'LOG',4d0,0d0,100d0)
+      call pwhgbookup(50,'pt W, zoom ptW>'//cut,'LOG',2.5d0,0d0,100d0)
+      call pwhgbookup(51,'pt W, zoom2 ptW>'//cut,'LOG',0.5d0,0d0,20d0)
+      call pwhgbookup(52,'pt J1, zoom ptW>'//cut,'LOG',0.5d0,0d0,20d0)
+      call pwhgbookup(53,'pt J2, zoom ptW>'//cut,'LOG',0.5d0,0d0,20d0)
+      call pwhgbookup(54,'pt_rel J1','LOG',0.5d0,0d0,15d0)
+      call pwhgbookup(55,'pt_rel J2','LOG',0.5d0,0d0,15d0)
+      call pwhgbookup(56,'azimuth W+','LOG',0.1d0,-3.15d0,3.15d0)
+      call pwhgbookup(57,'total x-sec','LOG',1d0,0d0,1d0)    
 
       end
 
@@ -507,28 +527,3 @@ c     endif buildjets
       cth2 = scalprod**2/pin2/pjet2
       get_ptrel = sqrt(pin2*abs(1d0 - cth2))
       end
-
-   
- 
-      subroutine topout
-      implicit none
-      include '../include/hepevt.h'
-      character * 50 title
-      integer i
-      integer maxnumplot
-      common/cmaxnumplot/maxnumplot
-
-      call pwhgstatup 
-      do i=1,maxnumplot
-        call pwhgfinal(i)
-        call pwhgfinal(i+300)
-        call pwhggettitle(i,title)
-        call pwhgmultitop(i,i+300,2,3,title,' ','LOG')
-      enddo
-      end             
-    
-
-
-
-     
-      

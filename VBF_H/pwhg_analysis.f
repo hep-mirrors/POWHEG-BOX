@@ -11,16 +11,13 @@ c  pwhgfill  :  fills the histograms with data
       include 'PhysPars.h'
       real * 8 pi,pi2
       parameter(pi = 3.141592653589793D0, pi2 = 9.869604401089358D0)
-      integer maxnumplot
-      common/cmaxnumplot/maxnumplot
       real * 8 ptvbcut
       common/cptvbcut/ptvbcut
       character * 10 cut
       integer i,nsigma,diag
       real * 8 step,invmasslow,invmasshigh,ymax
-      logical lin(100)
       real * 8 binsize(100)
-      common/pwhghistcommon/lin,binsize
+      common/pwhghistcommon/binsize
       logical ini
       data ini/.true./
       save ini
@@ -39,10 +36,6 @@ c  pwhgfill  :  fills the histograms with data
          ini=.false.
       endif
 
-      do i=1,100
-         lin(i) = .false.
-      enddo
-
       nsigma = 3
       invmasslow =ph_Hmass-nsigma*ph_Hwidth
       invmasshigh=ph_Hmass+nsigma*ph_Hwidth
@@ -53,134 +46,108 @@ c  pwhgfill  :  fills the histograms with data
       call pwhginihist
       diag=1
       binsize(diag) = 20d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'pt H ',binsize(diag),0d0,400d0)
+      call pwhgbookup(diag,'pt H ','LIN',binsize(diag),0d0,400d0)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'y H ',binsize(diag),-ymax,ymax)
+      call pwhgbookup(diag,'y H ','LIN',binsize(diag),-ymax,ymax)
 
       diag=diag+1
       binsize(diag) = step
-      call pwhgbookup(diag,'inv mass ',binsize(diag),invmasslow,
+      call pwhgbookup(diag,'inv mass ','LOG',binsize(diag),invmasslow,
      #     invmasshigh)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.      
-      call pwhgbookup(diag,'abs(yj(1) - yj(2)) ',binsize(diag),0d0,
-     #     2*ymax)
+      call pwhgbookup(diag,'abs(yj(1) - yj(2)) ','LIN',binsize(diag),
+     #     0d0,2*ymax)
 
       diag=diag+1
       binsize(diag) = 40d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'mjj ',binsize(diag),0d0,3600d0)
+      call pwhgbookup(diag,'mjj ','LIN',binsize(diag),0d0,3600d0)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'abs(yj(1) - yj(2))'//cut,binsize(diag),0d0,
-     #     2*ymax)
+      call pwhgbookup(diag,'abs(yj(1) - yj(2))'//cut,'LIN',
+     #     binsize(diag),0d0,2*ymax)
 
       diag=diag+1
       binsize(diag) = 40d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'mjj'//cut,binsize(diag),0d0,3600d0)
+      call pwhgbookup(diag,'mjj'//cut,'LIN',binsize(diag),0d0,3600d0)
 
 
       diag=diag+1
       binsize(diag) = 20d0
-      call pwhgbookup(diag,'ptj(3)'//cut,binsize(diag),0d0,400d0)
-c      lin(diag) = .true.
+      call pwhgbookup(diag,'ptj(3)'//cut,'LOG',binsize(diag),0d0,400d0)
 
       diag=diag+1
       binsize(diag) = 20d0
-      call pwhgbookup(diag,'ptj(2)'//cut,binsize(diag),0d0,400d0)
+      call pwhgbookup(diag,'ptj(2)'//cut,'LOG',binsize(diag),0d0,400d0)
 
       diag=diag+1
       binsize(diag) = 20d0
-      call pwhgbookup(diag,'ptj(1)'//cut,binsize(diag),0d0,400d0)
+      call pwhgbookup(diag,'ptj(1)'//cut,'LOG',binsize(diag),0d0,400d0)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3)'//cut,binsize(diag),-ymax,ymax)
-      lin(diag) = .true.
+      call pwhgbookup(diag,'yj(3)'//cut,'LIN',binsize(diag),-ymax,ymax)
  
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3) pt_3>1'//cut,binsize(diag),-ymax,ymax)
-      lin(diag) = .true.
+      call pwhgbookup(diag,'yj(3) pt_3>1'//cut,'LIN',
+     1    binsize(diag),-ymax,ymax)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3) pt_3>5'//cut,binsize(diag),-ymax,ymax)
-      lin(diag) = .true.
+      call pwhgbookup(diag,'yj(3) pt_3>5'//cut,'LIN',
+     1 binsize(diag),-ymax,ymax)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3) pt_3>10'//cut,binsize(diag),
+      call pwhgbookup(diag,'yj(3) pt_3>10'//cut,'LIN',binsize(diag),
      #     -ymax,ymax)
-      lin(diag) = .true.
 
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'yj(2)'//cut,binsize(diag),-ymax,ymax)
+      call pwhgbookup(diag,'yj(2)'//cut,'LIN',binsize(diag),-ymax,ymax)
 
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(1)'//cut,binsize(diag),-ymax,ymax)
-      lin(diag) = .true.
+      call pwhgbookup(diag,'yj(1)'//cut,'LIN',binsize(diag),-ymax,ymax)
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'yj(3)-0.5*(yj(1)+yj(2))'//cut,
+      call pwhgbookup(diag,'yj(3)-0.5*(yj(1)+yj(2))'//cut,'LIN',
      #     binsize(diag),-ymax,ymax) 
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'yj(3)-0.5*(yj(1)+yj(2)); pt_3>5'//cut,
+      call pwhgbookup(diag,'yj(3)-0.5*(yj(1)+yj(2)); pt_3>5'//cut,'LIN',
      #     binsize(diag),-ymax,ymax) 
 
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'min(abs(yj(1)),abs(yj(2)))'//cut,
+      call pwhgbookup(diag,'min(abs(yj(1)),abs(yj(2)))'//cut,'LIN',
      #     binsize(diag),0d0,ymax)
 
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'max(abs(yj(1)),abs(yj(2)))'//cut,
+      call pwhgbookup(diag,'max(abs(yj(1)),abs(yj(2)))'//cut,'LIN',
      #     binsize(diag),0d0,ymax)
-      lin(diag) = .true.
 
       diag=diag+1
       binsize(diag) = 0.1d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'delphi_jj'//cut,binsize(diag),0d0,3.2d0)
+      call pwhgbookup(diag,'delphi_jj'//cut,'LIN',
+     1  binsize(diag),0d0,3.2d0)
 
 
       diag=diag+1
       binsize(diag) = 40d0
-      lin(diag) = .true.
-      call pwhgbookup(diag,'mHjj ',binsize(diag),0d0,3600d0)
-
-
-      maxnumplot = diag
-
-      if (maxnumplot.ge.100) then
-         write(*,*) 'Booking more than 100 histograms'
-         write(*,*) 'Errors may occur in hisogramming package'
-         stop
-      endif
-
+      call pwhgbookup(diag,'mHjj ','LIN',binsize(diag),0d0,3600d0)
       end
 
       
@@ -223,9 +190,8 @@ c arrays to reconstruct jets
      $     mjjmin,Rsep_jlmin
       logical ylep_between_jets,jet_opphem
       logical onlyquarks,Z_exchange
-      logical lin(100)
       real * 8 binsize(100)
-      common/pwhghistcommon/lin,binsize
+      common/pwhghistcommon/binsize
 
       logical iniptcut
       save iniptcut
@@ -677,32 +643,6 @@ c      call pwhgfill(n+100,x,y*y)
 c      end
 
 
-
-
-      subroutine topout
-      implicit none
-      include '../include/hepevt.h'
-      character * 50 title
-      integer i
-      integer maxnumplot
-      common/cmaxnumplot/maxnumplot
-      logical lin(100)
-      real * 8 binsize(100)
-      common/pwhghistcommon/lin,binsize
-      character * 3 scale
-      call pwhgstatup 
-      do i=1,maxnumplot
-        call pwhgfinal(i)
-        call pwhgfinal(i+300)
-        call pwhggettitle(i,title)
-        if (lin(i)) then
-           scale = 'LIN'
-        else
-           scale = 'LOG'
-        endif
-        call pwhgmultitop(i,i+300,2,3,title,' ',scale)
-      enddo
-      end            
 
 
 

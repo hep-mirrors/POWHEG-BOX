@@ -41,6 +41,7 @@ c     set st_muren2 equal to pt2 for scalup value
             call set_rad_scales(ptsq)
             call gen_leshouches
          else
+c CAVEAT TODO
 c     remember to set st_muren2 for scalup value for regular contributions
             call gen_leshouches_reg
          endif         

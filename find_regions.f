@@ -48,6 +48,8 @@ c
      2    nflmap
       common/cmapflavours/fllist,taglist,intfl,nflmap
       integer l,ip,nflmapsav,k
+      logical debug
+      parameter(debug=.false.)
       nflmap=0
       do ip=1,flst_nreal
          do l=1,nlegreal
@@ -65,11 +67,13 @@ c now do the same with Born terms; nflmap should not change;
          write(*,*) ' found Born flavour not present in real graphs'
          stop
       endif
-      write(*,*) ' flavour mapping'
-      do k=1,nflmap
-         write(*,*) fllist(k),taglist(k),intfl(k)
-      enddo
-      write(*,*) ' end flavour mapping'
+      if (debug) then 
+         write(*,*) ' flavour mapping'
+         do k=1,nflmap
+            write(*,*) fllist(k),taglist(k),intfl(k)
+         enddo
+         write(*,*) ' end flavour mapping'
+      endif
       end
 
       subroutine unmapflavours
@@ -196,9 +200,10 @@ c integer nregions
 c integer iregion(2,nregions): the indices of particles forming singular
 c                              regions i,j (i<j).
 c                              For initial state singularities, if the
-c                              emitter is either initial state particles,
+c                              emitter can be both of the initial state 
+c                              particles, 
 c                              and if the radiated particle is a gluon,
-c                              only one region is emitted with first
+c                              only one region is generated with first
 c                              index equal to zero.
 c It calls: logical validBorn(n-1,bflav), that returns true if the flavour
 c                                         configuration bflav admits
@@ -207,8 +212,6 @@ c                                         a non-vanishing Born amplitude.
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer nleg,rflav(nleg),nregions,iregions(2,maxregions)
-      integer nlight
-      parameter (nlight=5)
       logical ireg(2)
       logical validBorn
       external validBorn
@@ -661,7 +664,7 @@ c flavour structures arising as underlying Born
 c are they the same permutation?
             call reorder_regions(nlegborn,flst_born(1,k),
      #  flst_uborn(1,j),flst_alr(1,j),flst_emitter(j),iret)
-            if(iret.eq.1) write(*,*) ' reordering took place'
+c            if(iret.eq.1) write(*,*) ' reordering took place'
             if(iret.ne.-1) goto 11
          enddo
 c they are inequivalent

@@ -119,8 +119,8 @@ c     build jet momenta in the jet CM frame
       pJ(0,1) = sqrt(m2jj)/2
       pJ(0,2) = pJ(0,1)
 c     azimuth and polar angle of a jet
-      z=1-2*xborn(6)
-      xjac=xjac*2
+      z=1-2*xborn(6)**2
+      xjac=xjac*4*xborn(6)
       cthj=1.5d0*(z-z**3/3)
       xjac=xjac*1.5d0*(1-z**2)
 

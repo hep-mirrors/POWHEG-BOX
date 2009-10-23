@@ -4,7 +4,7 @@
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       logical debug
-      parameter (debug=.true.)
+      parameter (debug=.false.)
       integer j,i,ii,jj,k
       integer charge3(-6:6)
       data charge3 /-2,1,-2,1,-2,1,0,-1,2,-1,2,-1,2/

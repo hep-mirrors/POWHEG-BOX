@@ -14,9 +14,8 @@ ifeq ($(shell uname),Linux)
 #SYSOBJ=
 F77= g77 -Wall -fno-automatic 
 #-ffortran-bounds-check
-DEBUG=-ggdb -pg
-#DEBUG=-O3
-#OPT=-O3
+#DEBUG=-ggdb -pg
+OPT=-O3
 SYSOBJ=trapfpe.o
 endif
 ifeq ($(shell uname),Darwin)
@@ -47,8 +46,8 @@ FF=$(F77) $(OPT) $(DEBUG)
 
 INCLUDE =$(shell echo ../include/*.h *.h)
 
-PDFPACK=mlmpdfif.o hvqpdfpho.o
-#PDFPACK=lhapdfif.o
+#PDFPACK=mlmpdfif.o hvqpdfpho.o
+PDFPACK=lhapdfif.o
 LIBS=-L/home/oleari/fortran/LHAPDF_lib/lib -lLHAPDF -static \
 	 -L/home/oleari/fortran/dhelas3 -ldhelas3
 
@@ -78,10 +77,15 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
+MADGRAPH=fastjetsisconewrap.o fastjetktwrap.o cbsb_hsbcb.o cbu_hsbd.o \
+	bbbb_hbbbb.o bbcb_hbbcb.o bbd_hbbd.o dd_hdd.o ud_hud.o \
+	sbd_hsbd.o sd_hsd.o udb_hudb.o cu_hcu.o ucb_hucb.o \
+	cbsb_hsbcbg.o cbu_hsbdg.o cs_hscg.o 
+
 pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
 
-LHEFANAL=lhef_analysis.o boostrot.o \
+LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o  lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
 	$(SYSOBJ)

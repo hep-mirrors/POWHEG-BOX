@@ -76,3 +76,12 @@ c     2 * Re[M_V * M_B^*]
       end
 
 
+      subroutine setvirtual_fast(res)
+      implicit none
+      include 'nlegborn.h'
+      include '../include/pwhg_flst.h'
+      real * 8 res(flst_nborn)
+     
+      write(*,*) 'DUMMY'
+      stop
+      end

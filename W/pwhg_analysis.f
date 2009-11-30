@@ -7,21 +7,57 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
+      include  '../include/LesHouches.h'
       real * 8 pi,pi2
       parameter(pi = 3.141592653589793D0, pi2 = 9.869604401089358D0)
       real * 8 ptvbcut
       common/cptvbcut/ptvbcut
       character * 10 cut
       integer i
+      character * 4 part,apart
+      common/cparnames/part,apart
+
+      if(lprup(1).eq.10011) then
+         part='e-  '
+         apart='ve~ '
+         
+      elseif(lprup(1).eq.(10000-11)) then
+         part='e+  '
+         apart='ve  '   
+
+      elseif(lprup(1).eq.10013) then
+         part='mu- '
+         apart='vmu~'
+         
+      elseif(lprup(1).eq.(10000-13)) then
+         part='mu+ '
+         apart='vmu ' 
+
+      elseif(lprup(1).eq.10015) then
+         part='tau-'
+         apart='vta~'
+         
+      elseif(lprup(1).eq.(10000-15)) then
+         part='tau+'
+         apart='vtau'    
+
+  
+      else
+c     not yet implemented
+         write(*,*) 'non leptonic W decays '//
+     #        'not yet implemented'
+         stop
+      endif   
 
       write(unit=cut,fmt="(f5.2)") ptvbcut
+
       call pwhginihist
 
       call pwhgbookup(1,'pt W ptW>'//cut,'LOG',20d0,0d0,800d0)
       call pwhgbookup(2,'pt J1 ptW>'//cut,'LOG',20d0,0d0,800d0)
       call pwhgbookup(3,'pt J2 ptW>'//cut,'LOG',20d0,0d0,800d0)
       call pwhgbookup(4,'inv mass W ptW>'//cut,'LOG',1d0,60d0,120d0)
-
+      
       call pwhgbookup(5,'y W, ptW>10 ','LOG',0.4d0,-5d0,5d0)
       call pwhgbookup(6,'y W, ptW>20 ','LOG',0.4d0,-5d0,5d0)
       call pwhgbookup(7,'y W, ptW>40 ','LOG',0.4d0,-5d0,5d0)
@@ -70,37 +106,40 @@ c  pwhgfill  :  fills the histograms with data
      1     0.4d0,-10d0,10d0)
 
 
-      call pwhgbookup(32,'pt e+ ptW>'//cut,'LOG',20d0,0d0,800d0)
-      call pwhgbookup(33,'pt ve ptW>'//cut,'LOG',20d0,0d0,800d0)
-      call pwhgbookup(34,'y e+, pt e+>10 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(35,'y e+, pt e+>20 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(36,'y e+, pt e+>40 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(37,'y e+, pt e+>60 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(38,'y e+, pt e+>80 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(39,'y ve, pt ve>100 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(40,'y ve, pt ve>10 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(41,'y ve, pt ve>20 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(42,'y ve, pt ve>40 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(43,'y ve, pt ve>60 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(44,'y ve, pt ve>80 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)
-      call pwhgbookup(45,'y ve, pt ve>100 ptW>'//cut,'LOG',
-     1     0.4d0,-5d0,5d0)     
+      call pwhgbookup(32,'pt '//part//' ptW>'//cut,'LOG',20d0,0d0,800d0)
+      call pwhgbookup(33,'pt '//apart//' ptW>'//cut,'LOG',20d0,0d0,
+     1    800d0)
+      call pwhgbookup(34,'y '//part//', pt '//part//'>10 ptW>'//cut,
+     1    'LOG', 0.4d0,-5d0,5d0)
+      call pwhgbookup(35,'y '//part//', pt '//part//'>20 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(36,'y '//part//', pt '//part//'>40 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(37,'y '//part//', pt '//part//'>60 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(38,'y '//part//', pt '//part//'>80 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(39,'y '//apart//', pt '//apart//'>100 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(40,'y '//apart//', pt '//apart//'>10 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(41,'y '//apart//', pt '//apart//'>20 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(42,'y '//apart//', pt '//apart//'>40 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(43,'y '//apart//', pt '//apart//'>60 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(44,'y '//apart//', pt '//apart//'>80 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(45,'y '//apart//', pt '//apart//'>100 ptW>'//cut,
+     1     'LOG',0.4d0,-5d0,5d0)     
 
-      call pwhgbookup(46,'y e+,ptW>'//cut,'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(47,'y ve,ptW>'//cut,'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(48,'pt e+, zoom ptW>'//cut,'LOG',4d0,0d0,100d0)
-      call pwhgbookup(49,'pt ve, zoom ptW>'//cut,'LOG',4d0,0d0,100d0)
+      call pwhgbookup(46,'y '//part//',ptW>'//cut,'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(47,'y '//apart//',ptW>'//cut,'LOG',0.4d0,-5d0,5d0)
+      call pwhgbookup(48,'pt '//part//', zoom ptW>'//cut,'LOG',
+     1     4d0,0d0,100d0)
+      call pwhgbookup(49,'pt '//apart//', zoom ptW>'//cut,'LOG',
+     1     4d0,0d0,100d0)
       call pwhgbookup(50,'pt W, zoom ptW>'//cut,'LOG',2.5d0,0d0,100d0)
       call pwhgbookup(51,'pt W, zoom2 ptW>'//cut,'LOG',0.5d0,0d0,20d0)
       call pwhgbookup(52,'pt J1, zoom ptW>'//cut,'LOG',0.5d0,0d0,20d0)
@@ -118,6 +157,7 @@ c  pwhgfill  :  fills the histograms with data
       implicit none
       real * 8 dsig
       include '../include/hepevt.h'
+      include  '../include/LesHouches.h'
 c arrays to reconstruct jets
       integer maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
@@ -129,7 +169,9 @@ c arrays to reconstruct jets
       real * 8 ptvbcut
       common/cptvbcut/ptvbcut
       data ptvbcut/0d0/
-
+      character * 4 part,apart
+      common/cparnames/part,apart
+      integer vdecaytemp,vdecay2temp
       integer mu,jpart,jjet,jeminus,jeplus,j1,j2,found,njets,
      1     neplus,neminus,ihep,ntracks,ijet
       logical buildjets
@@ -172,6 +214,17 @@ c CAVEAT....
          write(*,*) '**************************************************'
       endif
 
+      
+      vdecaytemp=lprup(1)-10000 ! id of the charged decay product of the W
+      if(vdecaytemp.lt.0) then  ! id of the neutral decay product of the W
+         vdecay2temp=-vdecaytemp+1 
+      elseif(vdecaytemp.gt.0) then
+         vdecay2temp=-(vdecaytemp+1)
+      else
+         write(*,*) 'Error in decay mode in pwhg_analysis'
+         stop
+      endif
+      
       neminus=0
       neplus=0
       do i=1,maxnumlep
@@ -180,10 +233,10 @@ c CAVEAT....
       enddo
       do ihep=1,nhep
          if (isthep(ihep).eq.1) then
-            if(idhep(ihep).eq.-11) then
+            if(idhep(ihep).eq.vdecaytemp) then
                neminus=neminus+1
                emvec(neminus)=ihep
-            elseif(idhep(ihep).eq.12) then
+            elseif(idhep(ihep).eq.vdecay2temp) then
                neplus=neplus+1
                epvec(neplus)=ihep
             endif
@@ -237,11 +290,11 @@ c     works for POWHEG+HERWIG,POWHEG+PYHIA,HERWIG,PYTHIA and  real in MC@NLO
             if ((isthep(ihep).eq.1).and.
      #              ((idhep(jmohep(1,jmohep(1,ihep))).eq.23))) then
 c     find first decay product
-               if(idhep(ihep).eq.-11) then
+               if(idhep(ihep).eq.vdecaytemp) then
                   jem_true=ihep
                   found_truedec=found_truedec+1
 c     find second decay product
-               elseif(idhep(ihep).eq.12) then
+               elseif(idhep(ihep).eq.vdecay2temp) then
                   jep_true=ihep
                   found_truedec=found_truedec+1
                endif
@@ -261,9 +314,9 @@ c-----------------------------------
             write(*,*) 'Error when looking for leptons from W decay'
             write(*,*) 'Wrong inv mass: ',sqrt(mV2ref),
      #           '<--',jeminus,jeplus
-            write(*,*) 't e+ -->',phep(4,jeminus),phep(1,jeminus),
+            write(*,*) part//' -->',phep(4,jeminus),phep(1,jeminus),
      #           phep(2,jeminus),phep(3,jeminus)
-            write(*,*) 't ve -->',phep(4,jeplus),phep(1,jeplus),
+            write(*,*) apart//' -->',phep(4,jeplus),phep(1,jeplus),
      #           phep(2,jeplus),phep(3,jeplus)
             write(*,*) 'True inv mass: ',sqrt(
      #           (phep(4,jem_true)+phep(4,jep_true))**2
@@ -271,9 +324,9 @@ c-----------------------------------
      #           -(phep(2,jem_true)+phep(2,jep_true))**2
      #           -(phep(3,jem_true)+phep(3,jep_true))**2   ),
      #           '<--',jem_true,jep_true
-            write(*,*) 't e+ -->',phep(4,jem_true),phep(1,jem_true),
+            write(*,*) part//' -->',phep(4,jem_true),phep(1,jem_true),
      #           phep(2,jem_true),phep(3,jem_true)
-            write(*,*) 't ve -->',phep(4,jep_true),phep(1,jep_true),
+            write(*,*) apart//' -->',phep(4,jep_true),phep(1,jep_true),
      #           phep(2,jep_true),phep(3,jep_true)
             call hwuepr
             write(*,*) 'n !!!! Event dropped !!!!n '

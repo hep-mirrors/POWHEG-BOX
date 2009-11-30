@@ -1,6 +1,6 @@
       PROGRAM HWIGPR
-C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
-      INCLUDE 'herwig6510.inc'
+C---COMMON BLOCKS ARE INCLUDED AS FILE HERWIG65.INC
+      INCLUDE 'HERWIG65.INC'
       include 'include/LesHouches.h'
       integer n
       logical uevent 
@@ -58,7 +58,7 @@ C---FINISH EVENT
       CALL HWUFNE    
 C---USER'S EVENT ANALYSIS
       CALL HWANAL
-      if (mod(nevhep,20000).eq.0) then
+      if (nevhep.gt.0.and.mod(nevhep,20000).eq.0) then
          write(*,*) "# of events processed =",nevhep
          call hwaend
       endif
@@ -78,7 +78,7 @@ C---USER'S TERMINAL CALCULATIONS
       subroutine opencount
 c      implicit none
 c      include 'include/hepevt.h'
-      INCLUDE 'herwig6510.inc'
+      INCLUDE 'HERWIG65.INC'
       character * 50 file
       character * 20 pwgprefix
       integer lprefix
@@ -89,7 +89,7 @@ c      include 'include/hepevt.h'
       external powheginput
       integer nev
 c     this call is necessary to read the prefix of the file
-      nev=powheginput('maxev')
+      nev=powheginput('numevts')
       maxev=0
       file=pwgprefix(1:lprefix)//'events.lhe'
       open(unit=97,file=file,status='old',iostat=ios)
@@ -132,7 +132,7 @@ c     this call is necessary to read the prefix of the file
       
 
       subroutine hwanal
-      INCLUDE 'herwig6510.inc'
+      INCLUDE 'HERWIG65.INC'
       include 'include/LesHouches.h'
       if (ierror.ne.0) then
          return

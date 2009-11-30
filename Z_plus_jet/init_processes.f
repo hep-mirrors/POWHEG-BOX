@@ -3,6 +3,7 @@
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
+      include '../include/pwhg_flg.h'
       integer i1,i2,i3,i4,i5,i6,k,ii(6)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5)),(i6,ii(6))
@@ -21,6 +22,24 @@ c     the code and we change often from one process to the other
 c     index of the first LIGHT coloured parton in the final state
       flst_lightpart=5
 *********************************************************************
+
+c******************************************************
+c    Two ways of providing virtuals are allowed 
+c     1) An array of virtual results listed according to POWHEG list of
+c     subprocesses. The user must provide the subroutine call
+c     setvirtual_fast(virt_arr) 
+c
+      flg_fastvirt=.true.
+c
+c    2) Each virtual result is calculated for the given flavour and then
+c     POWHEG arrange them in a ordinated list of subprocesses.  Then
+c     POWHEG itself takes care to avoid computing the identical
+c     contributions more than once. The user must provide the subroutine
+c     setvirtual(virt_arr)
+c 
+c      flg_fastvirt=.false.
+c
+c******************************************************
 
 
 *********************************************************************

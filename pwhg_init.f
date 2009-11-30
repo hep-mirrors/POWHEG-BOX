@@ -28,6 +28,11 @@ c     initialize random number sequence
       n2=powheginput('#rand2')
       if (n2.lt.0) n2=0
       call setrandom(i1,n1,n2)
+c     assign a default id for the process at hand
+c     if the user want to assign different id's
+c     to each subprocess, he/she can reassign lprup(1)
+c     inside the user-defined subroutine init_processes
+      lprup(1)=10001
 c     initialize physical parameters
       call init_phys
 c ID of beam particles 1 and 2 (pdg convention)
@@ -48,7 +53,6 @@ c number of user subprocesses
 c Irrelevant if idwtup=+-3,+-4
       nprup = 1
       call bbinit
-      lprup(1)=10001
 c now the cross section is available
       xsecup(1)=rad_sigtot  
       xerrup(1)=rad_sigtoterr

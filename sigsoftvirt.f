@@ -43,13 +43,12 @@ c from 2.100 of FNO2007
 c get pdfs
       call pdfcall(1,kn_xb1,pdfb1)
       call pdfcall(2,kn_xb2,pdfb2)      
-c      call sigvirtual_fast(virt_arr)
-      call sigvirtual(virt_arr)
-c      write(*,*) 'finite VIRT 1'
-c      write(*,*) virt_arr
-c      call sigvirtual(virt_arr)
-c      write(*,*) 'finite VIRT 2'
-c      write(*,*) virt_arr
+
+      if(flg_fastvirt) then 
+         call sigvirtual_fast(virt_arr)
+      else
+         call sigvirtual(virt_arr)
+      endif
 
       etot=2*kn_cmpborn(0,1)
       s=etot**2

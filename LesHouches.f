@@ -163,8 +163,10 @@ c     born-like event
       else
          scalup=sqrt(st_muren2)
       endif
-ccccc CAVEAT rendere questa routine indipendente da PhysPars.h
-ccccc trovare un altro modo di riempire aqedup
+ccccc CAVEAT: aqedup must not be set here
+ccccc since otherwise a dependence on the
+ccccc process-dependent PhysPars.h must be
+ccccc introduced
       aqedup=-1                 ! ph_alphaem
 cccccccccccccccccccccccccccccccccccccccccccccccccccccc
       aqcdup=st_alpha

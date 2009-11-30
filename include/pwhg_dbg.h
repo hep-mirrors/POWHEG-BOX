@@ -1,5 +1,5 @@
 c -*- Fortran -*-
 
-      logical dbg_colltest,dbg_collptest,dbg_collmtest,dbg_softtest
-      common/pwhg_dbg/dbg_colltest,dbg_collptest,dbg_collmtest,
-     #     dbg_softtest
+      logical dbg_softtest,dbg_colltest
+      common/pwhg_dbg/dbg_softtest,dbg_colltest
+    

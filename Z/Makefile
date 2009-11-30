@@ -49,7 +49,7 @@ INCLUDE =$(shell echo ../include/*.h *.h)
 
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
 PDFPACK=lhapdfif.o
-LIBS=-L/home/re/Fortran/LHAPDF/lib -lLHAPDF -static
+LIBS=-L/home/alioli/fortran/LHAPDF/lib -lLHAPDF -static
 
 
 %.o: %.f $(INCLUDE)

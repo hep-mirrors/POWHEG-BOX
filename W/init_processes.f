@@ -3,9 +3,10 @@
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
+      include '../include/pwhg_pdf.h'
       include '../include/LesHouches.h'
       include '../include/pwhg_flg.h'
-      integer i1,i2,i3,i4,i5,i6,k,ii(5)
+      integer i1,i2,i3,i4,i5,k,ii(nlegreal)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
       logical debug
@@ -13,6 +14,7 @@
       integer j
       integer charge3(-6:6)
       data charge3 /-2,1,-2,1,-2,1,0,-1,2,-1,2,-1,2/
+      logical condition
       real * 8 powheginput
       external powheginput
 c     vector boson id and decay
@@ -21,98 +23,116 @@ c     vector boson id and decay
 c     lepton masses
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
-      logical condition
+
 c******************************************************
 c    Two ways of providing virtuals are allowed 
 c     1) An array of virtual results listed according to POWHEG list of
 c     subprocesses. The user must provide the subroutine call
 c     setvirtual_fast(virt_arr) 
 c
-c      flg_fastvirt=.true.
+      flg_fastvirt=.true.
 c
 c    2) Each virtual result is calculated for the given flavour and then
 c     POWHEG arrange them in a ordinated list of subprocesses.  Then
 c     POWHEG itself takes care to avoid computing the identical
 c     contributions more than once. The user must provide the subroutine
-c     setvirtual(virt_arr)
+c     setvirtual(p,vflav,res)
 c 
-       flg_fastvirt=.false.
+c      flg_fastvirt=.false.
 c
 c******************************************************
 c******************************************************
 c     Choose the process to be implemented
 c******************************************************
-c     ID of vector boson produced
+c    ID of vector boson produced
       idvecbos=powheginput('idvecbos')
-c     decay products of the vector boson
+c   decay products of the vector boson
       vdecaymode=powheginput('vdecaymode')
 
       if (lepmass(1).ne.0.51099891d-3) then
          write(*,*) 'block data lepmass not loaded. stop running' 
          stop
       endif
-
-      if ((vdecaymode.lt.11).or.(vdecaymode.gt.16)) then
-         write(*,*) 'ERROR: The decay mode you selected'
-     #  //' is not allowed (Up to now only leptonic decays)'
-         stop
-      endif
-            
-      if(idvecbos.eq.23) then
+      
+      if(idvecbos.eq.24) then
+         if ((vdecaymode.ne.-11).and.(vdecaymode.ne.-13)
+     $        .and.(vdecaymode.ne.-15)) then
+            write(*,*) 'ERROR: The decay mode you selected' /
+     $           /' is not allowed '
+            stop
+         endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single Z production and decay'
-         if (vdecaymode.eq.11) write(*,*) '         to e- e+ '
-         if (vdecaymode.eq.12) write(*,*) '         to ve ve~ '
-         if (vdecaymode.eq.13) write(*,*) '         to mu- mu+ '
-         if (vdecaymode.eq.14) write(*,*) '         to vmu vmu~ '
-         if (vdecaymode.eq.15) write(*,*) '         to tau- tau+ '
-         if (vdecaymode.eq.16) write(*,*) '         to vtau vtau~ '
+         write(*,*) ' POWHEG: Single W+ production and decay ' 
+         if (vdecaymode.eq.-11) write(*,*) '         to e+ ve '
+         if (vdecaymode.eq.-13) write(*,*) '         to mu+ vmu'
+         if (vdecaymode.eq.-15) write(*,*) '         to tau+ vtau'
          write(*,*) 
+      elseif(idvecbos.eq.-24) then
+         if ((vdecaymode.ne.11).and.(vdecaymode.ne.13)
+     $        .and.(vdecaymode.ne.15)) then
+            write(*,*) 'ERROR: The decay mode you selected' /
+     $           /' is not allowed '
+            stop
+         endif
+         write(*,*) 
+         write(*,*) ' POWHEG: Single W- production and decay '
+         if (vdecaymode.eq.11) write(*,*) '         to e- ve~ '
+         if (vdecaymode.eq.13) write(*,*) '         to mu- vmu~'
+         if (vdecaymode.eq.15) write(*,*) '         to tau- vtau~'
+         write(*,*)    
       else
-         write(*,*) 'ERROR: The ID of vector boson you selected'
-     #  //' is not admitted (23: Z)'
+         write(*,*) 'ERROR: The ID of vector boson you selected' 
+     $        //' is not allowed (24: W+ -24: W-)'
          stop
       endif
 
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
-      lprup(1)=10000+vdecaymode ! 10000+idup of first decay product of the Z
-
+      lprup(1)=10000+vdecaymode ! 10000+idup of charged decay product of the W
+      
       if(lprup(1).eq.10011) then
          decmass=lepmass(1)
-      elseif(lprup(1).eq.10012) then
-         decmass=0d0   
+         
+      elseif(lprup(1).eq.(10000-11)) then
+         decmass=lepmass(1)
+        
       elseif(lprup(1).eq.10013) then
          decmass=lepmass(2)
-      elseif(lprup(1).eq.10014) then
-         decmass=0d0   
+         
+      elseif(lprup(1).eq.(10000-13)) then
+         decmass=lepmass(2)
+
       elseif(lprup(1).eq.10015) then
-         decmass=lepmass(3)     
-      elseif(lprup(1).eq.10016) then
-         decmass=0d0   
+         decmass=lepmass(3)
+         
+      elseif(lprup(1).eq.(10000-15)) then
+         decmass=lepmass(3) 
+  
       else
 c     not yet implemented
-         write(*,*) 'non leptonic Z decays '//
+         write(*,*) 'non leptonic W decays '//
      #        'not yet implemented'
          stop
-      endif
-
-
+      endif   
+c*********************************************************     
+c
 c     index of the first coloured particle in the final state
 c     (all subsequent particles are coloured)
       flst_lightpart=5
-c     Z decay products
       i3=vdecaymode
-      i4=-i3
-
-*********************************************************************
-***********            BORN SUBPROCESSES              ***************
-*********************************************************************
+      if ((idvecbos.eq.24).and.(vdecaymode.lt.0)) then
+         i4=-vdecaymode+1
+      elseif ((idvecbos.eq.-24).and.(vdecaymode.gt.0)) then
+         i4=-(vdecaymode+1)
+      endif
+c     Born graphs
       flst_nborn=0
+      condition=.false.
       do i1=-5,5
          do i2=-5,5
-            if(i1.ne.0.and.i1+i2.eq.0) then
-c     q qbar
+            condition=(charge3(i1)+charge3(i2)).eq.(sign(3,idvecbos))
+            if(condition) then
+c     q qbar'
                flst_nborn=flst_nborn+1
                if(flst_nborn.gt.maxprocborn) goto 999
                do k=1,nlegborn
@@ -127,28 +147,27 @@ c     q qbar
             write(*,*) (flst_born(k,j),k=1,nlegborn)
          enddo
       endif
-
-*********************************************************************
-***********            REAL SUBPROCESSES              ***************
-*********************************************************************
+     
+c     Real graphs    
       flst_nreal=0
+      condition=.false.
       do i1=-5,5
          do i2=-5,5
+            if (abs(i1).eq.abs(i2)) goto 11
             do i5=-5,5
                condition=.false.
-               if(.not.(i1.eq.0.and.i2.eq.0)) then
-c     exclude gg
-                  if((i1.ne.0).and.(i1+i2.eq.0).and.(i5.eq.0)) then
-c     q qbar -> g
-                     condition=.true.
-                  elseif((i1.eq.0).and.(i2.eq.i5)) then
-c     g q
-                     condition=.true.
-                  elseif((i2.eq.0).and.(i1.eq.i5)) then
-c     q g
-                     condition=.true.
-                  endif
+               if ((i1.eq.0).and.(i2.ne.0)) then
+                  condition=(charge3(i2)-charge3(i5))
+     $                 .eq.(sign(3,idvecbos))    
                endif
+               if ((i2.eq.0).and.(i1.ne.0)) then
+                  condition=(charge3(i1)-charge3(i5))
+     $                 .eq.(sign(3,idvecbos))
+               endif
+               if (i5.eq.0) then
+                condition=(charge3(i1)+charge3(i2))
+     $                 .eq.(sign(3,idvecbos))
+               endif   
                if(condition) then
                   flst_nreal=flst_nreal+1
                   if(flst_nreal.gt.maxprocreal) goto 998
@@ -157,6 +176,7 @@ c     q g
                   enddo
                endif
             enddo
+ 11         continue
          enddo
       enddo
       if (debug) then
@@ -169,11 +189,9 @@ c     q g
  998  write(*,*) 'init_processes: increase maxprocreal'
       stop
  999  write(*,*) 'init_processes: increase maxprocborn'
-      stop
       end
- 
-
-      block data lepmass_data
+      
+      block data lepmass_data 
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
       data lepmass /0.51099891d-3,0.1056583668d0,1.77684d0/

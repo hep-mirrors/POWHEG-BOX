@@ -92,7 +92,6 @@ c     q g -> W+ qp
       endif
       end
 
-
 c this subroutine compute the Born amplitude for the process
 c q(p1) qp(p2) -> W(p3+p4) g(p5)   con W -> l(p3) vl(p4) 
 c NUMERICALLY, with the bra/ket formalism, not by squaring the analytic 
@@ -105,8 +104,9 @@ c         q  --->----------->------ g
 c                     |
 c                     |            l
 c                     |           /  
-c         aqp ---<-----//////
-c                           W    c                                  vl 
+c         aqp ---<-----/\/\/\/\/\/
+c                           W    \
+c                                 \ vl 
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3

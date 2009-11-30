@@ -155,41 +155,95 @@ c     to avoid divergent integral
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
-      external sigreal_btl,soft,collfsr,softcollfsr,
-     #collisrp,softcollisrp,collisrm,softcollisrm
+      include 'include/pwhg_dbg.h'
+      external sigreal_btl,soft,collfsr,softcollfsr, collisrp,
+     $     softcollisrp,collisrm,softcollisrm
+ccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Uncomment the following if you want the
+c     results of the checks printed on the screen
+c      iun=6
+cccccccccccccccccccccccccccccccccccccccccccccccccc
       call randomsave
-      do kn_emitter=0,nlegborn
-         call checksoft(sigreal_btl,soft,' soft',iun)
-      enddo
-      do kn_emitter=3,nlegborn
-         call checksoft(collfsr,softcollfsr,' soft-coll',iun)
-      enddo
-      do kn_emitter=0,2
-         if(kn_emitter.ne.2)call checksoft(collisrp,softcollisrp,
-     #   ' soft-coll-plus',iun)
-      enddo
-      do kn_emitter=0,2
-         if(kn_emitter.ne.1)call checksoft(collisrm,softcollisrm,
-     #   ' soft-coll-minus',iun)
-      enddo
-      do kn_emitter=3,nlegborn
-         call checkcoll(sigreal_btl,collfsr,1,' coll',iun)
-      enddo
-      do kn_emitter=3,nlegborn
-         call checkcoll(soft,softcollfsr,1,' coll-soft',iun)
-      enddo
-      do kn_emitter=0,2
-         if(kn_emitter.ne.2)
-     #    call checkcoll(sigreal_btl,collisrp,1,' coll-plus',iun)
-         if(kn_emitter.ne.1)
-     #    call checkcoll(sigreal_btl,collisrm,-1,' coll-minus',iun)
-      enddo
-      do kn_emitter=0,2
-         if(kn_emitter.ne.2)
-     #    call checkcoll(soft,softcollisrp,1,' coll-plus-soft',iun)
-         if(kn_emitter.ne.1)
-     #    call checkcoll(soft,softcollisrm,-1,' coll-minus-soft',iun)
-      enddo
+      if(dbg_softtest) then
+         write(iun,*) '******************************************'   
+         write(iun,*) '           CHECK  SOFT LIMITS             '     
+         write(iun,*)
+         do kn_emitter=0,nlegborn
+            call checksoft(sigreal_btl,soft,' soft',iun)
+         enddo
+         write(iun,*) '******************************************'
+         write(iun,*)
+      endif
+      
+      if(dbg_colltest) then
+         write(iun,*) '******************************************'   
+         write(iun,*) '      CHECK  COLL. LIMITS FOR FSR       '         
+         write(iun,*)
+         do kn_emitter=3,nlegborn
+            call checkcoll(sigreal_btl,collfsr,1,' coll',iun)
+         enddo
+         write(iun,*) '******************************************'   
+         write(iun,*)
+         write(iun,*) '******************************************'   
+         write(iun,*) '      CHECK  COLL. LIMITS FOR ISR       '         
+         write(iun,*)
+         do kn_emitter=0,2
+            if(kn_emitter.ne.2) call checkcoll(sigreal_btl,collisrp,1
+     $           ,' coll-plus',iun)
+            if(kn_emitter.ne.1) call checkcoll(sigreal_btl,collisrm,-1
+     $           ,' coll-minus',iun)
+         enddo
+         write(iun,*) '******************************************'   
+         write(iun,*)
+      endif
+      
+      if(dbg_softtest.and.dbg_colltest) then  
+         write(iun,*) '******************************************'   
+         write(iun,*) '   CHECK  SOFT-COLL. LIMITS FOR FSR     '         
+         write(iun,*)
+         do kn_emitter=3,nlegborn
+            call checksoft(collfsr,softcollfsr,' soft-coll',iun)
+         enddo
+         write(iun,*) '******************************************'
+         write(iun,*)
+         write(iun,*) '******************************************'   
+         write(iun,*) '   CHECK  SOFT-COLL. LIMITS FOR ISR +   '         
+         write(iun,*)
+         do kn_emitter=0,2
+            if(kn_emitter.ne.2)call checksoft(collisrp,softcollisrp,
+     $           ' soft-coll-plus',iun)
+         enddo
+         write(iun,*) '******************************************'
+         write(iun,*)
+         write(iun,*) '******************************************'   
+         write(iun,*) '   CHECK  SOFT-COLL. LIMITS FOR ISR -   '         
+         write(iun,*)
+         do kn_emitter=0,2
+            if(kn_emitter.ne.1)call checksoft(collisrm,softcollisrm,
+     $           ' soft-coll-minus',iun)
+         enddo
+         write(iun,*) '******************************************'
+         write(iun,*)
+
+         
+         write(iun,*) '******************************************'   
+         write(iun,*) '   CHECK  COLL.-SOFT LIMITS FOR FSR     '         
+         write(iun,*)
+         do kn_emitter=3,nlegborn
+            call checkcoll(soft,softcollfsr,1,' coll-soft',iun)
+         enddo
+         write(iun,*) '******************************************'
+         write(iun,*)
+         write(iun,*) '******************************************'   
+         write(iun,*) '   CHECK  COLL.-SOFT LIMITS FOR ISR     '         
+         write(iun,*)
+         do kn_emitter=0,2
+            if(kn_emitter.ne.2) call checkcoll(soft,softcollisrp,1
+     $           ,' coll-plus-soft',iun)
+            if(kn_emitter.ne.1) call checkcoll(soft,softcollisrm,-1
+     $           ,' coll-minus-soft',iun)
+         enddo
+      endif
       call randomrestore
       end
 
@@ -217,7 +271,6 @@ c     to avoid divergent integral
       do j=1,ndiminteg-3
          xborn(j)=random()
       enddo
-      write(iun,*) ' ### ',xborn
       call gen_born_phsp(xborn)
       call setscalesbtilde
       call allborn
@@ -227,17 +280,18 @@ c      write(iun,*)' mass',sqrt(2*dotp(kn_pborn(0,3),kn_pborn(0,4)))
       enddo
 c Check soft limits
       if(valid_emitter(kn_emitter)) then
-         do jexp=1,nexp
+         write(iun,*) ' Random Born variables ====> ',xborn
+          write(iun,*) ' Random radiation variables ====> ',xrad
+          do jexp=1,nexp
             xrad(1)=10d0**(-jexp)
             if(kn_emitter.gt.2) then
                call gen_real_phsp_fsr(xrad,jac_over_csi,
-     #jac_over_csi_coll,jac_over_csi_soft)
+     $              jac_over_csi_coll,jac_over_csi_soft)
             else
-               call gen_real_phsp_isr
-     #(xrad,jac_over_csi,jac_over_csi_p,
-     #jac_over_csi_m,jac_over_csi_soft)
+               call gen_real_phsp_isr (xrad,jac_over_csi,jac_over_csi_p,
+     $              jac_over_csi_m,jac_over_csi_soft)
             endif
-            write(iun,*) '######### Check soft',xrad(1)
+            write(iun,*) '### Check soft',xrad(1)
             call sig(r0(1,jexp))
             call sigs(r0s(1,jexp))
          enddo
@@ -255,21 +309,20 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
                if(r0(alr,jexp).eq.0) iszero=.true.
             enddo
             if(iszero.and.isnonzero) then
-               write(iun,*)
-     #' some vanish and some do not'
+               write(iun,*) ' some vanish and some do not'
             endif
             if(isnonzero.and..not.iszero) then
-               write(iun,*) ' emitter ',kn_emitter,
-     #', process ',(flst_alr(j,alr),j=1,nlegreal),', ',label,':'
+               write(iun,*) ' emitter ',kn_emitter, ', process ',
+     $              (flst_alr(j,alr),j=1,nlegreal),', ',label,':'
                do alrp=alr+1,flst_nalr
                   isequal=.true.
                   do jexp=1,nexp
-                     if(r0(alr,jexp).ne.r0(alrp,jexp).or.
-     # r0s(alr,jexp).ne.r0s(alrp,jexp)) isequal=.false.
+                     if(r0(alr,jexp).ne.r0(alrp,jexp).or. r0s(alr,jexp)
+     $                    .ne.r0s(alrp,jexp)) isequal=.false.
                   enddo
                   if(isequal) then
-                     write(iun,*) ' emitter ',kn_emitter,
-     #', process ',(flst_alr(j,alrp),j=1,nlegreal),', ',label,':'
+                     write(iun,*) ' emitter ',kn_emitter, ', process ',
+     $                    (flst_alr(j,alrp),j=1,nlegreal),', ',label,':'
                      ident(alrp)=.true.
                   endif
                enddo
@@ -280,8 +333,9 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
                         flag='*-WARN-*'
                      endif
                   endif
-                  write(iun,*) (r0(alr,jexp)-r0s(alr,jexp))/
-     #(r0(alr,jexp-1)-r0s(alr,jexp-1)),r0s(alr,jexp)/r0(alr,jexp),flag
+                  write(iun,*) (r0(alr,jexp)-r0s(alr,jexp))/ 
+     $            (r0(alr,jexp-1)-r0s(alr,jexp-1)),
+     $             r0s(alr,jexp)/r0(alr,jexp),flag
                enddo
             endif
          enddo
@@ -314,7 +368,6 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
       do j=1,ndiminteg-3
          xborn(j)=random()
       enddo
-      write(iun,*) ' ### ',xborn
       call gen_born_phsp(xborn)
       call setscalesbtilde
       call allborn
@@ -322,6 +375,8 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
          xrad(j)=random()
       enddo
       if(valid_emitter(kn_emitter)) then
+         write(iun,*) ' Random Born variables ====> ',xborn
+         write(iun,*) ' Random radiation variables ====> ',xrad
          do jexp=1,nexp
             if(idir.ne.-1) then
                xrad(2)=10d0**(-jexp)
@@ -362,7 +417,7 @@ c               if(r0c(alr,jexp).eq.0) iszero=.true.
 c               if(r0(alr,jexp).ne.0) isnonzero=.true.
                if(r0(alr,jexp).eq.0) then
                   if(r0c(alr,jexp).ne.0) then
-                     write(*,*) ' some vanish and some do not'
+                     write(iun,*) ' some vanish and some do not'
                   endif
                   jexpfirst=jexp+1
                   goto 111
@@ -386,11 +441,14 @@ c               if(r0(alr,jexp).ne.0) isnonzero=.true.
                enddo
                do jexp=jexpfirst,nexp
                   flag=' '
-                  if(abs(r0c(alr,jexp)/r0(alr,jexp))-1.gt.0.01) then
+                  if(abs(r0c(alr,jexp)/r0(alr,jexp)-1).gt.0.01) then
                      flag='*-WARN-*'
                   endif
+c     Added this 'if' to be sure that no division by zero occurs
+                  if((r0(alr,jexp-1)-r0c(alr,jexp-1)).ne.0d0) then
                   write(iun,*) (r0(alr,jexp)-r0c(alr,jexp))/
      #(r0(alr,jexp-1)-r0c(alr,jexp-1)),r0c(alr,jexp)/r0(alr,jexp),flag
+                  endif
                enddo
             endif
          enddo

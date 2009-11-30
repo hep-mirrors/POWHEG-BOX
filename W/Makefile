@@ -9,15 +9,15 @@ SYSOBJ=
 endif
 ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation of bolean in gfortran
-#F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow -fbounds-check
+F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow #-fbounds-check
 # The following should no longer be needed in gfortran >= 4.3
 #SYSOBJ=
-F77= g77 -Wall -fno-automatic 
+#F77= g77 -Wall -fno-automatic 
 #-ffortran-bounds-check
 DEBUG=-ggdb -pg
 #DEBUG=-O3
 #OPT=-O3
-SYSOBJ=trapfpe.o
+#SYSOBJ=trapfpe.o
 endif
 ifeq ($(shell uname),Darwin)
 F77= g77 -dn -Wall -fno-automatic -ffortran-bounds-check
@@ -29,11 +29,10 @@ F77= g77 -Wall
 SYSOBJ=
 endif
 
-FASTJET_CONFIG=/home/nason/Pheno/fastjet/bin/fastjet-config
+FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/  -lstdc++
-#LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.1.2/  -lstdc++
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i486-linux-gnu/4.3/  -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
@@ -47,9 +46,9 @@ FF=$(F77) $(OPT) $(DEBUG)
 
 INCLUDE =$(shell echo ../include/*.h *.h)
 
-PDFPACK=mlmpdfif.o hvqpdfpho.o
-#PDFPACK=lhapdfif.o
-LIBS=-L/home/nason/Pheno/PDFpacks/lib -lLHAPDF -static
+#PDFPACK=mlmpdfif.o hvqpdfpho.o
+PDFPACK=lhapdfif.o
+LIBS=-L/home/alioli/fortran/LHAPDF/lib -lLHAPDF -static
 
 
 %.o: %.f $(INCLUDE)

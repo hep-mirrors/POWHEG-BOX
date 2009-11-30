@@ -129,6 +129,21 @@ c      endif
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       real * 8 muf,mur
-      muf=ph_Wmass
-      mur=ph_Wmass
+      logical ini
+      data ini/.true./
+      real *8 muref
+      real *8 dotp
+      external dotp
+      if (ini) then
+         write(*,*) '*************************************'
+         write(*,*) '    Factorization and renormalization '
+         write(*,*) '    scales set to inv. mass of the W  '
+         write(*,*) '*************************************'
+         ini=.false.
+      endif
+      muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
+      muf=muref
+      mur=muref
+c     muf=ph_Wmass
+c     mur=ph_Wmass
       end

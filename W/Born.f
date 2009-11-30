@@ -78,7 +78,7 @@ c      include '../include/QuarkFlavs.h'
 
 c     antilepton-neutrino from W+ decay
       ferm_type(3) = -1
-      ferm_charge(3) = +1
+      ferm_charge(3) = +1d0
       ferm_type(4) = -ferm_type(3)
       ferm_charge(4) = 0d0
       
@@ -267,7 +267,7 @@ c neutral particles
       icolup(2,3)=0
       icolup(1,4)=0
       icolup(2,4)=0
-cccc SAER 5-> nlegborn
+
       do j=1,nlegborn
          if(j.eq.3.or.j.eq.4) then
             icolup(1,j)=0
@@ -309,6 +309,10 @@ cccc SAER 5-> nlegborn
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
-c     Resonance W^+ -> e+(3) ve(4)
-      call add_resonance(24,3,4)
+c     vector boson id and decay
+      integer idvecbos,vdecaymode
+      common/cvecbos/idvecbos,vdecaymode
+      call add_resonance(idvecbos,3,4)
+c     CAVEAT: REMEMBER TO RESHUFFLE THE MOMENTA
+c     IF THE DECAY PRODUCTS ARE MASSIVE
       end

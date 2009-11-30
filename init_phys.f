@@ -6,13 +6,12 @@
       include 'include/pwhg_pdf.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_rad.h'
+      include 'include/pwhg_dbg.h'
       character * 5 scheme
       character * 3 whichpdfpk
       real * 8 powheginput
       integer iorder,iret,iun
       external whichpdfpk,powheginput
-      logical debug
-      parameter (debug=.false.)
       pdf_ih1=powheginput('ih1')
       pdf_ih2=powheginput('ih2')
       if(whichpdfpk().eq.'lha') then
@@ -76,13 +75,20 @@ c initialize number of singular regions
       call genflavreglist
 
 
-c todo: debug should be in pwhg_dbg.h
-c check soft and collinear limits
-      if (debug) then
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      dbg_softtest=.false.
+      dbg_colltest=.false.
+c     Uncomment the following lines to
+c     check soft and/or collinear limits
+c      dbg_softtest=.true.
+c      dbg_colltest=.true.
+
+      if (dbg_softtest.or.dbg_colltest) then
          call newunit(iun)
          open(unit=iun,file='pwhg_checklimits')
          call checklims(iun)
+         call flush(iun)
       endif
-
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       end
 

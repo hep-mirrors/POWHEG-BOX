@@ -69,7 +69,7 @@ USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	gen_Born_phsp.o find_regions.o test_Sudakov.o \
 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
-	Bornzerodamp.o sigremnants.o random.o boostrot.o \
+	pt2maxreg.o Bornzerodamp.o sigremnants.o random.o boostrot.o \
 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
         pdfcalls.o  sigreal.o sigcollremn.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
@@ -81,7 +81,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
 
-LHEFANAL=lhef_analysis.o boostrot.o \
+LHEFANAL=lhef_analysis.o opencount.o boostrot.o \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o  lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
 	$(SYSOBJ)
@@ -92,7 +92,7 @@ lhef_analysis:$(LHEFANAL)
 
 # target to read event file, shower them with HERWIG, + generic analysis
 
-HERWIG=main-HERWIG-lhef.o herwig6510.o \
+HERWIG=main-HERWIG-lhef.o opencount.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o $(SYSOBJ)

@@ -1,16 +1,20 @@
       PROGRAM HWIGPR
-C---COMMON BLOCKS ARE INCLUDED AS FILE HERWIG65.INC
-      INCLUDE 'HERWIG65.INC'
+C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
+      INCLUDE 'herwig6510.inc'
       include 'include/LesHouches.h'
       integer n
       logical uevent 
       parameter (uevent=.false.)
-
+c     we need to tell to the analysis file which program is running it
+      character * 6 WHCPRG
+      integer iun
+      common/cWHCPRG/WHCPRG
+      WHCPRG='HERWIG'
 C---PROCESS; set to negative for user supplied me
       iproc=-1                  ! Les Houches interface
 C--- Opens input file and counts number of events, setting MAXEV;
 c    MAXEV must be set before HWIGIN call.
-      call opencount
+      call opencount(maxev)
 C---INITIALISE OTHER COMMON BLOCKS
       CALL HWIGIN
 C---USER CAN RESET PARAMETERS AT
@@ -58,7 +62,7 @@ C---FINISH EVENT
       CALL HWUFNE    
 C---USER'S EVENT ANALYSIS
       CALL HWANAL
-      if (nevhep.gt.0.and.mod(nevhep,20000).eq.0) then
+      if (mod(nevhep,20000).eq.0) then
          write(*,*) "# of events processed =",nevhep
          call hwaend
       endif
@@ -68,6 +72,12 @@ C---TERMINATE ELEMENTARY PROCESS
       CALL HWEFIN
 C---USER'S TERMINAL CALCULATIONS
       CALL HWAEND
+
+c      call newunit(iun)
+c      open(unit=iun,file='HERWIGcounters.dat',status='unknown')
+c      call printcnt(iun)
+c      close(iun)
+
       END
 
       subroutine UPINIT
@@ -75,43 +85,30 @@ C---USER'S TERMINAL CALCULATIONS
       call lhefreadhdr(97)
       end
 
-      subroutine opencount
-c      implicit none
-c      include 'include/hepevt.h'
-      INCLUDE 'HERWIG65.INC'
-      character * 50 file
-      character * 20 pwgprefix
-      integer lprefix
-      common/cpwgprefix/pwgprefix,lprefix
-      integer ios
-      character * 6 string
-      real * 8 powheginput
-      external powheginput
-      integer nev
-c     this call is necessary to read the prefix of the file
-      nev=powheginput('numevts')
-      maxev=0
-      file=pwgprefix(1:lprefix)//'events.lhe'
-      open(unit=97,file=file,status='old',iostat=ios)
-      if(ios.ne.0) then
-         write(*,*)' enter name of event file'
-         read(*,'(a)') file
-         open(unit=97,file=file,status='old')
-      endif
- 1    continue
-      read(unit=97,fmt='(a)',end=2) string
-      if(string.eq.'<event') then
-         maxev=maxev+1
-         goto 1
-      endif
-      goto 1
- 2    continue
-      write(*,*) ' found ',maxev,' events in file'
-      rewind(97)
-      end
-
       subroutine UPEVNT
+      implicit none
+      include 'include/LesHouches.h'
+      logical ini
+      save ini
+      data ini/.true./
       call lhefreadev(97)
+
+      if (ini) then
+         ini = .false.
+         write(*,*)
+         write(*,*)
+         write(*,*) '**************************************'
+         write(*,*) '**************************************'
+         write(*,*) '***         NO HIGGS DECAY         ***'
+         write(*,*) '**************************************'
+         write(*,*) '**************************************'
+         write(*,*)
+         write(*,*)
+      endif
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC      
+CCCCCCCCCC        HIGGS BOSON ANALYSIS
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC      
+      istup(3)=2                ! needed in order not to decay the Higss boson 
       end
 
 
@@ -132,7 +129,7 @@ c     this call is necessary to read the prefix of the file
       
 
       subroutine hwanal
-      INCLUDE 'HERWIG65.INC'
+      INCLUDE 'herwig6510.inc'
       include 'include/LesHouches.h'
       if (ierror.ne.0) then
          return

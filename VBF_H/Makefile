@@ -71,7 +71,7 @@ USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	gen_Born_phsp.o find_regions.o test_Sudakov.o \
 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
-	Bornzerodamp.o sigremnants.o random.o boostrot.o \
+	pt2maxreg.o Bornzerodamp.o sigremnants.o random.o boostrot.o \
 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
         pdfcalls.o  sigreal.o sigcollremn.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
@@ -91,6 +91,7 @@ pwhg_main:$(PWHG)
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o  lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+        opencount.o \
 	$(SYSOBJ)
 
 lhef_analysis:$(LHEFANAL)
@@ -118,4 +119,13 @@ main-PYTHIA-lhef: $(PYTHIA)
 clean:
 	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \
 	main-PYTHIA-lhef count_top
+
+
+
+LHEFANALL=count_top.o boostrot.o random.o cernroutines.o  \
+	powheginput.o pwhg_bookhist.o pwhg_analysis.o  lhefread.o newunit.o \
+	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	$(SYSOBJ)
+count_top:$(LHEFANALL)
+	$(FF) $(patsubst %,obj/%,$(LHEFANALL)) -o $@ $(LIBS) $(LIBSFASTJET)
 

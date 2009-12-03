@@ -1,6 +1,6 @@
       subroutine bornzerodamp(alr,r0,rc,rs,dampfac)
 c given the R_alpha region (i.e. the alr) and the associated
-c real contribution r (withour pdf factor),
+c real contribution r (without pdf factor),
 c returns in dampfac the damping factor to be applied to
 c the real contribution to implement Born zero suppression
       implicit none

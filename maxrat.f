@@ -123,6 +123,9 @@ c     final state radiation
             enddo
          enddo
       enddo
+c this subroutine identifies the upper bounds for identical
+c contributions
+c      call maxratident
       end
 
 

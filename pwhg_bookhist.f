@@ -549,6 +549,7 @@ c Per marcare un istogramma
       save imon,iday,iyear,ctime,ini
       character * 8 ctime
       DATA INI/0/
+      data ctime/''/
       IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR) ! not y2k compliant
       CALL IDATE(ITIME)

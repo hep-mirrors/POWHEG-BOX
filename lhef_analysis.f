@@ -28,40 +28,6 @@
       implicit none
       call lhefreadhdr(97)
       end
-      
-      subroutine opencount(maxev)
-      implicit none
-      include 'include/hepevt.h'
-      character * 50 file
-      character * 20 pwgprefix
-      integer lprefix
-      common/cpwgprefix/pwgprefix,lprefix
-      integer ios
-      character * 8 string
-      real * 8 powheginput
-      external powheginput
-      integer nev,maxev
-c     this call is necessary to read the prefix of the file
-      nev=powheginput('numevts')
-      maxev=0
-      file=pwgprefix(1:lprefix)//'events.lhe'
-      open(unit=97,file=file,status='old',iostat=ios)
-      if(ios.ne.0) then
-         write(*,*)' enter name of event file'
-         read(*,'(a)') file
-         open(unit=97,file=file,status='old')
-      endif
- 1    continue
-      read(unit=97,fmt='(a)',end=2) string
-      if(string.eq.'</event>') then
-         maxev=maxev+1
-         goto 1
-      endif
-      goto 1
- 2    continue
-      write(*,*) ' found ',maxev,' events in file'
-      rewind(97)
-      end
 
       subroutine UPEVNT
       call lhefreadev(97)

@@ -47,8 +47,10 @@ FF=$(F77) $(OPT) $(DEBUG)
 INCLUDE =$(shell echo ../include/*.h *.h)
 
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
+LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
-LIBS=-L/home/alioli/fortran/LHAPDF/lib -lLHAPDF -static
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF -static
+LIBS=$(LIBSLHAPDF)
 
 
 %.o: %.f $(INCLUDE)

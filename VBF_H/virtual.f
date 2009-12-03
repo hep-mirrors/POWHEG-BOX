@@ -5,8 +5,9 @@ c     The as/(2pi) factor is attached at a later point
 c
 c  The vertex correction depicted below is given by:
 c                    -----
-c                   /      <- virtual gluon
-c                  /       c         q1 --->------------>------ q3
+c                   /     \ <- virtual gluon
+c                  /       \
+c         q1 --->------------>------ q3
 c                      |
 c                      V q 
 c                      |
@@ -38,9 +39,10 @@ c     and it's thought as factorized in front of the real counterterms too.
       real * 8 ampborn2,bmunu(0:3,0:3)
       real * 8 cvirt
 c     if (4*Pi)^ep * Gamma(1+ep) is collected in front then cvirt:
-c      parameter (cvirt = pi**2/3 - 7)
+c      parameter (cvirt = pi**2/3 - 7)  in DR
+c      parameter (cvirt = pi**2/3 - 8)  in CDR
 c     if (4*Pi)^ep / Gamma(1-ep) is collected in front then cvirt:
-      parameter (cvirt = - 7)
+      parameter (cvirt = -8d0)
       include 'PhysPars.h'
       real * 8 interf1,interf2,q2_up,q2_down,dotp,r,lr
       external dotp
@@ -76,12 +78,3 @@ c     2 * Re[M_V * M_B^*]
       end
 
 
-      subroutine setvirtual_fast(res)
-      implicit none
-      include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      real * 8 res(flst_nborn)
-     
-      write(*,*) 'DUMMY'
-      stop
-      end

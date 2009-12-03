@@ -119,6 +119,7 @@ c     ZZ -> H
 
 
       subroutine borncolour_lh
+      implicit none
 c Sets up the colour for the given flavour configuration
 c already filled in the Les Houches interface.
 c In case there are several colour structure, one
@@ -146,7 +147,7 @@ c      data icolgf/ 501, 502 /
       data icolaf/ 0  , 502 /
       save icolqi,icolai,icolgi,icolqf,icolaf,icolgf
       integer HWW,HZZ
-      integer flin_ret,flout_ret
+      integer flin_ret,flout_ret,i
 c neutral particles
 c      icolup(1,3)=0
 c      icolup(2,3)=0
@@ -179,7 +180,7 @@ c     Higgs Boson
       icolup(1,3)=0
       icolup(2,3)=0
 c     change my Higgs boson codification back to PDG
-      idup(j) = 25
+      idup(3) = 25
       
       do i=1,2
          icolup(i,4)=icolup(i,1)
@@ -394,7 +395,7 @@ c      call bra_gamma_ket(psi6,psi5,-1,jHdecay)
       if (ferm_charge(1).eq.ferm_charge(3)) then
 c     Z exchange in the t channel
          if (-p13.le.0d0) then
-            prop13 = 1d0/(-2*p13-mz2)            
+            prop13 = 1d0/(-2*p13-mz2)        
          else
             prop13 = 1d0/dcmplx(-2*p13-mz2,mZgammaZ) 
          endif
@@ -614,25 +615,23 @@ c     2 * Re[M_V * M_B^*]
       integer flin,flout
       integer i,j
       logical ini
-      real * 8 CKM_sq(5,5)
+      real * 8 CKM_sq(6,6)
       include 'PhysPars.h' 
       integer signn
       external signn
       save CKM_sq,ini
       data ini/.true./
+      integer nf_max
 c     no initial or final state t quark!!
-c      write(*,*) ph_CKM_matrix
-c      stop
+      nf_max = 5
       if (ini) then
-         do j=1,5
-            do i=1,5
+         do j=1,nf_max
+            do i=1,nf_max
                CKM_sq(i,j) = ph_CKM_matrix(i,j)**2
             enddo
          enddo
          ini = .false.
-      endif
-      
-      call pick_random(5,CKM_sq(1,abs(flin)),flout)
+      endif      
+      call pick_random(nf_max,CKM_sq(1,abs(flin)),flout)
       flout = flout * signn(flin)
-
       end

@@ -77,8 +77,9 @@ c     save last random number
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
       integer nlf
-      write(nlf,*) '<extra-info-previous-event>'
+      write(nlf,'(a)') '<extra-info-previous-event>'
       write(nlf,*) rad_kinreg,'      ! rad_kinreg'
-      write(nlf,*) '</extra-info-previous-event>'
+      write(nlf,*) rad_type,'        ! rad_type'
+      write(nlf,'(a)') '</extra-info-previous-event>'
       end
 

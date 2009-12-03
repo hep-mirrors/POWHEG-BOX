@@ -9,14 +9,13 @@ SYSOBJ=
 endif
 ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation of bolean in gfortran
-F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow #-fbounds-check
+#F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow -fbounds-check
 # The following should no longer be needed in gfortran >= 4.3
 #SYSOBJ=
-#F77= g77 -Wall -fno-automatic 
+F77= g77 -Wall -fno-automatic 
 #-ffortran-bounds-check
-DEBUG=-ggdb -pg
-#DEBUG=-O3
-#OPT=-O3
+#DEBUG=-ggdb -pg
+OPT=-O3
 #SYSOBJ=trapfpe.o
 endif
 ifeq ($(shell uname),Darwin)
@@ -29,10 +28,11 @@ F77= g77 -Wall
 SYSOBJ=
 endif
 
-FASTJET_CONFIG=fastjet-config
+FASTJET_CONFIG=/home/oleari/fortran/fastjet/bin/fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i486-linux-gnu/4.3/  -lstdc++
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/  -lstdc++
+#LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.1.2/  -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
@@ -48,8 +48,11 @@ INCLUDE =$(shell echo ../include/*.h *.h)
 
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
 PDFPACK=lhapdfif.o
-LIBS=-L/home/alioli/fortran/LHAPDF/lib -lLHAPDF -static \
-	 -L/home/alioli/fortran/dhelas3 -ldhelas3
+#LIBS=-L/home/oleari/fortran/LHAPDF_lib/lib -lLHAPDF -static \
+#	 -L/home/oleari/fortran/dhelas3 -ldhelas3
+
+LIBS=-L/home/oleari/fortran/LHAPDF-5.8.0/lib -lLHAPDF -static \
+	 -L/home/oleari/fortran/dhelas3 -ldhelas3
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
@@ -93,15 +96,26 @@ LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  \
 lhef_analysis:$(LHEFANAL)
 	$(FF) $(patsubst %,obj/%,$(LHEFANAL)) -o $@ $(LIBS) $(LIBSFASTJET)
 
-
-# target to read event file, shower them with HERWIG, + generic analysis
-
+# read event file, shower events with HERWIG + analysis
 HERWIG=main-HERWIG-lhef.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o $(SYSOBJ)
+	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
 
+
+# read event file, shower events with PYTHIA + analysis
+PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
+	boostrot.o powheginput.o \
+        pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
+	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	random.o cernroutines.o opencount.o  $(SYSOBJ)
+main-PYTHIA-lhef: $(PYTHIA)
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
+
 clean:
-	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef
+	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \
+	main-PYTHIA-lhef count_top
+

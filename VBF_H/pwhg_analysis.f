@@ -45,11 +45,11 @@ c  pwhgfill  :  fills the histograms with data
 
       call pwhginihist
       diag=1
-      binsize(diag) = 20d0
+      binsize(diag) = 10d0
       call pwhgbookup(diag,'pt H ','LIN',binsize(diag),0d0,400d0)
 
       diag=diag+1
-      binsize(diag) = 0.4d0
+      binsize(diag) = 0.2d0
       call pwhgbookup(diag,'y H ','LIN',binsize(diag),-ymax,ymax)
 
       diag=diag+1
@@ -59,12 +59,16 @@ c  pwhgfill  :  fills the histograms with data
 
       diag=diag+1
       binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'abs(yj(1) - yj(2)) ','LIN',binsize(diag),
-     #     0d0,2*ymax)
+      call pwhgbookup(diag,'yj(1) - yj(2) ','LIN',binsize(diag),
+     #     -ymax,ymax)
 
       diag=diag+1
       binsize(diag) = 40d0
       call pwhgbookup(diag,'mjj ','LIN',binsize(diag),0d0,3600d0)
+
+      diag=diag+1
+      binsize(diag) = 40d0
+      call pwhgbookup(diag,'mjj'//cut,'LIN',binsize(diag),0d0,3600d0)
 
       diag=diag+1
       binsize(diag) = 0.4d0
@@ -72,41 +76,30 @@ c  pwhgfill  :  fills the histograms with data
      #     binsize(diag),0d0,2*ymax)
 
       diag=diag+1
+      binsize(diag) = 0.4d0
+      call pwhgbookup(diag,'yj(1) - yj(2)'//cut,'LIN',
+     #     binsize(diag),-ymax,ymax)
+
+      diag=diag+1
       binsize(diag) = 40d0
       call pwhgbookup(diag,'mjj'//cut,'LIN',binsize(diag),0d0,3600d0)
 
+      diag=diag+1
+      binsize(diag) = 10d0
+      call pwhgbookup(diag,'ptj(3)'//cut,'LOG',binsize(diag),0d0,150d0)
 
       diag=diag+1
-      binsize(diag) = 20d0
-      call pwhgbookup(diag,'ptj(3)'//cut,'LOG',binsize(diag),0d0,400d0)
+      binsize(diag) = 10d0
+      call pwhgbookup(diag,'ptj(2)'//cut,'LOG',binsize(diag),0d0,250d0)
 
       diag=diag+1
-      binsize(diag) = 20d0
-      call pwhgbookup(diag,'ptj(2)'//cut,'LOG',binsize(diag),0d0,400d0)
-
-      diag=diag+1
-      binsize(diag) = 20d0
+      binsize(diag) = 10d0
       call pwhgbookup(diag,'ptj(1)'//cut,'LOG',binsize(diag),0d0,400d0)
 
       diag=diag+1
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'yj(3)'//cut,'LIN',binsize(diag),-ymax,ymax)
  
-      diag=diag+1
-      binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3) pt_3>1'//cut,'LIN',
-     1    binsize(diag),-ymax,ymax)
-
-      diag=diag+1
-      binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3) pt_3>5'//cut,'LIN',
-     1 binsize(diag),-ymax,ymax)
-
-      diag=diag+1
-      binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3) pt_3>10'//cut,'LIN',binsize(diag),
-     #     -ymax,ymax)
-
 
       diag=diag+1
       binsize(diag) = 0.4d0
@@ -123,24 +116,18 @@ c  pwhgfill  :  fills the histograms with data
      #     binsize(diag),-ymax,ymax) 
 
       diag=diag+1
-      binsize(diag) = 0.4d0
-      call pwhgbookup(diag,'yj(3)-0.5*(yj(1)+yj(2)); pt_3>5'//cut,'LIN',
-     #     binsize(diag),-ymax,ymax) 
-
-
-      diag=diag+1
-      binsize(diag) = 0.4d0
+      binsize(diag) = 0.2d0
       call pwhgbookup(diag,'min(abs(yj(1)),abs(yj(2)))'//cut,'LIN',
      #     binsize(diag),0d0,ymax)
 
 
       diag=diag+1
-      binsize(diag) = 0.4d0
+      binsize(diag) = 0.2d0
       call pwhgbookup(diag,'max(abs(yj(1)),abs(yj(2)))'//cut,'LIN',
      #     binsize(diag),0d0,ymax)
 
       diag=diag+1
-      binsize(diag) = 0.1d0
+      binsize(diag) = 0.2d0
       call pwhgbookup(diag,'delphi_jj'//cut,'LIN',
      1  binsize(diag),0d0,3.2d0)
 
@@ -148,6 +135,25 @@ c  pwhgfill  :  fills the histograms with data
       diag=diag+1
       binsize(diag) = 40d0
       call pwhgbookup(diag,'mHjj ','LIN',binsize(diag),0d0,3600d0)
+
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'ptrel j1'//cut,'LOG',binsize(diag),0d0,30d0)
+
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'ptrel j2'//cut,'LOG',binsize(diag),0d0,30d0)
+
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'jet multip'//cut,'LOG',
+     #     binsize(diag),1.5d0,8.5d0)
+
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'jet mult. btw tag jets'//cut,'LOG',
+     #     binsize(diag),0.5d0,8.5d0)
+
       end
 
       
@@ -162,7 +168,7 @@ c arrays to reconstruct jets
       parameter (maxtrack=2048,maxjet=2048)
       real *8 ptrack(4,maxtrack)
       integer maxtagjets
-      parameter (maxtagjets=3)
+      parameter (maxtagjets=10)
       integer jet,lep,tagjets
       real *8 ptj(maxtagjets),yj(maxtagjets)
       real *8 pjet(4,maxjet) 
@@ -170,10 +176,10 @@ c arrays to reconstruct jets
      #     ihep,ntracks,ijet,j1,j2
       real * 8 vec(3),pjetin(0:3),pjetout(0:3),beta,ptrel,get_ptrel,
      #     ptrackin(0:3),ptrackout(0:3)
-      integer i,diag
+      integer i,diag,njets_passcut
       external get_ptrel
       real * 8 R,ptmin_fastkt
-      integer jetvec(maxtrack),jj
+      integer jetvec(maxtrack)
       logical ini
       data ini/.true./
       save ini
@@ -185,44 +191,53 @@ c arrays to reconstruct jets
       real * 8 random,rsepn,getrapidity0,mjj,azi
       external random,rsepn,getrapidity0,mjj,azi
       real * 8 Rsep(2,2),Rmin,delphi_jj
-      logical pass_cuts
-      real * 8 ptjetmin,yjetmax,deltay_jjmin,ptlepmin,ylepmax,
-     $     mjjmin,Rsep_jlmin
-      logical ylep_between_jets,jet_opphem
+      logical pass_cuts,pass_cuts_no_mjjmin,pass_cuts_no_deltayjjmin
+      real * 8 ptjetmin,ptalljetmin,yjetmax,deltay_jjmin,ptlepmin,
+     #     ylepmax,mjjmin,Rsep_jlmin
+      logical ylep_between_jets,jet_opphem,exist3rdjet
       logical onlyquarks,Z_exchange
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
-
       logical iniptcut
       save iniptcut
       data iniptcut/.true./
+      logical higgsfound
+c     we need to tell to the this analysis file which program is running it
+      character * 6 WHCPRG
+      common/cWHCPRG/WHCPRG
+      data WHCPRG/'POWHEG'/
+      
+      
+c     DISABLE ALL CUTS
+      ptalljetmin = 0d0            
+      ptjetmin = 0d0         
+      yjetmax = 100d0           
+      mjjmin = 0d0              
+      deltay_jjmin = 0d0        
 
-
-c CAVEAT.... 
-      ptjetmin = 0d0            !20d0
-      yjetmax = 100d0           !4.5d0
-      mjjmin = 0d0              !600d0
-      deltay_jjmin = 0d0        ! 4.d0
-
-      ptlepmin = 0d0            !20d0
-      ylepmax = 100d0           !2.5d0
-      Rsep_jlmin = 0d0          !0.6d0
+      ptlepmin = 0d0            
+      ylepmax = 100d0           
+      Rsep_jlmin = 0d0          
 
       ylep_between_jets = .false.
       jet_opphem = .false.
 
-      goto 811
-      ptjetmin = 20d0
-      yjetmax = 4.5d0
+c      goto 811
+c     ACTIVATE CUTS!!!
+      ptalljetmin = 20d0
+      ptjetmin = 30d0
+      yjetmax = 5d0
       mjjmin = 600d0
-      deltay_jjmin = 4.d0
+      deltay_jjmin = 4.2d0
+      jet_opphem = .true.
 
+      goto 811
+c     LEPTONIC CUTS
       ptlepmin = 20d0
       ylepmax = 2.5d0
       Rsep_jlmin = 0.6d0
-
       ylep_between_jets = .true.
-      jet_opphem = .true.
+
  811  continue
 
       if (ini) then
@@ -231,6 +246,7 @@ c CAVEAT....
          write(*,*) '                ANALYSIS CUTS                     '
          write(*,*) '**************************************************'
          write(*,*) '**************************************************'
+         write(*,*) 'ptalljetmin = ',ptalljetmin
          write(*,*) 'ptjetmin = ',ptjetmin
          write(*,*) 'yjetmax = ',yjetmax
          write(*,*) 'mjjmin = ',mjjmin 
@@ -280,17 +296,36 @@ c     select Z events
 
  144  continue
 
+      idH=0
+      higgsfound = .false.
 c     find Higgs boson
-      call particle_identif(HWW,HZZ)
+      call particle_identif(HWW,HZZ)      
       do ihep=1,nhep
-         if( (idhep(ihep).eq.HWW).or.(idhep(ihep).eq.HZZ).or.
-     #           (idhep(ihep).eq.25) ) then
+c     set up different searching stategies according to the shower Monte Carlo
+c     program used      
+         if ((WHCPRG.eq.'HERWIG').and.(idhep(ihep).eq.25).and.
+     #           (ISTHEP(ihep).eq.155)) then 
+            higgsfound = .true.      
+         elseif ((WHCPRG.eq.'PYTHIA').and.(idhep(ihep).eq.25).and.
+     #           (ISTHEP(ihep).eq.1)) then 
+            higgsfound = .true.      
+         elseif ( (WHCPRG.eq.'POWHEG').and.
+     #           ((idhep(ihep).eq.HWW).or.(idhep(ihep).eq.HZZ).or.
+     #           (idhep(ihep).eq.25) )) then
+            higgsfound = .true.            
+         endif
+         if (higgsfound) then
             idH=ihep
             idhep(ihep)=25
             goto 333
          endif
       enddo
  333  continue
+      if (idH.eq.0) then
+         write(*,*) 'HIGGS NOT FOUND'
+         call exit(2)
+      endif
+
       do mu=1,3
          pH(mu) = phep(mu,idH)
       enddo
@@ -456,7 +491,7 @@ c     compute invariant mass of the Hjj system
          mHjj = sqrt(abs(phjj(0)**2-phjj(1)**2-phjj(2)**2-phjj(3)**2))
 
          diag=diag+1
-         call pwhgfill(diag,abs(yj(1) - yj(2)),dsig/binsize(diag))
+         call pwhgfill(diag,yj(1) - yj(2),dsig/binsize(diag))
          diag=diag+1
          call pwhgfill(diag,mjj(pj(0,1),pj(0,2)),dsig/binsize(diag))
 
@@ -470,8 +505,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
      $        (max(abs(y_lep(1)),abs(y_lep(2))).lt.ylepmax) .and.
      $        (min(pTj(1),pTj(2)).gt.ptjetmin) .and.
      $        (max(abs(yj(1)),abs(yj(2))).lt.yjetmax) .and.
-     $        (mjj(pj(0,1),pj(0,2)).gt.mjjmin) .and.
-     $        (abs(yj(1)-yj(2)).gt.deltay_jjmin) .and.
      $        (Rmin.gt.Rsep_jlmin)
          
          if (ylep_between_jets) then
@@ -485,26 +518,52 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             pass_cuts = pass_cuts .and. 
      $           (yj(1)*yj(2).lt.0)
          endif
+
+         if (tagjets.lt.3) then
+            exist3rdjet = .false.
+         else
+            exist3rdjet = (pTj(3).gt.ptalljetmin) .and.
+     $           (abs(yj(3)).lt.yjetmax)
+         endif
          
-c         if (.not.pass_cuts) then 
-c            call increasecnt('not passed WBF cuts')
-c         endif
-c         if (pass_cuts) then 
-c            call increasecnt('passed WBF cuts')
-c         endif
+         pass_cuts_no_mjjmin = pass_cuts .and. 
+     $        (abs(yj(1)-yj(2)).gt.deltay_jjmin)
          
+         pass_cuts_no_deltayjjmin = pass_cuts .and.
+     $        (mjj(pj(0,1),pj(0,2)).gt.mjjmin)
          
-         if (pass_cuts) then    
-            diag=diag+1
+         pass_cuts = pass_cuts .and.
+     $        (mjj(pj(0,1),pj(0,2)).gt.mjjmin) .and.
+     $        (abs(yj(1)-yj(2)).gt.deltay_jjmin)
+
+         
+         diag=diag+1
+         if (pass_cuts_no_mjjmin) then
+            call pwhgfill(diag,mjj(pj(0,1),pj(0,2)),dsig/binsize(diag))
+         endif
+
+         diag=diag+1
+         if (pass_cuts_no_deltayjjmin) then 
             call pwhgfill(diag,abs(yj(1) - yj(2)),dsig/binsize(diag))
+         endif
+            
+
+         if (pass_cuts) then    
+c            call increasecnt('pass WBF cuts')
+            diag=diag+1
+            call pwhgfill(diag,yj(1) - yj(2),dsig/binsize(diag))
+
             diag=diag+1
             call pwhgfill(diag,mjj(pj(0,1),pj(0,2)),dsig/binsize(diag))
+
             diag=diag+1            
-            if (tagjets.ge.3) then
+            if (exist3rdjet) then
                call pwhgfill(diag,ptj(3),dsig/binsize(diag))
             endif
+
             diag=diag+1
             call pwhgfill(diag,ptj(2),dsig/binsize(diag))
+
             diag=diag+1
             call pwhgfill(diag,ptj(1),dsig/binsize(diag))
 
@@ -518,97 +577,99 @@ c         endif
             endif
 
             diag=diag+1
-            if (tagjets.ge.3) then
-               if (ptj(3).gt.0) then
-                  call pwhgfill(diag,yj(3),dsig/binsize(diag))
-               endif
+            if (exist3rdjet)  then
+               call pwhgfill(diag,yj(3),dsig/binsize(diag))
             endif
-            diag=diag+1
-            if (tagjets.ge.3) then
-               if (ptj(3).gt.1) then
-                  call pwhgfill(diag,yj(3),dsig/binsize(diag))
-               endif
-            endif
-            diag=diag+1
-            if (tagjets.ge.3) then
-               if (ptj(3).gt.5) then
-                  call pwhgfill(diag,yj(3),dsig/binsize(diag))
-               endif
-            endif
-            diag=diag+1
-            if (tagjets.ge.3) then
-               if (ptj(3).gt.10) then
-                  call pwhgfill(diag,yj(3),dsig/binsize(diag))
-               endif
-            endif
-
 
             diag=diag+1
             call pwhgfill(diag,yj(2),dsig/binsize(diag))
+
             diag=diag+1
             call pwhgfill(diag,yj(1),dsig/binsize(diag))
+
             diag=diag+1
-            if (tagjets.ge.3) then
+            if (exist3rdjet) then 
                call pwhgfill(diag,yj(3)-0.5*(yj(1)+yj(2)),
      $              dsig/binsize(diag))
             endif
-            diag=diag+1
-            if (tagjets.ge.3) then
-               if (ptj(3).gt.5) then
-                  call pwhgfill(diag,yj(3)-0.5*(yj(1)+yj(2)),
-     $                 dsig/binsize(diag))
-               endif
-            endif
+
             diag=diag+1
             call pwhgfill(diag,min(abs(yj(1)),abs(yj(2))),
      $           dsig/binsize(diag))
+
             diag=diag+1
             call pwhgfill(diag,max(abs(yj(1)),abs(yj(2))),
      $           dsig/binsize(diag))
+
             diag=diag+1
             call pwhgfill(diag,delphi_jj,dsig/binsize(diag))
+
             diag=diag+1
             call pwhgfill(diag,mHjj,dsig/binsize(diag))
-         endif
-         
-         return
-         
-         
+
 c     loop on the hardest and next-to-hardest jet
-         do ijet=1,min(njets,2)
-            if (ijet.eq.1) then
-               jj=j1 
-            else 
-               jj=j2 
-            endif            
-            do mu=1,3
-               pjetin(mu) = pjet(mu,jj)
-            enddo
-            pjetin(0) = pjet(4,jj)         
-            vec(1)=0d0
-            vec(2)=0d0
-            vec(3)=1d0
-            beta = -pjet(3,jj)/pjet(4,jj)
-            call mboost(1,vec,beta,pjetin,pjetout)         
-c     write(*,*) pjetout
-            ptrel = 0
-            do i=1,ntracks
-               if (jetvec(i).eq.jj) then
-                  do mu=1,3
-                     ptrackin(mu) = ptrack(mu,i)
-                  enddo
-                  ptrackin(0) = ptrack(4,i)
-                  call mboost(1,vec,beta,ptrackin,ptrackout) 
-                  ptrel = ptrel + get_ptrel(ptrackout,pjetout)
+            do ijet=1,2
+               vec(1)=0d0
+               vec(2)=0d0
+               vec(3)=1d0
+               beta = -pj(3,ijet)/pj(0,ijet)
+               call mboost(1,vec,beta,pj(0,ijet),pjetout)  
+c               write(*,*) pjetout
+               ptrel = 0
+               do i=1,ntracks
+                  if (jetvec(i).eq.njj(ijet)) then
+                     do mu=1,3
+                        ptrackin(mu) = ptrack(mu,i)
+                     enddo
+                     ptrackin(0) = ptrack(4,i)
+                     call mboost(1,vec,beta,ptrackin,ptrackout) 
+                     ptrel = ptrel + get_ptrel(ptrackout,pjetout)
+c                     write(*,*) ijet,ptrel
+                  endif
+               enddo
+               diag=diag+1
+               if (ijet.eq.1) then 
+                  call pwhgfill(diag,ptrel,dsig/binsize(diag))
+               endif
+c               diag=diag+1
+               if (ijet.eq.2) then 
+                  call pwhgfill(diag,ptrel,dsig/binsize(diag))
+               endif
+            enddo         
+
+
+c     now count how many jets have pt > ptalljetmin
+c     find the first 10 hardest jets, if any
+            call find_hardest_jets(njets,pjet,10,tagjets,njj)
+c            write(*,*) 'tagjets ',tagjets            
+c     two jets surely already exists at this step
+            njets_passcut = 2
+            do ijet=3,tagjets
+               ptj(ijet)=
+     #              sqrt(pjet(1,njj(ijet))**2 + pjet(2,njj(ijet))**2)
+               call getrapidity(pjet(1,njj(ijet)),yj(ijet))               
+               if (ptj(ijet).gt.ptalljetmin .and.
+     #             abs(yj(ijet)).lt.yjetmax) then
+                  njets_passcut = njets_passcut + 1
                endif
             enddo
-            if (ijet.eq.1) then 
-               call pwhgfill(54,ptrel,dsig/binsize(diag))
-            else
-               call pwhgfill(55,ptrel,dsig/binsize(diag))
-            endif
-         enddo         
-      endif            
+c            write(*,*) 'njets_passcut ',njets_passcut
+            diag=diag+1
+            call pwhgfill(diag,njets_passcut*1d0,dsig/binsize(diag))
+
+c     jet multeplicity between the two tagging jets
+            njets_passcut = 0
+            do ijet=3,tagjets
+               if (min(yj(1),yj(2)).lt.yj(ijet) .and.
+     #                 yj(ijet).lt.max(yj(1),yj(2)) .and.
+     #                 ptj(ijet).gt.ptalljetmin) then
+                  njets_passcut = njets_passcut + 1
+               endif
+            enddo            
+            diag=diag+1
+            call pwhgfill(diag,njets_passcut*1d0,dsig/binsize(diag))
+         endif
+      endif
       end
 
 
@@ -785,10 +846,6 @@ c     build an identifier for Higgs production in WW and ZZ fusion
       HWW = 10000*pdg_W + pdg_Higgs
       HZZ = 10000*pdg_Z + pdg_Higgs
       end
-
-
-
-
 
 
 

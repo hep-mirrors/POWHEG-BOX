@@ -2,7 +2,6 @@
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
-      include '../include/pwhg_flg.h'
       include '../include/pwhg_kn.h'
       logical debug
       parameter (debug=.false.)
@@ -37,24 +36,7 @@ c     #      -0.33333333333333333333d0/ !   -1d0/3
       logical flavequiv
       external flavequiv
       logical tag,newtag
-
-c******************************************************
-c    Two ways of providing virtuals are allowed 
-c     1) An array of virtual results listed according to POWHEG list of
-c     subprocesses. The user must provide the subroutine call
-c     setvirtual_fast(virt_arr) 
-c
-c      flg_fastvirt=.true.
-c
-c    2) Each virtual result is calculated for the given flavour and then
-c     POWHEG arrange them in a ordinated list of subprocesses.  Then
-c     POWHEG itself takes care to avoid computing the identical
-c     contributions more than once. The user must provide the subroutine
-c     setvirtual(virt_arr)
-c 
-      flg_fastvirt=.false.
-c
-c******************************************************      
+      
       tag = .true.
       newtag = .true.
 

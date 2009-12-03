@@ -10,6 +10,9 @@
       real * 8 powheginput
       external powheginput
       integer i1,n1,n2
+      call init_flst
+      flg_debug=.false.
+      if(powheginput("#flg_debug").eq.1) flg_debug=.true.
 c     Set to true to remember and use identical values of the computed 
 c     amplitudes, for Born, real and virtual contributions
       flg_smartsig=.true.
@@ -57,4 +60,20 @@ c now the cross section is available
       xsecup(1)=rad_sigtot  
       xerrup(1)=rad_sigtoterr
       xmaxup(1)=1
+      end
+
+      subroutine init_flst
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      integer j,l
+      do j=1,maxprocreal
+         do l=1,nlegreal
+            flst_realtags(l,j)=0
+         enddo
+      enddo
+      do j=1,maxprocborn
+         do l=1,nlegborn
+            flst_borntags(l,j)=0
+         enddo
+      enddo
       end

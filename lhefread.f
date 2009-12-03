@@ -19,7 +19,7 @@ c...reads initialization information from a les houches events file on unit nlf.
          goto 1
       endif
  998  write(*,*) 'lhefreadhdr: could not find <init> data'
-      stop
+      call exit(1)
  999  end
 
 
@@ -48,3 +48,35 @@ c...reads event information from a les houches events file on unit nlf.
 c no event found:
  998  nup=0      
  999  end
+
+
+      subroutine lhefreadextra(nlf)
+      implicit none
+      include 'include/LesHouches.h'
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_flg.h'
+      character * 100 string
+      integer nlf
+ 1    continue
+      read(unit=nlf,fmt='(a)',end=998) string
+      if(string.eq.'<event>') then
+         backspace nlf
+         return
+      endif
+      read(nlf,'(a)') string
+      if(string(2:28).eq.'<extra-info-previous-event>') then
+         read(nlf,*) rad_kinreg
+c         read(nlf,*) rad_type
+         return
+      else
+         goto 1
+      endif
+      return
+ 998  continue
+      write(*,*) ' end of event file'
+      call exit(1)
+      end

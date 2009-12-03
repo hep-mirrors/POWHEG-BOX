@@ -44,11 +44,7 @@ c get pdfs
       call pdfcall(1,kn_xb1,pdfb1)
       call pdfcall(2,kn_xb2,pdfb2)      
 
-      if(flg_fastvirt) then 
-         call sigvirtual_fast(virt_arr)
-      else
-         call sigvirtual(virt_arr)
-      endif
+      call sigvirtual(virt_arr)
 
       etot=2*kn_cmpborn(0,1)
       s=etot**2

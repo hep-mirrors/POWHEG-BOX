@@ -52,11 +52,3 @@
          endif
       enddo
       end
-
-      subroutine sigvirtual_fast(virt_arr)
-      implicit none
-      include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      real * 8 virt_arr(maxprocborn)
-      call setvirtual_fast(virt_arr)
-      end

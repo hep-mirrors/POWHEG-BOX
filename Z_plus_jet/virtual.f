@@ -15,75 +15,45 @@ c     MCFM include
       real * 8 p(0:3,nlegborn)
       integer vflav(nlegborn)      
       real * 8 virtual
-      real * 8 pmcfm(mxpart,1:4)
+      real * 8 pmcfm(mxpart,1:4),pold(0:3,nlegborn)
       real * 8 virt(-nf:nf, -nf:nf)
+      save virt,pold
       logical ini
       save ini
       data ini/.true./
+      logical equalp
+      integer j,mu
       if (ini) then
          call virtual_initialize_MCFM
-         ini=.false.
+         do mu=0,3
+            do j=1,nlegborn
+               pold(mu,j)=0
+            enddo
+         enddo
       endif
      
       scale = sqrt(st_muren2)
       musq=st_muren2            ! renormalization scale squared
       as = st_alpha
 
-      call mom_to_MCFM(p,pmcfm)
 c     MCFM fills an array with all processes.
-      call qqb_z1jet_v(pmcfm,virt)
+      if(ini.or.p.ne.pold) then
+         equalp=.true.
+         do mu=0,3
+            do j=1,nlegborn
+               equalp=equalp.and.p(mu,j).eq.pold(mu,j)
+               pold(mu,j)=p(mu,j)
+            enddo
+         enddo
+         if(.not.equalp) then
+            call mom_to_MCFM(p,pmcfm)
+            call qqb_z1jet_v(pmcfm,virt)
+         endif
+      endif
 c     Now select only the one needed and divide result by as/(2pi)      
       virtual=virt(vflav(1),vflav(2))/(st_alpha/(2*pi))
+      ini=.false.
       end
-
-
-c     returns 2 Re(M_B * M_V)/(as/(2pi)), 
-c     where M_B is the Born amplitude and 
-c     M_V is the finite part of the virtual amplitude
-c     The as/(2pi) factor is attached at a later point
-c     Use MCFM subroutines
-
-c     EXACTLY like sigvirtual(virt_arr)!! But sigvirtual uses 
-c     setvirtual(p,vflav,virtual) in a smart way
-
-      subroutine setvirtual_fast(virt_arr)
-      implicit none
-      include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_br.h'
-      include '../include/pwhg_flg.h'
-      include '../include/pwhg_st.h'
-c     MCFM include
-      include 'MCFM_include/scale.f'
-      include 'MCFM_include/qcdcouple.f'
-      include 'MCFM_include/constants.f'
- 
-      real * 8 virt_arr(flst_nborn)
-      integer j
-      real * 8 pmcfm(mxpart,1:4)
-      real * 8 virt(-nf:nf, -nf:nf)
-      logical ini
-      save ini
-      data ini/.true./
-      if (ini) then
-         call virtual_initialize_MCFM
-         ini=.false.
-      endif
-     
-      scale = sqrt(st_muren2)
-      musq=st_muren2            ! renormalization scale squared
-      as = st_alpha
-
-      call mom_to_MCFM(kn_cmpborn,pmcfm)
-      call qqb_z1jet_v(pmcfm,virt)
-      do j=1,flst_nborn
-c     divide result by as/(2pi)
-         virt_arr(j)=virt(flst_born(1,j),flst_born(2,j))/
-     #        (st_alpha/(2*pi))
-      enddo
-      end
-
 
       subroutine virtual_initialize_MCFM
       implicit none

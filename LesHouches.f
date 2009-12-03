@@ -12,10 +12,12 @@ c it is a Born event
 c first assign flavours and colour to the underlying Born process
          call born_lh
          call momenta_lh(kn_pborn,nlegborn)
+         scalup=sqrt(rad_ptsqmin)
       else
 c it is an event with radiation
          call born_lh
          call momenta_lh(kn_preal,nlegreal)
+         scalup=sqrt(rad_pt2max)
          nup=nlegreal
          istup(nup)=1
          spinup(nup)=9
@@ -37,10 +39,18 @@ c it is an event with radiation
          coluborn(1)=icolup(1,em)
          coluborn(2)=icolup(2,em)
          if(em.le.2) then
+c setcolour_born works with all incoming (or all outgoing) flavours and colours;
+c for ISR make everything outgoing:
+c thus in input change the sign of the emitter flavour, to make it outgoing
+c and conjugate its colour in output, to make it incoming.
             call setcolour_rad(coluborn,-flem,flrad,
      #                     icolup(1,em),icolup(1,rad))
             call colour_conj(icolup(1,em))
          else
+c For ISR make everything incoming;
+c Change the sign of the emitter and radiated flavours in input,
+c to make it incoming;
+c conjugate their colours in the output, to make them outgoing.
             call setcolour_rad(coluborn,-flem,-flrad,
      #                     icolup(1,em),icolup(1,rad))
             call colour_conj(icolup(1,rad))
@@ -157,12 +167,6 @@ c      include 'include/PhysPars.h'
 c id of the event
       idprup=lprup(1)
       xwgtup=+1
-      if (kn_csi.eq.0d0) then
-c     born-like event        
-         scalup=sqrt(rad_ptsqmin)
-      else
-         scalup=sqrt(st_muren2)
-      endif
 ccccc CAVEAT: aqedup must not be set here
 ccccc since otherwise a dependence on the
 ccccc process-dependent PhysPars.h must be
@@ -192,22 +196,47 @@ c gluons are numbered 21 in pdg
       end
 
 
+      subroutine getnewcolor(newcolor)
+      implicit none
+      integer newcolor
+      include 'include/LesHouches.h'
+      integer j,k
+      newcolor=511
+ 1    continue
+      do j=1,nup
+         do k=1,2
+            if(icolup(k,j).eq.newcolor) then
+               newcolor=newcolor+1
+               goto 1
+            endif
+         enddo
+      enddo
+      end
+
+c Given a vertex with 3 partons, the first parton with incoming colour
+c colin, the second and third partons with incoming flavours flavour fl2, fl3,
+c it assigns the incoming colours of the second and third partons
+c colout2, colout3. The colour assignment is unambiguous is all cases, but in
+c the one where both fl2 and fl3 are gluons, where a 50% random choice is made
+c over the two possible colour connections.
       subroutine setcolour_rad(colin,fl2,fl3,colout2,colout3)
       implicit none
       integer colin(2),fl2,fl3,colout2(2),colout3(2)
+      integer newcolor
       real * 8 random
       external random
+      call getnewcolor(newcolor)
       if(colin(1).ne.0.and.colin(2).ne.0) then
          if(fl2.eq.0.and.fl3.eq.0) then
             if(random().gt.0.5d0) then
                colout2(1)=colin(2)
-               colout2(2)=511
-               colout3(1)=511
+               colout2(2)=newcolor
+               colout3(1)=newcolor
                colout3(2)=colin(1)
             else
                colout3(1)=colin(2)
-               colout3(2)=511
-               colout2(1)=511
+               colout3(2)=newcolor
+               colout2(1)=newcolor
                colout2(2)=colin(1)
             endif
          elseif(fl2.gt.0.and.fl3.lt.0) then
@@ -220,36 +249,45 @@ c gluons are numbered 21 in pdg
             colout2(2)=colin(1)
             colout3(2)=0
             colout3(1)=colin(2)
+         else
+            goto 998
          endif
       elseif(colin(2).eq.0) then
          if(fl2.eq.0) then
             colout3(1)=0
-            colout3(2)=511
-            colout2(1)=511
+            colout3(2)=newcolor
+            colout2(1)=newcolor
             colout2(2)=colin(1)
          elseif(fl3.eq.0) then
             colout2(1)=0
-            colout2(2)=511
-            colout3(1)=511
+            colout2(2)=newcolor
+            colout3(1)=newcolor
             colout3(2)=colin(1)
+         else
+            goto 998
          endif
       elseif(colin(1).eq.0) then
          if(fl2.eq.0) then
-            colout3(1)=511
+            colout3(1)=newcolor
             colout3(2)=0
-            colout2(2)=511
+            colout2(2)=newcolor
             colout2(1)=colin(2)
          elseif(fl3.eq.0) then
-            colout2(1)=511
+            colout2(1)=newcolor
             colout2(2)=0
             colout3(1)=colin(2)
-            colout3(2)=511
+            colout3(2)=newcolor
+         else
+            goto 998
          endif
       else
-         write(*,*)
-     # ' setcolour_rad: Error: inconsistent colour flavour input'
-         stop
+         goto 998
       endif
+      return
+ 998  continue
+      write(*,*)
+     #' setcolour_rad: Error: inconsistent colour flavour input'
+      call exit(1)
       end
 
 
@@ -341,6 +379,7 @@ c first conjugate incoming colors
       include 'include/LesHouches.h'
       integer ireg
       nup=nlegreal
+      scalup=sqrt(rad_pt2max)
       do ireg=1,nup
 c Remember: gluons are marked 0 here!
          idup(ireg)=flst_regular(ireg,rad_realreg)

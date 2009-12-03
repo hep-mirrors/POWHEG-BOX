@@ -26,7 +26,7 @@
       rad_normfact=powheginput('xupbound')
       if(nubound.eq.0) then
          write(*,*) ' ubound set =0, cannot proceed'
-         stop
+         call exit(1)
       endif
       if(powheginput('use-old-ubound').eq.1) then
          call newunit(iun)
@@ -375,18 +375,18 @@ c in FKS, for final state radiation, pdf always cancel in real/born
 
 
 
-      subroutine uboundfct(fct,icsi,iy)
+      subroutine uboundfct(fct,csi,y)
       implicit none
       include 'include/pwhg_math.h'
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
-      real * 8 fct
+      real * 8 fct,csi,y
       real * 8 unorm
       integer iy,icsi
-      iy=abs(kn_y)*rad_nynorms+1
-      icsi=log(1/(1-kn_csi))/log(kn_sbeams/kn_minmass)*rad_ncsinorms+1
+      iy=abs(y)*rad_nynorms+1
+      icsi=log(1/(1-csi))/log(kn_sbeams/kn_minmass)*rad_ncsinorms+1
       if(  (iy.lt.1.or.iy.gt.rad_nynorms)
      # .or.(icsi.lt.1.or.icsi.gt.rad_ncsinorms)  )then
          write(*,*)'iy,icsi off limits, got ',iy,icsi,

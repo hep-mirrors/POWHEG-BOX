@@ -24,6 +24,8 @@ c rad_ncsinorms,rad_nynorms: effective number of csi and y subdivisions
       integer rad_ncsiynormsmx
       parameter (rad_ncsiynormsmx=100)
       integer rad_ncsinorms,rad_nynorms
+c 1 for Btilde event, 2 for remnant, 3 for regular
+      integer rad_type
 c total cross section from B_bar, regular remnants and total
       real * 8 rad_sigtot,rad_sigrm,rad_sigbtl
 c error on total cross section
@@ -55,17 +57,19 @@ c minimum pt-squared
       real * 8 rad_ptsqmin,rad_charmthr2,rad_bottomthr2
 c LambdaLL for upper bounding coupling (see notes: running_coupling)
       real * 8 rad_lamll
+c Hardest radiation kt2
+      real * 8 rad_pt2max
       common/pwhg_rad/rad_sigtot,rad_sigtoterr,
      #     rad_sigrm,rad_sigbtl,
      #     rad_damp_rem_arr,rad_damp_rem_tot,rad_reg_arr,rad_reg_tot,
      #     rad_csiynorms,rad_norms,rad_btilde_arr,rad_real_arr,
      #     rad_normfact,rad_ptsqmin,rad_charmthr2,rad_bottomthr2,
-     #     rad_lamll,rad_xradremn,
+     #     rad_lamll,rad_xradremn,rad_pt2max,
 c     integers
      #     rad_ubornidx,rad_alr_list,rad_alr_nlist,
      #     rad_realidx,rad_realalr,rad_realreg,
      #     rad_kinreg,rad_nkinreg,
-     #     rad_ncsinorms,rad_nynorms,
+     #     rad_ncsinorms,rad_nynorms,rad_type,
 c     logical
      #     rad_kinreg_on
       

@@ -571,7 +571,7 @@ c in the real radiation cross section
       include 'include/pwhg_rad.h'
       real * 8 rc(maxalr)
       integer alr,em
-      real * 8 q0,xocsi,csi,phi,x,y,kperp(0:3),kperp2,r1,r2
+      real * 8 q0,xocsi,csi,phi,x,kperp(0:3),kperp2,r1,r2
       integer j
       do j=1,rad_alr_nlist
          alr=rad_alr_list(j)
@@ -584,7 +584,6 @@ c     Construct kperp
             kperp(2)=cos(phi)
             kperp(3)=0
             kperp(0)=0
-            y=kn_y
             if(em.ne.2) then
                csi=kn_csi*kn_csimaxp/kn_csimax
                call collisralr(alr,1,csi,kperp,r1)
@@ -600,7 +599,7 @@ c     Construct kperp
             elseif(em.eq.2) then
                rc(alr)=r2
             endif
-            rc(alr)=rc(alr)/(kn_csi**2*(1-y**2))
+            rc(alr)=rc(alr)/(kn_csi**2*(1-kn_y**2))
          elseif(flst_lightpart+rad_kinreg-2.eq.em) then
             csi=kn_csi
             phi=kn_azi
@@ -609,7 +608,7 @@ c     Construct kperp
             x=csi*xocsi
             call buildkperp(em,phi,kperp,kperp2)
             call collfsralr(alr,csi,xocsi,x,q0,kperp,kperp2,rc(alr))
-            rc(alr)=rc(alr)/csi**2/(1-y)
+            rc(alr)=rc(alr)/csi**2/(1-kn_y)
          else
             rc(alr)=0
          endif

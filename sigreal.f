@@ -158,11 +158,6 @@ c     to avoid divergent integral
       include 'include/pwhg_dbg.h'
       external sigreal_btl,soft,collfsr,softcollfsr, collisrp,
      $     softcollisrp,collisrm,softcollisrm
-ccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     Uncomment the following if you want the
-c     results of the checks printed on the screen
-c      iun=6
-cccccccccccccccccccccccccccccccccccccccccccccccccc
       call randomsave
       if(dbg_softtest) then
          write(iun,*) '******************************************'   
@@ -528,8 +523,8 @@ c End initialization phase; compute graphs
          alr=rad_alr_list(j)
          em=flst_emitter(alr)
 c check if emitter corresponds to current radiation region (i.e. rad_kinreg):
-         if((rad_kinreg.eq.1.and.em.le.2).or.
-     #       flst_lightpart+rad_kinreg-2.eq.em)then
+         if((rad_kinreg.eq.1.and.em.le.2).or.(em.gt.2.and.
+     #       flst_lightpart+rad_kinreg-2.eq.em))then
 c check if we have a g -> Q Qbar splitting below threshold:
             if(em.gt.0) then
                if(flst_alr(em,alr)+flst_alr(nlegreal,alr).eq.0.and.

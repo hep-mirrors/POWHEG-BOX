@@ -9,8 +9,8 @@
       real * 8 random,powheginput
       external random,powheginput
       integer mcalls,icalls
-      real * 8 pwhg_pt2
-      external pwhg_pt2
+      real * 8 pwhg_pt2,pt2max_regular
+      external pwhg_pt2,pt2max_regular
       real * 8 ptsq
       if(random().gt.rad_sigrm/rad_sigtot) then
 c     generate underlying Born kinematics
@@ -26,7 +26,10 @@ c generate radiation
 c add a random azimuthal rotation around beam axis
          call add_azimuth
 c --- set up les houches interface
+         rad_pt2max=pwhg_pt2()
          call gen_leshouches
+c rad_type=1 for btilde events (used only for debugging purposes)
+         rad_type=1
       else
 c generate remnant n+1 body cross section
          call gen_sigremnant
@@ -37,13 +40,17 @@ c iret=2: reg contribution (real graphs without singular regions)
          call add_azimuth
          if(iret.eq.1) then
 c     set st_muren2 equal to pt2 for scalup value
-            ptsq=pwhg_pt2()
+            rad_pt2max=pwhg_pt2()
             call set_rad_scales(ptsq)
             call gen_leshouches
+c rad_type=2 for remnants
+            rad_type=2
          else
-c CAVEAT TODO
-c     remember to set st_muren2 for scalup value for regular contributions
+c     Set st_muren2 for scalup value for regular contributions
+            rad_pt2max=pt2max_regular()
             call gen_leshouches_reg
+c rad_type=3 for regular contributions
+            rad_type=3
          endif         
       endif
       end
@@ -285,7 +292,6 @@ c
       common/cdfxmin/xmin
       real * 8 random,pt2solve,dfxmin,pwhg_alphas0,pwhg_upperb_rad
       external random,pt2solve,dfxmin,pwhg_alphas0,pwhg_upperb_rad
-      integer icsi,iy
       unorm=rad_norms(rad_kinreg,rad_ubornidx)
       sborn=kn_sborn
       x1b=kn_xb1
@@ -393,7 +399,7 @@ c Veto if out of range (x1>1 or x2>1)
          goto 1
       endif
 c extra suppression factor of upper bounding function (may depend upon radiation variables)
-      call uboundfct(ufct,icsi,iy)
+      call uboundfct(ufct,1-x,y)
       if(random().gt.ufct) goto 1
 c Veto from upper bound to real value. Count how many vetoes,
 c since these may be expensive.
@@ -443,7 +449,6 @@ c
       common/cdfxmin/xmin
       real * 8 random,pt2solve,pwhg_alphas0,pwhg_upperb_rad
       external random,pt2solve,pwhg_alphas0,pwhg_upperb_rad
-      integer icsi,iy
       unorm=rad_norms(rad_kinreg,rad_ubornidx)
 c kn_sborn=kn_sreal:
       s=kn_sborn
@@ -535,7 +540,7 @@ c get y
       endif
 c
 c extra suppression factor of upper bounding function (may depend upon radiation variables)
-      call uboundfct(ufct,icsi,iy)
+      call uboundfct(ufct,csi,y)
       if(random().gt.ufct) goto 1
 c Veto from upper bound to real value. Count how many vetoes,
 c since these may be expensive.

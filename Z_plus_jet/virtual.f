@@ -37,7 +37,7 @@ c     MCFM include
       as = st_alpha
 
 c     MCFM fills an array with all processes.
-      if(ini.or.p.ne.pold) then
+      if(ini) then
          equalp=.true.
          do mu=0,3
             do j=1,nlegborn

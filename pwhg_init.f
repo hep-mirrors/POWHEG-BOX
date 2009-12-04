@@ -10,7 +10,7 @@
       real * 8 powheginput
       external powheginput
       integer i1,n1,n2
-      call init_flst
+      call init_flsttag
       flg_debug=.false.
       if(powheginput("#flg_debug").eq.1) flg_debug=.true.
 c     Set to true to remember and use identical values of the computed 
@@ -62,7 +62,7 @@ c now the cross section is available
       xmaxup(1)=1
       end
 
-      subroutine init_flst
+      subroutine init_flsttag
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer j,l

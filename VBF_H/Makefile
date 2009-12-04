@@ -14,9 +14,9 @@ ifeq ($(shell uname),Linux)
 #SYSOBJ=
 F77= g77 -Wall -fno-automatic 
 #-ffortran-bounds-check
-#DEBUG=-ggdb -pg
-OPT=-O3
-#SYSOBJ=trapfpe.o
+DEBUG=-ggdb -pg
+#OPT=-O3
+SYSOBJ=trapfpe.o
 endif
 ifeq ($(shell uname),Darwin)
 F77= g77 -dn -Wall -fno-automatic -ffortran-bounds-check

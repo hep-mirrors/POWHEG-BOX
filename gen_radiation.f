@@ -11,7 +11,6 @@
       integer mcalls,icalls
       real * 8 pwhg_pt2,pt2max_regular
       external pwhg_pt2,pt2max_regular
-      real * 8 ptsq
       if(random().gt.rad_sigrm/rad_sigtot) then
 c     generate underlying Born kinematics
          call gen_btilde(mcalls,icalls)
@@ -41,7 +40,7 @@ c iret=2: reg contribution (real graphs without singular regions)
          if(iret.eq.1) then
 c     set st_muren2 equal to pt2 for scalup value
             rad_pt2max=pwhg_pt2()
-            call set_rad_scales(ptsq)
+            call set_rad_scales(rad_pt2max)
             call gen_leshouches
 c rad_type=2 for remnants
             rad_type=2

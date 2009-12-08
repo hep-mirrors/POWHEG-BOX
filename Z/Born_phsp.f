@@ -113,9 +113,40 @@ c CAVEAT!!!  process dependent subroutine
       implicit none
       include 'PhysPars.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       real * 8 muf,mur
-      muf=ph_Zmass
-      mur=ph_Zmass
+      logical ini
+      data ini/.true./
+      real *8 muref
+      real *8 dotp
+      external dotp
+      if (ini) then
+c         write(*,*) '*************************************'
+c         write(*,*) '    Factorization and renormalization '
+c         write(*,*) '    scales set to Z exact mass        '
+c         write(*,*) '*************************************'
+
+         write(*,*) '*************************************'
+         write(*,*) '    Factorization and renormalization '
+         write(*,*) '    scales set to Z virtuality  '
+         write(*,*) '*************************************'
+
+c         write(*,*) '*************************************'
+c         write(*,*) '    Factorization and renormalization '
+c         write(*,*) '    scales set to the Z transverse mass'
+c         write(*,*) '*************************************'
+
+         ini=.false.
+      endif
+
+c      muref=ph_Zmass
+      muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
+c      muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)) + (kn_pborn(1,3)
+c     $     +kn_pborn(1,4))**2 + (kn_pborn(2,3)
+c     $     +kn_pborn(2,4))**2)
+
+      muf=muref
+      mur=muref
+
+
       end

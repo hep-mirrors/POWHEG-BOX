@@ -14,10 +14,9 @@ F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow #-fbounds-ch
 #SYSOBJ=
 #F77= g77 -Wall -fno-automatic 
 #-ffortran-bounds-check
-DEBUG=-ggdb # -pg
-#DEBUG=-O3
-#OPT=-O3
-SYSOBJ=trapfpe.o
+#DEBUG=-ggdb -pg
+OPT=-O3
+#SYSOBJ=trapfpe.o
 endif
 ifeq ($(shell uname),Darwin)
 F77= g77 -dn -Wall -fno-automatic -ffortran-bounds-check
@@ -29,7 +28,7 @@ F77= g77 -Wall
 SYSOBJ=
 endif
 
-FASTJET_CONFIG=/usr/local/bin/fastjet-config
+FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/  -lstdc++
@@ -48,8 +47,10 @@ FF=$(F77) $(OPT) $(DEBUG)
 INCLUDE =$(shell echo ../include/*.h *.h)
 
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
+LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
-LIBS=-L/home/alioli/fortran/LHAPDF/lib -lLHAPDF -static
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF -static
+LIBS=$(LIBSLHAPDF)
 
 
 %.o: %.f $(INCLUDE)

@@ -1,4 +1,3 @@
-c     -*- Fortran -*-
       subroutine real_ampsq(p,rflav,amp2real)
       implicit none
       include 'nlegborn.h'

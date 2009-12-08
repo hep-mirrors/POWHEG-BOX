@@ -1,3 +1,8 @@
 The content of this folder has not been fully checked yet.
-In particular, analysis subroutines have not been tested.
+The file run_wmws/pwhg_analysis_wmws.f contains an analysis suited
+to work for WMWS runs, at the partonic NLO level
+
+The file pwhg_analysis.f (and its copy pwhg_analysis_default.f)
+contains instead a generic analysis, tested only partially.
+
 Other files should be ok.

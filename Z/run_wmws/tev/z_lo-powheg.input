@@ -1,4 +1,8 @@
-numevts 100000    ! number of events to be generated
+! Z production parameter
+idvecbos 23
+vdecaymode 11
+
+numevts 1    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   -1          ! hadron 2 (1 for protons, -1 for antiprotons)
 ndns1 131         ! pdf set for hadron 1 (mlm numbering)
@@ -18,8 +22,8 @@ use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound
 
 ncall1 100000   ! number of calls for initializing the integration grid
 itmx1    5     ! number of iterations for initializing the integration grid
-ncall2 100000   ! number of calls for computing the integral and finding upper bound
-itmx2    5     ! number of iterations for computing the integral and finding upper bound
+ncall2 200000   ! number of calls for computing the integral and finding upper bound
+itmx2    10     ! number of iterations for computing the integral and finding upper bound
 foldcsi   1    ! number of folds on csi integration
 foldy     1    ! number of folds on  y  integration
 foldphi   1    ! number of folds on phi integration
@@ -33,14 +37,14 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
-bornonly   0      ! (default 0) if 1 do Born only
+bornonly   1      ! (default 0) if 1 do Born only
 smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
 #withdamp    1      ! (default 0, do not use) use Born-zero damping factor
 #ptsqmin    0.8    ! (default 0.8 GeV) minimum pt for generation of radiation
 #charmthr   1.5    ! (default 1.5 GeV) charm treshold for gluon splitting 
 #bottomthr  5.0    ! (default 5.0 GeV) bottom treshold for gluon splitting
-#testplots  1      ! (default 0, do not) do NLO and PWHG distributions
+testplots  1      ! (default 0, do not) do NLO and PWHG distributions
 #hfact    100d0    ! (default no dumping factor) dump factor for high-pt radiation: > 0 dumpfac=h**2/(pt2+h**2)
 #testsuda  1       ! (default 0, do not test) test Sudakov form factor
 #radregion 1       ! (default all regions) only generate radiation in the selected singular region  
@@ -55,6 +59,3 @@ smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
 #iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
 
 
-! Z production parameter
-idvecbos 23
-vdecaymode 11

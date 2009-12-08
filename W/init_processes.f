@@ -25,23 +25,6 @@ c     lepton masses
       common/clepmass/lepmass,decmass
 
 c******************************************************
-c    Two ways of providing virtuals are allowed 
-c     1) An array of virtual results listed according to POWHEG list of
-c     subprocesses. The user must provide the subroutine call
-c     setvirtual_fast(virt_arr) 
-c
-      flg_fastvirt=.true.
-c
-c    2) Each virtual result is calculated for the given flavour and then
-c     POWHEG arrange them in a ordinated list of subprocesses.  Then
-c     POWHEG itself takes care to avoid computing the identical
-c     contributions more than once. The user must provide the subroutine
-c     setvirtual(p,vflav,res)
-c 
-c      flg_fastvirt=.false.
-c
-c******************************************************
-c******************************************************
 c     Choose the process to be implemented
 c******************************************************
 c    ID of vector boson produced

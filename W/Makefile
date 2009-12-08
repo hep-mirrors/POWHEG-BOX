@@ -49,7 +49,7 @@ INCLUDE =$(shell echo ../include/*.h *.h)
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
 LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
-LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF -static
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF -static
 LIBS=$(LIBSLHAPDF)
 
 

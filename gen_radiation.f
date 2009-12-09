@@ -62,7 +62,9 @@ c rad_type=3 for regular contributions
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
-      real * 8 t,tmax,csi,y,azi,sig
+      real * 8 t,csi,y,azi,sig
+      real * 8 tmax
+      common/ctmax/tmax
       integer kinreg,firstreg,lastreg
       logical ini
       data ini/.true./
@@ -289,6 +291,8 @@ c
       real * 8 xmin,rv,xp,xm,chi,tk,uk,ubound,ufct,
      #   sborn,value,err,tmp1,tmp2,tmp,rvalue,born,sig
       common/cdfxmin/xmin
+      real * 8 tmax
+      common/ctmax/tmax
       real * 8 random,pt2solve,dfxmin,pwhg_alphas0,pwhg_upperb_rad
       external random,pt2solve,dfxmin,pwhg_alphas0,pwhg_upperb_rad
       unorm=rad_norms(rad_kinreg,rad_ubornidx)
@@ -297,7 +301,7 @@ c
       x2b=kn_xb2
 c See Notes/kt2max.pdf
       kt2max = sborn*(1-x2b**2)*(1-x1b**2)/(x1b+x2b)**2
-      if(kt2max.lt.rad_ptsqmin) then
+      if(kt2max.lt.rad_ptsqmin.or.kt2max.lt.tmax) then
          t=-1
          goto 3
       endif
@@ -334,8 +338,9 @@ c error conditions
          write(*,*) ' number of calls exceeded'
          stop
       endif
- 3    if(t.lt.rad_ptsqmin) then
-c below cut: generate a born event
+ 3    if(t.lt.rad_ptsqmin.or.t.lt.tmax) then
+c below cut (either below absolute minimum, or below previously generated
+c radiation in highest bid loop): generate a born event
          t=-1
          kn_csi=0
          return
@@ -446,6 +451,8 @@ c
       real * 8 xmin,rv,ubound,ufct,
      #   s,value,err,tmp,rvalue,born,sig
       common/cdfxmin/xmin
+      real * 8 tmax
+      common/ctmax/tmax
       real * 8 random,pt2solve,pwhg_alphas0,pwhg_upperb_rad
       external random,pt2solve,pwhg_alphas0,pwhg_upperb_rad
       unorm=rad_norms(rad_kinreg,rad_ubornidx)
@@ -455,7 +462,7 @@ c kn_sborn=kn_sreal:
       kn_csimax=kn_csimax_arr(kn_emitter)
 c See Notes/kt2max.pdf
       kt2max = kn_csimax**2*s
-      if(kt2max.lt.rad_ptsqmin) then
+      if(kt2max.lt.rad_ptsqmin.or.kt2max.lt.tmax) then
          t=-1
          goto 3
       endif
@@ -483,8 +490,9 @@ c error conditions
          write(*,*) ' number of calls exceeded'
          stop
       endif
- 3    if(t.lt.rad_ptsqmin) then
-c below cut: generate a born event
+ 3    if(t.lt.rad_ptsqmin.or.t.lt.tmax) then
+c below cut (either below absolute minimum, or below previously generated
+c radiation in highest bid loop): generate a born event
          t=-1
          kn_csi=0
          return

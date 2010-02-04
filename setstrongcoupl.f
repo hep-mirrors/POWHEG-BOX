@@ -8,7 +8,7 @@
       call set_fac_ren_scales(muf,mur)
       st_mufact2= muf**2*st_facfact**2
       st_muren2 = mur**2*st_renfact**2
-      st_alpha  = pwhg_alphas(st_muren2,st_lambda5MSB,-1)
+      st_alpha  = pwhg_alphas(st_muren2,st_lambda5MSB,st_nlight)
       end
 
       subroutine set_rad_scales(ptsq)
@@ -174,7 +174,7 @@ c      return
      #    1/( 1/(1/(b3 * xlq) - bp3/(b3 * xlq)**2 * xllq) + c35 )
       else
         print *,'error in alfa: unimplemented # of light flavours',nf
-        stop
+        call exit(1)
       endif
       return
       end

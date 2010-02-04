@@ -76,8 +76,8 @@ c initialize number of singular regions
 
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      dbg_softtest=.false.
-      dbg_colltest=.false.
+      dbg_softtest=.true.
+      dbg_colltest=.true.
 c     Uncomment the following lines to
 c     check soft and/or collinear limits
 c      dbg_softtest=.true.

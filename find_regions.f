@@ -340,6 +340,9 @@ c                   j>2 final state sing.
       end
 
       function flavequiv(n,aflav,bflav)
+c returns true if the flavour structures aflav and bflav are
+c equivalent up to a permutation of the final state line,
+c false otherwise.
       implicit none
       logical flavequiv
       integer n, aflav(n),bflav(n)
@@ -627,12 +630,29 @@ c bunch together identical elements, increasing their multiplicities
       do j=1,nreg
          if(flst_mult(j).gt.0) then
             do k=j+1,nreg
-c todo: It would be better if permutations of lines not equal to the
-c emitter or emitted particle would be considered
-               if(flst_emitter(j).eq.flst_emitter(k).and.
-     #  equalintlists(nlegreal,flst_alr(1,j),flst_alr(1,k))) then
-                  flst_mult(j)=flst_mult(j)+1
-                  flst_mult(k)=0
+c Previously was:
+c               if(flst_emitter(j).eq.flst_emitter(k).and.
+c     #  equalintlists(nlegreal,flst_alr(1,j),flst_alr(1,k))) then
+c now accounts for equivalece by permutation of final state lines.
+c Notice: identity of emitter and radiated parton must be valid
+c  without permutations
+               if(flst_mult(k).ne.0) then
+                  if(flst_emitter(j).eq.flst_emitter(k).and.
+c     ISR: is ISR, has same radiated parton, is equivalent
+c          (excluding the radiated parton)
+     1           ( (flst_emitter(j).lt.3 .and.
+     2              flst_alr(nlegreal,j).eq.flst_alr(nlegreal,k).and.
+     3              flavequiv(nlegreal-1,flst_alr(1,j),flst_alr(1,k)))
+     4                   .or.
+c     FSR: has the same radiated and emitter parton, is equivalent
+c          (excluding emitter and emitted parton)
+     5             (flst_alr(nlegreal,j).eq.flst_alr(nlegreal,k).and.
+     6              flst_alr(nlegborn,j).eq.flst_alr(nlegborn,k).and.
+     7              flavequiv(nlegreal-2,flst_alr(1,j),flst_alr(1,k)))
+     8           )) then
+                     flst_mult(j)=flst_mult(j)+flst_mult(k)
+                     flst_mult(k)=0
+                  endif
                endif
             enddo
          endif

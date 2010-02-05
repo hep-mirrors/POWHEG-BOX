@@ -23,6 +23,7 @@ c     MCFM include
       data ini/.true./
       logical equalp
       integer j,mu
+
       if (ini) then
          call virtual_initialize_MCFM
          do mu=0,3
@@ -30,30 +31,30 @@ c     MCFM include
                pold(mu,j)=0
             enddo
          enddo
+         ini=.false.
       endif
-     
       scale = sqrt(st_muren2)
       musq=st_muren2            ! renormalization scale squared
       as = st_alpha
 
 c     MCFM fills an array with all processes.
-      if(ini) then
-         equalp=.true.
-         do mu=0,3
-            do j=1,nlegborn
-               equalp=equalp.and.p(mu,j).eq.pold(mu,j)
-               pold(mu,j)=p(mu,j)
-            enddo
+      equalp=.true.
+      do mu=0,3
+         do j=1,nlegborn
+            equalp=equalp.and.p(mu,j).eq.pold(mu,j)
+            pold(mu,j)=p(mu,j)
          enddo
-         if(.not.equalp) then
-            call mom_to_MCFM(p,pmcfm)
-            call qqb_z1jet_v(pmcfm,virt)
-         endif
+      enddo
+      if(.not.equalp) then
+         call mom_to_MCFM(p,pmcfm)
+         call qqb_z1jet_v(pmcfm,virt)
       endif
-c     Now select only the one needed and divide result by as/(2pi)      
+c     Now select only the one needed and divide result by as/(2pi)
       virtual=virt(vflav(1),vflav(2))/(st_alpha/(2*pi))
-      ini=.false.
       end
+
+
+
 
       subroutine virtual_initialize_MCFM
       implicit none
@@ -230,10 +231,22 @@ c      if ((abs(s(1,5)).lt.cutoff) .or. (abs(s(2,5)).lt.cutoff)) return
 c--- calculate lowest order
       call qqb_z1jet(p,msq0)
       
-c----UV counterterm contains the finite renormalization to arrive
-c----at MS bar scheme.      
-c      subuv=ason2pi*xn*(epinv*(11d0-2d0*dble(nflav)/xn)-1d0)/6d0
-      subuv=as/twopi*xn*(epinv*(11d0-2d0*dble(nflav)/xn)-1d0)/6d0
+c$$$c----UV counterterm contains the finite renormalization to arrive
+c$$$c----at MS bar scheme.      
+c$$$c      subuv=ason2pi*xn*(epinv*(11d0-2d0*dble(nflav)/xn)-1d0)/6d0
+c$$$      subuv=as/twopi*xn*(epinv*(11d0-2d0*dble(nflav)/xn)-1d0)/6d0
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Use subuv to include finite renormalization to arrive
+c     at MS bar scheme, AND to convert finite part from DR to
+c     CDR. 
+c     subuv*born is SUBTRACTED from the finite part
+c     1st term: as_dr -> as_msbar
+c     2nd term: DR -> CDR
+      subuv=-as/twopi*(
+     $     + xn/6.
+     $     - 2*cf/2. - ca/6.)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 c--   calculate propagator
       sz=s(3,4)

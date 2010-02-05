@@ -1,7 +1,9 @@
-      subroutine real_ampsq(p,fermion_flav,amp2)
+      subroutine setreal(p,fermion_flav,amp2)
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
 c -*- Fortran -*-
 c      character *2 flav(-5:5)
       real * 8 charge(-5:5)
@@ -90,6 +92,9 @@ c     q g -> W+ qp
       elseif(mod(abs(i),2).eq.1) then   
          amp2=amp2*ph_CKM(abs(j)/2,(abs(i)+1)/2)**2
       endif
+c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq
+      amp2 = amp2/(st_alpha/(2*pi))
+      
       end
 
 c this subroutine compute the Born amplitude for the process

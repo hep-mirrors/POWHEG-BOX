@@ -9,10 +9,10 @@ SYSOBJ=
 endif
 ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation of bolean in gfortran
-F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow #-fbounds-check
+#F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow -fbounds-check
 # The following should no longer be needed in gfortran >= 4.3
 #SYSOBJ=
-#F77= g77 -Wall -fno-automatic 
+F77= g77 -Wall -fno-automatic 
 #-ffortran-bounds-check
 DEBUG=-ggdb # -pg
 #DEBUG=-O3
@@ -29,7 +29,7 @@ F77= g77 -Wall
 SYSOBJ=
 endif
 
-FASTJET_CONFIG=/usr/local/bin/fastjet-config
+FASTJET_CONFIG=/home/oleari/fortran/fastjet/bin/fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/  -lstdc++
@@ -49,8 +49,11 @@ INCLUDE =$(shell echo ../include/*.h *.h)
 
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
 PDFPACK=lhapdfif.o
-LIBS=-L/home/alioli/fortran/LHAPDF/lib -lLHAPDF -static
+#LIBS=-L/home/oleari/fortran/LHAPDF_lib/lib -lLHAPDF -static \
+#	 -L/home/oleari/fortran/dhelas3 -ldhelas3
 
+LIBS=-L/home/oleari/fortran/LHAPDF-5.8.0/lib -lLHAPDF -static \
+	 -L/home/oleari/fortran/dhelas3 -ldhelas3
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../

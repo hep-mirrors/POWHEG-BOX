@@ -154,6 +154,11 @@ c  pwhgfill  :  fills the histograms with data
       call pwhgbookup(diag,'jet mult. btw tag jets'//cut,'LOG',
      #     binsize(diag),0.5d0,8.5d0)
 
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'Pveto'//cut,'LIN',binsize(diag),10d0,60d0)
+
+
       end
 
       
@@ -193,7 +198,7 @@ c arrays to reconstruct jets
       real * 8 Rsep(2,2),Rmin,delphi_jj
       logical pass_cuts,pass_cuts_no_mjjmin,pass_cuts_no_deltayjjmin
       real * 8 ptjetmin,ptalljetmin,yjetmax,deltay_jjmin,ptlepmin,
-     #     ylepmax,mjjmin,Rsep_jlmin
+     #     ylepmax,mjjmin,Rsep_jlmin,ptvetojet,sig2NLO
       logical ylep_between_jets,jet_opphem,exist3rdjet
       logical onlyquarks,Z_exchange
       real * 8 binsize(100)
@@ -201,7 +206,7 @@ c arrays to reconstruct jets
       logical iniptcut
       save iniptcut
       data iniptcut/.true./
-      logical higgsfound
+      logical higgsfound,found_hardest_vetojet    
 c     we need to tell to the this analysis file which program is running it
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
@@ -567,14 +572,14 @@ c            call increasecnt('pass WBF cuts')
             diag=diag+1
             call pwhgfill(diag,ptj(1),dsig/binsize(diag))
 
-            if (iniptcut) then
-               iniptcut = .false.
-               write(*,*) '****************************'
-               write(*,*) '****************************'
-               write(*,*) 'pt cut on yj(3) in place!!  '
-               write(*,*) '****************************'
-               write(*,*) '****************************'
-            endif
+c            if (iniptcut) then
+c               iniptcut = .false.
+c               write(*,*) '****************************'
+c               write(*,*) '****************************'
+c               write(*,*) 'pt cut on yj(3) in place!!  '
+c               write(*,*) '****************************'
+c               write(*,*) '****************************'
+c            endif
 
             diag=diag+1
             if (exist3rdjet)  then
@@ -668,6 +673,24 @@ c     jet multeplicity between the two tagging jets
             enddo            
             diag=diag+1
             call pwhgfill(diag,njets_passcut*1d0,dsig/binsize(diag))
+
+c     Pveto as in eq. (3.14) of arXiv:0710.5621v2
+            found_hardest_vetojet = .false.
+            do ijet=3,tagjets               
+               if (.not.found_hardest_vetojet .and. 
+     #                 (min(yj(1),yj(2)).lt.yj(ijet) .and.
+     #                 yj(ijet).lt.max(yj(1),yj(2)))) then
+                  found_hardest_vetojet = .true.
+                  ptvetojet = ptj(ijet)
+               endif
+            enddo            
+            diag=diag+1
+            sig2NLO = 0.72331d0
+ 111        continue
+c     NB: NO division by binsize(diag) since we want the integral
+            call pwhgfill(diag,ptvetojet,dsig/sig2NLO)
+            ptvetojet = ptvetojet - binsize(diag)
+            if (ptvetojet.gt.10d0) goto 111
          endif
       endif
       end

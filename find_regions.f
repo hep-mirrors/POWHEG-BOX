@@ -341,7 +341,7 @@ c                   j>2 final state sing.
 
       function flavequiv(n,aflav,bflav)
 c returns true if the flavour structures aflav and bflav are
-c equivalent up to a permutation of the final state line,
+c equivalent up to a permutation of the final state lines,
 c false otherwise.
       implicit none
       logical flavequiv

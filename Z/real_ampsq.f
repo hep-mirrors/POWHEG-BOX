@@ -1,7 +1,9 @@
-      subroutine real_ampsq(p,rflav,amp2real)
+      subroutine setreal(p,rflav,amp2real)
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
       real * 8 amp2real
@@ -217,6 +219,9 @@ c     u~ g -> Z u~
       endif
 
       amp2real=amp2
+
+c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq
+      amp2real = amp2real/(st_alpha/(2*pi))
 
       end
 

@@ -22,6 +22,7 @@
       call pwhgsetout
       call pwhgtopout
       close(99)
+      write(*,*) 'EVENTS FOUND : ',nev
       end
       
       subroutine UPINIT

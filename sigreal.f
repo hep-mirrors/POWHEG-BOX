@@ -816,3 +816,18 @@ c flux factor
          continue
       endif
       end
+
+
+
+      subroutine real_ampsq(p,rflav,amp2)
+      implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_math.h'
+      include 'include/pwhg_st.h'
+      real * 8 p(0:3,nlegreal)
+      integer rflav(nlegreal)
+      real * 8 amp2 
+      call setreal(p,rflav,amp2)
+      amp2 = amp2*st_alpha/(2*pi)
+      end

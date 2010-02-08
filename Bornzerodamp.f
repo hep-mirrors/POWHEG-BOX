@@ -10,26 +10,6 @@ c the real contribution to implement Born zero suppression
       data ini/.true./
       save ini,h
       external pwhg_pt2,powheginput
-cccccccccccccccccccccccccccccccccccccccccccccccc
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_dbg.h'
-c     CAVEAT: Problem when flg_bornonly =.true.!
-      if (flg_bornonly) then
-         write(*,*) 'ERROR in bornzerodamp:'
-         write(*,*) 'if bornolny is set to true  '
-         write(*,*) 'this subroutine should not be called'
-         call exit(1)
-      endif   
-c     CAVEAT: Problem when dbg_*test =.true.!
-c     when the checklims is called  
-      if (dbg_colltest.or.dbg_softtest) then
-         write(*,*) 'ERROR in bornzerodamp:'
-         write(*,*) 'when doing checklims   '
-         write(*,*) 'no damping factor for reals'
-         call exit(1)
-      endif   
-   
-cccccccccccccccccccccccccccccccccccccccccccccccc
       if(ini) then
          h=powheginput('#hfact')
       endif

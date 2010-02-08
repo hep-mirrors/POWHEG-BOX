@@ -7,6 +7,7 @@
       include 'include/pwhg_st.h'
       include 'include/pwhg_rad.h'
       include 'include/pwhg_dbg.h'
+      include 'include/pwhg_flg.h'
       character * 5 scheme
       character * 3 whichpdfpk
       real * 8 powheginput
@@ -83,7 +84,16 @@ c     check soft and/or collinear limits
 c      dbg_softtest=.true.
 c      dbg_colltest=.true.
 
-      if (dbg_softtest.or.dbg_colltest) then
+      if(flg_withdamp) then
+         write(*,*) ' no soft tests if withdamp is set'
+         dbg_softtest=.false.
+      endif
+      if(flg_bornonly) then
+         write(*,*) ' no soft and coll. tests if bornonly is set'
+         dbg_softtest=.false.
+         dbg_colltest=.false.
+      endif
+      if (dbg_softtest.or.dbg_colltest) then         
          call newunit(iun)
          open(unit=iun,file='pwhg_checklimits')
          call checklims(iun)

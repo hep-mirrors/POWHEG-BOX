@@ -32,9 +32,6 @@ c select which upper bounding function form
       iupperfsr=powheginput("#iupperfsr")
       if(iupperfsr.lt.0) iupperfsr=2
 c
-      flg_bornonly=.false.
-      if (powheginput("#bornonly").eq.1) flg_bornonly=.true.
-
       do j=1,ndiminteg
          ifold(j)=1
       enddo

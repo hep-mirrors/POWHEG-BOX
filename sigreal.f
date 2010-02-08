@@ -4,7 +4,6 @@
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
-      include 'include/pwhg_tobefixed.h'      
       real * 8 xrad(3),resreal(maxprocborn),www
       real * 8 r0(maxalr),rc(maxalr),rp(maxalr),rm(maxalr),
      # r0s(maxalr),rcs(maxalr),rps(maxalr),rms(maxalr),xl,xlp,xlm,
@@ -57,10 +56,10 @@ c     in final state radiation csimax is independent of y
      #-rrr0s+rrrcs+remnant
                   else
 c     provide a damping factor for the singular region,
-c     to avoid divergent integral
+c     to avoid divergent integral (25 is an ad hoc value
                      resreal(iuborn)= resreal(iuborn)
      #               +rrr0*(1-kn_y**2)*kn_csi/
-     #                  (facnum/kn_sbeams+(1-kn_y**2)*kn_csi)
+     #                  (25/kn_sbeams+(1-kn_y**2)*kn_csi)
                   endif
                   if(flg_nlotest) then
                      out1=out1+rrr0
@@ -126,10 +125,10 @@ c     remnants (see xscaled.pdf in docs directory)
      #              -rrr0s-rrrp-rrrm+rrrps+rrrms+remnant
                   else
 c     provide a damping factor for the singular region,
-c     to avoid divergent integral
+c     to avoid divergent integral (25 is an ad hoc value)
                      resreal(iuborn)= resreal(iuborn)
      #               +rrr0*(1-kn_y**2)*kn_csi/
-     #                  (facnum/kn_sbeams+(1-kn_y**2)*kn_csi)
+     #                  (25/kn_sbeams+(1-kn_y**2)*kn_csi)
                   endif
                   if(flg_nlotest) then
                      out1=out1+rrr0

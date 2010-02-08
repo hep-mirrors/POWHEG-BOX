@@ -19,7 +19,6 @@
       include 'include/pwhg_flst.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_rad.h'
-      include 'include/pwhg_tobefixed.h'
       real * 8 pwhg_alphas
       integer nf
       external pwhg_alphas
@@ -42,7 +41,8 @@ c     heavy quarks involved one should use their masses as minimum value
 c     of factorization scale, as we make later on. This works if ptmin
 c     is greater or equal to the mass of heavy quark 
         elseif( whichpdfpk().eq.'mlm') then    
-           q2min=min_mufact2            !!!!!! CHECK 
+c ad hoc value here (mlmpdf does not provide this)
+           q2min=2d0
         else
            write(*,*) ' unimplemented pdf package',whichpdfpk()
            stop

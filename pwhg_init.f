@@ -23,6 +23,9 @@ c     if true also counterterm are output in NLO tests (default)
 c     if true use Born zero damping factor and include remnants
       flg_withdamp=.false.
       if(powheginput("#withdamp").eq.1) flg_withdamp=.true.
+c     If set do only the Born term
+      flg_bornonly=.false.
+      if (powheginput("#bornonly").eq.1) flg_bornonly=.true.
 c     initialize random number sequence
       i1=powheginput('#iseed')
       if (i1.lt.0) i1=0

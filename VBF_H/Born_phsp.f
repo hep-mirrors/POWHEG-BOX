@@ -7,7 +7,7 @@
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-3)
       real * 8 m2,xjac,taumin,tau,y,beta,betaCM,vec(3),cth,s,
-     #     z,zhigh,zlow,dir(3)
+     #     z,zhigh,zlow
       integer mu,k,j
       logical ini
       data ini/.true./

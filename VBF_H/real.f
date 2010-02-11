@@ -5,7 +5,7 @@
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'
       real * 8 p(0:3,nlegreal)
-      integer rflav(nlegreal),rflavs(nlegreal)
+      integer rflav(nlegreal)
       real * 8 amp2
       integer mu
       integer nf

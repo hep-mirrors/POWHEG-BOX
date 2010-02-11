@@ -14,7 +14,7 @@ c  pwhgfill  :  fills the histograms with data
       real * 8 ptvbcut
       common/cptvbcut/ptvbcut
       character * 10 cut
-      integer i,nsigma,diag
+      integer nsigma,diag
       real * 8 step,invmasslow,invmasshigh,ymax
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
@@ -178,8 +178,8 @@ c arrays to reconstruct jets
       real *8 ptj(maxtagjets),yj(maxtagjets)
       real *8 pjet(4,maxjet) 
       integer mu,jpart,jjet,njj(maxtagjets),found,njets,
-     #     ihep,ntracks,ijet,j1,j2
-      real * 8 vec(3),pjetin(0:3),pjetout(0:3),beta,ptrel,get_ptrel,
+     #     ihep,ntracks,ijet,j1
+      real * 8 vec(3),pjetout(0:3),beta,ptrel,get_ptrel,
      #     ptrackin(0:3),ptrackout(0:3)
       integer i,diag,njets_passcut
       external get_ptrel
@@ -203,9 +203,9 @@ c arrays to reconstruct jets
       logical onlyquarks,Z_exchange
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
-      logical iniptcut
-      save iniptcut
-      data iniptcut/.true./
+c      logical iniptcut
+c      save iniptcut
+c      data iniptcut/.true./
       logical higgsfound,found_hardest_vetojet    
 c     we need to tell to the this analysis file which program is running it
       character * 6 WHCPRG

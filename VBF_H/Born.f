@@ -9,7 +9,6 @@
       integer bflav(nlegs)
       real * 8 bmunu(0:3,0:3,nlegs),bbmunu(0:3,0:3),born,colcf
       integer j,k,mu,nu
-      real * 8 tot
 
 c Colour factors for colour-correlated Born amplitudes;
 c Rule from 2.98 in FNO2007, leads to B_i j=B*(C_i+C_j-C_k)/2,
@@ -53,7 +52,7 @@ c     q q -> H q q
       real * 8 pin(0:3,nleg)
       real * 8 amp2,born,bmunu(0:3,0:3)
       integer ferm_type(nleg)
-      integer i,j,k,mu,nu     
+      integer mu,nu     
 c      real * 8 charge(-5:5)
       integer HZZ,HWW
       integer signn
@@ -132,22 +131,21 @@ C We deal here with the CKM matrix elements for VBF Higgs boson production
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
 c colours of incoming quarks, antiquarks
-      integer icolqi(2),icolai(2),icolgi(2),
-     #        icolqf(2),icolaf(2),icolgf(2)
+c      integer icolqi(2),icolai(2),icolgi(2),
+c     #        icolqf(2),icolaf(2),icolgf(2)
 c      data icolqi/ 501, 0   /
 c      data icolai/ 0  , 502 /
 c      data icolgi/ 502, 501 /
 c      data icolqf/ 502, 0   /
 c      data icolaf/ 0  , 501 /
 c      data icolgf/ 501, 502 /
-
-      data icolqi/ 501, 0   /
-      data icolai/ 0  , 502 /
-      data icolqf/ 501, 0   /
-      data icolaf/ 0  , 502 /
-      save icolqi,icolai,icolgi,icolqf,icolaf,icolgf
+c      data icolqi/ 501, 0   /
+c      data icolai/ 0  , 502 /
+c      data icolqf/ 501, 0   /
+c      data icolaf/ 0  , 502 /
+c      save icolqi,icolai,icolgi,icolqf,icolaf,icolgf
       integer HWW,HZZ
-      integer flin_ret,flout_ret,i
+      integer i
 c neutral particles
 c      icolup(1,3)=0
 c      icolup(2,3)=0
@@ -242,16 +240,17 @@ c         q2 --->------------>-----  q4
       real * 8 amp2
 
       real * 8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
-      real * 8 p12,p13,p14,p15,p23,p24,p25
-      real * 8 p34,p35,p45,p5sq
+      real * 8 p13,p24,p5sq
+c      real * 8 p12,p14,p15,p23,p25,p34,p35,p45,
       real * 8 dotp
-      complex * 16 cdotp,ccdotp
+c      complex * 16 cdotp
+      complex * 16 ccdotp
 c      complex*16 psi(2,-1:1,nf)
       complex*16 psi1(2,-1:1),psi2(2,-1:1),psi3(2,-1:1),psi4(2,-1:1)
-c,
 c     #     psi5(2,-1:1),psi6(2,-1:1)
       complex * 16 prop13, prop24, fac, propH_sq
-      complex*16 jHdecay(0:3),J24R(0:3),J24L(0:3),J13R(0:3),J13L(0:3)
+c      complex*16 jHdecay(0:3)
+      complex*16 J24R(0:3),J24L(0:3),J13R(0:3),J13L(0:3)
       complex * 16 amp_LL, amp_LR, amp_RL, amp_RR
       integer mu,i
       real * 8 p(0:3,nf)

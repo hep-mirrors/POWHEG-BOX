@@ -9,7 +9,7 @@ F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
 # For debugging uncomment the following
 #DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
-#OPT=-O3
+OPT=-O3
 #SYSOBJ=trapfpe.o
 endif
 
@@ -48,10 +48,11 @@ LIBS=-L/home/nason/Pheno/PDFpacks/lha-5.8.1/lib -lLHAPDF -static
 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-		      real_ampsq.o pwhg_analysis.o 
+		      real.o pwhg_analysis.o 
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
-	LesHouchesReg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \
+	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o \
+        pt2maxreg.o \
 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
 	Bornzerodamp.o sigremnants.o random.o boostrot.o \
 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
@@ -72,7 +73,7 @@ pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
-	powheginput.o pwhg_bookhist.o pwhg_analysis.o lhefwrite.o   lhefread.o newunit.o \
+	powheginput.o pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
 	$(SYSOBJ)
 
@@ -81,11 +82,12 @@ lhef_analysis:$(LHEFANAL)
 	$(FF) $(patsubst %,obj/%,$(LHEFANAL)) -o $@ $(LIBS) $(LIBSFASTJET)
 
 
-# target to read event file, shower them with HERWIG, + generic analysis
+# target to read event file, shower events with HERWIG + analysis
 HERWIG=main-HERWIG-lhef.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o $(SYSOBJ)
+	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
 
@@ -99,4 +101,5 @@ main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
 
 clean:
-	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef
+	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \
+	main-PYTHIA-lhef

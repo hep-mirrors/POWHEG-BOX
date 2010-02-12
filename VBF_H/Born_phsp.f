@@ -200,7 +200,7 @@ c     boost in the CM frame
          enddo
       endif
 
-      kn_minmass=ph_Hmass
+      kn_minmass=sqrt(Vmass2low)
       
       end
 

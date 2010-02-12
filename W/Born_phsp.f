@@ -8,7 +8,7 @@
       real * 8 xborn(ndiminteg-3)
       real * 8 m2,xjac,tau,y,beta,vec(3),cth,cthdec,phidec,s,
      #     z,zhigh,zlow
-      integer mu,k,j
+      integer mu,k
       logical ini
       data ini/.true./
       save ini
@@ -81,9 +81,8 @@ c now boost everything along 3
 c      call checkmomzero(nlegborn,kn_pborn)
 c      call checkmass(2,kn_pborn(0,3))
 
-c CAVEAT!!!
-c minimal final state mass (after init_couplings, Wmass is defined
-      kn_minmass=ph_Wmass
+c minimal final state mass 
+      kn_minmass=sqrt(ph_Wmass2low)
 
       end
 
@@ -99,9 +98,8 @@ c minimal final state mass (after init_couplings, Wmass is defined
       include '../include/pwhg_kn.h'
       logical ini
       data ini/.true./
-      real * 8 fact,pt2,pt2supp,powheginput,pt
+      real * 8 fact,pt2supp,powheginput,pt
       save ini,pt2supp,pt     
-c CAVEAT!!!  questa sub e' process dependent!  Dove metterla? 
       if (ini) then
          pt = powheginput("#ptsupp")         
          ini = .false.
@@ -111,6 +109,7 @@ c CAVEAT!!!  questa sub e' process dependent!  Dove metterla?
          fact=1d0
       else         
          fact=1d0
+c CAVEAT!!!   No suppression
 c         pt2=kn_pborn(1,5)**2+kn_pborn(2,5)**2
 c         fact=pt2/(pt2+pt2supp)         
 c      if (pt2.gt.10) then
@@ -137,13 +136,14 @@ c      endif
       if (ini) then
          write(*,*) '*************************************'
          write(*,*) '    Factorization and renormalization '
-         write(*,*) '    scales set to inv. mass of the W  '
+         write(*,*) '    scales set to the inv. mass of the W  '
+c         write(*,*) '    scales set to the mass of the W  '
          write(*,*) '*************************************'
          ini=.false.
       endif
       muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
       muf=muref
       mur=muref
-c     muf=ph_Wmass
-c     mur=ph_Wmass
+c      muf=ph_Wmass
+c      mur=ph_Wmass
       end

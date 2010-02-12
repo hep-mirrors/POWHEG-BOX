@@ -4,13 +4,13 @@ vdecaymode -11  ! PDG code for charged decay product of the vector boson (11:e-;
 numevts 100000    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   -1           ! hadron 2 (1 for protons, -1 for antiprotons)
-ndns1 131         ! pdf set for hadron 1 (mlm numbering)
-ndns2 131         ! pdf set for hadron 2 (mlm numbering)
+!ndns1 131         ! pdf set for hadron 1 (mlm numbering)
+!ndns2 131         ! pdf set for hadron 2 (mlm numbering)
 ebeam1 980d0     ! energy of beam 1
 ebeam2 980d0     ! energy of beam 2
 ! To be set only if using LHA pdfs
-!lhans1  10050     ! pdf set for hadron 1 (LHA numbering)
-!lhans2  10050     ! pdf set for hadron 2 (LHA numbering)
+lhans1  10050     ! pdf set for hadron 1 (LHA numbering)
+lhans2  10050     ! pdf set for hadron 2 (LHA numbering)
 ! To be set only if using different pdf sets for the two incoming hadrons
 ! QCDLambda5  0.25 ! for not equal pdf sets 
 

@@ -69,19 +69,15 @@ c      include '../include/QuarkFlavs.h'
       integer ferm_type(nleg)
       integer i,j
       real * 8 ferm_charge(nleg)
-     
+c     vector boson id and decay
+      integer idvecbos,vdecaymode
+      common/cvecbos/idvecbos,vdecaymode   
 
       if (abs(bflav(3)).le.6.or.abs(bflav(4)).le.6) then
          write(*,*) 'born_ampsq: ERROR in flavor assignement'
          stop
       endif
-
-c     antilepton-neutrino from W+ decay
-      ferm_type(3) = -1
-      ferm_charge(3) = +1d0
-      ferm_type(4) = -ferm_type(3)
-      ferm_charge(4) = 0d0
-      
+ 
 c     i is the flavour index of first incoming parton
 c     j is the flavour index of second incoming parton
 c     with the convention:
@@ -95,10 +91,27 @@ c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t
       ferm_charge(2) = charge(j)
       ferm_type(1) = i/abs(i)
       ferm_type(2) = j/abs(j)
-      
-      call q_aqp_to_al_vl(p,ferm_type,ferm_charge,
-     $     amp2)
 
+
+c     antilepton-neutrino from W decay
+      ferm_type(3) = bflav(3)/abs(bflav(3))
+      ferm_charge(3) = ferm_type(3)*(-1d0)
+      ferm_type(4) = -ferm_type(3)
+      ferm_charge(4) = 0d0
+
+      
+      if(idvecbos.eq.24) then
+         call q_aqp_to_al_vl(p,ferm_type,ferm_charge,
+     $        amp2)
+      elseif(idvecbos.eq.-24) then
+         call q_aqp_to_l_avl(p,ferm_type,ferm_charge,
+     $        amp2)
+      else
+         write(*,*) 'ERROR: this subroutine deals only with W+ or W- '
+         call exit(1)
+      endif
+      
+      
       if(mod(abs(i),2).eq.0) then
          born=amp2*ph_CKM(abs(i)/2,(abs(j)+1)/2)**2
       elseif(mod(abs(i),2).eq.1) then   
@@ -242,6 +255,40 @@ c     quark colors
       
       end
 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+      subroutine q_aqp_to_l_avl(pphy,fermion_type,fermion_charge,
+     #     amp2)
+   
+      implicit none
+c the 5 4-momentum vectors
+c p(i,1) is the i-th component of vector p1...   
+      integer nleg
+      parameter (nleg=4)
+      integer fermion_type(nleg),i
+      real * 8 fermion_charge(nleg)
+      real * 8 pphy(0:3,nleg)
+      real * 8 amp2
+      real * 8 ferm_charge(nleg)
+      integer ferm_type(nleg)
+
+       if ((fermion_type(3).ne.1).and.(fermion_type(4).ne.-1)) then
+         write(*,*) 'ERROR: this subroutine deals only with W- decay'
+         stop
+      endif
+
+      do i=1,nleg
+      
+         ferm_charge(i) = -fermion_charge(i)
+         ferm_type(i) = -fermion_type(i)
+      enddo
+            
+      
+      call q_aqp_to_al_vl(pphy,ferm_type,ferm_charge,
+     #     amp2)
+
+      end
+
       subroutine borncolour_lh
 c Sets up the colour for the given flavour configuration
 c already filled in the Les Houches interface.
@@ -252,57 +299,26 @@ c kinematics defined in the Les Houches interface
       include '../include/LesHouches.h'
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
-c colours of incoming quarks, antiquarks
-      integer icolqi(2),icolai(2),icolgi(2),
-     $        icolqf(2),icolaf(2),icolgf(2)
-      data icolqi/ 501, 0   /
-      data icolai/ 0  , 502 /
-      data icolgi/ 502, 501 /
-      data icolqf/ 502, 0   /
-      data icolaf/ 0  , 501 /
-      data icolgf/ 501, 502 /
-      save icolqi,icolai,icolgi,icolqf,icolaf,icolgf
-c neutral particles
+c     neutral particles
       icolup(1,3)=0
       icolup(2,3)=0
       icolup(1,4)=0
       icolup(2,4)=0
-
-      do j=1,nlegborn
-         if(j.eq.3.or.j.eq.4) then
-            icolup(1,j)=0
-            icolup(2,j)=0
-         else
-            if(idup(j).gt.0.and.idup(j).le.5) then
-               if(j.le.2) then
-                  icolup(1,j)=icolqi(1)
-                  icolup(2,j)=icolqi(2)
-               else
-                  icolup(1,j)=icolqf(1)
-                  icolup(2,j)=icolqf(2)
-               endif
-            elseif(idup(j).lt.0.and.idup(j).ge.-5) then
-               if(j.le.2) then
-                  icolup(1,j)=icolai(1)
-                  icolup(2,j)=icolai(2)
-               else
-                  icolup(1,j)=icolaf(1)
-                  icolup(2,j)=icolaf(2)
-               endif
-            elseif(idup(j).eq.21) then
-               if(j.le.2) then
-                  icolup(1,j)=icolgi(1)
-                  icolup(2,j)=icolgi(2)
-               else
-                  icolup(1,j)=icolgf(1)
-                  icolup(2,j)=icolgf(2)
-               endif
-            else
-               write(*,*) ' invalid flavour'
-               stop
-            endif
-         endif
-      enddo
+c     colored particles
+      if((idup(1).gt.0).and.(idup(2).lt.0)) then
+         icolup(1,1)=501
+         icolup(2,1)=0
+         icolup(1,2)=0
+         icolup(2,2)=501
+      elseif((idup(1).lt.0).and.(idup(2).gt.0)) then
+         icolup(1,1)=0
+         icolup(2,1)=501
+         icolup(1,2)=501
+         icolup(2,2)=0
+      else
+         write(*,*) ' invalid flavour'
+         stop
+      endif
       end
 
       subroutine resonances_lh
@@ -312,7 +328,76 @@ c
 c     vector boson id and decay
       integer idvecbos,vdecaymode
       common/cvecbos/idvecbos,vdecaymode
+c     lepton masses
+      real *8 lepmass(3),decmass
+      common/clepmass/lepmass,decmass
+
       call add_resonance(idvecbos,3,4)
-c     CAVEAT: REMEMBER TO RESHUFFLE THE MOMENTA
-c     IF THE DECAY PRODUCTS ARE MASSIVE
+c     The following routine also performs the reshuffling of momenta if
+c     a massive decay is chosen
+      call momenta_reshuffle(3,4,5,decmass)
       end
+
+
+
+c     i1<i2
+      subroutine momenta_reshuffle(ires,i1,i2,decmass)
+      implicit none
+      include '../include/LesHouches.h'
+      integer ires,i1,i2,j
+      real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
+      if (i1.ge.i2) then
+         write(*,*) 'wrong sequence in momenta_reshuffle'
+         stop
+      endif
+cccccccccccccccccccccccccccccc
+c construct boosts from/to vector boson rest frame 
+      do j=1,3
+         beta(j)=-pup(j,ires)/pup(4,ires)
+      enddo
+      modbeta=sqrt(beta(1)**2+beta(2)**2+beta(3)**2)
+      do j=1,3
+         beta(j)=beta(j)/modbeta
+         betainv(j)=-beta(j)
+      enddo
+cccccccccccccccccccccccccccccccccccccccc
+c first decay product (massive)
+      ptemp(0)=pup(4,i1)
+      do j=1,3
+         ptemp(j)=pup(j,i1)
+      enddo
+      call mboost(1,beta,modbeta,ptemp,ptemp)
+      ptemp1(0)=0.5d0*(pup(5,ires)+(decmass**2)/pup(5,ires))
+      do j=1,3
+         ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)**2 -decmass**2)
+      enddo
+      call mboost(1,betainv,modbeta,ptemp1,ptemp)
+      do j=1,3
+         pup(j,i1)=ptemp(j)
+      enddo
+      pup(4,i1)=ptemp(0)
+      pup(5,i1)=sqrt(pup(4,i1)**2-pup(1,i1)**2
+     $     -pup(2,i1)**2-pup(3,i1)**2)
+      
+c second decay product (massless)
+
+      ptemp(0)=pup(4,i2)
+      do j=1,3
+         ptemp(j)=pup(j,i2)
+      enddo
+      call mboost(1,beta,modbeta,ptemp,ptemp)
+      ptemp1(0)=0.5d0*(pup(5,ires)-(decmass**2)/pup(5,ires))
+      do j=1,3
+         ptemp1(j)=ptemp(j)/ptemp(0)*ptemp1(0)
+      enddo
+      call mboost(1,betainv,modbeta,ptemp1,ptemp)
+      do j=1,3
+         pup(j,i2)=ptemp(j)
+      enddo
+      pup(4,i2)=ptemp(0)
+c abs to avoid tiny negative values
+      pup(5,i2)=sqrt(abs(pup(4,i2)**2-pup(1,i2)**2
+     $     -pup(2,i2)**2-pup(3,i2)**2))
+cccccccccccccccccccccccccccccccccccccccc
+      end
+

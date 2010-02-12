@@ -63,10 +63,6 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
-MADGRAPH=fastjetsisconewrap.o fastjetktwrap.o cbsb_hsbcb.o cbu_hsbd.o \
-	bbbb_hbbbb.o bbcb_hbbcb.o bbd_hbbd.o dd_hdd.o ud_hud.o \
-	sbd_hsbd.o sd_hsd.o udb_hudb.o cu_hcu.o ucb_hucb.o \
-	cbsb_hsbcbg.o cbu_hsbdg.o cs_hscg.o 
 
 # target to generate LHEF output
 pwhg_main:$(PWHG)

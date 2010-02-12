@@ -198,11 +198,12 @@ c     fill the norm array
       iy=abs(kn_y)*rad_nynorms+1
       icsi=log(1/(1-kn_csi))/log(kn_sbeams/kn_minmass**2)
      1    *rad_ncsinorms+1
-      if(     (  iy.lt.1.or.  iy.gt.rad_nynorms)
-     #    .or.(icsi.lt.1.or.icsi.gt.rad_ncsinorms))then
-         write(*,*)'iy,icsi off limits '
-         stop
-      endif
+c
+      if(iy.lt.1) iy=1
+      if(iy.gt.rad_nynorms) iy=rad_nynorms
+      if(icsi.lt.1) icsi=1
+      if(icsi.gt.rad_ncsinorms) icsi=rad_ncsinorms
+c
       rad_csiynorms(icsi,iy,rad_kinreg,rad_ubornidx)=
      #  max(xnorm,rad_csiynorms(icsi,iy,rad_kinreg,rad_ubornidx))
       rad_norms(rad_kinreg,rad_ubornidx)=
@@ -391,12 +392,12 @@ c in FKS, for final state radiation, pdf always cancel in real/born
       integer iy,icsi
       iy=abs(y)*rad_nynorms+1
       icsi=log(1/(1-csi))/log(kn_sbeams/kn_minmass**2)*rad_ncsinorms+1
-      if(  (iy.lt.1.or.iy.gt.rad_nynorms)
-     # .or.(icsi.lt.1.or.icsi.gt.rad_ncsinorms)  )then
-         write(*,*)'iy,icsi off limits, got ',iy,icsi,
-     #        ', should be <=',rad_nynorms,rad_ncsinorms
-         stop
-      endif
+c
+      if(iy.lt.1) iy=1
+      if(iy.gt.rad_nynorms) iy=rad_nynorms
+      if(icsi.lt.1) icsi=1
+      if(icsi.gt.rad_ncsinorms) icsi=rad_ncsinorms
+c
       unorm=rad_norms(rad_kinreg,rad_ubornidx)
       if(unorm.ne.0) then
          fct=rad_csiynorms(icsi,iy,rad_kinreg,rad_ubornidx)/unorm

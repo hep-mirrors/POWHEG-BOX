@@ -33,9 +33,7 @@ c     vector boson id and decay
       common/cvecbos/idvecbos,vdecaymode
 
       logical check,cond
-      parameter (check=.true.)
-
-      real * 8 dotp
+      parameter (check=.false.)
 
       do i=1,nlegreal
          ii(i)=rflav(i)
@@ -46,14 +44,15 @@ c     vector boson id and decay
 
       if(check) then
          do mu=0,3
-            if((ploc(mu,1)+ploc(mu,2)-ploc(mu,3)-ploc(mu,4)-ploc(mu,5))
-     $           .gt.1d-8) then
-               write(*,*) 'momentum non conservation in real_ampsq'
+            if(
+     $dabs(ploc(mu,1)+ploc(mu,2)-ploc(mu,3)-ploc(mu,4)-ploc(mu,5))
+     $.gt.1d-6) then
+               write(*,*) 'momentum non conservation in setreal'
                stop
             endif
          enddo
          if(ii(3).le.0.or.ii(4).ge.0) then
-            write(*,*) 'Error in real_ampsq'
+            write(*,*) 'Error in setreal'
             stop
          endif
       endif
@@ -67,7 +66,7 @@ c     vector boson id and decay
          ferm_charge(3) = 0d0
          ferm_charge(4) = 0d0
       else
-         write(*,*) 'Error in vdecaymode in real_ampsq'
+         write(*,*) 'Error in vdecaymode in setreal'
          stop
       endif
 
@@ -115,7 +114,7 @@ c     u~ u -> Z g
          if(cond) then
             call q_aq_to_l_al_g(ploc,ferm_type,ferm_charge,amp2)         
          else
-            write(*,*) 'Error in real_ampsq'
+            write(*,*) 'Error in setreal'
             stop
          endif
 
@@ -162,7 +161,7 @@ c     g u~ -> Z u~
          if(cond) then
             call g_q_to_l_al_q(ploc,ferm_type,ferm_charge,amp2)
          else
-            write(*,*) 'Error in real_ampsq'
+            write(*,*) 'Error in setreal'
             stop
          endif
          
@@ -209,12 +208,12 @@ c     u~ g -> Z u~
          if(cond) then
             call q_g_to_l_al_q(ploc,ferm_type,ferm_charge,amp2)
          else
-            write(*,*) 'Error in real_ampsq'
+            write(*,*) 'Error in setreal'
             stop
          endif
 
       else
-         write(*,*) 'Error in real_ampsq'
+         write(*,*) 'Error in setreal'
          stop
       endif
 

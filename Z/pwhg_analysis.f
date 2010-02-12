@@ -8,140 +8,41 @@ c  pwhgfill  :  fills the histograms with data
       subroutine init_hist
       implicit none
       include  '../include/LesHouches.h'
-      character * 4 part,apart
-      common/cparnames/part,apart
-      real * 8 ptvbcut
-      common/cptvbcut/ptvbcut
-      data ptvbcut/15d0/
-      character * 10 cut
-
-      if(lprup(1).eq.10011) then
-         part='e-  '
-         apart='e+  '
-      elseif(lprup(1).eq.10012) then
-         part='ve  '
-         apart='ve~ '
-      elseif(lprup(1).eq.10013) then
-         part='mu- '
-         apart='mu+ '
-      elseif(lprup(1).eq.10014) then
-         part='vmu '
-         apart='vmu~'
-      elseif(lprup(1).eq.10015) then
-         part='ta- '
-         apart='ta+ '
-      elseif(lprup(1).eq.10016) then
-         part='vta '
-         apart='vta~'
-      else
-         write(*,*) 'Unrecognized lprup in init_hist'
-         call exit(1)
-      endif
-
-      write(*,*) '*****************************'
-      write(*,*) 'Analysis not yet fully tested'
-      write(*,*) '*****************************'
-
-      write(unit=cut,fmt="(f5.2)") ptvbcut
+      include '../pwhg_book.h'
+      integer diag
+      real * 8 binsize(100)
+      common/pwhghistcommon/binsize
 
       call pwhginihist
-  
-      call pwhgbookup(1,'pt Z ptZ>'//cut,'LOG',20d0,0d0,800d0)
-      call pwhgbookup(2,'pt J1 ptZ>'//cut,'LOG',20d0,0d0,800d0)
-      call pwhgbookup(3,'pt J2 ptZ>'//cut,'LOG',20d0,0d0,800d0)
-      call pwhgbookup(4,'inv mass Z ptZ>'//cut,'LOG',1d0,60d0,120d0)
 
-      call pwhgbookup(5,'y Z, ptZ>10 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(6,'y Z, ptZ>20 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(7,'y Z, ptZ>40 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(8,'y Z, ptZ>60 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(9,'y Z, ptZ>80 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(10,'y Z, ptZ>100 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(11,'y Z, ptZ>150 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(12,'y Z, ptZ>200 ','LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(13,'y Z, ptZ>300 ','LOG',0.4d0,-5d0,5d0)
+      diag=1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'total','LOG',binsize(diag),0d0,3d0)
 
-      call pwhgbookup(14,'y ZJ1, ptJ1>10 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(15,'y ZJ1, ptJ1>20 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(16,'y ZJ1, ptJ1>40 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(17,'y ZJ1, ptJ1>60 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(18,'y ZJ1, ptJ1>80 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(19,'y ZJ1, ptJ1>100 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(20,'y ZJ1, ptJ1>150 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(21,'y ZJ1, ptJ1>200 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
-      call pwhgbookup(22,'y ZJ1, ptJ1>300 ptZ>'//cut,'LOG',
-     1   0.4d0,-5d0,5d0)
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'mt(Z)','LOG',binsize(diag),50d0,100d0)
 
-      call pwhgbookup(23,'dy ZJ1-j2,ptJ2>10 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(24,'dy ZJ1-j2, ptJ2>20 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(25,'dy ZJ1-j2, ptJ2>40 ptZ>'//cut,'LOG',
-     #  0.4d0,-10d0,10d0)
-      call pwhgbookup(26,'dy ZJ1-j2, ptJ2>60 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(27,'dy ZJ1-j2, ptJ2>80 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(28,'dy ZJ1-j2, ptJ2>100 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(29,'dy ZJ1-j2, ptJ2>150 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(30,'dy ZJ1-j2, ptJ2>200 ptZ>'//cut,'LOG',
-     # 0.4d0,-10d0,10d0)
-      call pwhgbookup(31,'dy ZJ1-j2, ptJ2>300 ptZ>'//cut,'LOG',
-     #0.4d0,-10d0,10d0)
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'m(Z)','LOG',binsize(diag),60d0,120d0)
 
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'pt(l+)','LOG',binsize(diag),0d0
+     $     ,100d0)
 
-      call pwhgbookup(32,'pt '//part//' ptZ>'//cut,'LOG',20d0,0d0,800d0)
-      call pwhgbookup(33,'pt '//apart//' ptZ>'//cut,'LOG',20d0,0d0,
-     1    800d0)
-      call pwhgbookup(34,'y '//part//', pt '//part//'>10 ptZ>'//cut,
-     1    'LOG', 0.4d0,-5d0,5d0)
-      call pwhgbookup(35,'y '//part//', pt '//part//'>20 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(36,'y '//part//', pt '//part//'>40 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(37,'y '//part//', pt '//part//'>60 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(38,'y '//part//', pt '//part//'>80 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(39,'y '//apart//', pt '//apart//'>100 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(40,'y '//apart//', pt '//apart//'>10 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(41,'y '//apart//', pt '//apart//'>20 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(42,'y '//apart//', pt '//apart//'>40 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(43,'y '//apart//', pt '//apart//'>60 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(44,'y '//apart//', pt '//apart//'>80 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(45,'y '//apart//', pt '//apart//'>100 ptZ>'//cut,
-     1     'LOG',0.4d0,-5d0,5d0)     
+      diag=diag+1
+      binsize(diag) = 0.2d0
+      call pwhgbookup(diag,'eta(l+)','LOG',binsize(diag),-3d0,3d0)
 
-      call pwhgbookup(46,'y '//part//',ptZ>'//cut,'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(47,'y '//apart//',ptZ>'//cut,'LOG',0.4d0,-5d0,5d0)
-      call pwhgbookup(48,'pt '//part//', zoom ptZ>'//cut,'LOG',
-     1     4d0,0d0,100d0)
-      call pwhgbookup(49,'pt '//apart//', zoom ptZ>'//cut,'LOG',
-     1     4d0,0d0,100d0)
-      call pwhgbookup(50,'pt Z, zoom ptZ>'//cut,'LOG',2.5d0,0d0,100d0)
-      call pwhgbookup(51,'pt Z, zoom2 ptZ>'//cut,'LOG',0.5d0,0d0,20d0)
-      call pwhgbookup(52,'pt J1, zoom ptZ>'//cut,'LOG',0.5d0,0d0,20d0)
-      call pwhgbookup(53,'pt J2, zoom ptZ>'//cut,'LOG',0.5d0,0d0,20d0)
-      call pwhgbookup(54,'pt_rel J1','LOG',0.5d0,0d0,15d0)
-      call pwhgbookup(55,'pt_rel J2','LOG',0.5d0,0d0,15d0)
-      call pwhgbookup(56,'azimuth Z','LOG',0.1d0,-3.15d0,3.15d0)
-      call pwhgbookup(57,'total x-sec','LOG',1d0,0d0,1d0)    
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'pt(Z)','LOG',binsize(diag),0d0,100d0)
+
+      diag=diag+1
+      binsize(diag) = 0.2d0
+      call pwhgbookup(diag,'y(Z)','LOG',binsize(diag),-3d0,3d0)
 
       end
 
@@ -151,426 +52,169 @@ c  pwhgfill  :  fills the histograms with data
       implicit none
       real * 8 dsig
       include '../include/hepevt.h'
+      include '../include/pwhg_math.h' 
       include  '../include/LesHouches.h'
-c arrays to reconstruct jets
-      integer maxtrack,maxjet
-      parameter (maxtrack=2048,maxjet=2048)
-      real *8 ptrack(4,maxtrack)
-      real *8 ptj1,ptj2,yj1,yj2,ptvb,yvb,yvbj1
-      real *8 ptep,ptem,yep,yem
-      real *8 pjet(4,maxjet)
-      real * 8 mvb,pvb(4),pvbj1(4),tmp
-      real * 8 ptvbcut
-      common/cptvbcut/ptvbcut
-
-      integer mu,jpart,jjet,jeminus,jeplus,j1,j2,found,njets,
-     1     neplus,neminus,ihep,ntracks,ijet
-      logical buildjets
-      parameter (buildjets=.true.)
-
-      real * 8 vec(3),pjetin(0:3),pjetout(0:3),beta,ptrel,get_ptrel,
-     #     ptrackin(0:3),ptrackout(0:3)
-      integer i
-      external get_ptrel
-      real * 8 R,ptmin_fastkt
-      integer jetvec(maxtrack),jj
+      real *8 p_lminus(0:3),p_lplus(0:3),pcm(0:3),p_ll(0:3)
+      real *8 pt_lplus,pt_lminus,eta_lplus,eta_lminus,
+     $delphi,mt_v,mv,ptv,yv
+      integer ihep,mu
       logical ini
       data ini/.true./
       save ini
-      integer maxnumlep
-      parameter (maxnumlep=10)
-      integer emvec(maxnumlep),epvec(maxnumlep),iep,iem,ep,em
-      real * 8  Zmass,Zwidth,Zmass2low,Zmass2high,mV2ref,mV2
-      logical foundlep
-      integer jem_true,jep_true,found_truedec
-      logical findmother
-      parameter (findmother=.false.)
-      logical findinvmass
-      parameter (findinvmass=.true.)
+c     binsize
+      integer diag
+      real * 8 binsize(100)
+      common/pwhghistcommon/binsize
+c     we need to tell to this analysis file which program is running it
+      character * 6 WHCPRG
+      common/cWHCPRG/WHCPRG
+      data WHCPRG/'NLO   '/
       integer vdecaytemp
-
-
-c CAVEAT.... 
-      Zmass = 91.188d0
-      Zwidth = 2.486d0
-      Zmass2low = (Zmass-10*Zwidth)**2
-      Zmass2high = (Zmass+10*Zwidth)**2
-
-      if (ini) then
-         write(*,*) '*****************************'
-         write(*,*) '      Z generic analysis     '
-         write(*,*) ' !!  not yet fully tested !! '
-         write(*,*) '*****************************'
-         
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
-         write(*,*) '                ANALYSIS CUTS                     '
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
-         write(*,*)   sqrt(Zmass2low),' < M_Z < ',sqrt(Zmass2high)
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
-
-      endif
-
-      vdecaytemp=lprup(1)-10000 ! Z decay product, with positive id
-
-      neminus=0
-      neplus=0
-      do i=1,maxnumlep
-         emvec(i) = 0
-         epvec(i) = 0
-      enddo
-      do ihep=1,nhep
-         if (isthep(ihep).eq.1) then
-            if(idhep(ihep).eq.vdecaytemp) then
-               neminus=neminus+1
-               emvec(neminus)=ihep
-            elseif(idhep(ihep).eq.-vdecaytemp) then
-               neplus=neplus+1
-               epvec(neplus)=ihep
-            endif
-         endif         
-      enddo
+      real *8 Zmass,Zwidth,Zmass2low,Zmass2high
       
-      if(neminus.eq.0.or.neplus.eq.0) then
-         write(*,*)" not enough leptons! drop event"
-         stop
-      endif
+      Zmass = 91.1876d0
+      Zwidth = 2.4952d0
+      Zmass2low = (Zmass-40*Zwidth)**2
+      Zmass2high = (Zmass+40*Zwidth)**2
 
-      if (findinvmass) then
-c     'Realistic' analysis
-c-------------------------
-         foundlep = .false.
-         mV2ref = 1d30
-         do em=1,neminus
-            do ep=1,neplus
-               iem=emvec(em)
-               iep=epvec(ep)
-               mV2 = (phep(4,iem)+phep(4,iep))**2
-     #              -(phep(1,iem)+phep(1,iep))**2
-     #              -(phep(2,iem)+phep(2,iep))**2
-     #              -(phep(3,iem)+phep(3,iep))**2          
-               if ((Zmass2low.lt.mV2).and.(mV2.lt.Zmass2high))  then
-                  if (foundlep.and..not.findmother) then
-                     write(*,*) 
-     #                 'two lepton couples satisfy Z mass window'
-                     write(*,*) 'event dropped!'
-                     return
-                  endif
-                  foundlep=.true.
-                  if (abs(mV2-Zmass**2).lt.abs(mV2ref-Zmass**2)) then
-                     mV2ref = mV2
-                     jeminus = iem
-                     jeplus = iep               
-                  endif
-               endif
-            enddo
-         enddo
-      endif
-      if(findmother) then
-c     'Exact' analysis
-c---------------------
-c     Loop again over final state particles to find products of Z decay, by
-c     looking into the shower branchings.
-c     !!!!!!!!! It does NOT work at the parton level. !!!!!!!!!!!!!!
-         found_truedec=0
-         do ihep=1,nhep
-c     works for POWHEG+HERWIG,POWHEG+PYHIA,HERWIG,PYTHIA and  real in MC@NLO
-            if ((isthep(ihep).eq.1).and.(abs(idhep(ihep)).eq.11).and.
-     #              ((idhep(jmohep(1,jmohep(1,ihep))).eq.23))) then
-c     find first decay product
-               if(idhep(ihep).eq.11) then
-                  jem_true=ihep
-                  found_truedec=found_truedec+1
-c     find second decay product
-               elseif(idhep(ihep).eq.-11) then
-                  jep_true=ihep
-                  found_truedec=found_truedec+1
-               endif
-            endif
-         enddo
-         if(found_truedec.ne.2) then
-            write(*,*) 'lepton couple from Z decay not found'
-            write(*,*) '!!!! Error !!!!'
-            stop
-         endif
-      endif
-      if(findmother.and.findinvmass) then
-c     check the two analysis methods
-c-----------------------------------
-         if((jem_true.ne.jeminus).or.(jep_true.ne.jeplus)) then
-            write(*,*) '--------------------------------'
-            write(*,*) 'Error when looking for leptons from Z decay'
-            write(*,*) 'Wrong inv mass: ',sqrt(mV2ref),
-     #           '<--',jeminus,jeplus
-            write(*,*) 't e- -->',phep(4,jeminus),phep(1,jeminus),
-     #           phep(2,jeminus),phep(3,jeminus)
-            write(*,*) 't e+ -->',phep(4,jeplus),phep(1,jeplus),
-     #           phep(2,jeplus),phep(3,jeplus)
-            write(*,*) 'True inv mass: ',sqrt(
-     #           (phep(4,jem_true)+phep(4,jep_true))**2
-     #           -(phep(1,jem_true)+phep(1,jep_true))**2
-     #           -(phep(2,jem_true)+phep(2,jep_true))**2
-     #           -(phep(3,jem_true)+phep(3,jep_true))**2   ),
-     #           '<--',jem_true,jep_true
-            write(*,*) 't e- -->',phep(4,jem_true),phep(1,jem_true),
-     #           phep(2,jem_true),phep(3,jem_true)
-            write(*,*) 't e+ -->',phep(4,jep_true),phep(1,jep_true),
-     #           phep(2,jep_true),phep(3,jep_true)
-            call hwuepr
-            write(*,*) 'n !!!! Event dropped !!!!n '
-            return
-         endif
-c     assign correct values
-c-----------------------------------
-         jeminus=jem_true
-         jeplus=jep_true
-      endif
 
-      do mu=1,4
-         pvb(mu)=phep(mu,jeminus)+phep(mu,jeplus)         
-      enddo
-      ptvb=sqrt(pvb(1)**2+pvb(2)**2)
-   
       if (ini) then
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
-         write(*,*) '            PT_V min = ',ptvbcut
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
+         write(*,*) '*****************************'
+         if(WHCPRG.eq.'NLO   ') then
+            write(*,*) '       NLO analysis'
+         elseif(WHCPRG.eq.'HERWIG') then
+            write (*,*) '           HERWIG ANALYSIS            '
+            write(*,*) 'not implemented analysis'
+            call exit(1)
+         elseif(WHCPRG.eq.'PYTHIA') then
+            write (*,*) '           PYTHIA ANALYSIS            '
+            write(*,*) 'not implemented analysis'
+            call exit(1)
+         endif
+         write(*,*) '*****************************'
+         vdecaytemp=lprup(1)-10000 ! Z decay product, with positive id
+         if(vdecaytemp.eq.11.or.vdecaytemp.eq.13) then
+            continue
+         else
+            write(*,*) '**************************************'
+            write(*,*) ' template analysis works only for e and mu'
+            write(*,*) '                 STOP     '
+            write(*,*) '**************************************'
+            call exit(1)
+         endif
          ini=.false.
       endif
-      
-ccccccccccccccccccccccccccccccccccccccccccc
-      if (ptvb.lt.ptvbcut) return
-ccccccccccccccccccccccccccccccccccccccccccc
 
-      call getinvmass(pvb,mvb)
-      call getrapidity(pvb,yvb)
-      ptep=sqrt(phep(1,jeplus)**2+phep(2,jeplus)**2)
-      call getrapidity(phep(1,jeplus),yep)
-      ptem=sqrt(phep(1,jeminus)**2+phep(2,jeminus)**2)
-      call getrapidity(phep(1,jeminus),yem)
+      diag=0
 
-c     set up arrays for jet finding
-      do jpart=1,maxtrack
-         do mu=1,4
-            ptrack(mu,jpart)=0d0
-         enddo
-         jetvec(jpart)=0
-      enddo      
-      do jjet=1,maxjet
-         do mu=1,4
-            pjet(mu,jjet)=0d0
-         enddo
+      do mu=0,3
+         pcm(mu)=0d0
       enddo
-      j1=0
-      found=0
-      ntracks=0
-      njets=0
-c     Loop over final state particles to find jets 
-      do ihep=1,nhep
-         if ((isthep(ihep).eq.1).and.
-     1    (((abs(idhep(ihep)).le.10).or.(abs(idhep(ihep)).ge.40))
-c     exclude leptons, gauge and higgs bosons
-     2    .or.(abs(idhep(ihep)).eq.21)))
-c     but  include gluons 
-     3           then
-            if(ntracks.eq.maxtrack) then
-               write(*,*)
-     #              'hwanal: too many particles, increase maxtrack'
-               stop
-            endif
-c     copy momenta to construct jets 
-            ntracks=ntracks+1
-            do mu=1,4
-               ptrack(mu,ntracks)=phep(mu,ihep)
-            enddo
-         endif
-      enddo
-      
-      call pwhgfill(1,ptvb,dsig)
-      call pwhgfill(4,mvb,dsig)
 
-      if(buildjets.and.ntracks.gt.0) then
-************************************************************************
-*     siscone algorithm
-**********************************************************************
-c     R = 0.7  radius parameter
-c     f = 0.5  overlapping fraction
-c.....run the clustering        
-c      call fastjetsiscone(ptrack,ntracks,0.7d0,0.5d0,pjet,njets) 
-************************************************************************
-*     fastkt algorithm
-**********************************************************************
-c      R = 0.7  Radius parameter
-c.....run the clustering 
-      R = 0.7d0          
-      ptmin_fastkt = 0d0
-      call fastjetktwhich(ptrack,ntracks,ptmin_fastkt,R,
-     #     pjet,njets,jetvec) 
-c     
-c     ... now we have the jets
-      if (njets.gt.0) then
-         ptj1=0d0
-         ptj2=0d0
-         yj1=0
-         yj2=0
-         j1=0
-         j2=0
-         do ijet=1,njets
-c............find the hardest jet
-            tmp=sqrt(pjet(1,ijet)**2 + pjet(2,ijet)**2)
-            if (tmp.gt.ptj1) then
-               ptj1=tmp
-               j1=ijet
-            elseif(tmp.gt.ptj2) then
-               ptj2=tmp
-               j2=ijet
-            endif
-         enddo
-         if(j1.gt.0) call getrapidity(pjet(1,j1),yj1)
-         if(j2.gt.0) call getrapidity(pjet(1,j2),yj2)
-         if(j1.gt.0) then
-            do mu=1,4
-               pvbj1(mu)=pvb(mu)+pjet(mu,j1)
-            enddo
-            call getrapidity(pvbj1,yvbj1)
-         endif
-         
-         if(j1.gt.0) then
-            call pwhgfill(2,ptj1,dsig)
-            call pwhgfill(52,ptj1,dsig)
-         endif
-         if(j2.gt.0) then
-            call pwhgfill(3,ptj2,dsig)
-            call pwhgfill(53,ptj2,dsig)
-         endif
-         
-         if(ptvb.gt.10) call pwhgfill(5,yvb,dsig)
-         if(ptvb.gt.20) call pwhgfill(6,yvb,dsig)
-         if(ptvb.gt.40) call pwhgfill(7,yvb,dsig)
-         if(ptvb.gt.60) call pwhgfill(8,yvb,dsig)
-         if(ptvb.gt.80) call pwhgfill(9,yvb,dsig)
-         if(ptvb.gt.100) call pwhgfill(10,yvb,dsig)
-         if(ptvb.gt.150) call pwhgfill(11,yvb,dsig)
-         if(ptvb.gt.200) call pwhgfill(12,yvb,dsig)
-         if(ptvb.gt.300) call pwhgfill(13,yvb,dsig)
-         
-         if(j1.gt.0) then
-            if(ptj1.gt.10) call pwhgfill(14,yj1,dsig)
-            if(ptj1.gt.20) call pwhgfill(15,yj1,dsig)
-            if(ptj1.gt.40) call pwhgfill(16,yj1,dsig)
-            if(ptj1.gt.60) call pwhgfill(17,yj1,dsig)
-            if(ptj1.gt.80) call pwhgfill(18,yj1,dsig)
-            if(ptj1.gt.100) call pwhgfill(19,yj1,dsig)
-            if(ptj1.gt.150) call pwhgfill(20,yj1,dsig)
-            if(ptj1.gt.200) call pwhgfill(21,yj1,dsig)
-            if(ptj1.gt.300) call pwhgfill(22,yj1,dsig)
-         endif
-         if(j2.gt.0) then
-            if(ptj2.gt.10) call pwhgfill(23,yvbj1-yj2,dsig)
-            if(ptj2.gt.20) call pwhgfill(24,yvbj1-yj2,dsig)
-            if(ptj2.gt.40) call pwhgfill(25,yvbj1-yj2,dsig)
-            if(ptj2.gt.60) call pwhgfill(26,yvbj1-yj2,dsig)
-            if(ptj2.gt.80) call pwhgfill(27,yvbj1-yj2,dsig)
-            if(ptj2.gt.100) call pwhgfill(28,yvbj1-yj2,dsig)
-            if(ptj2.gt.150) call pwhgfill(29,yvbj1-yj2,dsig)
-            if(ptj2.gt.200) call pwhgfill(30,yvbj1-yj2,dsig)
-            if(ptj2.gt.300) call pwhgfill(31,yvbj1-yj2,dsig)
-         endif
 
-c     loop on the hardest and next-to-hardest jet
-         do ijet=1,min(njets,2)
-            if (ijet.eq.1) then
-               jj=j1 
-            else 
-               jj=j2 
-            endif            
-            do mu=1,3
-               pjetin(mu) = pjet(mu,jj)
-            enddo
-            pjetin(0) = pjet(4,jj)         
-            vec(1)=0d0
-            vec(2)=0d0
-            vec(3)=1d0
-            beta = -pjet(3,jj)/pjet(4,jj)
-            call mboost(1,vec,beta,pjetin,pjetout)         
-c     write(*,*) pjetout
-            ptrel = 0
-            do i=1,ntracks
-               if (jetvec(i).eq.jj) then
+      if(WHCPRG.eq.'NLO   ') then
+c     find Z decay products
+         do ihep=1,nhep
+            if(isthep(ihep).eq.1) then
+               if(idhep(ihep).eq.vdecaytemp) then
+                  p_lminus(0)=phep(4,ihep)
                   do mu=1,3
-                     ptrackin(mu) = ptrack(mu,i)
+                     p_lminus(mu)=phep(mu,ihep)
                   enddo
-                  ptrackin(0) = ptrack(4,i)
-                  call mboost(1,vec,beta,ptrackin,ptrackout) 
-                  ptrel = ptrel + get_ptrel(ptrackout,pjetout)
+               elseif(idhep(ihep).eq.-vdecaytemp) then
+                  p_lplus(0)=phep(4,ihep)
+                  do mu=1,3
+                     p_lplus(mu)=phep(mu,ihep)
+                  enddo
                endif
-            enddo
-            if (ijet.eq.1) then 
-               call pwhgfill(54,ptrel,dsig)
-            else
-               call pwhgfill(55,ptrel,dsig)
             endif
-         enddo         
-      endif            
-c     endif buildjets
+         enddo
+      else
+         write(*,*) 'Error, not implemented analysis'
+         call exit(1)
       endif
-      
-      call pwhgfill(32,ptem,dsig)
-      call pwhgfill(33,ptep,dsig)
-      
-      if(ptem.gt.10) call pwhgfill(34,yem,dsig)
-      if(ptem.gt.20) call pwhgfill(35,yem,dsig)
-      if(ptem.gt.40) call pwhgfill(36,yem,dsig)
-      if(ptem.gt.60) call pwhgfill(37,yem,dsig)
-      if(ptem.gt.80) call pwhgfill(38,yem,dsig)
-      if(ptem.gt.100) call pwhgfill(39,yem,dsig)
-      
-      if(ptep.gt.10) call pwhgfill(40,yep,dsig)
-      if(ptep.gt.20) call pwhgfill(41,yep,dsig)
-      if(ptep.gt.40) call pwhgfill(42,yep,dsig)
-      if(ptep.gt.60) call pwhgfill(43,yep,dsig)
-      if(ptep.gt.80) call pwhgfill(44,yep,dsig)
-      if(ptep.gt.100) call pwhgfill(45,yep,dsig)
-      
-      call pwhgfill(46,yem,dsig)
-      call pwhgfill(47,yep,dsig)
-      
-      call pwhgfill(48,ptem,dsig)
-      call pwhgfill(49,ptep,dsig)
-      call pwhgfill(50,ptvb,dsig)
-      call pwhgfill(51,ptvb,dsig)
-      
-      call pwhgfill(56,atan2(pvb(2),pvb(1)),dsig)
 
-      call pwhgfill(57,0.5d0,dsig)
-      
+c     lminus transverse momentum
+      pt_lminus=sqrt(p_lminus(1)**2 + p_lminus(2)**2)
+      call get_pseudorap(p_lminus,eta_lminus)
+c     lplus transverse momentum
+      pt_lplus=sqrt(p_lplus(1)**2 + p_lplus(2)**2)
+      call get_pseudorap(p_lplus,eta_lplus)
+c     invariant mass of the charged lepton system
+      do mu=0,3
+         p_ll(mu)=p_lplus(mu)+p_lminus(mu)
+      enddo
+      call getinvmass(p_ll,mv)
+c     azimuthal separation between leptons
+      delphi = dabs(atan2(p_lplus(2),p_lplus(1)) - 
+     $     atan2(p_lminus(2),p_lminus(1)))
+      delphi=min(delphi,2d0*pi-delphi)
+c     transverse mass of the charged lepton system
+      mt_v=sqrt(2*pt_lplus*pt_lminus*(1d0-dcos(delphi)))
+c     rapidity of the charged lepton system
+      call getrapidity(p_ll,yv)
+      ptv=sqrt((p_lplus(1)+p_lminus(1))**2
+     $     + (p_lplus(2)+p_lminus(2))**2)
 
+
+
+
+c     total sigma
+      diag=diag+1
+      call pwhgfill(diag,1.5d0,dsig/binsize(diag))
+
+c     transverse mass of the charged lepton system
+      diag=diag+1
+      call pwhgfill(diag,mt_v,dsig/binsize(diag))
+
+c     invariant mass of the charged lepton system
+      diag=diag+1
+      call pwhgfill(diag,mv,dsig/binsize(diag))
+
+c     pt(l+)
+      diag=diag+1
+      call pwhgfill(diag,pt_lplus,dsig/binsize(diag))
+
+c     eta(l+)
+      diag=diag+1
+      call pwhgfill(diag,eta_lplus,dsig/binsize(diag))
+
+c     pt(v)
+      diag=diag+1
+      call pwhgfill(diag,ptv,dsig/binsize(diag))
+
+c     y(v)
+      diag=diag+1
+      call pwhgfill(diag,yv,dsig/binsize(diag))
+         
       end
+      
 
       subroutine getrapidity(p,y)
       implicit none
-      real * 8 p(4),y
-      y=0.5d0*log((p(4)+p(3))/(p(4)-p(3)))
+      real * 8 p(0:3),y
+      y=0.5d0*log((p(0)+p(3))/(p(0)-p(3)))
       end
 
       subroutine getinvmass(p,m)
       implicit none
-      real * 8 p(4),m
-      m=sqrt(abs(p(4)**2-p(1)**2-p(2)**2-p(3)**2))
+      real * 8 p(0:3),m
+      m=sqrt(abs(p(0)**2-p(1)**2-p(2)**2-p(3)**2))
       end
 
-      function get_ptrel(pin,pjet)
+      subroutine get_pseudorap(p,eta)
       implicit none
-      real * 8 get_ptrel,pin(0:3),pjet(0:3)
-      real * 8 pin2,pjet2,cth2,scalprod
-      pin2  = pin(1)**2 + pin(2)**2 + pin(3)**2
-      pjet2 = pjet(1)**2 + pjet(2)**2 + pjet(3)**2
-      scalprod = pin(1)*pjet(1) + pin(2)*pjet(2) + pin(3)*pjet(3)
-      cth2 = scalprod**2/pin2/pjet2
-      get_ptrel = sqrt(pin2*abs(1d0 - cth2))
-      end
+      real*8 p(0:3),eta,pt,th
+      real *8 tiny
+      parameter (tiny=1.d-5)
 
+      pt=sqrt(p(1)**2+p(2)**2)
+      if(pt.lt.tiny.and.abs(p(3)).lt.tiny)then
+         eta=sign(1.d0,p(3))*1.d8
+      elseif(pt.lt.tiny) then   !: added this elseif
+         eta=sign(1.d0,p(3))*1.d8
+      else
+         th=atan2(pt,p(3))
+         eta=-log(tan(th/2.d0))
+      endif
+      end

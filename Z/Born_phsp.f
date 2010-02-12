@@ -6,9 +6,9 @@
       include '../include/pwhg_math.h'
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-3)
-      real * 8 m2,xjac,taumin,tau,y,beta,vec(3),cth,cthdec,phidec,s,
-     # z,zhigh,zlow,dir(3),kzed,cthmax
-      integer mu,k,j
+      real * 8 m2,xjac,tau,y,beta,vec(3),cth,cthdec,phidec,s,
+     # z,zhigh,zlow
+      integer mu,k
       logical ini
       data ini/.true./
       save ini
@@ -83,9 +83,8 @@ c now boost everything along 3
 c      call checkmomzero(nlegborn,kn_pborn)
 c      call checkmass(2,kn_pborn(0,3))
 
-c CAVEAT!!!
-c minimal final state mass (after init_couplings, Wmass is defined
-      kn_minmass=ph_Zmass
+c minimal value of sqrt(s)
+      kn_minmass=sqrt(ph_Zmass2low)
 
       end
 

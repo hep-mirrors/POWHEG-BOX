@@ -34,13 +34,10 @@ c      include '../include/QuarkFlavs.h'
       real * 8 ferm_charge(nleg)
       integer i,j,k,l,count,tmp_type
       real *8 tmp_charge
+c     vector boson id and decay
+      integer idvecbos,vdecaymode
+      common/cvecbos/idvecbos,vdecaymode  
 
-c     antilepton-neutrino from W+ decay
-      ferm_type(3) = -1
-      ferm_charge(3) = +1
-      ferm_type(4) = -ferm_type(3)
-      ferm_charge(4) = 0d0
-      
 c     i is the flavour index of first incoming parton
 c     j is the flavour index of second incoming parton
 c     k is the flavour of outgoing parton in the order particle,antiparticle,gluon
@@ -73,18 +70,44 @@ c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t
          ferm_type(5) = k/abs(k)
       endif   
 
-      if (i.eq.0) then
+c     antilepton-neutrino from W decay
+      ferm_type(3) = fermion_flav(3)/abs(fermion_flav(3))
+      ferm_charge(3) = ferm_type(3)*-1d0
+      ferm_type(4) = -ferm_type(3)
+      ferm_charge(4) = 0d0
+
+      if(idvecbos.eq.24) then
+         if (i.eq.0) then
 c     g q -> W+ qp
-         call g_aqp_to_al_vl_aq(p,ferm_type,ferm_charge,amp2)         
-      elseif ((i.ne.0).and.(j.ne.0)) then
+            call g_aqp_to_al_vl_aq(p,ferm_type,ferm_charge,amp2)         
+         elseif ((i.ne.0).and.(j.ne.0)) then
 c     q aqp -> W+ g
-         call q_aqp_to_al_vl_g(p,ferm_type,ferm_charge,amp2)
-      elseif (j.eq.0) then
+            call q_aqp_to_al_vl_g(p,ferm_type,ferm_charge,amp2)
+         elseif (j.eq.0) then
 c     q g -> W+ qp
-         call q_g_to_al_vl_qp(p,ferm_type,ferm_charge,amp2)
+            call q_g_to_al_vl_qp(p,ferm_type,ferm_charge,amp2)
+         else
+            amp2 = 0d0
+         endif
+      elseif(idvecbos.eq.-24) then
+         if (i.eq.0) then
+c     g q -> W- qp
+            call g_aqp_to_l_avl_aq(p,ferm_type,ferm_charge,amp2)         
+         elseif ((i.ne.0).and.(j.ne.0)) then
+c     q aqp -> W- g
+            call q_aqp_to_l_avl_g(p,ferm_type,ferm_charge,amp2)
+         elseif (j.eq.0) then
+c     q g -> W- qp
+            call q_g_to_l_avl_qp(p,ferm_type,ferm_charge,amp2)
+         else
+            amp2 = 0d0
+         endif
+
       else
-        amp2 = 0d0
+         write(*,*) 'ERROR: this subroutine deals only with W+ or W- '
+         call exit(1)
       endif
+
       if (i.eq.0) i=abs(k)
       if (j.eq.0) j=abs(k)
       if(mod(abs(i),2).eq.0) then
@@ -353,4 +376,107 @@ c     the correct call of
 c     correct for color average
       amp2 = amp2 * 3d0/8d0
       
+      end
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+
+      subroutine q_aqp_to_l_avl_g(pphy,fermion_type,fermion_charge,
+     #     amp2)
+   
+      implicit none
+c the 5 4-momentum vectors
+c p(i,1) is the i-th component of vector p1...   
+      integer nleg
+      parameter (nleg=5)
+      integer fermion_type(nleg),i
+      real * 8 fermion_charge(nleg)
+      real * 8 pphy(0:3,nleg)
+      real * 8 amp2
+      real * 8 ferm_charge(nleg)
+      integer ferm_type(nleg)
+
+       if ((fermion_type(3).ne.1).and.(fermion_type(4).ne.-1)) then
+         write(*,*) 'ERROR: this subroutine deals only with W- decay'
+         stop
+      endif
+
+      do i=1,nleg
+      
+         ferm_charge(i) = -fermion_charge(i)
+         ferm_type(i) = -fermion_type(i)
+      enddo
+            
+      
+      call q_aqp_to_al_vl_g(pphy,ferm_type,ferm_charge,
+     #     amp2)
+
+      end
+
+ccccccccccccccccccccccccccccccccccccccccccccc
+
+       subroutine g_aqp_to_l_avl_aq(pphy,fermion_type,fermion_charge,
+     #     amp2)
+   
+      implicit none
+c the 5 4-momentum vectors
+c p(i,1) is the i-th component of vector p1...   
+      integer nleg
+      parameter (nleg=5)
+      integer fermion_type(nleg),i
+      real * 8 fermion_charge(nleg)
+      real * 8 pphy(0:3,nleg)
+      real * 8 amp2
+      real * 8 ferm_charge(nleg)
+      integer ferm_type(nleg)
+
+       if ((fermion_type(3).ne.1).and.(fermion_type(4).ne.-1)) then
+         write(*,*) 'ERROR: this subroutine deals only with W- decay'
+         stop
+      endif
+
+      do i=1,nleg
+      
+         ferm_charge(i) = -fermion_charge(i)
+         ferm_type(i) = -fermion_type(i)
+      enddo
+            
+      
+      call g_aqp_to_al_vl_aq(pphy,ferm_type,ferm_charge,
+     #     amp2)
+
+      end
+
+ccccccccccccccccccccccccccccccccccccccccccccc
+
+       subroutine q_g_to_l_avl_qp(pphy,fermion_type,fermion_charge,
+     #     amp2)
+   
+      implicit none
+c the 5 4-momentum vectors
+c p(i,1) is the i-th component of vector p1...   
+      integer nleg
+      parameter (nleg=5)
+      integer fermion_type(nleg),i
+      real * 8 fermion_charge(nleg)
+      real * 8 pphy(0:3,nleg)
+      real * 8 amp2
+      real * 8 ferm_charge(nleg)
+      integer ferm_type(nleg)
+
+       if ((fermion_type(3).ne.1).and.(fermion_type(4).ne.-1)) then
+         write(*,*) 'ERROR: this subroutine deals only with W- decay'
+         stop
+      endif
+
+      do i=1,nleg
+      
+         ferm_charge(i) = -fermion_charge(i)
+         ferm_type(i) = -fermion_type(i)
+      enddo
+            
+      
+      call q_g_to_al_vl_qp(pphy,ferm_type,ferm_charge,
+     #     amp2)
+
       end

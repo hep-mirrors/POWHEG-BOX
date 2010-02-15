@@ -131,16 +131,17 @@ c this subroutine compute the Born amplitude for the process
 c q(p1) qp(p2) -> W(p3+p4)   con W -> l(p3) vl(p4) 
 c NUMERICALLY, with the bra/ket formalism, not by squaring the analytic 
 c amplitude
-c   INPUT:  matrix pphys with all the momenta 
-c   OUTPUT: the amplitude squared (amp2) averaged over initial 
-c           polarization     
+c It gets the matrix pphy with all the momenta and gives   
+c the amplitude squared (amp2) averaged over initial 
+c polarization     
 c
-c         q  --->----
-c                    |
-c                    |           l
-c                    |         /  
-c        qp ---<-----/////
-c                          W  c                               vl
+c         q  --->-----
+c                     |
+c                     |            l
+c                     |          /  
+c         qp ---<-----/\/\/\/\/\/
+c                        W      \
+c                                \ vl
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3

@@ -105,9 +105,8 @@ c now boost everything along 3
 c      call checkmomzero(nlegborn,kn_pborn)
 c      call checkmass(2,kn_pborn(0,3))
 
-c CAVEAT!!!
-c minimal final state mass (after init_couplings, Zmass is defined
-      kn_minmass=ph_Zmass
+c minimal final state mass 
+      kn_minmass=sqrt(ph_Zmass2low)
 
       end
 

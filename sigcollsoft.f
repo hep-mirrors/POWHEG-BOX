@@ -470,9 +470,6 @@ c     Multiply soft result by (soft limit Sij appropriate factors)
 
 
 
-c Commentare sull'uso delle funzioni qui sotto
-
-
       subroutine softbtl(r0)
 c blegs:        integer, number of legs of born
 c bflav(nlegs): integer, flavours of the incoming partons, according to PDG conventions,

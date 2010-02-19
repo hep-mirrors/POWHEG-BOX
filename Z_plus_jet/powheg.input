@@ -1,14 +1,19 @@
 numevts 100000    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)
+! 131 cteq4m
+!  83 cteq4l
 ndns1 131         ! pdf set for hadron 1 (mlm numbering)
 ndns2 131         ! pdf set for hadron 2 (mlm numbering)
 ebeam1 7000d0     ! energy of beam 1
 ebeam2 7000d0     ! energy of beam 2
 
 ! To be set only if using LHA pdfs
-! lhans1           ! pdf set for hadron 1 (LHA numbering)
-! lhans2	   ! pdf set for hadron 2 (LHA numbering)	
+! 19150 cteq4m
+! 19170 cteq4l
+! 10050 cteq6m
+lhans1  10050         ! pdf set for hadron 1 (LHA numbering)
+lhans2  10050         ! pdf set for hadron 2 (LHA numbering)	
 ! To be set only if using different pdf sets for the two incoming hadrons
 ! QCDLambda5  0.25 ! for not equal pdf sets 
 

@@ -39,40 +39,40 @@ C---INITIALISE ELEMENTARY PROCESS
       CALL HWEINI
 C---LOOP OVER EVENTS
       DO N=1,maxev
-C---INITIALISE EVENT
-      CALL HWUINE
+C---  INITIALISE EVENT
+         CALL HWUINE
 C---GENERATE HARD SUBPROCESS
-      CALL HWEPRO
-      if(nup.eq.0) goto 111
+         CALL HWEPRO
+         if(nup.eq.0) goto 111
 C---GENERATE PARTON CASCADES
-      CALL HWBGEN
+         CALL HWBGEN
 C---DO HEAVY OBJECT DECAYS
-      CALL HWDHOB
+         CALL HWDHOB
 C---DO CLUSTER FORMATION
-      CALL HWCFOR
+         CALL HWCFOR
 C---DO CLUSTER DECAYS
-      CALL HWCDEC
+         CALL HWCDEC
 C---DO UNSTABLE PARTICLE DECAYS
-      CALL HWDHAD
+         CALL HWDHAD
 C---DO HEAVY FLAVOUR HADRON DECAYS
-      CALL HWDHVY
+         CALL HWDHVY
 C---ADD SOFT UNDERLYING EVENT IF NEEDED
-      CALL HWMEVT
+         CALL HWMEVT
 C---FINISH EVENT
-      CALL HWUFNE    
+         CALL HWUFNE    
 C---USER'S EVENT ANALYSIS
-      CALL HWANAL
-      if (mod(nevhep,20000).eq.0) then
-         write(*,*) "# of events processed =",nevhep
-         call hwaend
-      endif
+         CALL HWANAL
+         if (mod(nevhep,20000).eq.0) then
+            write(*,*) "# of events processed =",nevhep
+            call hwaend
+         endif
       ENDDO
  111  continue
-C---TERMINATE ELEMENTARY PROCESS
+C---  TERMINATE ELEMENTARY PROCESS
       CALL HWEFIN
-C---USER'S TERMINAL CALCULATIONS
+C---  USER'S TERMINAL CALCULATIONS
       CALL HWAEND
-
+      
 c      call newunit(iun)
 c      open(unit=iun,file='HERWIGcounters.dat',status='unknown')
 c      call printcnt(iun)
@@ -115,6 +115,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       subroutine hwabeg
       call init_hist
       end
+
 
       subroutine hwaend
       character * 20 pwgprefix

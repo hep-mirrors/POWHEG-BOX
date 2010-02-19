@@ -77,9 +77,13 @@ c     save last random number
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
       integer nlf
+      integer iran,n1ran,n2ran
       write(nlf,'(a)') '<extra-info-previous-event>'
       write(nlf,*) rad_kinreg,'      ! rad_kinreg'
       write(nlf,*) rad_type,'        ! rad_type'
+      call getcurrentrandom(iran,n1ran,n2ran)
+      write(nlf,*) iran,' ',n1ran,' ',n2ran,
+     #     "   ! previous event's random seeds "
       write(nlf,'(a)') '</extra-info-previous-event>'
       end
 

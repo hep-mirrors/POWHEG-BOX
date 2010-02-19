@@ -214,9 +214,9 @@ c gluons are numbered 21 in pdg
       end
 
 c Given a vertex with 3 partons, the first parton with incoming colour
-c colin, the second and third partons with incoming flavours flavour fl2, fl3,
+c colin, the second and third partons with incoming flavours fl2, fl3,
 c it assigns the incoming colours of the second and third partons
-c colout2, colout3. The colour assignment is unambiguous is all cases, but in
+c colout2, colout3. The colour assignment is unambiguous in all cases, but in
 c the one where both fl2 and fl3 are gluons, where a 50% random choice is made
 c over the two possible colour connections.
       subroutine setcolour_rad(colin,fl2,fl3,colout2,colout3)
@@ -286,7 +286,10 @@ c over the two possible colour connections.
       return
  998  continue
       write(*,*)
-     #' setcolour_rad: Error: inconsistent colour flavour input'
+     #     ' Error in setcolour_rad: inconsistent colour flavour input'
+      write(*,*) 'colin[1:2] ',colin(1),' ',colin(2)
+      write(*,*) 'fl2, fl3 ',fl2,' ',fl3
+      write(*,*) 'newcolor ',newcolor
       call exit(1)
       end
 

@@ -58,3 +58,29 @@ c     just change the random seed
          call resetrandom
       endif
       end
+
+
+      subroutine savecurrentrandom
+      implicit none
+      integer ipar(3)
+      common/crandom/ipar
+      call rm48ut(ipar(1),ipar(2),ipar(3))
+      end
+
+
+      subroutine getcurrentrandom(i1,n1,n2)
+      implicit none
+      integer i1,n1,n2
+      integer ipar(3)
+      common/crandom/ipar
+      i1 = ipar(1)
+      n1 = ipar(2)
+      n2 = ipar(3)
+      end
+
+      subroutine printcurrentrandom
+      implicit none
+      integer ipar(3)
+      common/crandom/ipar
+      write(*,*) 'Random number seeds: ',ipar(1),ipar(2), ipar(3)
+      end

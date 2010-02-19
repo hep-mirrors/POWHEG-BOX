@@ -93,11 +93,13 @@ c     Convert from PYJETS event record to HEPEVT event record
          call pyhepc(1)
          nevhep=temp
 C     Print out the event record
-         IF (IEV.le.1) THEN 
+         IF (IEV.le.6) THEN 
 c     list the event
-c     CALL PYLIST(7) ! print the HEPEUP common block
-c     CALL PYLIST(5) ! print the HEPEVT common block
+c            CALL PYLIST(7)      ! print the HEPEUP common block
+c            CALL PYLIST(5)      ! print the HEPEVT common block
+
             CALL PYLIST(5)      ! print the event
+
 c     call PYLIST(1) ! as PYLIST(2) but with less information
          ENDIF
          

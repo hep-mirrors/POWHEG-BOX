@@ -11,6 +11,8 @@
       integer mcalls,icalls
       real * 8 pwhg_pt2,pt2max_regular
       external pwhg_pt2,pt2max_regular
+c     store current random seeds. To be used to restart at problematic events
+      call savecurrentrandom
       if(random().gt.rad_sigrm/rad_sigtot) then
 c     generate underlying Born kinematics
          call gen_btilde(mcalls,icalls)
@@ -36,13 +38,28 @@ c pick a configuration according to its cross section
 c iret=1: rem contribution (leftover from damping factor on R)
 c iret=2: reg contribution (real graphs without singular regions)
          call gen_remnant(iret)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     check if pt2 is greater than 
+         if (pwhg_pt2().lt.rad_ptsqmin) then
+            write(*,*) '****************************************'
+            write(*,*) 'WARNING in gen_remnant'
+            write(*,*) 'pwhg_pt2 < rad_ptsqmin ',
+     #           pwhg_pt2(),' < ',rad_ptsqmin
+            write(*,*) 'To generate this event, use the following seeds'
+            call printcurrentrandom
+            write(*,*) '****************************************'
+            kn_csi = 0d0                        
+         endif
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
          call add_azimuth
          if(iret.eq.1) then
+            if (kn_csi.ne.0d0) then
 c     set st_muren2 equal to pt2 for scalup value
-            rad_pt2max=pwhg_pt2()
-            call set_rad_scales(rad_pt2max)
+               rad_pt2max=pwhg_pt2()
+               call set_rad_scales(rad_pt2max)
+            endif
             call gen_leshouches
-c rad_type=2 for remnants
+c     rad_type=2 for remnants
             rad_type=2
          else
 c     Set st_muren2 for scalup value for regular contributions
@@ -411,6 +428,12 @@ c since these may be expensive.
       if(born.lt.0) then
          born=0
       endif
+      if(born.eq.0) then
+c bizarre situation that may arise when the scale gets so low
+c that some pdf vanish (typically heavy flavour pdf's)
+         t=-1
+         goto 3
+      endif
       kn_y=y
       kn_csi=1-x
       kn_azi=2*pi*random()
@@ -555,6 +578,12 @@ c      write(*,*) ' genrad_fsr: y and csi ',y,csi
       call sigborn_rad(born)
       if(born.lt.0) then
          born=0
+      endif
+      if(born.eq.0) then
+c bizarre situation that may arise when the scale gets so low
+c that some pdf vanish (typically heavy flavour pdf's)
+         t=-1
+         goto 3
       endif
       kn_y=y
       kn_csi=csi

@@ -30,8 +30,12 @@ c no remnants for now!
 c     Don't forget to set scale for scalup equal to the pt of the 
 c     radiation (whatever it is now!)
 c     set color connections for all particles
-      write(*,*) 'Gen_leshouches_reg: dummy interface to regular'//
+      write(*,*) 'gen_leshouches_reg: dummy interface to regular'//
      1           ' contributions'
-      write(*,*) 'Replace with your own process dependent one'
+      write(*,*) ' Replace with your own process-dependent one, to be'
+      write(*,*) ' put in the process-specific directory (e.g. /W,'//'
+     #     /Z, /VBF_H...)'
+      write(*,*) ' The Makefile will automatically compile the version'
+      write(*,*) ' in the process-specific directory'
       call exit(1)
       end

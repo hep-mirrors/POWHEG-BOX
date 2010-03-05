@@ -29,6 +29,7 @@ c     this call is necessary to read the prefix of the file
       goto 1
  2    continue
       write(*,*) ' found ',maxev,' events in file ',file
+c      stop
       if (maxev.eq.0) then
          write(*,*) ' NO EVENTS!! Program exits'
          call exit(3)

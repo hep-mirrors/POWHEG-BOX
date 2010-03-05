@@ -11,6 +11,7 @@
       integer mcalls,icalls
       real * 8 pwhg_pt2,pt2max_regular
       external pwhg_pt2,pt2max_regular
+      integer i
 c     store current random seeds. To be used to restart at problematic events
       call savecurrentrandom
       if(random().gt.rad_sigrm/rad_sigtot) then
@@ -38,32 +39,29 @@ c pick a configuration according to its cross section
 c iret=1: rem contribution (leftover from damping factor on R)
 c iret=2: reg contribution (real graphs without singular regions)
          call gen_remnant(iret)
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-c     check if pt2 is greater than 
          if (pwhg_pt2().lt.rad_ptsqmin) then
             write(*,*) '****************************************'
             write(*,*) 'WARNING in gen_remnant'
             write(*,*) 'pwhg_pt2 < rad_ptsqmin ',
      #           pwhg_pt2(),' < ',rad_ptsqmin
+            write(*,*) (flst_alr(i,rad_realalr),i=1,nlegreal)
             write(*,*) 'To generate this event, use the following seeds'
             call printcurrentrandom
             write(*,*) '****************************************'
-            kn_csi = 0d0                        
          endif
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
          call add_azimuth
          if(iret.eq.1) then
-            if (kn_csi.ne.0d0) then
 c     set st_muren2 equal to pt2 for scalup value
-               rad_pt2max=pwhg_pt2()
-               call set_rad_scales(rad_pt2max)
-            endif
+            rad_pt2max=max(rad_ptsqmin,pwhg_pt2())
+            call set_rad_scales(rad_pt2max)
             call gen_leshouches
 c     rad_type=2 for remnants
             rad_type=2
          else
-c     Set st_muren2 for scalup value for regular contributions
-            rad_pt2max=pt2max_regular()
+c     set st_muren2 for scalup value for regular contributions
+            rad_pt2max=max(rad_ptsqmin,pt2max_regular())
+            call set_rad_scales(rad_pt2max)
             call gen_leshouches_reg
 c rad_type=3 for regular contributions
             rad_type=3

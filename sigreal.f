@@ -182,8 +182,10 @@ c     to avoid divergent integral (25 is an ad hoc value)
          write(iun,*) '      CHECK  COLL. LIMITS FOR ISR       '         
          write(iun,*)
          do kn_emitter=0,2
+c            call randomsave
             if(kn_emitter.ne.2) call checkcoll(sigreal_btl,collisrp,1
      $           ,' coll-plus',iun)
+c            call randomrestore
             if(kn_emitter.ne.1) call checkcoll(sigreal_btl,collisrm,-1
      $           ,' coll-minus',iun)
          enddo

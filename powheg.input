@@ -51,6 +51,14 @@ withdamp    1      ! (default 0, do not use) use Born-zero damping factor
 #rand1     -1      ! initialize random number sequence 
 #rand2     -1      ! initialize random number sequence 
 
+#manyseeds 1       ! Used to perform multiple runs with different random
+                   ! seeds in the same directory.
+                   ! If set to 1, the program asks for an integer j;
+                   ! The file pwgseeds.dat at line j is read, and the
+                   ! integer at line j is used to initialize the random
+                   ! sequence for the generation of the event.
+                   ! The event file is called pwgevents-'j'.lhe
+
 #iupperisr 1 ! (default 1) choice of ISR upper bounding functional form 
 #iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
 

@@ -156,7 +156,7 @@ C
       TITLE(N) = ' '//TIT
 1     HDEL(N) = DEL
       NBIN(N) = INT(ONEP*(XMAX-XMIN)/DEL)
-      IF(NBIN(N).GT.100) THEN
+      IF(NBIN(N).GT.nxm) THEN
 	WRITE(*,*) 'TOO MANY BINS (',NBIN(N),') REQUIRED IN HIST ',N
 	WRITE(*,*) 'RE-ENTER BIN SIZE DELTA (OLD BIN = ',DEL,' ):'
 	READ(*,*) DEL
@@ -1264,7 +1264,7 @@ c
 c     Accumulates values (j+nmh) and squared values (j+nmh2) for
 c     statistical analysis, then empty the original histogram j.
 c
-      do j=1,nmb
+      do j=1,nmh
          call pwhggettag(j,tag)
          if(tag.eq.'YST') then
             do l=1,nbin(j)

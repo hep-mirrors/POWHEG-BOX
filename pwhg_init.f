@@ -21,8 +21,11 @@ c     if true also counterterm are output in NLO tests (default)
       flg_withsubtr=.true.
       if(powheginput("#withsubtr").eq.0) flg_withsubtr=.false.
 c     if true use Born zero damping factor and include remnants
+c     set flg_withdamp to true also if the damping of real radiation
+c     is required
       flg_withdamp=.false.
-      if(powheginput("#withdamp").eq.1) flg_withdamp=.true.
+      if((powheginput("#withdamp").eq.1).or.
+     $  (powheginput("#hfact").gt.0d0))   flg_withdamp=.true.
 c     If set do only the Born term
       flg_bornonly=.false.
       if (powheginput("#bornonly").eq.1) flg_bornonly=.true.

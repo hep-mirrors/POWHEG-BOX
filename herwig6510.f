@@ -62731,19 +62731,19 @@ CDECK  ID>, PDFSET.
 *CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
 *-- Author :    Bryan Webber
 C----------------------------------------------------------------------
-      SUBROUTINE PDFSET(PARM,VAL)
-C----------------------------------------------------------------------
-C     DUMMY SUBROUTINE: DELETE AND SET MODPDF(I)
-C     IN MAIN PROGRAM IF YOU USE PDFLIB CERN-LIBRARY
-C     PACKAGE FOR NUCLEON STRUCTURE FUNCTIONS
-C----------------------------------------------------------------------
-      IMPLICIT NONE
-      DOUBLE PRECISION VAL(20)
-      CHARACTER*20 PARM(20)
-      WRITE (6,10)
-   10 FORMAT(/10X,'PDFSET CALLED BUT NOT LINKED')
-      STOP
-      END
+c$$$      SUBROUTINE PDFSET(PARM,VAL)
+c$$$C----------------------------------------------------------------------
+c$$$C     DUMMY SUBROUTINE: DELETE AND SET MODPDF(I)
+c$$$C     IN MAIN PROGRAM IF YOU USE PDFLIB CERN-LIBRARY
+c$$$C     PACKAGE FOR NUCLEON STRUCTURE FUNCTIONS
+c$$$C----------------------------------------------------------------------
+c$$$      IMPLICIT NONE
+c$$$      DOUBLE PRECISION VAL(20)
+c$$$      CHARACTER*20 PARM(20)
+c$$$      WRITE (6,10)
+c$$$   10 FORMAT(/10X,'PDFSET CALLED BUT NOT LINKED')
+c$$$      STOP
+c$$$      END
 CDECK  ID>, PHOINI.
 *CMZ :-        -17/10/01  10.03.37  by  Peter Richardson
 *-- Author :    Peter Richardson
@@ -62864,21 +62864,21 @@ C-- Local variables
   30    FORMAT(1X,'Unrecognized option in QQLMAT')
       ENDIF
       END
-CDECK  ID>, STRUCTM.
-*CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
-*-- Author :    Bryan Webber
-C-----------------------------------------------------------------------
-      SUBROUTINE STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)
-C-----------------------------------------------------------------------
-C     DUMMY SUBROUTINE: DELETE IF YOU USE PDFLIB CERN-LIBRARY
-C     PACKAGE FOR NUCLEON STRUCTURE FUNCTIONS
-C-----------------------------------------------------------------------
-      IMPLICIT NONE
-      DOUBLE PRECISION X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU
-      WRITE (6,10)
-  10  FORMAT(/10X,'STRUCTM CALLED BUT NOT LINKED')
-      STOP
-      END
+c$$$CDECK  ID>, STRUCTM.
+c$$$*CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
+c$$$*-- Author :    Bryan Webber
+c$$$C-----------------------------------------------------------------------
+c$$$      SUBROUTINE STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)
+c$$$C-----------------------------------------------------------------------
+c$$$C     DUMMY SUBROUTINE: DELETE IF YOU USE PDFLIB CERN-LIBRARY
+c$$$C     PACKAGE FOR NUCLEON STRUCTURE FUNCTIONS
+c$$$C-----------------------------------------------------------------------
+c$$$      IMPLICIT NONE
+c$$$      DOUBLE PRECISION X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU
+c$$$      WRITE (6,10)
+c$$$  10  FORMAT(/10X,'STRUCTM CALLED BUT NOT LINKED')
+c$$$      STOP
+c$$$      END
 C-----------------------------------------------------------------------
 C...SaSgam version 2 - parton distributions of the photon
 C...by Gerhard A. Schuler and Torbjorn Sjostrand

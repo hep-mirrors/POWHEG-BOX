@@ -4,6 +4,7 @@ c real contribution r (without pdf factor),
 c returns in dampfac the damping factor to be applied to
 c the real contribution to implement Born zero suppression
       implicit none
+      include 'include/pwhg_flg.h'
       integer alr
       real * 8 r0,rc,rs,dampfac,h,pwhg_pt2,pt2,powheginput
       logical ini
@@ -11,7 +12,15 @@ c the real contribution to implement Born zero suppression
       save ini,h
       external pwhg_pt2,powheginput
       if(ini) then
-         h=powheginput('#hfact')
+         h=powheginput("#hfact")
+         if(h.gt.0) then
+            write(*,*)'***************************************'
+            write(*,*)' Using a damping factor h**2/(pt2+h**2)'
+            write(*,*)' to separate real contributions between'
+            write(*,*)' Sudakov and remnants    h=',h,' GeV.' 
+            write(*,*)'***************************************'
+         endif
+         ini=.false.
       endif
 c local variables
       if(h.gt.0) then

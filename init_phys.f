@@ -76,14 +76,8 @@ c initialize number of singular regions
       call genflavreglist
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       dbg_softtest=.true.
       dbg_colltest=.true.
-c     Uncomment the following lines to
-c     check soft and/or collinear limits
-c      dbg_softtest=.true.
-c      dbg_colltest=.true.
-
       if(flg_withdamp) then
          write(*,*) ' no soft tests if withdamp is set'
          dbg_softtest=.false.
@@ -99,6 +93,5 @@ c      dbg_colltest=.true.
          call checklims(iun)
          call flush(iun)
       endif
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       end
 

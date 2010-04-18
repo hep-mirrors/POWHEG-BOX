@@ -14,15 +14,26 @@
       real *8 borntmp
       integer mu,nu,j,k
 
-      integer ileg
+      integer ileg,ioleg
       real *8 kb_mad(0:3,nlegs)
-
+C     define a real *8 value for nc in order
+C     to avoid integer by integer division
+      real *8 ncol
+      parameter (ncol=nc)
       real *8 VC
-      parameter(VC=8d0)
+      parameter(VC=ncol**2-1)
+
+      real * 8 gtens(0:3,0:3),ap
+      data gtens/1d0, 0d0, 0d0, 0d0,
+     #           0d0,-1d0, 0d0, 0d0,
+     #           0d0, 0d0,-1d0, 0d0,
+     #           0d0, 0d0, 0d0,-1d0/
+      save gtens
 
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      real *8 Hat,Hau,HB,HCs,HCt,HCu,HDs,HDt,HDu
-      external Hat,Hau,HB,HCs,HCt,HCu,HDs,HDt,HDu
+      real *8 Hat,Hau,HB,HCs,HCt,HCu,HDs,HDt,HDu,dotp
+      external Hat,Hau,HB,HCs,HCt,HCu,HDs,HDt,HDu,dotp
+      real * 8 symfac
 
    
 c     set madgraph parameters that can change on an event-by-event basis
@@ -68,11 +79,11 @@ c         write(*,*) 'A1a, qqp->qqp ', (qcd_name(bflav(ileg)),ileg=1,4)
          enddo
          
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(2,4)=bornjk(1,3)
          bornjk(2,3)=bornjk(1,4)
          bornjk(3,4)=bornjk(1,2)
@@ -92,12 +103,12 @@ c     3 -> 1
          
 c         bornjk(3,2)=(4.*pi*st_alpha)**2 * ......
          bornjk(2,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
 c         bornjk(3,1)=(4.*pi*st_alpha)**2 * .....
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(3,4)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
 c         bornjk(2,4)=bornjk(3,1)
          bornjk(2,4)=bornjk(1,3)
 c         bornjk(2,1)=bornjk(3,4)
@@ -119,11 +130,11 @@ c     4 -> 2
          enddo
          
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
 c         bornjk(4,2)=bornjk(1,3)
          bornjk(2,4)=bornjk(1,3)
 c         bornjk(4,3)=bornjk(1,2)
@@ -147,13 +158,13 @@ c     4 -> 2
          enddo
 
          bornjk(3,4)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.  
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol  
 c         bornjk(3,1)=(4.*pi*st_alpha)**2 * 
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.   
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol   
 c         bornjk(3,2)=(4.*pi*st_alpha)**2 * 
          bornjk(2,3)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.  
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol  
 c         bornjk(4,2)=bornjk(3,1)
          bornjk(2,4)=bornjk(1,3)
 c         bornjk(4,1)=bornjk(3,2)
@@ -189,11 +200,11 @@ c     4 -> 3
          enddo
          
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(2,3)=bornjk(1,4)
          bornjk(2,4)=bornjk(1,3)
          bornjk(3,4)=bornjk(1,2)
@@ -214,11 +225,11 @@ c     Permutando dalla fondamentale, NON VA.
          enddo
          
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(2,3)=bornjk(1,4)
          bornjk(3,4)=bornjk(1,2)
          bornjk(2,4)=bornjk(1,3)
@@ -238,12 +249,12 @@ c     momenta assignment.
          
 c         bornjk(4,3)=(4.*pi*st_alpha)**2 * ......
          bornjk(3,4)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
 c         bornjk(4,2)=(4.*pi*st_alpha)**2 * ........
          bornjk(2,4)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
 c         bornjk(2,3)=bornjk(4,1)
          bornjk(2,3)=bornjk(1,4)
 c         bornjk(3,1)=bornjk(4,2)
@@ -283,11 +294,11 @@ c     2 -> 3
          enddo
          
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(3,4)=bornjk(1,2)
 c         bornjk(3,2)=bornjk(1,4)
          bornjk(2,3)=bornjk(1,4)
@@ -308,11 +319,11 @@ c     2 -> 3
          enddo
          
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(3,4)=bornjk(1,2)
 c         bornjk(3,2)=bornjk(1,4)
          bornjk(2,3)=bornjk(1,4)
@@ -335,12 +346,12 @@ c     3 -> 4
          
 c         bornjk(3,1)=(4.*pi*st_alpha)**2 * ..........
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(3,4)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
 c         bornjk(3,2)=(4.*pi*st_alpha)**2 *........ 
          bornjk(2,3)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(1,2)=bornjk(3,4)
 c         bornjk(1,4)=bornjk(3,2)
          bornjk(1,4)=bornjk(2,3)
@@ -363,11 +374,11 @@ c     Permutando dalla fondamentale, NON VA.
          enddo
          
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./4./3./3.
+     $        ( 2*VC/nc*HAt(p1,p2,p3,p4))     /4./ncol/ncol
          bornjk(3,4)=(4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./4./3./3.
+     $        (-VC/nc*HAt(p1,p2,p3,p4))       /4./ncol/ncol
          bornjk(2,4)=(4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./4./3./3.
+     $        (VC/nc*(nc**2-2)*HAt(p1,p2,p3,p4))      /4./ncol/ncol
          bornjk(1,2)=bornjk(3,4)
          bornjk(1,3)=bornjk(2,4)
          bornjk(2,3)=bornjk(1,4)
@@ -400,20 +411,20 @@ c     no exchange wrt fundamental order:
      $        ( 2*VC/nc/nc) *
      $(-HB(p1,p2,p3,p4)+nc*(HAt(p1,p2,p3,p4)+HAu(p1,p2,p3,p4))
      $-nc**2*HB(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
      $        ( 2*VC/nc/nc) *
      $(HB(p1,p2,p3,p4)-nc*(HAu(p1,p2,p3,p4)+0.5*HAt(p1,p2,p3,p4))
      $+0.5*nc**3*HAu(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
 
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
      $        ( 2*VC/nc/nc) *
      $(HB(p1,p2,p3,p4)-nc*(HAt(p1,p2,p3,p4)+0.5*HAu(p1,p2,p3,p4))
      $+0.5*nc**3*HAt(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(2,4)=bornjk(1,3)
          bornjk(2,3)=bornjk(1,4)
@@ -441,20 +452,20 @@ c     4 -> 2
      $        ( 2*VC/nc/nc) *
      $(-HB(p1,p2,p3,p4)+nc*(HAt(p1,p2,p3,p4)+HAu(p1,p2,p3,p4))
      $-nc**2*HB(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
      $        ( 2*VC/nc/nc) *
      $(HB(p1,p2,p3,p4)-nc*(HAu(p1,p2,p3,p4)+0.5*HAt(p1,p2,p3,p4))
      $+0.5*nc**3*HAu(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
 
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
      $        ( 2*VC/nc/nc) *
      $(HB(p1,p2,p3,p4)-nc*(HAt(p1,p2,p3,p4)+0.5*HAu(p1,p2,p3,p4))
      $+0.5*nc**3*HAt(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(2,4)=bornjk(1,3)
 c         bornjk(4,3)=bornjk(1,2)
@@ -485,20 +496,20 @@ c     3 -> 2
      $        ( 2*VC/nc/nc) *
      $(-HB(p1,p2,p3,p4)+nc*(HAt(p1,p2,p3,p4)+HAu(p1,p2,p3,p4))
      $-nc**2*HB(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
      $        ( 2*VC/nc/nc) *
      $(HB(p1,p2,p3,p4)-nc*(HAu(p1,p2,p3,p4)+0.5*HAt(p1,p2,p3,p4))
      $+0.5*nc**3*HAu(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
 
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
      $        ( 2*VC/nc/nc) *
      $(HB(p1,p2,p3,p4)-nc*(HAt(p1,p2,p3,p4)+0.5*HAu(p1,p2,p3,p4))
      $+0.5*nc**3*HAt(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(3,4)=bornjk(1,2)
 c         bornjk(3,2)=bornjk(1,4)
@@ -523,24 +534,24 @@ c     no exchange wrt fundamental order:
      $        ( VC) *
      $(-(HCt(p1,p2,p3,p4)+HCu(p1,p2,p3,p4)-HCs(p1,p2,p3,p4))
      $+1./nc/nc * HCs(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCu(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCt(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
          bornjk(2,4)=bornjk(1,3)
          bornjk(2,3)=bornjk(1,4)
          bornjk(3,4)=(4.*pi*st_alpha)**2 * 
      $        ( VC*nc**2) *
      $(HCt(p1,p2,p3,p4) + HCu(p1,p2,p3,p4))
-     $     /4./4./3./3.
+     $     /4./ncol/ncol
 
 
 c     C-type, qg->qg
@@ -566,17 +577,17 @@ c     a change in the color-spin average is needed
      $        ( VC) *
      $(-(HCt(p1,p2,p3,p4)+HCu(p1,p2,p3,p4)-HCs(p1,p2,p3,p4))
      $+1./nc/nc * HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.                                         
+     $     /4./ncol/VC                                         
 
          bornjk(1,2)= -  (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCu(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.                                          
+     $     /4./ncol/VC                                          
 
          bornjk(1,4)= -  (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCt(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.                                          
+     $     /4./ncol/VC                                          
 
          bornjk(3,4)=bornjk(1,2)
 c         bornjk(3,2)=bornjk(1,4)
@@ -584,7 +595,7 @@ c         bornjk(3,2)=bornjk(1,4)
          bornjk(2,4)= -  (4.*pi*st_alpha)**2 * 
      $        ( VC*nc**2) *
      $(HCt(p1,p2,p3,p4) + HCu(p1,p2,p3,p4))
-     $     /4./4./3./8.                                          
+     $     /4./ncol/VC                                          
 
 
 c     C-type, qg->gq
@@ -610,17 +621,17 @@ c     a change in the color-spin average is needed
      $        ( VC) *
      $(-(HCt(p1,p2,p3,p4)+HCu(p1,p2,p3,p4)-HCs(p1,p2,p3,p4))
      $+1./nc/nc * HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
          bornjk(1,3)= - (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCu(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
          bornjk(1,2)= - (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCt(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
          bornjk(2,4)=bornjk(1,3)
 c         bornjk(4,3)=bornjk(1,2)
@@ -629,7 +640,7 @@ c         bornjk(3,2)=(4.*pi*st_alpha)**2 * ......
          bornjk(2,3)= - (4.*pi*st_alpha)**2 * 
      $        ( VC*nc**2) *
      $(HCt(p1,p2,p3,p4) + HCu(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 
 c     C-type, gg->qqbar
@@ -657,19 +668,19 @@ c     Here a change in the color-spin average is needed
      $        ( VC) *
      $(-(HCt(p1,p2,p3,p4)+HCu(p1,p2,p3,p4)-HCs(p1,p2,p3,p4))
      $+1./nc/nc * HCs(p1,p2,p3,p4))
-     $     /4./4./8./8.
+     $     /4./VC/VC
 
 c         bornjk(3,2)=(4.*pi*st_alpha)**2 * ....
          bornjk(2,3)=(4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCu(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./8./8.
+     $     /4./VC/VC
 
 c         bornjk(3,1)=(4.*pi*st_alpha)**2 * ......
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCt(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./8./8.
+     $     /4./VC/VC
 
 c         bornjk(4,1)=bornjk(3,2)
          bornjk(1,4)=bornjk(2,3)
@@ -679,7 +690,7 @@ c         bornjk(2,1)=(4.*pi*st_alpha)**2 *.....
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
      $        ( VC*nc**2) *
      $(HCt(p1,p2,p3,p4) + HCu(p1,p2,p3,p4))
-     $     /4./4./8./8.
+     $     /4./VC/VC
 
 
 c     C-type, gqbar->qbarg
@@ -706,18 +717,18 @@ c         bornjk(3,2)=(4.*pi*st_alpha)**2 * ......
      $        ( VC) *
      $(-(HCt(p1,p2,p3,p4)+HCu(p1,p2,p3,p4)-HCs(p1,p2,p3,p4))
      $+1./nc/nc * HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 c         bornjk(3,1)=(4.*pi*st_alpha)**2 * ......
          bornjk(1,3)= - (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCu(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
          bornjk(3,4)= - (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCt(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 c         bornjk(2,4)=bornjk(3,1)
          bornjk(2,4)=bornjk(1,3)
@@ -726,7 +737,7 @@ c         bornjk(2,1)=bornjk(3,4)
          bornjk(1,4)= - (4.*pi*st_alpha)**2 * 
      $        ( VC*nc**2) *
      $(HCt(p1,p2,p3,p4) + HCu(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 
 
@@ -753,19 +764,19 @@ c         bornjk(4,2)=(4.*pi*st_alpha)**2 * .........
      $        ( VC) *
      $(-(HCt(p1,p2,p3,p4)+HCu(p1,p2,p3,p4)-HCs(p1,p2,p3,p4))
      $+1./nc/nc * HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 c         bornjk(4,3)=(4.*pi*st_alpha)**2 * .........
          bornjk(3,4)= - (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCu(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 c         bornjk(4,1)=(4.*pi*st_alpha)**2 * ........
          bornjk(1,4)= - (4.*pi*st_alpha)**2 * 
      $        ( VC) *
      $(nc**2 *HCt(p1,p2,p3,p4) - HCs(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 c         bornjk(2,1)=bornjk(4,3)
          bornjk(1,2)=bornjk(3,4)
@@ -775,7 +786,7 @@ c         bornjk(3,1)=(4.*pi*st_alpha)**2 * .......
          bornjk(1,3)= - (4.*pi*st_alpha)**2 * 
      $        ( VC*nc**2) *
      $(HCt(p1,p2,p3,p4) + HCu(p1,p2,p3,p4))
-     $     /4./4./3./8.
+     $     /4./ncol/VC
 
 
 
@@ -795,11 +806,11 @@ c         write(*,*) 'D ', (qcd_name(bflav(ileg)),ileg=1,4)
          enddo
          
          bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC*nc**3*HDs(p1,p2,p3,p4)) /4./4./8./8.
+     $        ( 2*VC*nc**3*HDs(p1,p2,p3,p4)) /4./VC/VC
          bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC*nc**3*HDt(p1,p2,p3,p4)) /4./4./8./8.
+     $        ( 2*VC*nc**3*HDt(p1,p2,p3,p4)) /4./VC/VC
          bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC*nc**3*HDu(p1,p2,p3,p4)) /4./4./8./8.
+     $        ( 2*VC*nc**3*HDu(p1,p2,p3,p4)) /4./VC/VC
 
          bornjk(2,4)=bornjk(1,3)
          bornjk(2,3)=bornjk(1,4)
@@ -821,18 +832,45 @@ c     bornjk(j,j) is not used in soft
          enddo
       enddo
 
+c normalize: kunszt and Soper have an extra 2, see eq A8 and A11 in
+c PRD46-192
+      if(bflav(3).eq.bflav(4)) then
+         symfac=0.5d0
+      else
+         symfac=1
+      endif
+      do j=1,nlegborn
+         do k=1,nlegborn
+c     bornjk(j,j) is not used in soft
+            bornjk(j,k)=bornjk(j,k)/2*symfac
+         enddo
+      enddo
+
+      
 
 c     spin-projected here are not needed 
       do ileg=1,nlegborn
-c         if(bflav(ileg).eq.0) then
+         if(bflav(ileg).eq.0) then
+c find opposite leg
+            if(ileg.eq.1) then
+               ioleg=2
+            elseif(ileg.eq.2) then
+               ioleg=1
+            elseif(ileg.eq.3) then
+               ioleg=4
+            elseif(ileg.eq.4) then
+               ioleg=3
+            endif
             do mu=0,3
                do nu=0,3
 c     Since we use a modified version of sigcollsoft, we do not need
 c     bmunu anymore
-                  bmunu(mu,nu,ileg)=0d0
+                  bmunu(mu,nu,ileg)=(-gtens(mu,nu)+
+     1           kn_cmpborn(mu,ileg)*kn_cmpborn(nu,ioleg)/
+     2            dotp(kn_cmpborn(0,ileg),kn_cmpborn(0,ioleg)))*born/2
                enddo
             enddo
-c         endif
+         endif
       enddo
       
 

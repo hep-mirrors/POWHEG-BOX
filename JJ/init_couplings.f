@@ -17,8 +17,6 @@
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     number of light flavors
-      st_nlight = 5
 
 c     setting physical parameters
       write(*,*) 'POWHEG: loading-setting physical parameters'

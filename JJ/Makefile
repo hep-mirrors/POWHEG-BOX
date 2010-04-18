@@ -3,9 +3,9 @@ ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
-#F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
+F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
 ## For g77 comment the above and uncomment below
-F77= g77 -Wall -fno-automatic -ffortran-bounds-check
+#F77= g77 -Wall -fno-automatic -ffortran-bounds-check
 ## IMPORTANT: if using g77 remove -static when linking against LHAPDF
 # For debugging uncomment the following
 DEBUG= -ggdb #-pg

@@ -4,6 +4,7 @@
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       include '../include/pwhg_flg.h'
+      include '../include/pwhg_st.h'
       integer i1,i2,i3,i4,i5,k,ii(nlegreal)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
@@ -16,7 +17,7 @@
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C  DON'T FORGET TO  SET THIS TO THE NUMBER OF FLAVOURS REQUIRED 
       integer nflav
-      parameter (nflav=5)
+      parameter (nflav=2)
 C  AND CHANGE THE madgraph SYMBOLIC LINK ACCORDINGLY
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       integer three_ch(-6:6)
@@ -29,6 +30,11 @@ c     the code and we change often from one process to the other
          stop
       endif
 
+*********************************************************************
+c     number of light flavors
+C      st_nlight = nflav
+      st_nlight=3
+*********************************************************************
 *********************************************************************
 c     index of the first LIGHT coloured parton in the final state
       flst_lightpart=3

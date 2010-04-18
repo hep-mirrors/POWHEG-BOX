@@ -328,6 +328,8 @@ c     we multiply everything by (1-y) csi^2; one csi is included
 c     above; the other here.
       res=ap/kn_cmpborn(0,em)**2/(xocsi*(1-x))
      #*(4*pi*st_alpha)
+c provide multiplicity of emitter in underlyng Born
+      res=res*flst_ubmult(alr)
       end
 
 
@@ -466,6 +468,7 @@ c     Multiply soft result by (soft limit Sij appropriate factors)
          enddo
          res=res/kn_dijterm_soft(em)/sumdijinv
       endif
+      res=res*flst_ubmult(alr)
       end
 
 

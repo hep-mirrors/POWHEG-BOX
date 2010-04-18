@@ -40,7 +40,8 @@ c This is the case for most QCD NLO calculation.
       integer flst_nalr,flst_alr(nlegreal,maxalr)
       integer flst_nregular,flst_regular(nlegreal,maxprocreal)
       integer flst_uborn(nlegborn,maxalr)
-      integer flst_mult(maxalr), flst_emitter(maxalr)
+      integer flst_mult(maxalr), flst_ubmult(maxalr),
+     1        flst_emitter(maxalr)
       integer maxregions
       parameter (maxregions=nlegreal*(nlegreal-1)/2)
 c     list of all regions      
@@ -55,7 +56,7 @@ c     born2alr(1.. born2alr(0,k),k)= pointer to corresponding alpha_r
       common/pwhg_flst/flst_nborn, flst_born,flst_borntags,
      1         flst_nreal,flst_real,flst_realtags,
      2         flst_nalr,flst_alr,flst_nregular,flst_regular,
-     3         flst_uborn,flst_mult,flst_emitter,
+     3         flst_uborn,flst_mult,flst_ubmult,flst_emitter,
      4         flst_allreg,flst_alr2born,flst_born2alr,flst_lightpart
 
 

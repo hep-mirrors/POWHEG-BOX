@@ -143,12 +143,11 @@ c the corresponding intfl.
       include 'include/pwhg_flg.h'
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
-      integer getrealflav,fl
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
      2    nflmap
       common/cmapflavours/fllist,taglist,intfl,nflmap
-      integer jfl,l
+      integer jfl
       if(flav.eq.0) then
          if(tag.ne.0) then
             write(*,*) ' addflavour: should not tag a gluon!'
@@ -349,7 +348,7 @@ c false otherwise.
 c we need the parameter nlegreal
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
-      integer j,k,kb,itmp,ib(nlegreal)
+      integer j,k,itmp,ib(nlegreal)
       call intassign(n,bflav,ib)
       do j=1,n
          if(aflav(j).ne.ib(j)) then
@@ -483,7 +482,7 @@ c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       integer nregions,iregions(2,maxregions)
-      integer iflregl,k,l,ipart,j,itmp,nreg,iblist,iret
+      integer iflregl,k,l,ipart,j,itmp,nreg,iret,tmpfl
       logical equalintlists
       external equalintlists
       logical verbose
@@ -730,63 +729,27 @@ c Find regions for each alpha_r
          enddo
          flst_allreg(1,0,j)=nregions
       enddo
+c For each region, compute the underlying Born multiplicity
+      do j=1,flst_nalr
+         if(flst_emitter(j).gt.2) then
+            flst_ubmult(j)=0
+c find flavour of emitter IN THE UNDERLYING BORN
+            tmpfl=flst_uborn(flst_emitter(j),j)
+            do k=3,nlegborn
+               if(flst_uborn(k,j).eq.tmpfl) then
+                  flst_ubmult(j)=flst_ubmult(j)+1
+               endif
+            enddo
+         else
+            flst_ubmult(j)=1
+         endif
+      enddo
       call unmapflavours
 c     debug information
       if (verbose) then
-         call print_flst
          call pretty_print_flst
       endif
       end
-
-
-      subroutine print_flst
-      implicit none
-      include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      integer j,k,l
-      integer iunit
-      call newunit(iunit)
-      do j=1,flst_nalr
-         write(iunit,*) '      flst_emitter(',j,')=',flst_emitter(j)
-         do l=1,nlegreal
-            write(iunit,*) '      flst_alr(',l,',',j,')=',flst_alr(l,j)
-         enddo
-         do l=1,nlegborn
-            write(iunit,*) 
-     #           '      flst_uborn(',l,',',j,')=',flst_uborn(l,j)
-         enddo
-         write(iunit,*) '      flst_mult(',j,')=',flst_mult(j)
-      enddo
-      write(iunit,*) '      flst_nalr=',flst_nalr
-      do j=1,flst_nborn
-         do l=1,nlegborn
-            write(iunit,*) 
-     #           '      flst_born(',l,',',j,')=',flst_born(l,j)
-         enddo
-      enddo   
-      write(iunit,*) '      flst_nborn=',flst_nborn
-      do j=1,flst_nalr
-         write(iunit,*) '      flst_allreg(1,0,',j,')=',
-     #               flst_allreg(1,0,j)         
-         do k=1,flst_allreg(1,0,j)
-            do l=1,2
-               write(iunit,*) '      flst_allreg(',l,',',k,',',j,')=',
-     #               flst_allreg(l,k,j)
-            enddo
-         enddo
-      enddo
-      do j=1,flst_nalr
-         write(iunit,*) '      flst_alr2born(',j,')=',flst_alr2born(j)
-      enddo
-      do j=1,flst_nborn
-         do k=0,flst_born2alr(0,j)
-            write(iunit,*) '      flst_born2alr(',k,',',j,')=',
-     #           flst_born2alr(k,j)
-         enddo
-      enddo
-      close(iunit)
-      end
-
 
       subroutine from_number_to_madgraph(n,flav,emitter,string)
       implicit none
@@ -824,50 +787,20 @@ c     debug information
       character * 35 string,stringb
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
-      integer j,k,l,iun1,iun2
-      call newunit(iun1)
-      open(unit=iun1,file='FlavRegList-fortran',status='unknown')
-      call newunit(iun2)
-      open(unit=iun2,file='FlavRegList',status='unknown')
+      integer j,k,l,iun
+      call newunit(iun)
+      open(unit=iun,file='FlavRegList',status='unknown')
       do j=1,flst_nalr
          call from_number_to_madgraph
      #         (nlegreal,flst_alr(1,j),flst_emitter(j),string)
          call from_number_to_madgraph
      #         (nlegborn,flst_uborn(1,j),-1,stringb)
-         write(iun2,*) string, ' mult=', flst_mult(j)
-         write(iun2,*) stringb, ' <=== uborn'
-         write(iun2,'(20(1x,2(1x,i1)))')
+         write(iun,*) string, ' mult=', flst_mult(j)
+         write(iun,*) stringb, ' <=== uborn', ' mult=', flst_ubmult(j)
+         write(iun,'(20(1x,2(1x,i1)))')
      #   ((flst_allreg(l,k,j),l=1,2),k=1,flst_allreg(1,0,j))
       enddo
-c      return
-      write(iun1,*) '      flst_nalr=',flst_nalr
-      do j=1,flst_nborn
-         do l=1,nlegborn
-            write(iun1,*) '      flst_born(',l,',',j,')=',flst_born(l,j)
-         enddo
-      enddo   
-      write(iun1,*) '      flst_nborn=',flst_nborn
-      do j=1,flst_nalr
-         write(iun1,*) '      flst_allreg(1,0,',j,')=',
-     #               flst_allreg(1,0,j)         
-         do k=1,flst_allreg(1,0,j)
-            do l=1,2
-               write(iun1,*) '      flst_allreg(',l,',',k,',',j,')=',
-     #               flst_allreg(l,k,j)
-            enddo
-         enddo
-      enddo
-      do j=1,flst_nalr
-         write(iun1,*) '      flst_alr2born(',j,')=',flst_alr2born(j)
-      enddo
-      do j=1,flst_nborn
-         do k=0,flst_born2alr(0,j)
-            write(iun1,*) '      flst_born2alr(',k,',',j,')=',
-     #           flst_born2alr(k,j)
-         enddo
-      enddo
-      close(iun1)
-      close(iun2)
+      close(iun)
       end
 
 

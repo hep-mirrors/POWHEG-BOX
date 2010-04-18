@@ -243,6 +243,62 @@ c            call randomrestore
       call randomrestore
       end
 
+      subroutine checkborn(iun)
+c Check if born, colour correlated born and spin correlated born
+c are consistent with total Born
+      implicit none
+      integer iun
+      include 'nlegborn.h'
+      include 'include/pwhg_math.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_br.h'
+      integer  iborn,j,k,mu
+      real * 8 tot
+      do iborn=1,flst_nborn
+         do j=1,nlegborn
+            if(abs(flst_born(j,iborn)).le.6) then
+               tot=0
+               do k=1,nlegborn
+                  if(abs(flst_born(k,iborn)).le.6) then
+                     if(k.ne.j) then
+                        tot=tot+br_bornjk(j,k,iborn)
+                     endif
+                  endif
+               enddo
+               if(flst_born(j,iborn).eq.0) then
+                  tot=tot/(ca*br_born(iborn))
+               else
+                  tot=tot/(cf*br_born(iborn))
+               endif
+               if(abs(tot-1)/tot.gt.1d-8) then
+                  write(iun,'(f5.3,a,20(i2,1x))') tot,
+     1   ' colour check fails for flav. struct:',
+     2     (flst_born(k,iborn),k=1,nlegborn)
+               endif
+            endif
+         enddo
+      enddo
+      do iborn=1,flst_nborn
+         do j=1,nlegborn
+            if(flst_born(j,iborn).eq.0) then
+               tot=0
+               do mu=0,4
+                  tot=tot-br_bmunu(mu,mu,j,iborn)
+               enddo
+               tot=tot/br_born(iborn)
+               if(abs(tot-1)/tot.gt.1d-8) then
+                  write(iun,'(f5.3,a,i2,a,20(i2,1x))')
+     1    tot, ' spin correlated amplitude'//
+     2 ' wrong for leg', j, ' flavour struct:',
+     3                 (flst_born(k,iborn),k=1,nlegborn)
+               endif
+            endif
+         enddo
+      enddo
+      end
+
+
+
       subroutine checksoft(sig,sigs,label,iun)
       implicit none
       include 'include/pwhg_dbg.h'
@@ -258,7 +314,7 @@ c            call randomrestore
      #jac_over_csi_coll,jac_over_csi_soft,r0(maxalr,nexp),
      #r0s(maxalr,nexp),jac_over_csi_p,jac_over_csi_m
       integer j,jexp,alr,alrp
-      character * 8 flag
+      character * 11 flag
       logical ident(maxalr)
       real * 8 random,dotp
       external random,dotp
@@ -270,6 +326,7 @@ c            call randomrestore
       call gen_born_phsp(xborn)
       call setscalesbtilde
       call allborn
+      call checkborn(iun)
 c      write(iun,*)' mass',sqrt(2*dotp(kn_pborn(0,3),kn_pborn(0,4)))
       do j=1,3
          xrad(j)=random()
@@ -326,7 +383,13 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
                   flag=' '
                   if(abs(r0s(alr,jexp)/r0(alr,jexp)-1).gt.0.01) then
                      if(r0s(alr,jexp).ne.0) then
-                        flag='*-WARN-*'
+                        if(jexp.eq.2) then
+                           flag='*-WARN-*'
+                        elseif(jexp.eq.3) then
+                           flag='*-WWARN-*'
+                        elseif(jexp.eq.4) then
+                           flag='*-WWWARN-*'
+                        endif
                      endif
                   endif
                   write(iun,*) (r0(alr,jexp)-r0s(alr,jexp))/ 
@@ -358,7 +421,7 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
       real * 8 random
       external random
       logical ident(maxalr)
-      character * 8 flag
+      character * 11 flag
       logical valid_emitter,iszero,isnonzero,isequal
       external valid_emitter
       do j=1,ndiminteg-3
@@ -438,8 +501,14 @@ c               if(r0(alr,jexp).ne.0) isnonzero=.true.
                do jexp=jexpfirst,nexp
                   flag=' '
                   if(abs(r0c(alr,jexp)/r0(alr,jexp)-1).gt.0.01) then
-                     flag='*-WARN-*'
-                  endif
+                     if(jexp.eq.jexpfirst) then
+                        flag='*-WARN-*'
+                     elseif(jexp.eq.3) then
+                        flag='*-WWARN-*'
+                     elseif(jexp.eq.4) then
+                        flag='*-WWWARN-*'
+                     endif
+                   endif
 c     Added this 'if' to be sure that no division by zero occurs
                   if((r0(alr,jexp-1)-r0c(alr,jexp-1)).ne.0d0) then
                   write(iun,*) (r0(alr,jexp)-r0c(alr,jexp))/

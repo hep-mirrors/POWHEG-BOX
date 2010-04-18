@@ -387,7 +387,7 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
                            flag='*-WARN-*'
                         elseif(jexp.eq.3) then
                            flag='*-WWARN-*'
-                        elseif(jexp.eq.4) then
+                        elseif(jexp.ge.4) then
                            flag='*-WWWARN-*'
                         endif
                      endif
@@ -505,7 +505,7 @@ c               if(r0(alr,jexp).ne.0) isnonzero=.true.
                         flag='*-WARN-*'
                      elseif(jexp.eq.3) then
                         flag='*-WWARN-*'
-                     elseif(jexp.eq.4) then
+                     elseif(jexp.ge.4) then
                         flag='*-WWWARN-*'
                      endif
                    endif

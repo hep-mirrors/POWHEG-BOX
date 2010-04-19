@@ -863,10 +863,9 @@ c find opposite leg
             endif
             do mu=0,3
                do nu=0,3
-c     Since we use a modified version of sigcollsoft, we do not need
-c     bmunu anymore
                   bmunu(mu,nu,ileg)=(-gtens(mu,nu)+
-     1           kn_cmpborn(mu,ileg)*kn_cmpborn(nu,ioleg)/
+     1           (kn_cmpborn(mu,ileg)*kn_cmpborn(nu,ioleg)
+     2           +kn_cmpborn(nu,ileg)*kn_cmpborn(mu,ioleg))/
      2            dotp(kn_cmpborn(0,ileg),kn_cmpborn(0,ioleg)))*born/2
                enddo
             enddo

@@ -254,6 +254,12 @@ c are consistent with total Born
       include 'include/pwhg_br.h'
       integer  iborn,j,k,mu
       real * 8 tot
+      real * 8 gtens(0:3,0:3),ap
+      data gtens/1d0, 0d0, 0d0, 0d0,
+     #           0d0,-1d0, 0d0, 0d0,
+     #           0d0, 0d0,-1d0, 0d0,
+     #           0d0, 0d0, 0d0,-1d0/
+      save gtens
       do iborn=1,flst_nborn
          do j=1,nlegborn
             if(abs(flst_born(j,iborn)).le.6) then
@@ -270,8 +276,8 @@ c are consistent with total Born
                else
                   tot=tot/(cf*br_born(iborn))
                endif
-               if(abs(tot-1)/tot.gt.1d-8) then
-                  write(iun,'(f5.3,a,20(i2,1x))') tot,
+               if(abs((tot-1)/tot).gt.1d-8) then
+                  write(iun,'(f6.3,a,20(i2,1x))') tot,
      1   ' colour check fails for flav. struct:',
      2     (flst_born(k,iborn),k=1,nlegborn)
                endif
@@ -282,12 +288,12 @@ c are consistent with total Born
          do j=1,nlegborn
             if(flst_born(j,iborn).eq.0) then
                tot=0
-               do mu=0,4
-                  tot=tot-br_bmunu(mu,mu,j,iborn)
+               do mu=0,3
+                  tot=tot-gtens(mu,mu)*br_bmunu(mu,mu,j,iborn)
                enddo
                tot=tot/br_born(iborn)
-               if(abs(tot-1)/tot.gt.1d-8) then
-                  write(iun,'(f5.3,a,i2,a,20(i2,1x))')
+               if(abs((tot-1)/tot).gt.1d-8) then
+                  write(iun,'(f6.3,a,i2,a,20(i2,1x))')
      1    tot, ' spin correlated amplitude'//
      2 ' wrong for leg', j, ' flavour struct:',
      3                 (flst_born(k,iborn),k=1,nlegborn)

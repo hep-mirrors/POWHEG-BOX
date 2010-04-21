@@ -22,13 +22,11 @@ c  pwhgfill  :  fills the histograms with data
       data ini/.true./
       save ini
 
-      if (ini.and.ph_Hmass.eq.0d0) then
+      if (ini) then
          write(*,*) '********************************************'
          write(*,*) '********************************************'
          write(*,*) 'inv Higgs boson mass plot done assuming the '
          write(*,*) 'following values'
-         ph_Hmass  = 120d0
-         ph_Hwidth = 0.00437d0       
          write(*,*) 'ph_Hmass = ',ph_Hmass
          write(*,*) 'ph_Hwidth = ',ph_Hwidth
          write(*,*) '********************************************'
@@ -309,7 +307,7 @@ c     find Higgs boson
 c     set up different searching stategies according to the shower Monte Carlo
 c     program used      
          if ((WHCPRG.eq.'HERWIG').and.(idhep(ihep).eq.25).and.
-     #           (ISTHEP(ihep).eq.155)) then 
+     $        (isthep(ihep).eq.195)) then 
             higgsfound = .true.      
          elseif ((WHCPRG.eq.'PYTHIA').and.(idhep(ihep).eq.25).and.
      #           (ISTHEP(ihep).eq.1)) then 

@@ -10,19 +10,24 @@
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      ph_Zmass  = 91.188d0     
-      ph_Zwidth =  2.486d0
-      ph_Wmass  = 79.964d0
-      ph_Wwidth =  2.064d0
+      ph_Zmass  = 91.1876d0
+      ph_Zwidth =  2.4952d0
+      ph_Wmass  = 80.398d0
+      ph_Wwidth =  2.141d0
 
 c      ph_Hmass  = 100d0
 c      ph_Hwidth = 0.0033d0
-      ph_Hmass  = 120d0
-      ph_Hwidth = 0.00437d0 
+c      ph_Hmass  = 120d0
+c      ph_Hwidth = 0.00437d0 
 c      ph_Hmass  = 150d0
 c      ph_Hwidth = 0.0182d0
 c      ph_Hmass  = 300d0
 c      ph_Hwidth = 8.4086d0
+c      ph_Hmass  = 400d0
+c      ph_Hwidth = 29.42d0 
+
+      ph_Hmass  = 300d0
+      ph_Hwidth = 8.445d0 
 
 
       ph_alphaem = 1d0/128.930d0
@@ -58,13 +63,13 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_HmHw = ph_Hmass * ph_Hwidth
 
 
-c     set mass windows around Z-mass peak in unit of ph_Zwidth
+c     set mass windows around the resonance peak 
 c     It is used in the generation of the Born phase space
       masswindow = 30
 c      ph_Zmass2low=(ph_Zmass-masswindow*ph_Zwidth)**2
 c      ph_Zmass2high=(ph_Zmass+masswindow*ph_Zwidth)**2
-
-      ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)**2
+      ph_Hmass2low=max(0,ph_Hmass-masswindow*ph_Hwidth)
+      ph_Hmass2low=ph_Hmass2low**2
       ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)**2
 c      ph_Hmass2low=0d0
 c      ph_Hmass2high=kn_sbeams/4

@@ -1,7 +1,8 @@
       PROGRAM HWIGPR
 C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
-      INCLUDE 'herwig6510.inc'
-      include 'include/LesHouches.h'
+      INCLUDE '../herwig6510.inc'
+      include '../include/LesHouches.h'
+      include 'PhysPars.h'
       integer n
       logical uevent 
       parameter (uevent=.false.)
@@ -20,6 +21,8 @@ C---INITIALISE OTHER COMMON BLOCKS
 C---USER CAN RESET PARAMETERS AT
 C   THIS POINT, OTHERWISE DEFAULT
 C   VALUES IN HWIGIN WILL BE USED.
+c     set Higgs boson mass and width
+      call init_couplings
 c      PTMIN=100.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       ptrms=2.5d0
@@ -87,7 +90,7 @@ c      close(iun)
 
       subroutine UPEVNT
       implicit none
-      include 'include/LesHouches.h'
+      include '../include/LesHouches.h'
       logical ini
       save ini
       data ini/.true./
@@ -129,8 +132,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       
 
       subroutine hwanal
-      INCLUDE 'herwig6510.inc'
-      include 'include/LesHouches.h'
+      INCLUDE '../herwig6510.inc'
+      include '../include/LesHouches.h'
       if (ierror.ne.0) then
          return
       endif

@@ -1,7 +1,8 @@
       program main_pythia
       implicit none
-      include 'include/LesHouches.h'
-      include 'include/hepevt.h'
+      include '../include/LesHouches.h'
+      include '../include/hepevt.h'
+      include 'PhysPars.h'
 c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
 c     &     JMOHEP,JDAHEP
 c      double precision phep,vhep
@@ -31,7 +32,9 @@ c     &     VHEP(4,NMXHEP)
       common/cWHCPRG/WHCPRG
       
       WHCPRG='PYTHIA'
-      
+c     set Higgs boson mass and width
+      call init_couplings
+
 c PARAMETERS
 c     mstj(41)=3 !No photon radiations off leptons
 c     mstp(61)=0 !No IS shower
@@ -158,7 +161,7 @@ c pythia routine to abort event
 
 c      subroutine pyabeg
 c      implicit none
-c      include 'include/hepevt.h'
+c      include '../include/hepevt.h'
 c      nevhep=0
 c      call abegin
 c      end
@@ -177,8 +180,8 @@ c      end
 
       subroutine pyanal
       implicit none
-      include 'include/LesHouches.h'
-      include 'include/hepevt.h'
+      include '../include/LesHouches.h'
+      include '../include/hepevt.h'
 c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
 c     &     JMOHEP,JDAHEP
 c      double precision phep,vhep

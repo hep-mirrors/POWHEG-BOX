@@ -87,7 +87,7 @@ HERWIG=main-HERWIG-lhef.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
-	random.o cernroutines.o opencount.o  $(SYSOBJ)
+	random.o cernroutines.o opencount.o init_couplings.o $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
 
@@ -96,7 +96,7 @@ PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
-	random.o cernroutines.o opencount.o  $(SYSOBJ)
+	random.o cernroutines.o opencount.o  init_couplings.o $(SYSOBJ)
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
 

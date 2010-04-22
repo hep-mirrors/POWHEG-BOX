@@ -55,7 +55,7 @@ MADGRAPH+=$(shell echo madgraph/real/*.f | sed -e 's/.f/.o/g;s/madgraph\/real\//
 MADGRAPH+=functions.o setparam.o $(LIBSMADGRAPH) 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-        real.o pwhg_analysis.o $(MADGRAPH) 
+        real.o pwhg_analysis.o ks_map.o $(MADGRAPH) 
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \

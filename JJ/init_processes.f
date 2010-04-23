@@ -10,8 +10,8 @@
      #  (i4,ii(4)),(i5,ii(5))
       logical debug
       parameter (debug=.true.)
-      integer j
-      logical condition
+      integer j,tmpfl(5)
+      logical condition,newcond
       logical flavequiv
       external flavequiv
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -55,6 +55,29 @@ c     index of the first LIGHT coloured parton in the final state
      $                 (i2.eq.i3).or.(i2.eq.i4))
      $                 .or.
      $             ((abs(i1).eq.abs(i2)).and.(abs(i3).eq.abs(i4))))
+                  tmpfl(1)=i1
+                  tmpfl(2)=i2
+                  tmpfl(3)=-i3
+                  tmpfl(4)=-i4
+                  do j=1,4
+                     if(tmpfl(j).ne.0) then
+                        do k=j+1,4
+                           if(tmpfl(k).eq.-tmpfl(j)) then
+                              tmpfl(k)=0
+                              tmpfl(j)=0
+                              goto 33
+                           endif
+                        enddo
+                     endif
+ 33                  continue
+                  enddo
+                  newcond=tmpfl(1).eq.0.and.tmpfl(2).eq.0.and.
+     1                    tmpfl(3).eq.0.and.tmpfl(4).eq.0
+                  if(newcond.eqv.condition) then
+                     continue
+                  else
+                     write(*,*) ' HAHAHHAH!'
+                  endif
                   if(condition) then
                      do j=1,flst_nborn
 c     Check that an inequivalent configuration is generated
@@ -97,6 +120,31 @@ c     Check that an inequivalent configuration is generated
      $                    ).or.(i1.eq.i5)) .or. (i2.eq.i3).or.(i2.eq.i4
      $                    ).or.(i2.eq.i5))).or.((i1+i2.eq.0).and.(i3+i4
      $                    +i5.eq.0)))
+                     tmpfl(1)=i1
+                     tmpfl(2)=i2
+                     tmpfl(3)=-i3
+                     tmpfl(4)=-i4
+                     tmpfl(5)=-i5
+                     do j=1,5
+                        if(tmpfl(j).ne.0) then
+                           do k=j+1,5
+                              if(tmpfl(k).eq.-tmpfl(j)) then
+                                 tmpfl(k)=0
+                                 tmpfl(j)=0
+                                 goto 34
+                              endif
+                           enddo
+                        endif
+ 34                     continue
+                     enddo
+                     newcond=tmpfl(1).eq.0.and.tmpfl(2).eq.0.and.
+     1                    tmpfl(3).eq.0.and.tmpfl(4).eq.0.and.
+     2                    tmpfl(5).eq.0
+                     if(newcond.eqv.condition) then
+                        continue
+                     else
+                        write(*,*) 'real HAHAHHAH!'
+                     endif
                      if(condition) then
                         do j=1,flst_nreal
 c     Check that an inequivalent configuration is generated

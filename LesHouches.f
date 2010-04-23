@@ -39,7 +39,7 @@ c it is an event with radiation
          coluborn(1)=icolup(1,em)
          coluborn(2)=icolup(2,em)
          if(em.le.2) then
-c setcolour_born works with all incoming (or all outgoing) flavours and colours;
+c setcolour_rad works with all incoming (or all outgoing) flavours and colours;
 c for ISR make everything outgoing:
 c thus in input change the sign of the emitter flavour, to make it outgoing
 c and conjugate its colour in output, to make it incoming.

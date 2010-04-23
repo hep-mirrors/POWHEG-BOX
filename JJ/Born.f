@@ -1022,21 +1022,23 @@ C THE FOLLOWIG FUNCTIONS ARE TAKEN FROM KUNSZT-SOPER PHYS.REV. D46,1 192
       end
 
 
-      subroutine borncolour_lh
+c Now in external file borncolour.f. 
+c Will be put back here when finished.
+c      subroutine borncolour_lh
 c Sets up the colour for the given flavour configuration
 c already filled in the Les Houches interface.
 c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
-      implicit none
-
-c     TO BE COMPLETED
-      
-      write(*,*) "borncolour_lh TO BE COMPLETED!!" 
-      call exit(1)
-
-      end
+c      implicit none
+c
+cc     TO BE COMPLETED
+c      
+c      write(*,*) "borncolour_lh TO BE COMPLETED!!" 
+c      call exit(1)
+c
+c      end
 
 
       subroutine resonances_lh

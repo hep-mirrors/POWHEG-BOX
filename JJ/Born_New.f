@@ -94,13 +94,7 @@ c First, identify the flavour structure
 C --------------------------------------------------------------------
 C     A-type: q + Q -> q + Q plus charge conjugations and crossings
 C --------------------------------------------------------------------
-      if((ks_label.eq.'A1a').or.(ks_label.eq.'A1b').or.
-     $   (ks_label.eq.'A1c').or.(ks_label.eq.'A1d').or.
-     $   (ks_label.eq.'A2a').or.(ks_label.eq.'A2b').or.
-     $   (ks_label.eq.'A2c').or.(ks_label.eq.'A2d').or.
-     $   (ks_label.eq.'A3a').or.(ks_label.eq.'A3b').or.
-     $   (ks_label.eq.'A3c').or.(ks_label.eq.'A3d')) then
-
+      if(ks_label(1:1).eq.'A') then
          spin_col_avg = 4.*ncol*ncol
 
          bornjk(ksmap(1),ksmap(2)) = (4.*pi*st_alpha)**2 * 
@@ -116,10 +110,7 @@ C --------------------------------------------------------------------
 C --------------------------------------------------------------------
 C     B-type: q + q -> q + q plus charge conjugations
 C --------------------------------------------------------------------
-      elseif((ks_label.eq.'Ba').or.(ks_label.eq.'Bb').or.
-     $       (ks_label.eq.'Bc').or.(ks_label.eq.'Bd').or.
-     $       (ks_label.eq.'Be').or.(ks_label.eq.'Bf')) then
-
+      elseif(ks_label(1:1).eq.'B') then
          spin_col_avg = 4.*ncol*ncol
 
          bornjk(ksmap(1),ksmap(2))=(4.*pi*st_alpha)**2 * 
@@ -148,12 +139,7 @@ C --------------------------------------------------------------------
 C --------------------------------------------------------------------
 C     C-type: q + qb -> g + g plus charge conjugations & crossings
 C --------------------------------------------------------------------
-      elseif((ks_label.eq.'C1a').or.(ks_label.eq.'C1b').or.
-     $       (ks_label.eq.'C2a').or.(ks_label.eq.'C2b').or.
-     $       (ks_label.eq.'C3a').or.(ks_label.eq.'C3b').or.
-     $       (ks_label.eq.'C5a').or.(ks_label.eq.'C5b').or.
-     $       (ks_label.eq.'C6a').or.(ks_label.eq.'C6b').or.
-     $       (ks_label.eq.'C4')) then
+      elseif(ks_label(1:1).eq.'C') then
          if((ks_label.eq.'C1a').or.(ks_label.eq.'C1b')) then
             spin_col_avg =  4.*ncol*ncol
          elseif((ks_label.eq.'C2a').or.(ks_label.eq.'C2b').or.
@@ -211,7 +197,9 @@ C --------------------------------------------------------------------
 
 
 
-C - Bkj=Bjk
+C --------------------------------------------------------------------
+C     Symmetrize and normalise bornjk matrix
+C --------------------------------------------------------------------
       do j=1,nlegborn
 C - bornjk(j,j) is not used in soft
          bornjk(j,j)=0d0
@@ -220,7 +208,7 @@ C - bornjk(j,j) is not used in soft
          enddo
       enddo
 
-c normalize: kunszt and Soper have an extra 2, see eq A8 and A11 in
+c Normalize: Kunszt and Soper have an extra 2, see eq A8 and A11 in
 c PRD46-192
       if(bflav(3).eq.bflav(4)) then
          symfac=0.5d0
@@ -229,7 +217,6 @@ c PRD46-192
       endif
       do j=1,nlegborn
          do k=1,nlegborn
-c     bornjk(j,j) is not used in soft
             bornjk(j,k)=bornjk(j,k)/2*symfac
          enddo
       enddo

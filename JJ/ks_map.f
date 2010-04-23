@@ -287,7 +287,8 @@ C     ==>   q(p(mu,1)) + q(p(mu,2)) + qb(-p(mu,3)) + qb(-p(mu,4)) -> 0
             ks_map(2) = 2
             ks_map(3) = 3
             ks_map(4) = 4
-         elseif((vflav(1).gt.0).and.(vflav(2).lt.0)) then
+         elseif((vflav(1).gt.0).and.(vflav(2).lt.0).and.
+     $          (vflav(3).gt.0).and.(vflav(4).lt.0)) then
 C           q(p(mu,1)) + qb(p(mu,2)) -> q(p(mu,3)) + qb(p(mu,4))
 C     ==>   q(p(mu,1)) + q(-p(mu,4)) + qb(p(mu,2)) + qb(-p(mu,3)) -> 0
             mg_label  = 'uux_uux'
@@ -296,20 +297,41 @@ C     ==>   q(p(mu,1)) + q(-p(mu,4)) + qb(p(mu,2)) + qb(-p(mu,3)) -> 0
             ks_map(2) = 4
             ks_map(3) = 2
             ks_map(4) = 3
-         elseif((vflav(1).lt.0).and.(vflav(2).gt.0)) then
+         elseif((vflav(1).lt.0).and.(vflav(2).gt.0).and.
+     $          (vflav(3).lt.0).and.(vflav(4).gt.0)) then
+C           qb(p(mu,1)) + q(p(mu,2)) -> qb(p(mu,3)) + q(p(mu,4))
+C     ==>   q(p(mu,2)) + q(-p(mu,3)) + qb(p(mu,1)) + qb(-p(mu,4)) -> 0
+            mg_label  = 'NOT_IN_MG!'
+            ks_label  = 'Bc'
+            ks_map(1) = 2
+            ks_map(2) = 3
+            ks_map(3) = 1
+            ks_map(4) = 4
+         elseif((vflav(1).lt.0).and.(vflav(2).gt.0).and.
+     $          (vflav(3).gt.0).and.(vflav(4).lt.0)) then
 C           qb(p(mu,1)) + q(p(mu,2)) -> q(p(mu,3)) + qb(p(mu,4))
 C     ==>   q(p(mu,2)) + q(-p(mu,4)) + qb(p(mu,1)) + qb(-p(mu,3)) -> 0
             mg_label  = 'uxu_uux'
-            ks_label  = 'Bc'
+            ks_label  = 'Bd'
             ks_map(1) = 2
             ks_map(2) = 4
             ks_map(3) = 1
             ks_map(4) = 3
+         elseif((vflav(1).gt.0).and.(vflav(2).lt.0).and.
+     $          (vflav(3).lt.0).and.(vflav(4).gt.0)) then
+C           q(p(mu,1)) + qb(p(mu,2)) -> qb(p(mu,3)) + q(p(mu,4))
+C     ==>   q(p(mu,1)) + q(-p(mu,3)) + qb(p(mu,2)) + qb(-p(mu,4)) -> 0
+            mg_label  = 'NOT_IN_MG!'
+            ks_label  = 'Be'
+            ks_map(1) = 1
+            ks_map(2) = 3
+            ks_map(3) = 2
+            ks_map(4) = 4
          elseif((vflav(1).lt.0).and.(vflav(2).lt.0)) then
 C           qb(p(mu,1)) + qb(p(mu,2)) -> qb(p(mu,3)) + qb(p(mu,4))
 C     ==>   q(-p(mu,3)) + q(-p(mu,4)) + qb(p(mu,1)) + qb(p(mu,2)) -> 0
             mg_label  = 'uxux_uxux'
-            ks_label  = 'Bd'
+            ks_label  = 'Bf'
             ks_map(1) = 3
             ks_map(2) = 4
             ks_map(3) = 1

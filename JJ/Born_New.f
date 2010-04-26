@@ -23,6 +23,9 @@ C     to avoid integer by integer division
       real *8 VC
       parameter(VC=ncol**2-1)
 
+C     Abbreviation of (4.*pi*st_alpha)**2
+      real*8 gs2
+
       real * 8 gtens(0:3,0:3),ap
       data gtens/1d0, 0d0, 0d0, 0d0,
      #           0d0,-1d0, 0d0, 0d0,
@@ -30,9 +33,9 @@ C     to avoid integer by integer division
      #           0d0, 0d0, 0d0,-1d0/
       save gtens
 
-      real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      real *8 Hat,Hau,HB,HCs,HCt,HCu,HDs,HDt,HDu,dotp
-      external Hat,Hau,HB,HCs,HCt,HCu,HDs,HDt,HDu,dotp
+      real *8  HAt  ,HAu  ,HB  ,HCs  ,HCt  ,HCu
+      real *8  HAtFn,HAuFn,HBFn,HCsFn,HCtFn,HCuFn,HDsFn,HDtFn,HDuFn,dotp
+      external HAtFn,HAuFn,HBFn,HCsFn,HCtFn,HCuFn,HDsFn,HDtFn,HDuFn,dotp
       real * 8 symfac
 
 c     The process class according to Kunszt Soper
@@ -46,23 +49,22 @@ c     Kunszt-Soper momenta analogous to POWHEG-BOX.
 c     Variables to hold spin / colour average factor (& overall +/- sign)
       real*8 spin_col_avg
 
+C     Setting the QCD coupling squared.
+      gs2 = (4.*pi*st_alpha)**2
+
 c     Get the Kunszt Soper and Madgraph labels as well as the map
 c     to Kunszt Soper conventions:
       call ks_2to2_map(bflav,ks_label,mg_label,ksmap)  
 c     Assign Kunszt Soper momenta
       do mu=0,3
-         p(mu,3)=-p(mu,3)  ! temprarily flip the outgoing momenta
-         p(mu,4)=-p(mu,4)  !
-      enddo
-      do mu=0,3
-         k1(mu)=p(mu,ksmap(1))  ! setting the Kunszt Soper momenta using
-         k2(mu)=p(mu,ksmap(2))  ! the Kunszt Soper map.
-         k3(mu)=p(mu,ksmap(3))  ! 
-         k4(mu)=p(mu,ksmap(4))  !
-      enddo
-      do mu=0,3
-         p(mu,3)=-p(mu,3)  ! restore the powheg outgoing momenta
-         p(mu,4)=-p(mu,4)  !
+        p(mu,3)=-p(mu,3)      ! temprarily flip the outgoing momenta
+        p(mu,4)=-p(mu,4)      !
+        k1(mu)=p(mu,ksmap(1)) ! setting the Kunszt Soper momenta using
+        k2(mu)=p(mu,ksmap(2)) ! the Kunszt Soper map.
+        k3(mu)=p(mu,ksmap(3)) ! 
+        k4(mu)=p(mu,ksmap(4)) !
+        p(mu,3)=-p(mu,3)      ! restore the powheg outgoing momenta
+        p(mu,4)=-p(mu,4)      !
       enddo      
    
 c     set madgraph parameters that can change on an event-by-event basis
@@ -97,12 +99,12 @@ C --------------------------------------------------------------------
       if(ks_label(1:1).eq.'A') then
          spin_col_avg = 4.*ncol*ncol
 
-         bornjk(ksmap(1),ksmap(2)) = (4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc*HAt(k1,k2,k3,k4))         / spin_col_avg
-         bornjk(ksmap(1),ksmap(3)) = (4.*pi*st_alpha)**2 * 
-     $        (-VC/nc*HAt(k1,k2,k3,k4))           / spin_col_avg
-         bornjk(ksmap(1),ksmap(4)) = (4.*pi*st_alpha)**2 * 
-     $        (VC/nc*(nc**2-2)*HAt(k1,k2,k3,k4))  / spin_col_avg
+         HAt = HAtFn(k1,k2,k3,k4)
+
+         bornjk(ksmap(1),ksmap(2)) = 2*VC/nc*HAt
+         bornjk(ksmap(1),ksmap(3)) =  -VC/nc*HAt
+         bornjk(ksmap(1),ksmap(4)) =   VC/nc*(nc**2-2)*HAt
+
          bornjk(ksmap(3),ksmap(4)) = bornjk(ksmap(1),ksmap(2))
          bornjk(ksmap(2),ksmap(4)) = bornjk(ksmap(1),ksmap(3))
          bornjk(ksmap(2),ksmap(3)) = bornjk(ksmap(1),ksmap(4))
@@ -113,28 +115,20 @@ C --------------------------------------------------------------------
       elseif(ks_label(1:1).eq.'B') then
          spin_col_avg = 4.*ncol*ncol
 
-         bornjk(ksmap(1),ksmap(2))=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc/nc) *
-     $   (-HB(k1,k2,k3,k4)+nc*(HAt(k1,k2,k3,k4)+HAu(k1,k2,k3,k4))
-     $   -nc**2*HB(k1,k2,k3,k4))
-     $   /spin_col_avg
+         HB  = HBFn(k1,k2,k3,k4)
+         HAt = HAtFn(k1,k2,k3,k4)
+         HAu = HAuFn(k1,k2,k3,k4)
 
-         bornjk(ksmap(1),ksmap(3))=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc/nc) *
-     $   (HB(k1,k2,k3,k4)-nc*(HAu(k1,k2,k3,k4)+0.5*HAt(k1,k2,k3,k4))
-     $   +0.5*nc**3*HAu(k1,k2,k3,k4))
-     $   /spin_col_avg
+         bornjk(ksmap(1),ksmap(2)) = 2*VC/nc/nc *
+     $                               (-HB+nc*(HAt+HAu)-nc**2*HB)
+         bornjk(ksmap(1),ksmap(3)) = 2*VC/nc/nc *
+     $                               (HB-nc*(HAu+0.5*HAt)+0.5*nc**3*HAu)
+         bornjk(ksmap(1),ksmap(4)) = 2*VC/nc/nc *
+     $                               (HB-nc*(HAt+0.5*HAu)+0.5*nc**3*HAt)
 
-
-         bornjk(ksmap(1),ksmap(4))=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC/nc/nc) *
-     $   (HB(k1,k2,k3,k4)-nc*(HAt(k1,k2,k3,k4)+0.5*HAu(k1,k2,k3,k4))
-     $   +0.5*nc**3*HAt(k1,k2,k3,k4))
-     $   /spin_col_avg
-
-         bornjk(ksmap(3),ksmap(4))=bornjk(ksmap(1),ksmap(2))
-         bornjk(ksmap(2),ksmap(4))=bornjk(ksmap(1),ksmap(3))
-         bornjk(ksmap(2),ksmap(3))=bornjk(ksmap(1),ksmap(4))
+         bornjk(ksmap(3),ksmap(4)) = bornjk(ksmap(1),ksmap(2))
+         bornjk(ksmap(2),ksmap(4)) = bornjk(ksmap(1),ksmap(3))
+         bornjk(ksmap(2),ksmap(3)) = bornjk(ksmap(1),ksmap(4))
 
 C --------------------------------------------------------------------
 C     C-type: q + qb -> g + g plus charge conjugations & crossings
@@ -151,44 +145,31 @@ C --------------------------------------------------------------------
             spin_col_avg =  4.*VC*VC
          endif
 
-         bornjk(ksmap(1),ksmap(2))=(4.*pi*st_alpha)**2 * 
-     $        ( VC) *
-     $   (-(HCt(k1,k2,k3,k4)+HCu(k1,k2,k3,k4)-HCs(k1,k2,k3,k4))
-     $   +1./nc/nc * HCs(k1,k2,k3,k4))
-     $   / spin_col_avg
+         HCs = HCsFn(k1,k2,k3,k4)
+         HCt = HCtFn(k1,k2,k3,k4)
+         HCu = HCuFn(k1,k2,k3,k4)
 
-         bornjk(ksmap(1),ksmap(3))=(4.*pi*st_alpha)**2 * 
-     $        ( VC) *
-     $   (nc**2 *HCu(k1,k2,k3,k4) - HCs(k1,k2,k3,k4))
-     $   / spin_col_avg
+         bornjk(ksmap(1),ksmap(2)) = VC*(-(HCt+HCu-HCs) + 1./nc/nc*HCs )
+         bornjk(ksmap(1),ksmap(3)) = VC*(  nc**2*HCu-HCs )
+         bornjk(ksmap(1),ksmap(4)) = VC*(  nc**2*HCt-HCs )
 
-         bornjk(ksmap(1),ksmap(4))=(4.*pi*st_alpha)**2 * 
-     $        ( VC) *
-     $   (nc**2 *HCt(k1,k2,k3,k4) - HCs(k1,k2,k3,k4))
-     $   / spin_col_avg
-
-         bornjk(ksmap(2),ksmap(4))=bornjk(ksmap(1),ksmap(3))
-         bornjk(ksmap(2),ksmap(3))=bornjk(ksmap(1),ksmap(4))
-         bornjk(ksmap(3),ksmap(4))=(4.*pi*st_alpha)**2 * 
-     $        ( VC*nc**2) *
-     $   (HCt(k1,k2,k3,k4) + HCu(k1,k2,k3,k4))
-     $   / spin_col_avg
+         bornjk(ksmap(2),ksmap(4)) = bornjk(ksmap(1),ksmap(3))
+         bornjk(ksmap(2),ksmap(3)) = bornjk(ksmap(1),ksmap(4))
+         bornjk(ksmap(3),ksmap(4)) = VC*nc**2 * (HCt+HCu)
 
 C --------------------------------------------------------------------
 C     D-type: g + g -> g + g
 C --------------------------------------------------------------------
       elseif(ks_label.eq.'D') then
          spin_col_avg =  4.*VC*VC
-         bornjk(1,2)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC*nc**3*HDs(k1,k2,k3,k4)) / spin_col_avg
-         bornjk(1,3)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC*nc**3*HDt(k1,k2,k3,k4)) / spin_col_avg
-         bornjk(1,4)=(4.*pi*st_alpha)**2 * 
-     $        ( 2*VC*nc**3*HDu(k1,k2,k3,k4)) / spin_col_avg
 
-         bornjk(2,4)=bornjk(1,3)
-         bornjk(2,3)=bornjk(1,4)
-         bornjk(3,4)=bornjk(1,2)        
+         bornjk(1,2) = 2*VC*nc**3*HDsFn(k1,k2,k3,k4)
+         bornjk(1,3) = 2*VC*nc**3*HDtFn(k1,k2,k3,k4)
+         bornjk(1,4) = 2*VC*nc**3*HDuFn(k1,k2,k3,k4)
+
+         bornjk(2,4) = bornjk(1,3)
+         bornjk(2,3) = bornjk(1,4)
+         bornjk(3,4) = bornjk(1,2)
 
       else
          write(*,*) 'setborn: could not identify flavour list!'
@@ -217,7 +198,7 @@ c PRD46-192
       endif
       do j=1,nlegborn
          do k=1,nlegborn
-            bornjk(j,k)=bornjk(j,k)/2*symfac
+            bornjk(j,k)=bornjk(j,k)/2*symfac*gs2/spin_col_avg
          enddo
       enddo
 
@@ -251,8 +232,8 @@ c find opposite leg
 
 C - The following functions are taken from Kunszt & Soper Phys.Rev.D46,1 192 
 
-      function HAt(p1,p2,p3,p4)
-      real *8 Hat
+      function HAtFn(p1,p2,p3,p4)
+      real *8 HAtFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
       real *8 dotp
@@ -260,35 +241,20 @@ C - The following functions are taken from Kunszt & Soper Phys.Rev.D46,1 192
       s=2.*dotp(p1,p2)
       t=2.*dotp(p1,p3)
       u=2.*dotp(p1,p4)
-      HAt=2.*(s**2+u**2)/t**2
+      HAtFn=2.*(s**2+u**2)/t**2
       return
       end
 
-      function HAu(p1,p2,p3,p4)
-      real *8 HAu
-      real *8 HAt
+      function HAuFn(p1,p2,p3,p4)
+      real *8 HAuFn,HAtFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      HAu=HAt(p1,p2,p4,p3)
+      HAuFn=HAtFn(p1,p2,p4,p3)
       return
       end
 
 
-      function HB(p1,p2,p3,p4)
-      real *8 HB
-      real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      real *8 s,t,u
-      real *8 dotp
-      external dotp
-      s=2.*dotp(p1,p2)
-      t=2.*dotp(p1,p3)
-      u=2.*dotp(p1,p4)
-      HB=2.*s**2/t/u
-      return
-      end
-
-
-      function HCt(p1,p2,p3,p4)
-      real *8 HCt
+      function HBFn(p1,p2,p3,p4)
+      real *8 HBFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
       real *8 dotp
@@ -296,20 +262,13 @@ C - The following functions are taken from Kunszt & Soper Phys.Rev.D46,1 192
       s=2.*dotp(p1,p2)
       t=2.*dotp(p1,p3)
       u=2.*dotp(p1,p4)
-      HCt=(2.*(t**2+u**2)/s**2 )*t/u
+      HBFn=2.*s**2/t/u
       return
       end
 
-      function HCu(p1,p2,p3,p4)
-      real *8 HCu
-      real *8 HCt
-      real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      HCu=HCt(p1,p2,p4,p3)
-      return
-      end
 
-      function HCs(p1,p2,p3,p4)
-      real *8 HCs
+      function HCtFn(p1,p2,p3,p4)
+      real *8 HCtFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
       real *8 dotp
@@ -317,13 +276,19 @@ C - The following functions are taken from Kunszt & Soper Phys.Rev.D46,1 192
       s=2.*dotp(p1,p2)
       t=2.*dotp(p1,p3)
       u=2.*dotp(p1,p4)
-      HCs=2.*(t**2+u**2)/t/u
+      HCtFn=(2.*(t**2+u**2)/s**2 )*t/u
       return
       end
 
+      function HCuFn(p1,p2,p3,p4)
+      real *8 HCuFn,HCtFn
+      real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
+      HCuFn=HCtFn(p1,p2,p4,p3)
+      return
+      end
 
-      function HDs(p1,p2,p3,p4)
-      real *8 HDs
+      function HCsFn(p1,p2,p3,p4)
+      real *8 HCsFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
       real *8 dotp
@@ -331,21 +296,35 @@ C - The following functions are taken from Kunszt & Soper Phys.Rev.D46,1 192
       s=2.*dotp(p1,p2)
       t=2.*dotp(p1,p3)
       u=2.*dotp(p1,p4)
-      HDs=2.*(t**2+u**2) *(s**4+t**4+u**4)/(s*t*u)**2
+      HCsFn=2.*(t**2+u**2)/t/u
       return
       end
 
-      function HDt(p1,p2,p3,p4)
-      real *8 HDt,HDs
+
+      function HDsFn(p1,p2,p3,p4)
+      real *8 HDsFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      HDt=HDs(p1,p3,p2,p4)
+      real *8 s,t,u
+      real *8 dotp
+      external dotp
+      s=2.*dotp(p1,p2)
+      t=2.*dotp(p1,p3)
+      u=2.*dotp(p1,p4)
+      HDsFn=2.*(t**2+u**2) *(s**4+t**4+u**4)/(s*t*u)**2
       return
       end
 
-      function HDu(p1,p2,p3,p4)
-      real *8 HDu,HDs
+      function HDtFn(p1,p2,p3,p4)
+      real *8 HDtFn,HDsFn
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      HDu=HDs(p1,p4,p2,p3)
+      HDtFn=HDsFn(p1,p3,p2,p4)
+      return
+      end
+
+      function HDuFn(p1,p2,p3,p4)
+      real *8 HDuFn,HDsFn
+      real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
+      HDuFn=HDsFn(p1,p4,p2,p3)
       return
       end
 

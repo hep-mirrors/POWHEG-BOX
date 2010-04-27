@@ -1,483 +1,139 @@
-c     returns 2 Re(M_B * M_V)/(as/(2pi)), 
-c     where M_B is the Born amplitude and 
-c     M_V is the finite part of the virtual amplitude
-c     The as/(2pi) factor is attached at a later point
+C --------------------------------------------------------------------
+      SUBROUTINE KS_2TO2_MAP(VFLAV,nleg,KS_LABEL,KS_MAP)
+c
+      implicit none
+      include 'nlegborn.h'
+      include 'PhysPars.h'
+      character * 1 ks_label
+      integer nleg,vflav(nleg),ks_map(nleg)
+      integer v(nlegreal),vv(nlegreal)
+      integer j,itmp
+      do j=1,nleg
+         if(j.gt.2) then
+            v(j)= - vflav(j)
+         else
+            v(j)=vflav(j)
+         endif
+c set gluon smaller than any flavour
+         if(v(j).eq.0) v(j)=-21
+      enddo
+c Find permutation to put them in descending order:
+c gluons last, flavours in decreasing order
+c CERNLIB routine:
+      call sortzv(v,ks_map,nleg,-1,1,0)
+      do j=1,nleg
+         vv(j)=v(ks_map(j))
+      enddo
+c classify processes
+      if(vv(1).eq.-21) then
+         ks_label='D'
+      elseif(vv(3).eq.-21) then
+         ks_label='C'
+      elseif(vv(1).eq.vv(2)) then
+         ks_label='B'
+      else
+         ks_label='A'
+c Kunsz Soper have last two particles exchanged in this case (i.e. q Q -> -q -Q
+c rather than q Q -> -Q -q (if q>Q)
+         itmp=vv(3)
+         vv(3)=vv(4)
+         vv(4)=itmp
+         itmp=ks_map(3)
+         ks_map(3)=ks_map(4)
+         ks_map(4)=itmp
+      endif
+      end
+
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'
       include 'PhysPars.h'
-      integer nleg
-      parameter (nleg=nlegborn)
-      real * 8 p(0:3,nleg)
-      integer vflav(nleg)
-      real * 8 virtual
+
+      integer nlegs
+      parameter (nlegs=nlegborn)
+      real* 8 p(0:3,nlegs)
+      integer vflav(nlegs)
+      real* 8 virtual
       integer mu
-      real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-      real *8 psitilde6ns_a,psitilde6ns_b,psitilde6ns_c,psitilde6ns_d
-      external psitilde6ns_a,psitilde6ns_b,psitilde6ns_c,psitilde6ns_d
-C     define a real *8 value for nc in order
+
+C     Define a real *8 value for nc in order
 C     to avoid integer by integer division
-      real *8 ncol
+      real*8 ncol
       parameter (ncol=nc)
-      real *8 VC
+      real*8 VC
       parameter(VC=ncol**2-1)
 
-c     Virtual contributions;
-c     Rules from Kunszt-Soper.
-c     First, identify the flavour structure
+C     Abbreviation of (4.*pi*st_alpha)**2
+      real*8 gs4
 
-c     A-type, qq'->qq'
-      if(
-     $     (vflav(1)*vflav(2)*vflav(3).ne.0).and.
-     $     (abs(vflav(1)).ne.abs(vflav(2))).and.
-     $     (vflav(1).eq.vflav(3)).and.
-     $     (vflav(2).eq.vflav(4))) then
+C     Kunszt and Soper's virtual functions (eqs. B17-B20).
+      real*8   psitilde6ns_a,psitilde6ns_b,psitilde6ns_c,psitilde6ns_d
+      external psitilde6ns_a,psitilde6ns_b,psitilde6ns_c,psitilde6ns_d
 
-         if((vflav(1).gt.0).and.(vflav(2).gt.0)) then
-c     write(*,*) 'A1a, qqp->qqp ', (qcd_name(vflav(ileg)),ileg=1,4)
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=p(mu,2)
-               p3(mu)=-p(mu,3)
-               p4(mu)=-p(mu,4)
-            enddo
-            
-         elseif((vflav(1).lt.0).and.(vflav(2).gt.0)) then
-c     write(*,*) 'A1b, qbarqp->qbarqp ', (qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     1 -> 3
-c     3 -> 1
-            do mu=0,3
-               p1(mu)=-p(mu,3)
-               p2(mu)=p(mu,2)
-               p3(mu)=p(mu,1)
-               p4(mu)=-p(mu,4)
-            enddo
+c     The process class according to Kunszt Soper
+      character*1  ks_label
+c     The map from POWHEG-BOX to Kunszt-Soper particles and momenta.
+      integer ksmap(4),k
+c     Kunszt-Soper momenta analogous to POWHEG-BOX.
+      real*8  k1(0:3),k2(0:3),k3(0:3),k4(0:3)
 
-           
-         elseif((vflav(1).gt.0).and.(vflav(2).lt.0)) then
-c     write(*,*) 'A1c, qqbarp->qqbarp ', (qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     2 -> 4
-c     4 -> 2
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=-p(mu,4)
-               p3(mu)=-p(mu,3)
-               p4(mu)=p(mu,2)
-            enddo
-            
-         elseif((vflav(1).lt.0).and.(vflav(2).lt.0)) then
-c     write(*,*) 'A1d, qbar qbarp->qbar qbarp ', (qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     1 -> 3
-c     2 -> 4
-c     3 -> 1
-c     4 -> 2
-            do mu=0,3
-               p1(mu)=-p(mu,3)
-               p2(mu)=-p(mu,4)
-               p3(mu)=p(mu,1)
-               p4(mu)=p(mu,2)
-            enddo
-            
-         else
-            write(*,*) 'Error in virtual.f, A1-type virtual'
-            call exit(1)
-         endif
-         
-C     At this point  the function
-C     psitilde6ns_a(p1,p2,p3,p4) can be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-            virtual= (4.*pi*st_alpha)**2 * psitilde6ns_a(p1,p2,p3,p4)
-     $           /4./ncol/ncol         
-         
+C     Setting the QCD coupling squared.
+      gs4 = (4.*pi*st_alpha)**2
 
-c     A-type, qq'->q'q
-      elseif(
-     $        (vflav(1)*vflav(2)*vflav(3).ne.0).and.
-     $        (abs(vflav(1)).ne.abs(vflav(2))).and.
-     $        (vflav(1).eq.vflav(4)).and.
-     $        (vflav(2).eq.vflav(3))) then
-         
-         
-         if((vflav(1).gt.0).and.(vflav(3).gt.0)) then
-c     write(*,*) 'A2a, qqp->qpq ', (qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     3 -> 4
-c     4 -> 3
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=p(mu,2)
-               p3(mu)=-p(mu,4)
-               p4(mu)=-p(mu,3)
-            enddo
-            
-
-            
-         elseif((vflav(1).gt.0).and.(vflav(3).lt.0)) then
-c     write(*,*) 'A2b, q qbarp->qbarp q ', 
-c     $           (qcd_name(vflav(ileg)),ileg=1,4)
-c     As before, but exchanging 2 with 3 ONLY in the Bjk, AND NOT in the
-c     momenta assignment.
-c     !ER: non ho capito bene perche', ma cosi funziona.
-c     Permutando dalla fondamentale, NON VA.
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=p(mu,2)
-               p3(mu)=-p(mu,4)
-               p4(mu)=-p(mu,3)
-            enddo 
-            
-
-            
-         elseif((vflav(1).lt.0).and.(vflav(3).lt.0)) then
-c     write(*,*) 'A2b, qbar qbarp->qbarp qbar ', 
-c     $           (qcd_name(vflav(ileg)),ileg=1,4)
-c     As before, but exchanging 1 with 4 ONLY in the Bjk, AND NOT in the
-c     momenta assignment.
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=p(mu,2)
-               p3(mu)=-p(mu,4)
-               p4(mu)=-p(mu,3)
-            enddo    
-
-            
-         else
-            write(*,*) 'Error in virtual.f, A2-type virtual'
-            call exit(1)
-         endif
-
-C     At this point  the function
-C     psitilde6ns_a(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_a(p1,p2,p3,p4)
-     $        /4./ncol/ncol         
-
-
-c     A-type, qqbar->q'qbar'
-      elseif(
-     $        (vflav(1)*vflav(2)*vflav(3).ne.0).and.
-     $        (vflav(1).eq.-vflav(2)).and.
-     $        (vflav(3).eq.-vflav(4)).and.
-     $        (abs(vflav(1)).ne.abs(vflav(3)))) then
-
-         if((vflav(1).gt.0).and.(vflav(3).gt.0)) then
-c     write(*,*) 'A3a, qqbar->qp qpbar ',(qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     4 -> 2
-c     3 -> 4
-c     2 -> 3
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=-p(mu,4)
-               p3(mu)=p(mu,2)
-               p4(mu)=-p(mu,3)
-            enddo         
-
-            
-         elseif((vflav(1).gt.0).and.(vflav(3).lt.0)) then
-c     write(*,*) 'A3b, qqbar->qpbar qp ',(qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     3 -> 2
-c     2 -> 3
-            do mu=0,3
-               p1(mu)=p(mu,1)
-               p2(mu)=-p(mu,3)
-               p3(mu)=p(mu,2)
-               p4(mu)=-p(mu,4)
-            enddo
-
-
-            
-         elseif((vflav(1).lt.0).and.(vflav(3).gt.0)) then
-c     write(*,*) 'A3c, qbar q->qp qpbar ',(qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order:
-c     2 -> 1
-c     4 -> 2
-c     1 -> 3
-c     3 -> 4
-            do mu=0,3
-               p1(mu)=p(mu,2)
-               p2(mu)=-p(mu,4)
-               p3(mu)=p(mu,1)
-               p4(mu)=-p(mu,3)
-            enddo
-
-            
-         elseif((vflav(1).lt.0).and.(vflav(3).lt.0)) then
-c     write(*,*) 'A3d, qbar q->qpbar qp ',
-c     $           (qcd_name(vflav(ileg)),ileg=1,4)
-c     As before, but exchanging 3 with 4 ONLY in the Bjk, AND NOT in the
-c     momenta assignment.
-c     !ER: non ho capito bene perche', ma cosi funziona.
-c     Permutando dalla fondamentale, NON VA.
-            do mu=0,3
-               p1(mu)=p(mu,2)
-               p2(mu)=-p(mu,4)
-               p3(mu)=p(mu,1)
-               p4(mu)=-p(mu,3)
-            enddo
-            
-         else
-            write(*,*) 'Error in virtual.f, A3-type virtual'
-            call exit(1)
-         endif
-
-C     At this point  the function
-C     psitilde6ns_a(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_a(p1,p2,p3,p4)
-     $        /4./ncol/ncol         
-         
-c     B-type, qq->qq
-      elseif((vflav(1).eq.vflav(2)).and.
-     $        (vflav(1).eq.vflav(3)).and.
-     $        (vflav(1).eq.vflav(4)).and.
-     $        (vflav(1).ne.0)) then
-c     write(*,*) 'B1a, qq->qq ',(qcd_name(vflav(ileg)),ileg=1,4)
-         
-c     no exchange wrt fundamental order:
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=p(mu,2)
-            p3(mu)=-p(mu,3)
-            p4(mu)=-p(mu,4)
-         enddo
-         
-C     At this point  the function
-C     psitilde6ns_b(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_b(p1,p2,p3,p4)
-     $        /4./ncol/ncol               
-c     B-type, qqbar->qqbar
-      elseif((vflav(1).eq.-vflav(2)).and.
-     $        (vflav(1).eq.vflav(3)).and.
-     $        (vflav(1).eq.-vflav(4)).and.
-     $        (vflav(1).ne.0)) then
-c     write(*,*) 'B2, qqbar->qqbar ',(qcd_name(vflav(ileg)),ileg=1,4)
-
-c     exchange wrt fundamental order:
-c     2 -> 4
-c     4 -> 2
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=-p(mu,4)
-            p3(mu)=-p(mu,3)
-            p4(mu)=p(mu,2)
-         enddo
-
-C     At this point  the function
-C     psitilde6ns_b(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_b(p1,p2,p3,p4)
-     $        /4./ncol/ncol       
-
-c     B-type, qqbar->qbar q
-      elseif((vflav(1).eq.-vflav(2)).and.
-     $        (vflav(1).eq.-vflav(3)).and.
-     $        (vflav(1).eq.vflav(4)).and.
-     $        (vflav(1).ne.0)) then
-c     write(*,*) 'B3, qqbar->qbar q ',(qcd_name(vflav(ileg)),ileg=1,4)
-
-
-c     exchange wrt fundamental order:
-c     2 -> 3
-c     3 -> 2
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=-p(mu,3)
-            p3(mu)=p(mu,2)
-            p4(mu)=-p(mu,4)
-         enddo
-
-C     At this point  the function
-C     psitilde6ns_b(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_b(p1,p2,p3,p4)
-     $        /4./ncol/ncol       
-
-c     C-type, qqbar->gg
-      elseif((vflav(1).eq.-vflav(2)).and.
-     $        (vflav(3)*vflav(4).eq.0).and.
-     $        (vflav(1).ne.0)) then
-c     write(*,*) 'C1, qqbar->gg ', (qcd_name(vflav(ileg)),ileg=1,4)
-c     no exchange wrt fundamental order:
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=p(mu,2)
-            p3(mu)=-p(mu,3)
-            p4(mu)=-p(mu,4)
-         enddo
-
-C     At this point  the function
-C     psitilde6ns_c(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_c(p1,p2,p3,p4)         
-     $        /4./ncol/ncol       
-
-c     C-type, qg->qg
-      elseif((vflav(1).ne.0).and.
-     $        (vflav(2).eq.0).and.
-     $        (vflav(3).ne.0).and.
-     $        (vflav(4).eq.0)) then
-c     write(*,*) 'C2, qg->qg ', (qcd_name(vflav(ileg)),ileg=1,4)
-
-c     exchange wrt fundamental order (qqb-gg):
-c     3 -> 2
-c     2 -> 3
-c     Here also a - sign (a gluon is crossed) and
-c     a change in the color-spin average is needed
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=-p(mu,3)
-            p3(mu)=p(mu,2)
-            p4(mu)=-p(mu,4)
-         enddo
-C     At this point  the function
-C     psitilde6ns_c(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_c(p1,p2,p3,p4)         
-     $        /4./ncol/VC 
-
-c     C-type, qg->gq
-      elseif((vflav(1).ne.0).and.
-     $        (vflav(2).eq.0).and.
-     $        (vflav(3).eq.0).and.
-     $        (vflav(4).ne.0)) then
-c     write(*,*) 'C3, qg->gq ', (qcd_name(vflav(ileg)),ileg=1,4)
-
-c     exchange wrt fundamental order (qqb-gg):
-c     4 -> 2
-c     2 -> 4
-c     Here also a - sign (a gluon is crossed) and
-c     a change in the color-spin average is needed
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=-p(mu,4)
-            p3(mu)=-p(mu,3)
-            p4(mu)=p(mu,2)
-         enddo
-C     At this point  the function
-C     psitilde6ns_c(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_c(p1,p2,p3,p4)         
-     $        /4./ncol/VC      
-
-c     C-type, gg->qqbar
-      elseif((vflav(3).eq.-vflav(4)).and.
-     $        (vflav(1)*vflav(2).eq.0).and.
-     $        (vflav(3).ne.0)) then
-c     write(*,*) 'C4, gg->qqbar ', (qcd_name(vflav(ileg)),ileg=1,4)
-
-c     exchange wrt fundamental order (qqb-gg):
-c     4 -> 1
-c     3 -> 2
-c     1 -> 3
-c     2 -> 4
-c     Here a change in the color-spin average is needed
-
-         do mu=0,3
-            p1(mu)=-p(mu,4)
-            p2(mu)=-p(mu,3)
-            p3(mu)=p(mu,1)
-            p4(mu)=p(mu,2)
-         enddo
-C     At this point  the function
-C     psitilde6ns_c(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_c(p1,p2,p3,p4)         
-     $        /4./VC/VC
-
-c     C-type, gqbar->qbarg
-      elseif((vflav(1).eq.0).and.
-     $        (vflav(2).ne.0).and.
-     $        (vflav(3).ne.0).and.
-     $        (vflav(4).eq.0)) then
-c     write(*,*) 'C5, gqbar->qbarg ',(qcd_name(vflav(ileg)),ileg=1,4)
-
-c     exchange wrt fundamental order (qqb-gg):
-c     1 -> 3
-c     3 -> 1
-c     Here also a - sign (a gluon is crossed) and
-c     a change in the color-spin average is needed
-         do mu=0,3
-            p1(mu)=-p(mu,3)
-            p2(mu)=p(mu,2)
-            p3(mu)=p(mu,1)
-            p4(mu)=-p(mu,4)
-         enddo
-C     At this point  the function
-C     psitilde6ns_c(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_c(p1,p2,p3,p4)         
-     $        /4./ncol/VC
-
-c     C-type, gq->gq
-      elseif((vflav(1).eq.0).and.
-     $        (vflav(2).ne.0).and.
-     $        (vflav(3).eq.0).and.
-     $        (vflav(4).ne.0)) then
-c     write(*,*) 'C6, gq->gq ', (qcd_name(vflav(ileg)),ileg=1,4)
-c     exchange wrt fundamental order (qqb-gg):
-c     1 -> 4
-c     4 -> 1
-c     Here also a - sign (a gluon is crossed) and
-c     a change in the color-spin average is needed
-         do mu=0,3
-            p1(mu)=-p(mu,4)
-            p2(mu)=p(mu,2)
-            p3(mu)=-p(mu,3)
-            p4(mu)=p(mu,1)
-         enddo
-C     At this point  the function
-C     psitilde6ns_c(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_c(p1,p2,p3,p4)         
-     $        /4./ncol/VC
-
-c     D-type
-      elseif((vflav(1).eq.0).and.
-     $        (vflav(2).eq.0).and.
-     $        (vflav(3).eq.0).and.
-     $        (vflav(4).eq.0)) then
-
-c     write(*,*) 'D ', (qcd_name(vflav(ileg)),ileg=1,4)
-
-         do mu=0,3
-            p1(mu)=p(mu,1)
-            p2(mu)=p(mu,2)
-            p3(mu)=-p(mu,3)
-            p4(mu)=-p(mu,4)
-         enddo
-C     At this point  the function
-C     psitilde6ns_d(p1,p2,p3,p4) can always be called 
-C     with the given order. WARNING: the st_alpha/2*pi
-C     missing factor is provided later on by the program
-         virtual= (4.*pi*st_alpha)**2 * psitilde6ns_d(p1,p2,p3,p4)         
-     $     /4./VC/VC    
+c     Get the Kunszt Soper and Madgraph labels as well as the map
+c     to Kunszt Soper conventions:
+      call ks_2to2_map(vflav,nlegborn,ks_label,ksmap)  
+c     Assign Kunszt Soper momenta
+      do mu=0,3
+        p(mu,3) = -p(mu,3)        ! temprarily flip the outgoing momenta
+        p(mu,4) = -p(mu,4)        !
+        k1(mu)  =  p(mu,ksmap(1)) ! setting the Kunszt Soper momenta using
+        k2(mu)  =  p(mu,ksmap(2)) ! the Kunszt Soper map.
+        k3(mu)  =  p(mu,ksmap(3)) ! 
+        k4(mu)  =  p(mu,ksmap(4)) !
+        p(mu,3) = -p(mu,3)        ! restore the powheg outgoing momenta
+        p(mu,4) = -p(mu,4)        !
+      enddo      
+c     Virtual contributions from Kunszt-Soper.
+C     WARNING: the st_alpha/2*pi missing factor is provided later
+C     on by the program
+C --------------------------------------------------------------------
+C     A-type: q + Q -> q + Q plus charge conjugations and crossings
+C --------------------------------------------------------------------
+      if(ks_label.eq.'A') then
+         virtual = psitilde6ns_a(k1,k2,k3,k4)
+C --------------------------------------------------------------------
+C     B-type: q + q -> q + q plus charge conjugations
+C --------------------------------------------------------------------
+      elseif(ks_label.eq.'B') then
+         virtual = psitilde6ns_b(k1,k2,k3,k4)
+C --------------------------------------------------------------------
+C     C-type: q + qb -> g + g plus charge conjugations & crossings
+C --------------------------------------------------------------------
+      elseif(ks_label.eq.'C') then
+         virtual = psitilde6ns_c(k1,k2,k3,k4)
+C --------------------------------------------------------------------
+C     D-type: g + g -> g + g
+C --------------------------------------------------------------------
+      elseif(ks_label.eq.'D') then
+         virtual = psitilde6ns_d(k1,k2,k3,k4)
       else
-         write(*,*) 'Error in virtuals'
+         write(*,*) 'setvirtual: could not identify flavour list!'
          call exit(1)
       endif
-
+      virtual=virtual*gs4
+      do k=1,2
+         if(vflav(k).ne.0) then
+c - sign for crossing fermion line
+            virtual=-virtual/(2*ncol)
+         else
+            virtual=virtual/(2*Vc)
+         endif
+      enddo
+      if(vflav(3).eq.vflav(4)) virtual=virtual/2.0d0
       end
-
 
 
 C THE FOLLOWING FUNCTIONS ARE TAKEN FROM ELLIS-SEXTON CODE

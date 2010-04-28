@@ -51,6 +51,8 @@
       parameter (nmomset=10)
       real * 8 pborn(0:3,nlegborn,nmomset),cprop
       real * 8 born(nmomset,maxprocborn)
+      real * 8 bornjk(nlegborn,nlegborn,nmomset,maxprocborn)
+      real * 8 bmunu(0:3,0:3,nlegborn,nmomset,maxprocborn)
       integer iborn,ibornpr,mu,nu,k,j,iret
       logical ini
       data ini/.true./
@@ -65,10 +67,11 @@
             do iborn=1,flst_nborn
                do j=1,nmomset
                   call setborn0(pborn(0,1,j),flst_born(1,iborn),
-     1                 born(j,iborn),br_bornjk(1,1,iborn),
-     2                 br_bmunu(0,0,1,iborn))
+     1                 born(j,iborn),bornjk(1,1,j,iborn),
+     2                 bmunu(0,0,1,j,iborn))
                enddo
-               call compare_vecsb(nmomset,iborn,born,ibornpr,cprop,iret)
+               call compare_vecsb(nmomset,iborn,born,bornjk,bmunu,
+     1              ibornpr,cprop,iret)
                if(iret.eq.0) then
                   equivto(iborn)=ibornpr
                   equivcoef(iborn)=1
@@ -106,16 +109,51 @@
       enddo
       end
 
-      subroutine compare_vecsb(nmomset,iborn,res,ibornpr,cprop,iret)
+      subroutine compare_vecsb(nmomset,iborn,born,bornjk,bmunu,
+     1     ibornpr,cprop,iret)
       implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
-      integer nmomset,iborn,ibornpr,iret,j,k
-      real * 8 res(nmomset,iborn),cprop,rat
-      do j=1,iborn-1
-         rat=res(1,iborn)/res(1,j)
+      integer nmomset,iborn,ibornpr,iret,jborn,k,jleg,kleg,mu,nu
+      real * 8 born(nmomset,iborn),cprop,rat,resi,resj
+      real * 8 bornjk(nlegborn,nlegborn,nmomset,maxprocborn)
+      real * 8 bmunu(0:3,0:3,nlegborn,nmomset,maxprocborn)
+      do jborn=1,iborn-1
+         rat=born(1,iborn)/born(1,jborn)
          do k=1,nmomset
-            if(abs(1-res(k,iborn)/res(k,j)/rat).gt.ep) goto 10
+            resi=born(k,iborn)
+            resj=born(k,jborn)
+            if(abs(1-resi/resj/rat).gt.ep) goto 10
+         enddo
+c totals are identical; see if also colour correlated are
+         do jleg=1,nlegborn
+            do kleg=1,nlegborn
+               do k=1,nmomset
+                  resi=bornjk(jleg,kleg,k,iborn)
+                  resj=bornjk(jleg,kleg,k,jborn)
+c some of these are zero, be careful
+                  if(resi.ne.resj*rat) then
+                     if(abs(1-resi/resj/rat).gt.ep) goto 10
+                  endif
+               enddo
+            enddo
+         enddo
+c totals are identical; see if also spin correlated are
+         do jleg=1,nlegborn
+            do mu=0,3
+               do nu=0,3
+                  do k=1,nmomset
+                     resi=bmunu(mu,nu,jleg,k,iborn)
+                     resj=bmunu(mu,nu,jleg,k,jborn)
+c some of these are zero, be careful
+                     if(resi.ne.resj*rat) then
+                        if(abs(1-resi/resj/rat).gt.ep) goto 10
+                     endif
+                  enddo
+               enddo
+            enddo
          enddo
          if(abs(1-rat).lt.ep) then
             iret=0
@@ -124,14 +162,12 @@
             iret=1
             cprop=rat
          endif
-         ibornpr=j
+         ibornpr=jborn
          return
  10      continue
       enddo
       iret=-1
       end
-
-
 
       subroutine setborn0(p,bflav,born,bornjk,bmunu)
 c provide the flux factor to the user Born routine

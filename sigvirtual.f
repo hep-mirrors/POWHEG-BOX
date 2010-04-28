@@ -28,7 +28,7 @@
                   call setvirtual(pborn(0,1,j),flst_born(1,iborn),
      #                 virtual(j,iborn))
                enddo
-               call compare_vecsb(nmomset,iborn,virtual,ibornpr,
+               call compare_vecsv(nmomset,iborn,virtual,ibornpr,
      #              cprop,iret)
                if(iret.eq.0) then
                   equivto(iborn)=ibornpr
@@ -52,3 +52,30 @@
          endif
       enddo
       end
+
+      subroutine compare_vecsv(nmomset,iborn,res,ibornpr,cprop,iret)
+      implicit none
+      real * 8 ep
+      parameter (ep=1d-12)
+      integer nmomset,iborn,ibornpr,iret,j,k
+      real * 8 res(nmomset,iborn),cprop,rat
+      do j=1,iborn-1
+         rat=res(1,iborn)/res(1,j)
+         do k=1,nmomset
+            if(abs(1-res(k,iborn)/res(k,j)/rat).gt.ep) goto 10
+         enddo
+         if(abs(1-rat).lt.ep) then
+            iret=0
+            cprop=1
+         else
+            iret=1
+            cprop=rat
+         endif
+         ibornpr=j
+         return
+ 10      continue
+      enddo
+      iret=-1
+      end
+
+

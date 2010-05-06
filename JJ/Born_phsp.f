@@ -13,130 +13,146 @@
       data ini/.true./
       save ini
 
-      real *8 xx(ndiminteg-3),xplus,xminus,cth1
-      real *8 tau,tau_min,tau_max,tmp,ycm,ycm_min,ycm_max
-      real *8 jacb,shat,s_had,beta
+      real*8 xx(ndiminteg-3)
+      real*8 tau,tau_min,tau_max
+      real*8 ycm,ycm_min,ycm_max
+      real*8 cth1,cth1_min,cth1_max
+      real*8 powheginput,beta,tmp
       integer ixx_tau,ixx_ycm,ixx_cth1
       parameter(
      #ixx_tau  =1,
      #ixx_ycm  =2,
      #ixx_cth1 =3)
+
+C -   N.B: To check the phase space volume is correct,
+C -   replace res(j) in sigborn.f by res(j)=kn_jacborn
+C -   then check that the cross section is equal to,
+C -   hc^2/(8*pi) = 1.54929*10^7.
+
+C -   Parameter to select phase space importance sampling:
+C -   psgen=0:     flat in 1/tau, flat in 1/(1-cth1)
+C -   psgen=1:     flat in tau, flat in cth1
       integer psgen
       parameter (psgen=0)
-c     Parameter to generate phase space
-c     psgen: <=0: importance sampling; 1: flat in tau,cth1
-c     psgen=0:     flat in 1/tau, flat in cth1bar
-c     psgen=1:     flat in tau, flat in cth1bar
-      
+
+C -   Phase space: 1 /(16 pi) d tau d y d cth 
+C -   4*kn_ktmin**2 / S < tau < 1
+C -   |y| < ln(tau)/2
+C -   |cth1| < sqrt(1-4*kn_ktmin**2 / S /tau)
+
+      if (ini) then
+         write(*,*) '************************************'
+         write(*,*) '  Minimum kT of jets in underlying  '
+         write(*,*) '  Born is limited to',kn_ktmin,' GeV'
+         write(*,*) '************************************'
+      endif
+
+C -   Set minimum sqrt(\hat{s}) value
+      kn_minmass = 2.*kn_ktmin
+
+C -   Set initial- and final-state masses for Born and real
       if(ini) then
          do k=1,nlegborn
             kn_masses(k)=0
          enddo
          kn_masses(nlegreal)=0
          ini=.false.
-         write(*,*) " *****************************"   
-         write(*,*) " ****    WARNING     *********"    
-         write(*,*) "    taumin=0.2 in Born_phsp   " 
-         write(*,*) "     kn_minmass=100d0         " 
-         write(*,*) " *****************************"    
       endif
 
-c     local copy of variables
-c     xx(1) -> tau
-c     xx(2) -> ycm
-c     xx(3) -> cth1
+C -   Making a local copy of the unit random variables (?)
       do k=1,ndiminteg-3
          xx(k)=xborn(k)
       enddo
 
-      s_had=kn_sbeams
-      jacb=1d0
+C -   Initial Jacobian prefactor
+      kn_jacborn = 1.0d0/16.0d0/pi
       
-      tau_min=0.2 !: da controllare
-      tau_max=1d0
+C -   Set minimum and maximum tau values then get tau:
+      tau_min = 4.*kn_ktmin**2 / kn_sbeams
+      tau_max = 1.0d0
       if(psgen.eq.0)then
-c     imp. sampling (flat in 1/tau )
-         tmp=1d0/tau_max + (1d0/tau_min-1d0/tau_max)*xx(ixx_tau)
-         tau=1d0/tmp
-         jacb=jacb * tau**2 * (1d0/tau_min-1d0/tau_max)
+C -      Sampling flat in 1/tau
+         tmp  = 1.0d0/ tau_max + xx(ixx_tau) * (1d0/tau_min-1d0/tau_max)
+         tau  = 1.0d0/ tmp
+         kn_jacborn = kn_jacborn * tau**2 * (1d0/tau_min-1d0/tau_max)
       elseif(psgen.eq.1) then
-c     uniform generation
-         tau=tau_min + (tau_max-tau_min)*xx(ixx_tau)
-         jacb=jacb * (tau_max-tau_min)
+C -      Sampling flat in tau
+         tau  = tau_min + xx(ixx_tau) * (tau_max-tau_min)
+         kn_jacborn = kn_jacborn * (tau_max-tau_min)
       else
          write(*,*) 'Wrong psgen in gen_born_vars'
          call exit(1)
       endif
-      ycm_min=  log(tau)/2
-      ycm_max= -log(tau)/2
-      ycm = ycm_min + xx(ixx_ycm)*(ycm_max-ycm_min)
-      jacb=jacb * (ycm_max-ycm_min)
 
-      shat=tau*s_had
+C -   Now we can work out \hat{s}
+      kn_sborn = tau * kn_sbeams
 
-c     th1 is the angle of 1st outgoing particle wrt +z axis
-      if(psgen.eq.0)then
-c     uniform generation
-         cth1=-1d0+xx(ixx_cth1)*2d0 
-         jacb=jacb * 2d0 
+C -   Set minimum and maximum y values 
+      ycm_min =  log(tau)/2.
+      ycm_max = -log(tau)/2.
+C -   Now get a y uniformly in the allowed range
+      ycm  = ycm_min + xx(ixx_ycm) * (ycm_max-ycm_min)
+      kn_jacborn = kn_jacborn * (ycm_max-ycm_min)
+
+C -   Feynman x's can be computed and saved now:
+      kn_xb1 = sqrt(tau) * exp( ycm)
+      kn_xb2 = sqrt(tau) * exp(-ycm)
+
+C -   Set minimum and maximum cos(theta) values (theta is the 
+C -   angle of 1st outgoing particle wrt +z axis).
+      tmp = sqrt(kn_sborn)
+      cth1_max =  sqrt(1.-2.d0*kn_ktmin/tmp)*sqrt(1.+2.d0*kn_ktmin/tmp)
+      cth1_min = -cth1_max
+      if(psgen.eq.0) then
+C -      Sample cos(theta) as 1/(1-cos(theta)) ~ 1/sin^4(theta/2)
+         tmp  = 2.0D0*cth1_max/(1.0D0-cth1_max)/(1.0D0+cth1_max) 
+         cth1 = 1.0D0-1.0D0/(1.0D0/(1.0D0-cth1_min) + xx(ixx_cth1)*tmp)
+         kn_jacborn = kn_jacborn * (1D0-cth1)**2 * tmp
       elseif(psgen.eq.1) then
-c     uniform generation
-         cth1=-1d0+xx(ixx_cth1)*2d0 
-         jacb=jacb * 2d0 
+C -      Sample cos(theta) uniformly
+         cth1 = cth1_min + xx(ixx_cth1) * (cth1_max-cth1_min)
+         kn_jacborn = kn_jacborn * (cth1_max-cth1_min)
       else
          write(*,*) 'Wrong psgen in gen_born_vars'
          call exit(1)
       endif
  
-c     born phase space: physical phase space
-      jacb=jacb /16d0/pi   ! *( d_phi/(2d0*pi) )
+      if(kn_jacborn.lt.0.0) then
+         write(6,*) 'born_phsp: Error kn_jacborn < 0. !'
+         write(*,*) 'kn_jacborn        = ', kn_jacborn
+         write(*,*) 'sqrt(kn_sborn)    = ', sqrt(kn_sborn)
+         write(*,*) 'cth1_max-cth1_min = ', (cth1_max-cth1_min)
+      endif
 
-c     Feynman x's and Mandelstam invariants
-      xplus=sqrt(tau) * exp(ycm)
-      xminus=sqrt(tau) * exp(-ycm)
+C -   Assign born jacobian and default kinematics variables
+      kn_born_pt2 = (1d0-cth1**2)*kn_sborn/4.0d0
+      kn_cthdec   = cth1
+      phidec      = 0d0
 
-cccccccccccccccccccccccccccc
-c     assign born jacobian and default kinematics variables
-      kn_jacborn=jacb
-      kn_born_pt2=0d0
-      kn_cthdec=cth1
-      phidec=0d0
-c     With this choice px_3 is always positive, but at the
-c     end the whole event will be randomly rotated around z-axis
-      kn_sborn=shat
-cccccccccccccccccccccccccccc
+C -   With this choice px_3 is always positive, but at the
+C -   end the whole event will be randomly rotated around z-axis
 
-cccccccccccccccccccccccccccccc
-c     compute momenta
-cccccccccccccccccccccccccccccc
+C -   Initial state momenta:
+      kn_cmpborn(0,1) =  sqrt(kn_sborn)/2        ! E
+      kn_cmpborn(0,2) =  kn_cmpborn(0,1)         !
+      kn_cmpborn(3,1) =  kn_cmpborn(0,1)         ! Pz
+      kn_cmpborn(3,2) = -kn_cmpborn(0,2)         !
+      kn_cmpborn(1,1) = 0                        ! Px
+      kn_cmpborn(1,2) = 0                        !
+      kn_cmpborn(2,1) = 0                        ! Py
+      kn_cmpborn(2,2) = 0                        !
 
-c Build kinematics
-      kn_xb1=xplus
-      kn_xb2=xminus
+C -   Final state momenta:
+      kn_cmpborn(0,3) = sqrt(kn_sborn)/2            ! E
+      kn_cmpborn(0,4) =  kn_cmpborn(0,3)            !
+      kn_cmpborn(3,3) =  kn_cthdec*kn_cmpborn(0,3)  ! Pz
+      kn_cmpborn(3,4) = -kn_cmpborn(3,3)            !
+      kn_cmpborn(1,3) = sqrt(1-kn_cthdec**2)*sin(phidec)*kn_cmpborn(0,3)  ! Px
+      kn_cmpborn(1,4) = -kn_cmpborn(1,3)                                  !
+      kn_cmpborn(2,3) = sqrt(1-kn_cthdec**2)*cos(phidec)*kn_cmpborn(0,3)  ! Py
+      kn_cmpborn(2,4) = -kn_cmpborn(2,3)                                  !
 
-c initial state particles
-      kn_cmpborn(0,1)=sqrt(shat)/2
-      kn_cmpborn(0,2)=kn_cmpborn(0,1)
-      kn_cmpborn(3,1)=kn_cmpborn(0,1)
-      kn_cmpborn(3,2)=-kn_cmpborn(0,2)
-      kn_cmpborn(1,1)=0
-      kn_cmpborn(1,2)=0
-      kn_cmpborn(2,1)=0
-      kn_cmpborn(2,2)=0  
-
-c final state particles 
-      kn_cmpborn(0,3)=sqrt(shat)/2
-      kn_cmpborn(0,4)=kn_cmpborn(0,3)
-
-      kn_cmpborn(1,3)=sqrt(1-kn_cthdec**2)*sin(phidec)*kn_cmpborn(0,3)
-      kn_cmpborn(2,3)=sqrt(1-kn_cthdec**2)*cos(phidec)*kn_cmpborn(0,4)
-      kn_cmpborn(3,3)=kn_cthdec*kn_cmpborn(0,3) 
-
-      kn_cmpborn(1,4)=-kn_cmpborn(1,3)
-      kn_cmpborn(2,4)=-kn_cmpborn(2,3)
-      kn_cmpborn(3,4)=-kn_cmpborn(3,3)
-
-c now boost everything along 3
+C -   Boost to the LAB frame:
       beta=(kn_xb1-kn_xb2)/(kn_xb1+kn_xb2)
       vec(1)=0
       vec(2)=0
@@ -147,32 +163,30 @@ c now boost everything along 3
          kn_pborn(mu,2)=kn_xb2*kn_beams(mu,2)
       enddo
       call checkmomzero(nlegborn,kn_pborn)
-c      call checkmass(2,kn_pborn(0,3))
-
-c     !ER: for now, just use the main relevant scale of the process
-c     (needed to do log-scale graphs)
-      kn_minmass=100d0  !ER: ora e' completamente arbitrario
+C -      call checkmass(2,kn_pborn(0,3))
 
       end
+
+
 
       subroutine born_suppression(fact)
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_kn.h'
-      real * 8 fact
       logical ini
       data ini/.true./
-      real *8 ptb
+      real*8 fact,pt2,pt2supp,powheginput,pt
+      save ini,pt2supp,pt     
       if (ini) then
-         write(*,*) '**************************'
-         write(*,*) 'Born pt > 100 GeV in  born_suppression'
-         write(*,*) '**************************'
-         ini=.false.
+         pt = powheginput("#ptsupp")         
+         ini = .false.
+         pt2supp = pt**2
       endif
-      ptb=sqrt(dabs(kn_cmpborn(1,3)**2+kn_cmpborn(2,3)**2))
-      fact=1.
-      if(ptb.lt.100d0) then
-         fact=0.
+      if (pt.le.0) then
+         fact=1d0
+      else         
+         pt2=kn_cmpborn(1,3)**2+kn_cmpborn(2,3)**2
+         fact=pt2/(pt2+pt2supp)         
       endif
       end
 
@@ -183,23 +197,9 @@ c     (needed to do log-scale graphs)
       include 'nlegborn.h'
       include '../include/pwhg_kn.h'
       real * 8 muf,mur
-      logical ini
-      data ini/.true./
       real *8 muref
-      real *8 dotp
-      external dotp
-      if (ini) then
-         write(*,*) '*************************************'
-         write(*,*) '    Factorization and renormalization '
-         write(*,*) '    scales set to 100 GeV         '
-         write(*,*) '*************************************'
-         ini=.false.
-      endif
-      muref=100. !ER: completamente arbitrario
+      muref=sqrt(kn_cmpborn(1,3)**2+kn_cmpborn(2,3)**2)
       muf=muref
       mur=muref
-c     CAVEAT:
-c     Never tried to set mu_r != mu_f
-
       end
 

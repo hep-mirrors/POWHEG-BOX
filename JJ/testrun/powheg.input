@@ -6,9 +6,11 @@ ndns2 131         ! pdf set for hadron 2 (mlm numbering)
 ebeam1 7000d0     ! energy of beam 1
 ebeam2 7000d0     ! energy of beam 2
 
+bornktmin  100.0  ! (default 0d0) kt min at Born level for FS jets 
+
 ! To be set only if using LHA pdfs
-lhans1 10050          ! pdf set for hadron 1 (LHA numbering)
-lhans2 10050	   ! pdf set for hadron 2 (LHA numbering)	
+lhans1 20250      ! pdf set for hadron 1 (LHA numbering)
+lhans2 20250	  ! pdf set for hadron 2 (LHA numbering)	
 ! To be set only if using different pdf sets for the two incoming hadrons
 ! QCDLambda5  0.25 ! for not equal pdf sets 
 
@@ -62,8 +64,6 @@ smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
 #iupperisr 1 ! (default 1) choice of ISR upper bounding functional form 
 #iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
 
-! Z+jet production
-#bornktmin  0d0    ! (default 0d0) kt min at Born level for jet in Z+jet 
 
 
 

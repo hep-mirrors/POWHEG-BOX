@@ -1,12 +1,12 @@
       subroutine btildevirt(resvirt)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_br.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_flg.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_br.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_flg.h'
       real * 8 resvirt(flst_nborn)
       real * 8 c(-6:6),gamma(-6:6),gammap(-6:6)
       integer j,jb,fl1,fl2,fl,leg,legi,legj
@@ -25,6 +25,16 @@
       real * 8 ll
       real * 8 Intm_ep,Int0m_0,Int0m_ep,Intmm_0,Intmm_ep
       external Intm_ep,Int0m_0,Int0m_ep,Intmm_0,Intmm_ep
+
+cccccccccccccccccccccccc
+c     !ER:
+c     To pass the already subtracted virtuals in sigsoftvirt
+      real *8 fksfinite(1000)
+      common/cfksfinite/fksfinite
+
+      real *8 tmp
+cccccccccccccccccccccccc
+
 c from 2.100 of FNO2007
       if(ini) then
          do j=-6,6
@@ -127,6 +137,25 @@ c we only summed over j>i, multiply by 2
          I=I*2
          resvirt(jb)=(Q+I+virt_arr(jb))*st_alpha/(2*pi)
      #       *pdfb1(fl1)*pdfb2(fl2)*kn_jacborn
+
+ccccccccccccccc 
+c     !ER: 
+c     soft-virtual calculated here are at the previous line
+
+c     soft-virtual from mcatnlo (passed through fksfinite)
+         tmp=fksfinite(jb) *st_alpha/2/pi /(2*kn_sborn)
+     #*pdfb1(fl1)*pdfb2(fl2)*kn_jacborn
+      
+         if(resvirt(jb).ne.0d0) then
+            if(dabs(tmp/resvirt(jb)-1).gt.1d-7) then
+               write(*,*) jb,flst_born(1,jb),flst_born(2,jb),flst_born(4,jb),
+     #tmp/resvirt(jb)
+            write(*,*) 'check of massive integrals: disagreement'
+            call exit(1)
+            endif
+         endif
+ccccccccccccccc
+
          tot=tot+resvirt(jb)
       enddo
       end

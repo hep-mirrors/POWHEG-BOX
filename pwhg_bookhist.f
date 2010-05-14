@@ -549,7 +549,7 @@ c Per marcare un istogramma
       save imon,iday,iyear,ctime,ini
       character * 8 ctime
       DATA INI/0/
-      data ctime/''/
+      data ctime/'        '/
       IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR) ! not y2k compliant
       CALL IDATE(ITIME)
@@ -583,6 +583,7 @@ c      CALL TIME(CTIME)
       CHARACTER*(*) LTIT,BTIT,SCALE
       save imon,iday,iyear,ctime,ini
       DATA INI/0/
+      data ctime/'        '/
       IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR) ! not y2k compliant
       CALL IDATE(ITIME)
@@ -640,6 +641,7 @@ c      CALL TIME(CTIME)
       CHARACTER*(*) LTIT,BTIT,SCALE
       save imon,iday,iyear,ctime,ini
       DATA INI/0/
+      data ctime/'        '/
       IF(INI.EQ.0) THEN
 c        CALL IDATE(IMON,IDAY,IYEAR)
          CALL IDATE(ITIME)
@@ -861,7 +863,8 @@ C   put the contents in histogram M, after automatically booking it.
       integer imon,iday,iyear,ini,itime(3)
       CHARACTER CTIME*8
       save imon,iday,iyear,ctime,ini
-      DATA INI/0/               
+      DATA INI/0/    
+      data ctime/'        '/           
       IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)
       CALL IDATE(ITIME)
@@ -1001,12 +1004,9 @@ C  PLOT VERSUS TEXT FRACTION
       DATA XPFRAC,YPFRAC/0.75d0,0.80d0/
 C  DEFAULT SIZES                                          
 c      DATA TIT0,LAB0,TIC0/-1.8d0,-1.8d0,0.06d0/
-
-
       DATA TIT0,LAB0,TIC0/1.8d0,1.8d0,0.06d0/
-
-
       DATA INI/0/
+      data ctime/'        '/
       IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)
       CALL IDATE(ITIME)
@@ -1384,6 +1384,35 @@ c     histogram, as filled by pwhgaccumup.
       enddo
       end            
 
+
+      subroutine pwhgrescale(scale)
+C********************************************************************
+C The following function rescale the content of the histogram by the
+C scale factor.  IMPORTANT: must be called AFTER the statistical
+C analysis has been performed and before histograms are written to the
+C TOPDRAWER file. For example : 
+C    call pwhgsetout ( or pwhgaddout)
+C    call pwhgrescale(scale)
+C    call pwhgtopout 
+C**********************************************************************
+      implicit none
+      include 'pwhg_book.h'
+      real * 8 scale,dummy_real
+      integer i,dummy_int
+      character * 3 tag
+      do i=1,nmb
+         call pwhggettag(i,tag)
+         if(tag.eq.'YST') then
+C PWHGOPERA(I,'F',J,K,X,Y) multiplies hist I by the factor X, and puts
+C the result in hist K;
+            call pwhgopera(i+nmh3,'F',dummy_int,i+nmh3,scale,dummy_real)
+C i+nmh3 contains the values 
+            call pwhgopera(i+nmh4,'F',dummy_int,i+nmh4,scale,dummy_real)
+C i+nmh4 contains the errors
+         endif
+      enddo
+      end           
+      
 
 
 C*******************************************************************

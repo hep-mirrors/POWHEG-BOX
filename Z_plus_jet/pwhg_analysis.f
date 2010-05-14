@@ -22,15 +22,16 @@ c     binsize
       real * 8 bsz(100)
       common/pwhghistcommon/bsz
 
-      ptZcuts(0) = 5d0
-      ptZcuts(1) = 10d0
-      ptZcuts(2) = 20d0
-      ptZcuts(3) = 30d0
+      ptZcuts(0) = 0d0
+      ptZcuts(1) = 5d0
+      ptZcuts(2) = 10d0
+      ptZcuts(3) = 20d0
+c      ptZcuts(4) = 30d0
 c     number of pt Z cuts implemented
       nptZcut=4
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      numplots = 58  ! <========== DO NOT FORGET TO SET THIS
+      numplots = 69  ! <========== DO NOT FORGET TO SET THIS
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       call pwhginihist
 
@@ -191,19 +192,19 @@ c     loop on ptZ cut
       bsz(49) = 4d0
       call pwhgbookup(49+numplots*ncut,'pt e+, zoom ptZ>'//cut,'LOG',
      #     bsz(49),0d0,100d0)
-      bsz(50) = (100-ptZcuts(ncut))/30d0
+      bsz(50) = 2d0
       call pwhgbookup(50+numplots*ncut,'pt Z, zoom ptZ>'//cut,'LOG',
-     #     bsz(50),ptZcuts(ncut),100d0)
-      bsz(51) = 20d0/20
+     #     bsz(50),0d0,100d0)
+      bsz(51) = 0.5d0
       call pwhgbookup(51+numplots*ncut,'pt Z, zoom2 ptZ>'//cut,'LOG',
-     #     bsz(51),ptZcuts(ncut),ptZcuts(ncut)+20d0)
+     #     bsz(51),0d0,30d0)
 
       bsz(52) = 0.5d0
       call pwhgbookup(52+numplots*ncut,'pt J1, zoom ptZ>'//cut,'LOG',
-     #     bsz(52),0d0,20d0)
+     #     bsz(52),0d0,30d0)
       bsz(53) = 0.5d0
       call pwhgbookup(53+numplots*ncut,'pt J2, zoom ptZ>'//cut,'LOG',
-     #     bsz(53),0d0,20d0)
+     #     bsz(53),0d0,30d0)
 
       bsz(54) = 0.5d0
       call pwhgbookup(54+numplots*ncut,'pt_rel J1 ptZ>'//cut,'LOG',
@@ -222,6 +223,43 @@ c     loop on ptZ cut
       bsz(58) = 0.2d0
       call pwhgbookup(58+numplots*ncut,'deltaR_12 ptZ>'//cut,'LIN',
      #     bsz(58),0d0,10d0)
+
+
+      bsz(59) = 3d0
+      call pwhgbookup(59+numplots*ncut,'pt J1, Rjj>1, ptZ>'
+     #     //cut,'LOG',bsz(59),0d0,300d0)
+      bsz(60) = 3d0
+      call pwhgbookup(60+numplots*ncut,'pt J1, Rjj>2, ptZ>'
+     #     //cut,'LOG',bsz(60),0d0,300d0)
+      bsz(61) = 3d0
+      call pwhgbookup(61+numplots*ncut,'pt J1, Rjj>3, ptZ>'
+     #     //cut,'LOG',bsz(61),0d0,300d0)
+      bsz(62) = 3d0
+      call pwhgbookup(62+numplots*ncut,'pt J1, Rjj>4, ptZ>'
+     #     //cut,'LOG',bsz(62),0d0,300d0)
+      bsz(63) = 3d0
+      call pwhgbookup(63+numplots*ncut,'pt J1, Rjj>5, ptZ>'
+     #     //cut,'LOG',bsz(63),0d0,300d0)
+
+      bsz(64) = 3d0
+      call pwhgbookup(64+numplots*ncut,'pt J2, Rjj>1, ptZ>'
+     #     //cut,'LOG',bsz(64),0d0,300d0)
+      bsz(65) = 3d0
+      call pwhgbookup(65+numplots*ncut,'pt J2, Rjj>2, ptZ>'
+     #     //cut,'LOG',bsz(65),0d0,300d0)
+      bsz(66) = 3d0
+      call pwhgbookup(66+numplots*ncut,'pt J2, Rjj>3, ptZ>'
+     #     //cut,'LOG',bsz(66),0d0,300d0)
+      bsz(67) = 3d0
+      call pwhgbookup(67+numplots*ncut,'pt J2, Rjj>4, ptZ>'
+     #     //cut,'LOG',bsz(67),0d0,300d0)
+      bsz(68) = 3d0
+      call pwhgbookup(68+numplots*ncut,'pt J2, Rjj>5, ptZ>'
+     #     //cut,'LOG',bsz(68),0d0,300d0)
+
+      bsz(69) = 2d0
+      call pwhgbookup(69+numplots*ncut,'pt j1, zoom2 ptZ>'//cut,'LOG',
+     #     bsz(69),0d0,100d0)
       enddo
       end
 
@@ -369,9 +407,43 @@ c     find second decay product
          endif
       endif
 
+
       if (WHCPRG.eq.'PYTHIA') then
-         write(*,*) 'NOT IMPLEMENTED YET'
-         stop
+c     Loop again over final state particles to find products of Z decay, by
+c     looking into the shower branchings.
+         nem=0
+         nep=0
+         do ihep=1,nhep
+c     works both for POWHEG+HERWIG and POWHEG+PYHIA
+            if (isthep(ihep).eq.1.and.abs(idhep(ihep)).eq.11) then
+               is_Z = idhep(jmohep(1,jmohep(1,ihep))).eq.23
+               if (.not.is_Z) then
+                  is_Z = idhep(jmohep(1,jmohep(1,jmohep(1,ihep)))).eq.23
+               endif
+               if (is_Z) then
+c     find first decay product
+                  if(idhep(ihep).eq.11) then
+                     iem=ihep
+                     nem=nem+1
+c     find second decay product
+                  elseif(idhep(ihep).eq.-11) then
+                     iep=ihep
+                     nep=nep+1
+                  endif
+               endif
+            endif
+         enddo
+         if(nep.ne.1.or.nem.ne.1) then    
+            write(*,*) 'nhep ',nhep
+             do ihep=1,nhep
+                write(*,*) ihep, isthep(ihep)
+                write(*,*) (phep(mu,ihep),mu=1,4)
+             enddo
+            
+            write(*,*) 'Problems with leptons from Z decay', nep, nem
+            write(*,*) 'PROGRAM ABORT'
+            call exit(1)
+         endif
       endif
 
 
@@ -458,9 +530,14 @@ c     find the first 2 hardest jets, if any
 c     loop on ptZ cut
       do ncut=0,nptZcut-1
 
-      if (ptvb.lt.ptZcuts(ncut)) return
 
-      call pwhgfill(1+numplots*ncut,ptvb,dsig/bsz(1))
+c     plot here ptvb in order to have it even below the cut
+      call pwhgfill( 1+numplots*ncut,ptvb,dsig/bsz(1))
+      call pwhgfill(50+numplots*ncut,ptvb,dsig/bsz(50))
+      call pwhgfill(51+numplots*ncut,ptvb,dsig/bsz(51))
+
+      if (ptvb.lt.ptZcuts(ncut)) goto 987
+
       call pwhgfill(4+numplots*ncut,mvb,dsig/bsz(4))
 
       if(buildjets.and.ntracks.gt.0) then
@@ -505,13 +582,35 @@ c     get pt's and rapidities of the jets
             if(j1.gt.0) then
                call pwhgfill( 2+numplots*ncut,ptj1,dsig/bsz(2))
                call pwhgfill(52+numplots*ncut,ptj1,dsig/bsz(52))
+               call pwhgfill(69+numplots*ncut,ptj1,dsig/bsz(69))
             endif
+            rsep = 0d0
             if(j2.gt.0) then
                call pwhgfill( 3+numplots*ncut,ptj2,dsig/bsz(3))
                call pwhgfill(53+numplots*ncut,ptj2,dsig/bsz(53))
 c     compute the separation in the pseudorapidity-phi plane
                rsep = rsepn_p(pj(0,1),pj(0,2))
-               call pwhgfill(58+numplots*ncut,rsep,dsig/bsz(53))
+               call pwhgfill(58+numplots*ncut,rsep,dsig/bsz(58))
+               if (rsep.gt.1d0) then
+                  call pwhgfill(59+numplots*ncut,ptj1,dsig/bsz(59))
+                  call pwhgfill(64+numplots*ncut,ptj2,dsig/bsz(64))
+               endif
+               if (rsep.gt.2d0) then
+                  call pwhgfill(60+numplots*ncut,ptj1,dsig/bsz(60))
+                  call pwhgfill(65+numplots*ncut,ptj2,dsig/bsz(65))
+               endif
+               if (rsep.gt.3d0) then
+                  call pwhgfill(61+numplots*ncut,ptj1,dsig/bsz(61))
+                  call pwhgfill(66+numplots*ncut,ptj2,dsig/bsz(66))
+               endif
+               if (rsep.gt.4d0) then
+                  call pwhgfill(62+numplots*ncut,ptj1,dsig/bsz(62))
+                  call pwhgfill(67+numplots*ncut,ptj2,dsig/bsz(67))
+               endif
+               if (rsep.gt.5d0) then
+                  call pwhgfill(63+numplots*ncut,ptj1,dsig/bsz(63))
+                  call pwhgfill(68+numplots*ncut,ptj2,dsig/bsz(68))
+               endif
             endif
          
             if(ptvb.gt. 10) call pwhgfill( 5+numplots*ncut,yvb,
@@ -634,12 +733,12 @@ c     endif buildjets
       
       call pwhgfill(48+numplots*ncut,ptem,dsig/bsz(48))
       call pwhgfill(49+numplots*ncut,ptep,dsig/bsz(49))
-      call pwhgfill(50+numplots*ncut,ptvb,dsig/bsz(50))
-      call pwhgfill(51+numplots*ncut,ptvb,dsig/bsz(51))
       
       call pwhgfill(56+numplots*ncut,atan2(pvb(2),pvb(1)),dsig/bsz(56))
 
       call pwhgfill(57+numplots*ncut,0.5d0,dsig/bsz(57))
+
+ 987  continue
 c     end of loop on ptZ cuts
       enddo
 

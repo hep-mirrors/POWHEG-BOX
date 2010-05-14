@@ -147,6 +147,26 @@ c      endif
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       real * 8 muf,mur
-      muf=ph_Zmass
-      mur=ph_Zmass
+      logical ini
+      data ini/.true./
+      logical runningscales
+      parameter (runningscales=.true.)
+      real * 8 pt2
+      if (runningscales) then
+         if (ini) then
+            write(*,*) '****************************************'
+            write(*,*) '****************************************'
+            write(*,*) '**   mur=pt  used for Bbar function   **'
+            write(*,*) '**   muf=pt  used for Bbar function   **'
+            write(*,*) '****************************************'
+            write(*,*) '****************************************'
+            ini=.false.            
+         endif
+         pt2=kn_pborn(1,5)**2+kn_pborn(2,5)**2
+         mur=sqrt(pt2)
+         muf=mur
+      else
+         muf=ph_Zmass
+         mur=ph_Zmass
+      endif
       end

@@ -25,8 +25,3 @@ c -*-Fortran-*-
 c integers
      #   kn_emitter
 
-      real * 8 par_csicut
-      parameter (par_csicut=1)
-      real * 8 par_diexp,par_dijexp
-      parameter (par_diexp=1,par_dijexp=1)
-      

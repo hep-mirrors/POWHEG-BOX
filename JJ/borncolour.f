@@ -27,14 +27,19 @@ c q qb g g or permutations-crossing
 c find the quarks and gluons
          ig1=-1
          do j=1,4
-            if(idup(j)*istup(j).gt.0) then
+            if(idup(j).eq.21) then
+               if(ig1.lt.0) then
+                  ig1=j
+               else
+                  ig2=j
+               endif
+            elseif(idup(j)*istup(j).gt.0) then
                iq=j
             elseif(idup(j)*istup(j).lt.0) then
                ia=j
-            elseif(ig1.lt.0) then
-               ig1=j
             else
-               ig2=j
+               write(*,*) 'borncolour_lh: should not be here!'
+               call exit(1)
             endif
          enddo
          s=istup(iq)*istup(ia)*2*dotp(kn_cmpborn(0,iq),kn_cmpborn(0,ia))

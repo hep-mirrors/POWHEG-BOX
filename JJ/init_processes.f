@@ -5,6 +5,7 @@
       include '../include/pwhg_kn.h'
       include '../include/pwhg_flg.h'
       include '../include/pwhg_st.h'
+      include '../include/pwhg_par.h'
       integer i1,i2,i3,i4,i5,k,ii(nlegreal)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
@@ -17,7 +18,7 @@
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C  DON'T FORGET TO  SET THIS TO THE NUMBER OF FLAVOURS REQUIRED 
       integer nflav
-      parameter (nflav=2)
+      parameter (nflav=5)
 C  AND CHANGE THE madgraph SYMBOLIC LINK ACCORDINGLY
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       integer three_ch(-6:6)
@@ -30,10 +31,14 @@ c     the code and we change often from one process to the other
          stop
       endif
 
+c This are set to 1 by default. For jets, we need to change them
+      par_diexp = 2
+      par_dijexp= 2
+c the default value, 1d-6, causes problems in HELAC routines
+      par_isrtinyy=1d-5
 *********************************************************************
 c     number of light flavors
-C      st_nlight = nflav
-      st_nlight=3
+      st_nlight = nflav
 *********************************************************************
 *********************************************************************
 c     index of the first LIGHT coloured parton in the final state

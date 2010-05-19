@@ -8,11 +8,23 @@
       include 'include/pwhg_rad.h'
       include 'include/pwhg_dbg.h'
       include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       character * 5 scheme
       character * 3 whichpdfpk
       real * 8 powheginput
       integer iorder,iret,iun
       external whichpdfpk,powheginput
+c Initialization of default values for common block
+c variables. These may be overridden by the user program
+c init_processes.
+      par_diexp=1
+      par_dijexp=1
+c
+      par_isrtinycsi = 1d-6
+      par_isrtinyy = 1d-6
+      par_fsrtinycsi = 1d-5
+      par_fsrtinyy = 1d-6
+c End initialization of common block defaults.
       pdf_ih1=powheginput('ih1')
       pdf_ih2=powheginput('ih2')
       if(whichpdfpk().eq.'lha') then

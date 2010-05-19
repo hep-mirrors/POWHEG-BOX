@@ -7,11 +7,10 @@
       include 'include/pwhg_math.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       real * 8 xrad,rescoll(flst_nborn),www
       real * 8 un
       parameter (un=1d0)
-      real * 8 xicut
-      parameter (xicut=par_csicut)
 c pdfb: born pdf's, pdfs: pdfs with scaled x->x/z
       real * 8 pdfb1(-6:6),pdfb2(-6:6),pdfs1(-6:6),pdfs2(-6:6),
      #         pdfs1sng,pdfs2sng
@@ -43,13 +42,13 @@ c End Statement Functions
 
       sb=kn_sborn
 c See 7.224 and 7.225 of FNO2007
-c Remnant: 1/(1-z)_xicut=1/(1-z)_(1-x)+log((1-x)/xicut) delta(1-z)
-c Remnant: log(1-z)/(1-z)_xicut=log(1-z)/(1-z)_(1-x)+
-c          (log(1-x)^2-log(xicut)^2)/2 delta(1-z)
-      rm1=log((1-kn_xb1)/xicut)*log(sb/st_mufact2)
-     #        +(log(1-kn_xb1)**2-log(xicut)**2)
-      rm2=log((1-kn_xb2)/xicut)*log(sb/st_mufact2)
-     #        +(log(1-kn_xb2)**2-log(xicut)**2)
+c Remnant: 1/(1-z)_csicut=1/(1-z)_(1-x)+log((1-x)/csicut) delta(1-z)
+c Remnant: log(1-z)/(1-z)_csicut=log(1-z)/(1-z)_(1-x)+
+c          (log(1-x)^2-log(csicut)^2)/2 delta(1-z)
+      rm1=log((1-kn_xb1)/par_csicut)*log(sb/st_mufact2)
+     #        +(log(1-kn_xb1)**2-log(par_csicut)**2)
+      rm2=log((1-kn_xb2)/par_csicut)*log(sb/st_mufact2)
+     #        +(log(1-kn_xb2)**2-log(par_csicut)**2)
 c get pdfs at underlying born x values
       call pdfcall(1,kn_xb1,pdfb1)
       call pdfcall(2,kn_xb2,pdfb2)

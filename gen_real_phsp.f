@@ -29,20 +29,20 @@ c gen_real_phsp_isr: mapping for the initial state radiation
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
-      real * 8 q0,q2,xjac,tinycsi,tinyy
-      parameter (tinycsi=1d-5,tinyy=1d-6)
+      include 'include/pwhg_par.h'
+      real * 8 q0,q2,xjac
 c find rad_kinreg as function of kn_emitter
       rad_kinreg=kn_emitter+2-flst_lightpart
 c Boost the underlying Born variables to their cm frame
       q0=2*kn_cmpborn(0,1)
       q2=kn_sborn
-      kn_csitilde=xrad(1)*(1-tinycsi)+tinycsi
+      kn_csitilde=xrad(1)*(1-par_fsrtinycsi)+par_fsrtinycsi
       xjac=1
       kn_y=1-2*xrad(2)
       xjac=xjac*2
 c importance sampling for kn_y
       xjac=xjac*1.5d0*(1-kn_y**2)
-      kn_y=1.5d0*(kn_y-kn_y**3/3)*(1-tinyy)
+      kn_y=1.5d0*(kn_y-kn_y**3/3)*(1-par_fsrtinyy)
       kn_azi=2*pi*xrad(3)
       xjac=xjac*2*pi
       kn_csimax=kn_csimax_arr(kn_emitter)
@@ -208,16 +208,16 @@ c ISR:
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
-      real * 8 xjac,tiny
-      parameter (tiny=1d-6)
+      include 'include/pwhg_par.h'
+      real * 8 xjac
       rad_kinreg=1
       kn_csitilde=(3-2*xrad(1))*xrad(1)**2
       xjac=6*(1-xrad(1))*xrad(1)
-      kn_csitilde=kn_csitilde*(1-tiny)+tiny
+      kn_csitilde=kn_csitilde*(1-par_isrtinycsi)+par_isrtinycsi
       kn_y=1-2*xrad(2)
       xjac=xjac*2
       xjac=xjac*1.5d0*(1-kn_y**2)
-      kn_y=1.5d0*(kn_y-kn_y**3/3)*(1-tiny)
+      kn_y=1.5d0*(kn_y-kn_y**3/3)*(1-par_isrtinyy)
       kn_azi=2*pi*xrad(3)
       xjac=xjac*2*pi
       call compcsimax
@@ -360,6 +360,7 @@ c      call printtot(nlegreal,kn_preal(0,1))
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
+      include 'include/pwhg_par.h'
       integer j,k
       real * 8 y
       real * 8 crossp,dotp
@@ -392,6 +393,7 @@ c     4        (kn_cmpreal(3,k)+kn_cmpreal(3,j))**2))**par_dijexp
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
+      include 'include/pwhg_par.h'
       integer k
       real * 8 y
       real * 8 crossp,dotp

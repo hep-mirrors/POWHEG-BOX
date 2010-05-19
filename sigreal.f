@@ -4,6 +4,7 @@
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       real * 8 xrad(3),resreal(maxprocborn),www
       real * 8 r0(maxalr),rc(maxalr),rp(maxalr),rm(maxalr),
      # r0s(maxalr),rcs(maxalr),rps(maxalr),rms(maxalr),xl,xlp,xlm,

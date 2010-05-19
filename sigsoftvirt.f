@@ -7,14 +7,13 @@
       include 'include/pwhg_math.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       real * 8 resvirt(flst_nborn)
       real * 8 c(-6:6),gamma(-6:6),gammap(-6:6)
       integer j,jb,fl1,fl2,fl,leg,legi,legj
       real * 8 Q,I,s,etot,e,eij,virt_arr(flst_nborn),tot,kij,arglog,
      #     loglog
       real * 8 pdfb1(-6:6),pdfb2(-6:6)      
-      real * 8 xicut
-      parameter (xicut=par_csicut)
       logical ini
       data ini/.true./
       real * 8 ddilog,dotp
@@ -49,21 +48,22 @@ c get pdfs
       etot=2*kn_cmpborn(0,1)
       s=etot**2
       tot=0d0
-      ll = log(xicut**2*s/st_muren2)
+      ll = log(par_csicut**2*s/st_muren2)
       do jb=1,flst_nborn
          fl1=flst_born(1,jb)
          fl2=flst_born(2,jb)
 c     initial-state parton contribution
-         Q=-log(st_mufact2/st_muren2)*(gamma(fl1)+2*c(fl1)*log(xicut)
-     #                              +  gamma(fl2)+2*c(fl2)*log(xicut))
+         Q=-log(st_mufact2/st_muren2)*(gamma(fl1)+2*c(fl1)*
+     1   log(par_csicut) +  gamma(fl2)+2*c(fl2)*log(par_csicut))
 c     loop on final-state massless partons
          do leg=flst_lightpart,nlegborn
             fl=flst_born(leg,jb)
             e=kn_cmpborn(0,leg)
             Q=Q+gammap(fl)
-     #   -log(s/st_muren2)*(gamma(fl)-2*c(fl)*log(2*e/(xicut*etot)))
-     #   +2*c(fl)*(log(2*e/etot)**2-log(xicut)**2)
-     #   -2*gamma(fl)*log(2*e/etot)
+     1   -log(s/st_muren2)*(gamma(fl)-2*c(fl)
+     3    *log(2*e/(par_csicut*etot)))
+     3   +2*c(fl)*(log(2*e/etot)**2-log(par_csicut)**2)
+     4   -2*gamma(fl)*log(2*e/etot)
          enddo
 c     loop on final-state massive partons
          do leg=3,flst_lightpart-1

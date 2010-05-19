@@ -19,7 +19,7 @@ use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 rege
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
 ncall1 5000   ! number of calls for initializing the integration grid
-itmx1    5     ! number of iterations for initializing the integration grid
+itmx1  5       ! number of iterations for initializing the integration grid
 ncall2 5000   ! number of calls for computing the integral and finding upper bound
 itmx2    5     ! number of iterations for computing the integral and finding upper bound
 foldcsi   2    ! number of folds on csi integration
@@ -35,7 +35,7 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
-bornonly   0      ! (default 0) if 1 do Born only
+bornonly   1      ! (default 0) if 1 do Born only
 smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
 #withdamp    1      ! (default 0, do not use) use Born-zero damping factor

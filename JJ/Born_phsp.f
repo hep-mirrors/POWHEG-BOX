@@ -16,7 +16,7 @@
       real*8 xx(ndiminteg-3)
       real*8 tau,tau_min,tau_max
       real*8 ycm,ycm_min,ycm_max
-      real*8 cth1,cth1_min,cth1_max
+      real*8 cth1,cth1_min,cth1_max,lcthl,lcthh,lcth,tcth
       real*8 powheginput,beta,tmp
       integer ixx_tau,ixx_ycm,ixx_cth1
       parameter(
@@ -32,8 +32,9 @@ C -   hc^2/(8*pi) = 1.54929*10^7.
 C -   Parameter to select phase space importance sampling:
 C -   psgen=0:     flat in 1/tau, flat in 1/(1-cth1)
 C -   psgen=1:     flat in tau, flat in cth1
+c -   psgen=2:     flat in log tau, flat in log((1+cth1)/(1-cth1))
       integer psgen
-      parameter (psgen=0)
+      parameter (psgen=3)
 
 C -   Phase space: 1 /(16 pi) d tau d y d cth 
 C -   4*kn_ktmin**2 / S < tau < 1
@@ -79,6 +80,10 @@ C -      Sampling flat in 1/tau
 C -      Sampling flat in tau
          tau  = tau_min + xx(ixx_tau) * (tau_max-tau_min)
          kn_jacborn = kn_jacborn * (tau_max-tau_min)
+      elseif(psgen.eq.3) then
+C -      Flat in log(tau)
+         tau = tau_min*exp(xx(ixx_tau) * log(tau_max/tau_min))
+         kn_jacborn = kn_jacborn * tau * log(tau_max/tau_min)
       else
          write(*,*) 'Wrong psgen in gen_born_vars'
          call exit(1)
@@ -112,6 +117,16 @@ C -      Sample cos(theta) as 1/(1-cos(theta)) ~ 1/sin^4(theta/2)
 C -      Sample cos(theta) uniformly
          cth1 = cth1_min + xx(ixx_cth1) * (cth1_max-cth1_min)
          kn_jacborn = kn_jacborn * (cth1_max-cth1_min)
+      elseif(psgen.eq.3) then
+c -      Sample cos(theta) uniformly in log((1-cos)/(1+cos))
+         lcthl=log((1-cth1_max)/(1+cth1_max))
+         lcthh=-lcthl
+         lcth=xx(ixx_cth1)*(lcthh-lcthl)+lcthl
+         kn_jacborn = kn_jacborn * (lcthh-lcthl)
+         tcth=exp(lcth)
+         kn_jacborn = kn_jacborn * tcth
+         cth1=(tcth-1)/(tcth+1)
+         kn_jacborn = kn_jacborn * 2/(tcth+1)**2
       else
          write(*,*) 'Wrong psgen in gen_born_vars'
          call exit(1)
@@ -186,7 +201,7 @@ C -      call checkmass(2,kn_pborn(0,3))
          fact=1d0
       else         
          pt2=kn_cmpborn(1,3)**2+kn_cmpborn(2,3)**2
-         fact=pt2/(pt2+pt2supp)         
+         fact=(pt2/(pt2+pt2supp))**3
       endif
       end
 
@@ -196,9 +211,25 @@ C -      call checkmass(2,kn_pborn(0,3))
       include 'PhysPars.h'
       include 'nlegborn.h'
       include '../include/pwhg_kn.h'
+      logical ini,fixedscale
+      data ini/.true./
       real * 8 muf,mur
       real *8 muref
-      muref=sqrt(kn_cmpborn(1,3)**2+kn_cmpborn(2,3)**2)
+      save ini,fixedscale,muref
+      real * 8 powheginput
+      external powheginput
+      if(ini) then
+         muref=powheginput("#fixedscale")
+         if(muref.lt.0) then
+            fixedscale=.false.
+         else
+            fixedscale=.true.
+         endif
+         ini=.false.
+      endif
+      if(.not.fixedscale) then
+         muref=sqrt(kn_cmpborn(1,3)**2+kn_cmpborn(2,3)**2)
+      endif
       muf=muref
       mur=muref
       end

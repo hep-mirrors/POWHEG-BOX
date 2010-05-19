@@ -9,6 +9,7 @@ c  pwhgfill  :  fills the histograms with data
       implicit none
       include  '../include/LesHouches.h'
       include '../pwhg_book.h'
+      include '../include/pwhg_math.h'
       integer diag
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
@@ -20,30 +21,143 @@ c  pwhgfill  :  fills the histograms with data
 
 c     total cross section sanity check
       diag=1
-      binsize(diag) = 1d0
-      call pwhgbookup(diag,'total','LOG',binsize(diag),0d0,3d0)
+      binsize(diag) = 5d0
+      call pwhgbookup(diag,'total Et','LOG',binsize(diag),0d0,500d0)
 
       diag=diag+1
       binsize(diag) = 1d0
-      call pwhgbookup(diag,'total'//cut,'LOG',binsize(diag),0d0,3d0)
+      call pwhgbookup(diag,'pt inc. jet','LOG',binsize(diag),5d0,100d0)
+
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'pt inc jet, |eta|<0.5jet','LOG',
+     1     binsize(diag),5d0,100d0)
+
+      diag=diag+1
+      binsize(diag) = 1d0
+      call pwhgbookup(diag,'pt j3','LOG',
+     1     binsize(diag),1d0,100d0)
+
+      diag=diag+1
+      binsize(diag) = 0.2d0
+      call pwhgbookup(diag,'eta 2 hardest','LOG',
+     1     binsize(diag),0d0,5d0)
+
+      diag=diag+1
+      binsize(diag) = 0.2d0
+      call pwhgbookup(diag,'eta jet3','LOG',binsize(diag),-5d0,5d0)
+
+      diag=diag+1
+      binsize(diag) = 0.2d0
+      call pwhgbookup(diag,'delta eta 2 hardest','LOG',
+     1     binsize(diag),-5d0,5d0)
+
+
+      diag=diag+1
+      binsize(diag) = pi/50
+      call pwhgbookup(diag,'D Phi 1-2 ','LOG',binsize(diag),0d0,pi)
 
       end
 
+
+      subroutine buildjets(mjets,kt,eta,phi)
+c     arrays to reconstruct jets
+      implicit none
+      include '../include/hepevt.h'
+      integer mjets
+      real * 8 kt(mjets),eta(mjets),phi(mjets)
+      integer maxtrack,maxjet
+      parameter (maxtrack=2048,maxjet=2048)
+      real *8 ptrack(4,maxtrack)
+      real *8 pjet(4,maxjet),pp
+      integer jetvec(maxtrack)
+      integer ihep,j,j1,ntracks,jpart,jjet,mu,njets
+      real * 8 found
+      real * 8 random
+      integer seed
+      data seed/1/
+      save seed
+c     get valid tracks
+c     set up arrays for jet finding
+      do jpart=1,maxtrack
+         do mu=1,4
+            ptrack(mu,jpart)=0d0
+         enddo
+         jetvec(jpart)=0
+      enddo      
+      do jjet=1,maxjet
+         do mu=1,4
+            pjet(mu,jjet)=0d0
+         enddo
+      enddo
+      j1=0
+      found=0
+      ntracks=0
+      njets=0
+c     loop over final state particles to find jets 
+      do ihep=1,nhep
+         if (isthep(ihep).eq.1) then
+            if(ntracks.eq.maxtrack) then
+               write(*,*)
+     #              'analyze: too many particles, increase maxtrack'
+               stop
+            endif
+c     copy momenta to construct jets 
+            ntracks=ntracks+1
+            do mu=1,4
+               ptrack(mu,ntracks)=phep(mu,ihep)
+            enddo
+         endif
+      enddo
+      if (ntracks.eq.0) then
+         return
+      endif
+c     siscone algorithm
+c*********************************************************************
+c      R = 0.7  radius parameter
+c      f = 0.5  overlapping fraction
+c.....run the clustering        
+      call fastjetsiscone(ptrack,ntracks,0.7d0,0.5d0,pjet,njets) 
+c*********************************************************************
+c     fastkt algorithm
+c*********************************************************************
+c      R = 0.7  Radius parameter
+c.....run the clustering 
+c      R = 0.5d0          
+c      ptmin_fastkt = 0d0
+c      call fastjetktwhich(ptrack,ntracks,ptmin_fastkt,R,
+c     #     pjet,njets,jetvec)
+c     now we have the jets
+      mjets=min(mjets,njets)
+      do j=1,mjets
+         kt(j)=sqrt(pjet(1,j)**2+pjet(2,j)**2)
+         pp = sqrt(kt(j)**2+pjet(3,j)**2)
+         eta(j)=0.5d0*log((pp+pjet(3,j))/(pp-pjet(3,j)))
+         phi(j)=atan2(pjet(2,j),pjet(1,j))
+      enddo
+c if we only have two tracks, the hardest jet is ill defined;
+c take one of the two randomly (this will screw up the error estimates,
+c spoiling correlated events ...)
+      if(ntracks.eq.2) then
+         if(random(seed).gt.0.5) then
+            pp=eta(1)
+            eta(1) = eta(2)
+            eta(2) = pp
+            pp = phi(1)
+            phi(1) = phi(2)
+            phi(2) = pp
+         endif
+      endif
+      end
       
      
-      subroutine analysis(dsig)
+      subroutine analysis(dsig0)
       implicit none
-      real * 8 dsig
+      real * 8 dsig0,dsig
       include '../include/hepevt.h'
       include '../include/pwhg_math.h' 
       include  '../include/LesHouches.h'
-      real *8 ptcut,etacut,invmcut
-      real *8 p_lminus(0:3),p_lplus(0:3),pcm(0:3),p_ll(0:3),vec(3),
-     $p_lplus_cm(0:3)
-      real *8 pt_lplus,pt_lminus,eta_lplus,eta_lminus,beta,ctheta,
-     $delphi,mt_v,mv,ptv,yv
       integer ihep,mu
-      logical cuts
       logical ini
       data ini/.true./
       save ini
@@ -52,18 +166,15 @@ c     binsize
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
 c     we need to tell to this analysis file which program is running it
+      real * 8 ktjets(4),etajets(4),phijets(4)
+      integer njets
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
       data WHCPRG/'NLO   '/
-      integer vdecaytemp
-      integer maxnumlep
-      parameter (maxnumlep=10)
-      integer lplvec(maxnumlep),lmivec(maxnumlep)
-      logical foundlep
-      integer i,ilm,ilp,i_lminus,i_lplus,jlminus,jlplus,nlmi,nlpl
-      real *8 mV2ref,mV2
-      real *8 Zmass,Zwidth,Zmass2low,Zmass2high
-      
+      integer j,i
+      real *8 et,dphi
+c from pico to micro
+      dsig=dsig0/1d6
       if (ini) then
          write(*,*) '*****************************'
          if(WHCPRG.eq.'NLO   ') then
@@ -85,29 +196,61 @@ c     we need to tell to this analysis file which program is running it
          write(*,*) '**************************************************'
          ini=.false.
       endif
-
       diag=0
 
-      do mu=0,3
-         pcm(mu)=0d0
+      et=0
+      do ihep=1,nhep
+         if(isthep(ihep).eq.1) then
+            et=et+sqrt(phep(1,ihep)**2+phep(2,ihep)**2)
+         endif
       enddo
-
-c     total sigma (without cuts)
+      if(et.lt.20) return
       diag=diag+1
-      call pwhgfill(diag,1.5d0,dsig/binsize(diag))
+      call pwhgfill(diag,et,dsig)
+
+      njets=3
+
+      call buildjets(njets,ktjets,etajets,phijets) 
+
+      diag=diag+1
+c inclusive jet distribution
+      do j=1,njets
+         call pwhgfill(diag,ktjets(j),dsig)
+      enddo
+      diag=diag+1
+      do j=1,njets
+         if(abs(etajets(j)).lt.0.5) then
+            call pwhgfill(diag,ktjets(j),dsig)
+         endif
+      enddo
+      diag=diag+1
+      if(njets.ge.3) call pwhgfill(diag,ktjets(3),dsig)
+      
+      diag=diag+1
+c eta of two hardest jets
+      do j=1,2
+         if(njets.ge.j) then
+            call pwhgfill(diag,etajets(j),dsig)
+         endif
+      enddo
+      diag=diag+1
+      if(njets.ge.3.and.ktjets(3).gt.5)
+     1     call pwhgfill(diag,etajets(3),dsig)
+
+      diag=diag+1
+      if(njets.ge.2) call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
+
+      diag=diag+1
+      if(njets.ge.2) then
+         dphi=abs(phijets(1)-phijets(2))
+         if(dphi.gt.pi) dphi=dphi-pi*int(dphi/pi)
+         call pwhgfill(diag,abs(phijets(1)-phijets(2)),dsig)
+      endif
 
       if(WHCPRG.eq.'NLO   ') then
          continue
       elseif ((WHCPRG.eq.'HERWIG').or.(WHCPRG.eq.'PYTHIA')) then
          continue
-      endif
-
-      cuts=.true.
-
-      if(cuts) then
-c     total sigma (after cuts)
-         diag=diag+1
-         call pwhgfill(diag,1.5d0,dsig/binsize(diag))
       endif
       end
       
@@ -140,3 +283,7 @@ c     total sigma (after cuts)
          eta=-log(tan(th/2.d0))
       endif
       end
+
+
+
+

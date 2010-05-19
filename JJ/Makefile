@@ -3,21 +3,23 @@ ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
-F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
+F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow \
+#       -fbounds-check
 ## For g77 comment the above and uncomment below
 #F77= g77 -Wall -fno-automatic -ffortran-bounds-check
 ## IMPORTANT: if using g77 remove -static when linking against LHAPDF
 # For debugging uncomment the following
 DEBUG= -ggdb #-pg
 #Do not uncomment this with gfortran
-OPT=#-O3
-SYSOBJ=trapfpe.o
+OPT=-O3
+#SYSOBJ=trapfpe.o
 endif
 
 FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/  -lstdc++
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/
+# -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
@@ -30,11 +32,11 @@ FF=$(F77) $(OPT) $(DEBUG)
 
 INCLUDE =$(shell echo ../include/*.h *.h madgraph/*.inc)
 
-#PDFPACK=mlmpdfif.o hvqpdfpho.o
-LHAPDF_CONFIG=lhapdf-config
-PDFPACK=lhapdfif.o
-LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF #-static
-LIBS=$(LIBSLHAPDF)
+PDFPACK=mlmpdfif.o hvqpdfpho.o
+#LHAPDF_CONFIG=lhapdf-config
+#PDFPACK=lhapdfif.o
+#LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF #-static
+#LIBS=$(LIBSLHAPDF)
 LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
 LIBS += $(LIBSMADGRAPH)
 

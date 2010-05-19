@@ -142,12 +142,13 @@ c     !ER: cambiato
       include '../include/LesHouches.h'
       integer iunit
       common/ciunit/iunit
-      real * 8 mass_elect
-      common /cmass_elect/mass_elect
+      real * 8 mass_lepton
+      common /cmass_lepton/mass_lepton    
+      integer  mu
       call lhefreadev(iunit)
       idprup=lprup(1)
-      if (mass_elect.ne.0d0) then
-         call momenta_reshuffle(3,4,5,mass_elect)
+      if (mass_lepton.ne.0d0) then
+         call momenta_reshuffle(3,4,5,mass_lepton)
       endif
       end
 

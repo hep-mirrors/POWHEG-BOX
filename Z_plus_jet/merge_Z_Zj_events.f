@@ -3,7 +3,7 @@
       character * 50 nameZj,nameZ,nameZjZ,nameZjZtmp,namehdr,
      #     nameZj_merged,nameZ_merged,nameZjZ_top
       integer iunZj,iunZ,iunZjZ,iunZjZtmp,iunZjZhdr,
-     #     iunZ_merged,iunZj_merged
+     #     iunZ_merged,iunZj_merged,iun,iuntop
       integer eventsZj,eventsZ,j,ios,lun,i,k,max_num_events
       character * 100 string,line
       character * 4 stringa
@@ -25,11 +25,11 @@ c      logical write_mode
       real * 8 ptV,ptj1
       common/cptV/ptV,ptj1
       INTEGER JSEED(2)
-      logical use_ptV,write_separated
+      logical use_ptV,write_separated,write_evnts
       integer ptlint,pthint
       character * 2 cptlint,cpthint
-      real * 8 mass_elect
-      common /cmass_elect/mass_elect      
+      real * 8 mass_lepton
+      common /cmass_lepton/mass_lepton      
       character * 2 prog
       logical make_plots
       include '../include/hepevt.h'
@@ -38,24 +38,27 @@ c      logical write_mode
       ptl = 10d0
       pth = 30d0      
 
-c     if true, use pt of the vector boson as merging
-c     criterium. Otherwise use ptj1
+c     if true, the program uses the pt of the vector boson as merging
+c     criterium. Otherwise use pt of the leading jet
       use_ptV = .false.
 
+c     if true, the program makes the plots while building the merged file. 
+      make_plots=.true.
+
+c      mass_lepton=0.51099891d-3
+      mass_lepton=0d0
+      
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+cccccccc               MORE SPECIFIC OPTIONS
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     if true, frite event file
+      write_evnts = .false.
 
 c     Write, in addition to the merged event file, two more files with 
 c     the merged events, separated according to their orgin, i.e. if
 c     they come from the Z or from the Z+j sample 
       write_separated = .false.
-
-c     If true, it makes the plots while building the merged file. 
-c     The total X sec is wrong
-      make_plots=.true.
-
-
-c      mass_elect=0.51099891d-3
-      mass_elect=0d0
-      
 
       nameZj         = 'pwgevents_Zj.lhe'
       nameZ          = 'pwgevents_Z.lhe'
@@ -132,7 +135,7 @@ c      open(unit=iunZjZhdr,status='SCRATCH')
       endif
 
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      max_num_events = 30000
+      max_num_events = 100000000
       eventsZj = max_num_events
       eventsZ  = max_num_events
       write(*,*) ''
@@ -223,7 +226,7 @@ c     accept event with probability (1-H)
          if (rn.lt.1-H(pt)) then
 c     event accepted
             nev_Zj=nev_Zj+1
-            call lhefwritev(iunZjZtmp)     
+            if (write_evnts) call lhefwritev(iunZjZtmp)     
             if (write_separated) call lhefwritev(iunZj_merged)     
             if (make_plots) then
                call draw_plots(1d0)
@@ -251,7 +254,7 @@ c     accept event with probability H
          if (rn.lt.H(pt)) then
 c     event accepted
             nev_Z=nev_Z+1
-            call lhefwritev(iunZjZtmp)     
+            if (write_evnts) call lhefwritev(iunZjZtmp)     
             if (write_separated) call lhefwritev(iunZ_merged)    
             if (make_plots) then
                call draw_plots(1d0)
@@ -287,27 +290,44 @@ c     write temporary header
 
  123  continue
       nev_ZjZ = nev_Zj + nev_Z
-
-c     compute total cross section
-      write(*,*) 'Z events in file ',eventsZ
-      write(*,*) 'Z+j events in file ',eventsZj      
-      write(*,*) 'KEPT',nev_Z,' Z events, out of ',event_read_Z
-      write(*,*) 'KEPT',nev_Zj,' Z+j events, out of ',event_read_Zj
-      write(*,*) 'Total number of events merged ',nev_ZjZ
-      write(*,*) 'must be approx equal',XsecZ/event_read_Z,
-     #     XsecZj/event_read_Zj
-
       if (write_separated) then
 c     these two files will be rewritten
          rewind(iunZj_merged)
          rewind(iunZ_merged)
       endif
-      
+
+c     compute total cross section      
       Xsectot = (XsecZ/event_read_Z)*nev_ZjZ
       write(*,*) 'Total merged X sec',Xsectot
 
       call close_plots(nameZjZ_top,Xsectot)
       call SMC_finalize
+
+c     save info in the top file
+      call newunit(iuntop)
+      open(unit=iuntop,file=nameZjZ_top,status='unknown')
+      do i=1,100000000
+         read(iuntop,'(a)',err=711,end=711) string         
+      enddo
+ 711  backspace(iuntop)      
+
+      do i=1,2
+         if (i.eq.1) then
+            iun = 6
+         else
+            iun = iuntop
+         endif
+         write(iun,*) '( Z events read ',event_read_Z,' / ',eventsZ
+         write(iun,*) '( Z events kept ',nev_Z,'   % = ', 
+     #        (1d0*nev_Z)/event_read_Z
+         write(iun,*) '( Zj events read ',event_read_Zj,' / ',eventsZj
+         write(iun,*) '( Zj events kept ',nev_Zj,'   % = ', 
+     #        (1d0*nev_Zj)/event_read_Zj       
+         write(iun,*) '( Total merged X sec',Xsectot
+         write(iun,*) '( must be approx equal',XsecZ/event_read_Z,
+     #        XsecZj/event_read_Zj           
+      enddo
+
 
 c     write header
       xsecup(1) = Xsectot
@@ -317,19 +337,19 @@ c     write header
          call lhefwritehdr(iunZj_merged)
       endif
 c     call randomrestore
-
-      rewind(iunZjZtmp)
-      do i=1,nev_ZjZ
-         call lhefreadev(iunZjZtmp) 
+      if (write_evnts) then
+         rewind(iunZjZtmp)
+         do i=1,nev_ZjZ
+            call lhefreadev(iunZjZtmp) 
 cccccccccccccccccccccccccccccccccccccccccccc
 c     fix idprup equal throughout the merged file
-         idprup=lprup(1)
+            idprup=lprup(1)
 cccccccccccccccccccccccccccccccccccccccccccc
-         call lhefwritev(iunZjZ)
-      enddo
-      string='</LesHouchesEvents>'
-      write(iunZjZ,'(a)') string
-
+            call lhefwritev(iunZjZ)
+         enddo
+         string='</LesHouchesEvents>'
+         write(iunZjZ,'(a)') string
+      endif
       close(iunZj)
       close(iunZ)
       close(iunZjZ)
@@ -963,55 +983,6 @@ c      end
 
 
 
-
-c     i1<i2
-      subroutine momenta_reshuffle(ires,i1,i2,decmass)
-      implicit none
-      include '../include/LesHouches.h'
-      integer ires,i1,i2,j,ii,i
-      real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
-      if (i1.ge.i2) then
-         write(*,*) 'wrong sequence in momenta_reshuffle'
-         stop
-      endif
-c construct boosts to vector boson rest frame 
-      do j=1,3
-         beta(j)=-pup(j,ires)/pup(4,ires)
-      enddo
-      modbeta=sqrt(beta(1)**2+beta(2)**2+beta(3)**2)
-      do j=1,3
-         beta(j)=beta(j)/modbeta
-         betainv(j)=-beta(j)
-      enddo
-      do i=1,2
-         if (i.eq.1) then 
-            ii=i1
-         else
-            ii=i2
-         endif
-C     first decay product 
-         ptemp(0)=pup(4,ii)
-         do j=1,3
-            ptemp(j)=pup(j,ii)
-         enddo
-         call mboost(1,beta,modbeta,ptemp,ptemp)
-         ptemp1(0)=0.5d0*pup(5,ires)
-         do j=1,3
-            ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)**2 - decmass**2)
-         enddo
-         call mboost(1,betainv,modbeta,ptemp1,ptemp)
-         do j=1,3
-            pup(j,ii)=ptemp(j)
-         enddo
-         pup(4,ii)=ptemp(0)
-c     abs to avoid tiny negative values in case of neutrinos
-         pup(5,ii)=sqrt(abs(pup(4,ii)**2-pup(1,ii)**2
-     $        -pup(2,ii)**2-pup(3,ii)**2))
-      enddo
-      end
-
-
-
 c      subroutine open_plots
 c      implicit none
 c      call init_hist
@@ -1188,3 +1159,108 @@ c     program to read numbers from input line
       call ireads(str,80,iarr,nel,nread)
       end
       
+
+
+
+
+c     i1<i2
+      subroutine momenta_reshuffle(ires,i1,i2,decmass)
+      implicit none
+      integer ires,i1,i2
+      real * 8 decmass
+      include '../include/LesHouches.h'
+      integer j,ii,i,mu
+      real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta
+c construct boosts to vector boson rest frame 
+      do j=1,3
+         beta(j)=-pup(j,ires)/pup(4,ires)
+      enddo
+      modbeta=sqrt(beta(1)**2+beta(2)**2+beta(3)**2)
+      do j=1,3
+         beta(j)=beta(j)/modbeta
+         betainv(j)=-beta(j)
+      enddo
+      do i=1,2
+         if (i.eq.1) then 
+            ii=i1
+         else
+            ii=i2
+         endif
+c     decay products
+         ptemp(0)=pup(4,ii)
+         do j=1,3
+            ptemp(j)=pup(j,ii)
+         enddo
+         call mboost(1,beta,modbeta,ptemp,ptemp)
+         ptemp1(0)=0.5d0*pup(5,ires)
+         do j=1,3
+            ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)+decmass)
+     #           *sqrt(ptemp1(0) - decmass)
+         enddo
+         call mboost(1,betainv,modbeta,ptemp1,ptemp)
+         do j=1,3
+            pup(j,ii)=ptemp(j)
+         enddo
+c         pup(4,ii)=ptemp(0)
+cc     abs to avoid tiny negative values in case of neutrinos
+c         pup(5,ii)=sqrt(abs(pup(4,ii)**2-pup(1,ii)**2
+c     $        -pup(2,ii)**2-pup(3,ii)**2))
+
+c     preserve final-state decay product mass
+         pup(5,ii) = decmass
+         pup(4,ii) = sqrt(decmass**2 + pup(1,ii)**2 + pup(2,ii)**2 
+     #        +pup(3,ii)**2)
+      enddo
+      end
+
+
+
+
+
+c     i1<i2
+      subroutine momenta_reshuffle_old(ires,i1,i2,decmass)
+      implicit none
+      include '../include/LesHouches.h'
+      integer ires,i1,i2,j,ii,i
+      real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
+      if (i1.ge.i2) then
+         write(*,*) 'wrong sequence in momenta_reshuffle'
+         stop
+      endif
+c construct boosts to vector boson rest frame 
+      do j=1,3
+         beta(j)=-pup(j,ires)/pup(4,ires)
+      enddo
+      modbeta=sqrt(beta(1)**2+beta(2)**2+beta(3)**2)
+      do j=1,3
+         beta(j)=beta(j)/modbeta
+         betainv(j)=-beta(j)
+      enddo
+      do i=1,2
+         if (i.eq.1) then 
+            ii=i1
+         else
+            ii=i2
+         endif
+C     first decay product 
+         ptemp(0)=pup(4,ii)
+         do j=1,3
+            ptemp(j)=pup(j,ii)
+         enddo
+         call mboost(1,beta,modbeta,ptemp,ptemp)
+         ptemp1(0)=0.5d0*pup(5,ires)
+         do j=1,3
+            ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)**2 - decmass**2)
+         enddo
+         call mboost(1,betainv,modbeta,ptemp1,ptemp)
+         do j=1,3
+            pup(j,ii)=ptemp(j)
+         enddo
+         pup(4,ii)=ptemp(0)
+c     abs to avoid tiny negative values in case of neutrinos
+         pup(5,ii)=sqrt(abs(pup(4,ii)**2-pup(1,ii)**2
+     $        -pup(2,ii)**2-pup(3,ii)**2))
+      enddo
+      end
+
+

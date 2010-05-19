@@ -68,7 +68,7 @@ c     It is used in the generation of the Born phase space
       masswindow = 30
 c      ph_Zmass2low=(ph_Zmass-masswindow*ph_Zwidth)**2
 c      ph_Zmass2high=(ph_Zmass+masswindow*ph_Zwidth)**2
-      ph_Hmass2low=max(0,ph_Hmass-masswindow*ph_Hwidth)
+      ph_Hmass2low=max(0d0,ph_Hmass-masswindow*ph_Hwidth)
       ph_Hmass2low=ph_Hmass2low**2
       ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)**2
 c      ph_Hmass2low=0d0

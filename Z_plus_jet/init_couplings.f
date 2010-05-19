@@ -3,7 +3,7 @@
       include 'PhysPars.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
-      real * 8 masswindow
+      real * 8 masswindow_low,masswindow_high
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -26,9 +26,11 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 c     set mass windows around Z-mass peak in unit of ph_Zwidth
 c     It is used in the generation of the Born phase space
-      masswindow = 10
-      ph_Zmass2low=(ph_Zmass-masswindow*ph_Zwidth)**2
-      ph_Zmass2high=(ph_Zmass+masswindow*ph_Zwidth)**2
+      masswindow_low = 25
+      masswindow_high = 35
+      ph_Zmass2low=max(0d0,ph_Zmass-masswindow_low*ph_Zwidth)
+      ph_Zmass2low=ph_Zmass2low**2
+      ph_Zmass2high=(ph_Zmass+masswindow_high*ph_Zwidth)**2
       ph_ZmZw = ph_Zmass * ph_Zwidth
       ph_unit_e = sqrt(4*pi*ph_alphaem)
 

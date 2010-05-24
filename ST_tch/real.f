@@ -9,7 +9,7 @@ c     to use madgraph
 
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
-      real * 8 amp2,amp2_mad,amp2mcnlo
+      real * 8 amp2,amp2_mad
 
 
 
@@ -60,13 +60,6 @@ cccccccccccccccccc
       parameter (mad_ME=.true.)
 
       
-
-      logical away_sing
-      logical ME_check
-      parameter (ME_check=.false.)
-      logical mcnlo_ME
-      parameter (mcnlo_ME=.false.)
-
       integer rflav_t(nleg)
 
 
@@ -82,13 +75,6 @@ c     for another issue.
       enddo
 ccccccccccccccccccccccccccccccccccccccc
 
-
-      if(ME_check) then
-         if((.not.mad_ME).or.(.not.mcnlo_ME)) then
-            write(*,*) 'if ME_check=true, mad and mcnlo ME are needed'
-            call exit(1)
-         endif
-      endif
 
 c     local copy of input variables (p->krlab_ME_int, rflav->rflav_loc)
 c     convert input flavour string into rflav_ME_int, needed by ME
@@ -266,21 +252,6 @@ c     dg -> tuxd (t-channel only)
       endif
 
 
-ccccccccccccccccccccccccccccccccccccccccccccccc
-      if(mcnlo_ME) then
-c     USING MCNLO SUBROUTINES
-c$$$         chflag=2
-c$$$         if(rflav_loc(nleg).eq.0) then
-c$$$c     qq subprocesses
-c$$$            amp2mcnlo=st_real_qq_reg(rflav_ME_int,krlab_ME_int) *(4d0*pi*st_alpha)
-c$$$         elseif((rflav_loc(1).eq.0).or.(rflav_loc(2).eq.0)) then
-c$$$c     qg or gq subprocesses
-c$$$            amp2mcnlo=st_real_qg_reg(rflav_ME_int,krlab_ME_int) *(4d0*pi*st_alpha)
-c$$$         endif
-      endif
-cccccccccccccccccccccccccccccccccccccccccccccc
-
-
 cccccccccccccccccccccccccccccccccccccccccccccc
       if(mad_ME) then
 c     USING MADGRAPH SUBROUTINES
@@ -375,24 +346,6 @@ ccccccccccccccccccccccccccccccccccccc
 cccccccccccccccccccccccccccc
 c     assign output
       amp2_mad=amp2_mad               *ckm_b_t
-      amp2mcnlo=amp2mcnlo *ewcoupl**2 *ckm_b_t
-
-      if(ME_check) then
-         away_sing=.true.
-c     qq processes
-         if(rflav_loc(5).eq.0) then
-            if((dabs(amp2_mad/amp2mcnlo-1d0).gt.1d-6).and.(away_sing)) then
-               write(*,*) 'QQ: MAD/MCNLO----> ',amp2_mad/amp2mcnlo
-               write(*,*) '\t rflav ',rflav
-            endif
-         else
-c     qg processes
-            if((dabs(amp2_mad/amp2mcnlo-1d0).gt.1d-6).and.(away_sing)) then
-               write(*,*) 'QG: MAD/MCNLO----> ',amp2_mad/amp2mcnlo
-               write(*,*) '\t rflav ',rflav
-            endif
-         endif
-      endif
 
       amp2=amp2_mad/(st_alpha/2./pi)
 cccccccccccccccccccccc

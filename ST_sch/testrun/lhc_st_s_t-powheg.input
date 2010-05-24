@@ -1,16 +1,4 @@
-! ST-schannel production parameter
-ttype 1           ! 1 for t, -1 for tbar
-
-!decay parameters
-topdecaymode 10000   ! decay mode: the 5 digits correspond to the following
-                     ! top-decay channels (l,mu,tau,u,c) 
-                     ! 0 means close, 1 open
-tdec/elbranching 0.108  ! W electronic branching fraction
-tdec/emass 0.000511
-tdec/mumass 0.1056      
-tdec/taumass 1.777      
-tdec/cmass 1.5
-tdec/bmass 5.0
+! ST-schannel inputs
 
 numevts 100000    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
@@ -18,8 +6,6 @@ ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)
 ebeam1 7000d0     ! energy of beam 1
 ebeam2 7000d0     ! energy of beam 2
 
-ndns1 131         ! pdf set for hadron 1 (mlm numbering)
-ndns2 131         ! pdf set for hadron 2 (mlm numbering)
 ! To be set only if using LHA pdfs
 lhans1 10050      ! pdf set for hadron 1 (LHA numbering)
 lhans2 10050      ! pdf set for hadron 2 (LHA numbering)	
@@ -48,7 +34,7 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
 #bornonly   0      ! (default 0) if 1 do Born only
-#smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
+#smartsig   0      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
 #withdamp    1      ! (default 0, do not use) use Born-zero damping factor
 #ptsqmin    0.8    ! (default 0.8 GeV) minimum pt for generation of radiation
@@ -69,3 +55,35 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
 
 
+! PROCESS SPECIFIC PARAMETERS
+! production parameters
+ttype 1           ! 1 for t, -1 for tbar
+
+topmass      175.0
+wmass        80.4
+sthw2        0.23113
+alphaem_inv  137.0359895
+
+CKM_Vud   0.9740  
+CKM_Vus   0.2225
+CKM_Vub   0.000001
+CKM_Vcd   0.2225
+CKM_Vcs   0.9740
+CKM_Vcb   0.000001
+CKM_Vtd   0.000001
+CKM_Vts   0.000001
+CKM_Vtb   1.0
+
+! decay parameters
+topwidth  1.7
+wwidth    2.141
+
+topdecaymode 10000   ! decay mode: the 5 digits correspond to the following
+                     ! top-decay channels (l,mu,tau,u,c) 
+                     ! 0 means close, 1 open
+tdec/elbranching 0.108  ! W electronic branching fraction
+tdec/emass 0.000511
+tdec/mumass 0.1056      
+tdec/taumass 1.777      
+tdec/cmass 1.5
+tdec/bmass 5.0

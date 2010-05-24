@@ -5,7 +5,6 @@
       include '../include/pwhg_kn.h'
       include '../include/pwhg_math.h'
       include 'PhysPars.h'
-      include 'stpcblks.h'
 
       real * 8 xborn(ndiminteg-3)
       real * 8 vec(3),cth,cthdec,phidec,s,
@@ -71,11 +70,11 @@ c     born phase space: variables
          m2top=topmass_pow**2
       endif
 
-c     sets mtop used in mcnlo subroutines (passed with stpcblks.h)
-c     Needed here because in case of BW distribution, this mass
-c     has to change event by event
-      xm1=sqrt(m2top)
-      xm12=m2top
+c$$$c     sets mtop used in mcnlo subroutines (passed with stpcblks.h)
+c$$$c     Needed here because in case of BW distribution, this mass
+c$$$c     has to change event by event
+c$$$      xm1=sqrt(m2top)
+c$$$      xm12=m2top
 
       tau_min=(sqrt(m2top)+0d0)**2/s_had
       tau_max=1d0

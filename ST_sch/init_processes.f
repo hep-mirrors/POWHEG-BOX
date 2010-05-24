@@ -41,7 +41,7 @@ ccccccccccccccccccccccccccccccc
 
 
 cccccccccccccccccccccccccccccc
-c     t-channel subprocesses
+c     s-channel subprocesses
 cccccccccccccccccccccccccccccc
 
 

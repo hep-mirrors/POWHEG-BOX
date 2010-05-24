@@ -29,13 +29,8 @@ ccccccccccccccccccccc
 ccccccccccccccccccccc
 
 ccccccccccccccc
-      include 'stpcblks.h'
       include '../include/pwhg_flst.h'
       integer i_fb
-      logical mcnlo_ME
-      parameter (mcnlo_ME=.false.)
-      real *8 matout(8,2)
-      real *8 amp2mcnlo_udx,amp2mcnlo_dxu
 c     To pass the already subtracted virtuals to sigsoftvirt
       real *8 fksfinite(1000)
       common/cfksfinite/fksfinite
@@ -74,52 +69,6 @@ c     Mandelstam variables
       t=dotp(kblab(0,3),kblab(0,3)) - 2d0*dotp(kblab(0,1),kblab(0,3))
       u=dotp(kblab(0,3),kblab(0,3))-s-t
 
-
-      if(mcnlo_ME) then
-c     fill 'mcnlo' common block
-c     stpcblks.h already filled in init_parameters (see set_mcnlo_parameters routine)
-c     However xmuf2h1, xmuf2h2 and xmur2 need to be assigned and to be equal
-c     among themselves (otherwise f2sv doesn't work)
-         xmuf2h1 =st_mufact2
-         xmuf2h2 =st_mufact2
-         xmur2   =st_muren2
-
-c     calculate FKS-SUBTRACTED virtual amplitudes
-c$$$         call f2sv(s,t,2,matout)
-         amp2mcnlo_udx=matout(1,1) *ewcoupl**2
-         amp2mcnlo_dxu=matout(3,1) *ewcoupl**2
-
-c     Fill virtual table (no flux, no as/2pi)
-
-c     ttype*flst_born needed because flst_born can be
-c     the tbar-production flavour assignment, and the three_ch
-c     mechanism works for t-production flavour assignment.
-c     Here the use of bflav_loc is not possible, because I need
-c     to run over all i_fb values, not only on the current one.
-
-         do i_fb=1,flst_nborn
-c     udx
-            if ((three_ch(ttype*flst_born(1,i_fb)).eq.2).and.
-     #(three_ch(ttype*flst_born(2,i_fb)).eq.1)) then
-               fksfinite(i_fb)=amp2mcnlo_udx
-     #*CKM(abs(flst_born(1,i_fb)),abs(flst_born(2,i_fb)))**2 
-     #* CKM(abs(flst_born(3,i_fb)),abs(flst_born(4,i_fb)))**2 
-c     dxu
-            elseif ((three_ch(ttype*flst_born(1,i_fb)).eq.1).and.
-     #(three_ch(ttype*flst_born(2,i_fb)).eq.2)) then
-               fksfinite(i_fb)=amp2mcnlo_dxu
-     #*CKM(abs(flst_born(1,i_fb)),abs(flst_born(2,i_fb)))**2 
-     #* CKM(abs(flst_born(3,i_fb)),abs(flst_born(4,i_fb)))**2
-            else
-               write(*,*) 'Error in fill_virtual, (s), mcnlo check'
-               call exit(1)
-            endif
-         enddo
-
-      endif
-
-
-      
 ccccccccccccccccccccccccccccccccccccccccccc
 c     >>> S CHANNEL <<<
 ccccccccccccccccccccccccccccccccccccccccccc
@@ -189,7 +138,7 @@ c     the presence of (mu^2/s) in front of the result.
       double complex c1
 
       logical check_virt
-      parameter (check_virt=.true.)
+      parameter (check_virt=.false.)
 
       if(dabs(m2/topmass_pow**2 -1.).gt.1d-6) then
          write(*,*) 'virt_finite: problem with top offshelness'
@@ -246,44 +195,44 @@ c     to 1/Ga[1-ep] up to order O(ep^3), we have
      $     +(A2l_s+A2h_s) *0.5*(log(mur2/s))**2
 ccccccccccccccccccccccccccccc
 
-      if(check_virt) then
-c     A0 from ZTOP, s-channel
-         A0= 
-     $        + (-0.5*(log(s/m2))**2 -5./2.*log(s/m2) 
-     $        - 2*log(m2/(s-m2))*log(s/m2) -3.*log(m2/(s-m2))
-     $        + m2/s*log(m2/(s-m2)) -(log(m2/(s-m2)))**2
-     $        +2*ddilog(lambda))
-     $        - 14. +pi**2 +pi**2/3.
-c     A1, by crossing the Laenen&al result
-         A1= -11./2. -2.*log(m2/(s-m2)) -log(s/m2)
-c     from previous A0 and A1
-         prop_ztop=
-     $        A0 
-     $        + pi**2/2.        !from different EulerGamma
-     $        + A1*log(mur2/s)
-     $        - 3./2.*(log(mur2/s))**2
-
-c     from Campbell-Ellis, MCFM
-c     Notice that the use of lnrat is crucial in order
-c     to get all pi's from analytical continuation
-         call coefs(s,m2,cv0,cv,c1)
-         prop_mcfm=cv0+cv
-
-         if(dabs(prop/prop_mcfm-1).gt.1d-6) then
-            write(*,*) '>>>>> POW/MCFM, light ',
-     $           (A0l_s+A1l_s*log(mur2/s)+A2l_s*0.5*(log(mur2/s))**2)/cv0
-
-            write(*,*) '>>>>> POW/MCFM, heavy ',
-     $     (A0h_s+A1h_s*log(mur2/s)+A2h_s*0.5*(log(mur2/s))**2)/cv
-
-            write(*,*) 'POW/MCFM ',prop/prop_mcfm
-            call exit(1)
-         endif
-         if(dabs(prop/prop_ztop-1).gt.1d-6) then
-            write(*,*) 'POW/ZTOP ',prop/prop_ztop
-            call exit(1)
-         endif
-      endif
+c$$$      if(check_virt) then
+c$$$c     A0 from ZTOP, s-channel
+c$$$         A0= 
+c$$$     $        + (-0.5*(log(s/m2))**2 -5./2.*log(s/m2) 
+c$$$     $        - 2*log(m2/(s-m2))*log(s/m2) -3.*log(m2/(s-m2))
+c$$$     $        + m2/s*log(m2/(s-m2)) -(log(m2/(s-m2)))**2
+c$$$     $        +2*ddilog(lambda))
+c$$$     $        - 14. +pi**2 +pi**2/3.
+c$$$c     A1, by crossing the Laenen&al result
+c$$$         A1= -11./2. -2.*log(m2/(s-m2)) -log(s/m2)
+c$$$c     from previous A0 and A1
+c$$$         prop_ztop=
+c$$$     $        A0 
+c$$$     $        + pi**2/2.        !from different EulerGamma
+c$$$     $        + A1*log(mur2/s)
+c$$$     $        - 3./2.*(log(mur2/s))**2
+c$$$
+c$$$c     from Campbell-Ellis, MCFM
+c$$$c     Notice that the use of lnrat is crucial in order
+c$$$c     to get all pi's from analytical continuation
+c$$$         call coefs(s,m2,cv0,cv,c1)
+c$$$         prop_mcfm=cv0+cv
+c$$$
+c$$$         if(dabs(prop/prop_mcfm-1).gt.1d-6) then
+c$$$            write(*,*) '>>>>> POW/MCFM, light ',
+c$$$     $           (A0l_s+A1l_s*log(mur2/s)+A2l_s*0.5*(log(mur2/s))**2)/cv0
+c$$$
+c$$$            write(*,*) '>>>>> POW/MCFM, heavy ',
+c$$$     $     (A0h_s+A1h_s*log(mur2/s)+A2h_s*0.5*(log(mur2/s))**2)/cv
+c$$$
+c$$$            write(*,*) 'POW/MCFM ',prop/prop_mcfm
+c$$$            call exit(1)
+c$$$         endif
+c$$$         if(dabs(prop/prop_ztop-1).gt.1d-6) then
+c$$$            write(*,*) 'POW/ZTOP ',prop/prop_ztop
+c$$$            call exit(1)
+c$$$         endif
+c$$$      endif
 
       prop=prop*vcf
       fvirt_udx=prop*amp2_udx   !1
@@ -299,133 +248,133 @@ c     add part not proportional to born
 
 
 
-      subroutine coefs(s12,mtsq,cv0,cv,c1)
-      implicit none
-!:      include 'constants.f'
-      include '../include/pwhg_math.h'
-!:      include 'epinv.f'
-
-!:      include 'epinv2.f'
-
-!:      include 'scale.f'
-      include '../include/pwhg_st.h'
-
-!:      include 'scheme.f'
-
-      
-      double precision cv,cv0,Li2la
-      double precision s12,mtsq,taucs,ddilog,eta,la,oml
-      double complex lnrat,logoml,logla,xl12,logsca,Kfun,c1
-
-cccccccccccccccccccccccccccccccccccccc
-c     !:
-      double precision epinv
-      double precision epinv2
-      real *8 musq
-      double complex cone
-      real *8 pisqo6
-      character*4 scheme
-      external lnrat
-
-
-      cone=(1d0,0d0)
-      pisqo6=pi**2/6.
-      scheme='tH-V'    
-      epinv=0d0
-      epinv2=0d0
-      musq=st_muren2
-cccccccccccccccccccccccccccccccccccccc
-
-      if (scheme .eq.'dred') then
-C------        eta=0 4d-hel
-         eta=0d0
-      elseif (scheme .eq. 'tH-V') then
-C------       eta=1 t'Hooft Veltman
-         eta=1d0
-      endif
-
-C**********************************************************************
-C   Massless case
-C   Taken from
-C   %\cite{Altarelli:1979ub}
-C   \bibitem{Altarelli:1979ub}
-C   G.~Altarelli, R.~K.~Ellis and G.~Martinelli,
-C   %``Large Perturbative Corrections To The Drell-Yan Process In QCD,''
-C   Nucl.\ Phys.\ B {\bf 157}, 461 (1979).
-C   %%CITATION = NUPHA,B157,461;%%
-C   Using Eqn(58) with normalization changed to 
-C   as/2/pi*cf*(4*pi)^ep/Gamma(1-ep) 
-C   Taking account that Gamma(1-ep)^2/Gamma(1-2*ep)=1-ep^2*pi^2/6
-C**********************************************************************
-      xl12=lnrat(-s12,musq) 
-      cv0=-2d0*epinv*(epinv2-dble(xl12))-dble(xl12**2)
-     .           -3d0*(epinv-dble(xl12))-7d0-eta
-
-
-
-C---- this routine has been constructed following closely 
-C---- the notation of
-C---- %\cite{Gottschalk:1980rv}
-C---- \bibitem{Gottschalk:1980rv}
-C---- T.~Gottschalk,
-C---- %``Chromodynamic Corrections To Neutrino Production Of Heavy Quarks,''
-C---- Phys.\ Rev.\ D {\bf 23}, 56 (1981).
-C---- %%CITATION = PHRVA,D23,56;%%
-C----- Adapted from Eqs.(A8,A9)
-
-      taucs=s12-mtsq
-      la=-s12/(mtsq-s12)
-      oml=1d0-la
-C-----oml=mtsq/(mtsq-s12)
-      logoml=-lnrat(-taucs,mtsq)
-      logsca=lnrat(-taucs,musq)
-      Kfun=dcmplx(oml/la)*logoml
-
-c--- Minus sign relative to Gottschalk since incoming b has momentum
-c--- vector reversed for the t-channel process
-c--- s-channel process follows by crossing
-      c1=-dcmplx(2d0)*Kfun
-
-      if (la .lt. 1d0) then
-      Li2la=ddilog(la)
-      else
-      logla=lnrat(-s12,-taucs)
-      Li2la=pisqo6-ddilog(oml)-dble(logla*logoml)
-      endif
-      cv=-epinv*epinv2
-     . -epinv*(2.5d0+dble(logoml-logsca))
-     . -0.5d0*(11d0+eta)-pisqo6+2d0*Li2la-dble(Kfun)
-     .  -0.5d0*dble(logoml*(cone-logoml))
-     .  +2.5d0*dble(logsca)+dble(logsca*logoml)-0.5d0*dble(logsca**2)
-
-      return
-      end
-
-
-      double complex function Lnrat(x,y)
-************************************************************************
-*     Author: R.K. Ellis                                               *
-*     August, 1998.                                                    *
-c     Lnrat(x,y)=log(x-i*ep)-log(y-i*ep)                               *
-c     this function is hard-wired for sign of epsilon we must adjust   *
-c     sign of x and y to get the right sign for epsilon                *
-************************************************************************
-      implicit none
-!:      include 'constants.f'
-      include '../include/pwhg_math.h'
-      double precision x,y,htheta
-C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
-      htheta(x)=0.5+0.5*sign(1d0,x)
-
-
-c$$$      real *8 half,one
-c$$$      one=1d0
-c$$$      half=0.5d0
-
-      double complex impi
-      impi=(0d0,1d0)*pi
-
-
-      Lnrat=dcmplx(dlog(abs(x/y)))-impi*dcmplx((htheta(-x)-htheta(-y)))
-      return
-      end
+c$$$      subroutine coefs(s12,mtsq,cv0,cv,c1)
+c$$$      implicit none
+c$$$!:      include 'constants.f'
+c$$$      include '../include/pwhg_math.h'
+c$$$!:      include 'epinv.f'
+c$$$
+c$$$!:      include 'epinv2.f'
+c$$$
+c$$$!:      include 'scale.f'
+c$$$      include '../include/pwhg_st.h'
+c$$$
+c$$$!:      include 'scheme.f'
+c$$$
+c$$$      
+c$$$      double precision cv,cv0,Li2la
+c$$$      double precision s12,mtsq,taucs,ddilog,eta,la,oml
+c$$$      double complex lnrat,logoml,logla,xl12,logsca,Kfun,c1
+c$$$
+c$$$cccccccccccccccccccccccccccccccccccccc
+c$$$c     !:
+c$$$      double precision epinv
+c$$$      double precision epinv2
+c$$$      real *8 musq
+c$$$      double complex cone
+c$$$      real *8 pisqo6
+c$$$      character*4 scheme
+c$$$      external lnrat
+c$$$
+c$$$
+c$$$      cone=(1d0,0d0)
+c$$$      pisqo6=pi**2/6.
+c$$$      scheme='tH-V'    
+c$$$      epinv=0d0
+c$$$      epinv2=0d0
+c$$$      musq=st_muren2
+c$$$cccccccccccccccccccccccccccccccccccccc
+c$$$
+c$$$      if (scheme .eq.'dred') then
+c$$$C------        eta=0 4d-hel
+c$$$         eta=0d0
+c$$$      elseif (scheme .eq. 'tH-V') then
+c$$$C------       eta=1 t'Hooft Veltman
+c$$$         eta=1d0
+c$$$      endif
+c$$$
+c$$$C**********************************************************************
+c$$$C   Massless case
+c$$$C   Taken from
+c$$$C   %\cite{Altarelli:1979ub}
+c$$$C   \bibitem{Altarelli:1979ub}
+c$$$C   G.~Altarelli, R.~K.~Ellis and G.~Martinelli,
+c$$$C   %``Large Perturbative Corrections To The Drell-Yan Process In QCD,''
+c$$$C   Nucl.\ Phys.\ B {\bf 157}, 461 (1979).
+c$$$C   %%CITATION = NUPHA,B157,461;%%
+c$$$C   Using Eqn(58) with normalization changed to 
+c$$$C   as/2/pi*cf*(4*pi)^ep/Gamma(1-ep) 
+c$$$C   Taking account that Gamma(1-ep)^2/Gamma(1-2*ep)=1-ep^2*pi^2/6
+c$$$C**********************************************************************
+c$$$      xl12=lnrat(-s12,musq) 
+c$$$      cv0=-2d0*epinv*(epinv2-dble(xl12))-dble(xl12**2)
+c$$$     .           -3d0*(epinv-dble(xl12))-7d0-eta
+c$$$
+c$$$
+c$$$
+c$$$C---- this routine has been constructed following closely 
+c$$$C---- the notation of
+c$$$C---- %\cite{Gottschalk:1980rv}
+c$$$C---- \bibitem{Gottschalk:1980rv}
+c$$$C---- T.~Gottschalk,
+c$$$C---- %``Chromodynamic Corrections To Neutrino Production Of Heavy Quarks,''
+c$$$C---- Phys.\ Rev.\ D {\bf 23}, 56 (1981).
+c$$$C---- %%CITATION = PHRVA,D23,56;%%
+c$$$C----- Adapted from Eqs.(A8,A9)
+c$$$
+c$$$      taucs=s12-mtsq
+c$$$      la=-s12/(mtsq-s12)
+c$$$      oml=1d0-la
+c$$$C-----oml=mtsq/(mtsq-s12)
+c$$$      logoml=-lnrat(-taucs,mtsq)
+c$$$      logsca=lnrat(-taucs,musq)
+c$$$      Kfun=dcmplx(oml/la)*logoml
+c$$$
+c$$$c--- Minus sign relative to Gottschalk since incoming b has momentum
+c$$$c--- vector reversed for the t-channel process
+c$$$c--- s-channel process follows by crossing
+c$$$      c1=-dcmplx(2d0)*Kfun
+c$$$
+c$$$      if (la .lt. 1d0) then
+c$$$      Li2la=ddilog(la)
+c$$$      else
+c$$$      logla=lnrat(-s12,-taucs)
+c$$$      Li2la=pisqo6-ddilog(oml)-dble(logla*logoml)
+c$$$      endif
+c$$$      cv=-epinv*epinv2
+c$$$     . -epinv*(2.5d0+dble(logoml-logsca))
+c$$$     . -0.5d0*(11d0+eta)-pisqo6+2d0*Li2la-dble(Kfun)
+c$$$     .  -0.5d0*dble(logoml*(cone-logoml))
+c$$$     .  +2.5d0*dble(logsca)+dble(logsca*logoml)-0.5d0*dble(logsca**2)
+c$$$
+c$$$      return
+c$$$      end
+c$$$
+c$$$
+c$$$      double complex function Lnrat(x,y)
+c$$$************************************************************************
+c$$$*     Author: R.K. Ellis                                               *
+c$$$*     August, 1998.                                                    *
+c$$$c     Lnrat(x,y)=log(x-i*ep)-log(y-i*ep)                               *
+c$$$c     this function is hard-wired for sign of epsilon we must adjust   *
+c$$$c     sign of x and y to get the right sign for epsilon                *
+c$$$************************************************************************
+c$$$      implicit none
+c$$$!:      include 'constants.f'
+c$$$      include '../include/pwhg_math.h'
+c$$$      double precision x,y,htheta
+c$$$C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
+c$$$      htheta(x)=0.5+0.5*sign(1d0,x)
+c$$$
+c$$$
+c$$$c$$$      real *8 half,one
+c$$$c$$$      one=1d0
+c$$$c$$$      half=0.5d0
+c$$$
+c$$$      double complex impi
+c$$$      impi=(0d0,1d0)*pi
+c$$$
+c$$$
+c$$$      Lnrat=dcmplx(dlog(abs(x/y)))-impi*dcmplx((htheta(-x)-htheta(-y)))
+c$$$      return
+c$$$      end

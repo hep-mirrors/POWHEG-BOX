@@ -131,21 +131,8 @@ cccccccccccccccccc
       integer three_ch(-6:6)
       data three_ch /-2,1,-2,1,-2,1,0,-1,2,-1,2,-1,2/
 
-      real *8 matout(8,2)
       real *8 ckm_b_t
 cccccccccccccccc
-
-      logical ME_check
-      parameter (ME_check=.false.)
-      logical mcnlo_ME
-      parameter (mcnlo_ME=.false.)
-
-      if(ME_check) then
-         if(.not.mcnlo_ME) then
-            write(*,*) 'if ME_check=true, mcnlo ME are needed'
-            call exit(1)
-         endif
-      endif
 
 c     check
       if (bflav(3).ne.6) then
@@ -176,26 +163,6 @@ ccccccccccccccccccccccccccccccccccccccccccc
       amp2_dxd=t*(t-topmass_pow**2)/(u-wmass_pow**2)**2/4
       amp2_ud= s*(s-topmass_pow**2)/(u-wmass_pow**2)**2/4
       amp2_du= s*(s-topmass_pow**2)/(t-wmass_pow**2)**2/4
-
-      if(mcnlo_ME) then
-c     calculate born squared amplitudes
-c     stpcblks.h already filled in init_parameters (see set_mcnlo_parameters routine)
-c$$$         call fborn(s,t,2,matout)
-      endif
-      if(ME_check) then
-         if(dabs(amp2_ddx/matout(2,2)-1d0).gt.1d-6) then
-            write(*,*) 'ddx: exact/MCNLO----> ',amp2_ddx,matout(2,2)
-         endif
-         if(dabs(amp2_dxd/matout(4,2)-1d0).gt.1d-6) then
-            write(*,*) 'dxd: exact/MCNLO----> ',amp2_dxd,matout(4,2)
-         endif
-         if(dabs(amp2_ud/matout(3,2)-1d0).gt.1d-6) then
-            write(*,*) 'ud: exact/MCNLO----> ',amp2_ud,matout(3,2)
-         endif
-         if(dabs(amp2_du/matout(1,2)-1d0).gt.1d-6) then
-            write(*,*) 'du: exact/MCNLO----> ',amp2_du,matout(1,2)
-         endif
-      endif
 
 
 c     Fill born amp2
@@ -804,8 +771,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     variables needed to generate the decay with the veto method:
 c     phase space & luminosity upper bound
       real *8 cfacbound
-c      data cfacbound/0.25d0/
-      data cfacbound/0.02d0/
+      data cfacbound/1.5d0/
       save cfacbound
 c     decay upper bound normalization factor
       real *8 boundnorm
@@ -1190,7 +1156,7 @@ c     'phase-space & luminosity' hit-and-miss return point
 c     generate top virtuality (offshellness)
       m678_2=virt2(topmass_pow,topwidth_pow,random())
 c     Uncomment the following to test strict t pole approximation
-c      m678_2=topmass_pow**2
+c$$$      m678_2=topmass_pow**2
       if(m678_2.lt.wmass_pow**2) then
 c         write(*,*) 'PS&LUM HIT&MISS, m678'
          goto 2
@@ -1211,6 +1177,8 @@ c     along its BW should improve the efficency.
 c     m68_2 is generated flat between the correct boundaries that depends
 c     upon m67.
       m67_2=virt2(wmass_pow,wwidth_pow,random())
+c     Uncomment the following to test strict w pole approximation
+c      m67_2=wmass_pow**2
       if((m67_2.lt.(m6+m7)**2).or.(m67_2.gt.m678_2)) then
 c         write(*,*) 'PS&LUM HIT&MISS, m67'
          goto 2
@@ -1221,8 +1189,6 @@ c     extreme (large) values of m67 seem to cause problems to herwig; avoid them
 c         write(*,*) 'extreme value for m67: ',sqrt(m67_2),' regenerate'
          goto 2
       endif
-c     Uncomment the following to test strict w pole approximation
-c      m67_2=wmass_pow**2
       m68min_2=m23min_2(sqrt(m678_2),sqrt(m67_2),m7,m6,m8)
       m68max_2=m23max_2(sqrt(m678_2),sqrt(m67_2),m7,m6,m8)
       m68_2=m68min_2 +random()*(m68max_2-m68min_2)
@@ -1288,8 +1254,8 @@ c     W->lv phase space: lvec/wmass (l and v assumed massless)
      $(decmom(wmass_pow,m6,m7)/wmass_pow)
 c     Jacobian: sqrt(tau) * (m3rec/E3rec)  in CM frame
       m3rec_dec=E3rec_3reccm
-      m3rec_undec=topmass_pow**2 +
-     $2d0*dotp(k3reccm_undec(0,3),k3reccm_undec(0,4)) !:!
+      m3rec_undec=sqrt(topmass_pow**2 +
+     $2d0*dotp(k3reccm_undec(0,3),k3reccm_undec(0,4))) !:!
       sqrttau_dec  = E3rec_cm+kcm_undec(0,5)
       sqrttau_undec= kcm_undec(0,3)+kcm_undec(0,4)+
      $kcm_undec(0,5)
@@ -1332,7 +1298,7 @@ c     hit-and-miss rule, as in POWHEG-hvq
 
       if(cfac.gt.cfacbound) then
          write(*,*) 'PS&LUM upper bound violation: cfac/cfacbound= ',
-     $cfac/cfacbound,' new PS&MUL upper bound is = ',cfac
+     $cfac/cfacbound,' new PS&LUM upper bound is = ',cfac
          cfacbound=cfac
       endif
 
@@ -1754,7 +1720,7 @@ c     external
 c     save
       save ini,totprbs,iwp,mass,sin2cabibbo
       if(ini.eq.2) return
-      if(ini.eq.0) then
+      if(ini.eq.0.or.iw1.eq.-1000) then
          ini=1
 c     on first run look for decay mode in powheginput
          imode=powheginput('topdecaymode')

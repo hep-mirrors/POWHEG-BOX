@@ -29,13 +29,8 @@ ccccccccccccccccccccc
 ccccccccccccccccccccc
 
 ccccccccccccccc
-      include 'stpcblks.h'
       include '../include/pwhg_flst.h'
       integer i_fb
-      logical mcnlo_ME
-      parameter (mcnlo_ME=.false.)
-      real *8 matout(8,2)
-      real *8 amp2mcnlo_ddx,amp2mcnlo_dxd,amp2mcnlo_ud,amp2mcnlo_du
 c     To pass the already subtracted virtuals to sigsoftvirt
       real *8 fksfinite(1000)
       common/cfksfinite/fksfinite
@@ -74,67 +69,6 @@ c     Mandelstam variables
       t=dotp(kblab(0,3),kblab(0,3)) - 2d0*dotp(kblab(0,1),kblab(0,3)) 
       u=dotp(kblab(0,3),kblab(0,3))-s-t
 
-
-      if(mcnlo_ME) then
-c     fill 'mcnlo' common block
-c     stpcblks.h already filled in init_parameters (see set_mcnlo_parameters routine)
-c     However xmuf2h1, xmuf2h2 and xmur2 need to be assigned and to be equal
-c     among themselves (otherwise f2sv doesn't work)
-         xmuf2h1 =st_mufact2
-         xmuf2h2 =st_mufact2
-         xmur2   =st_muren2
-
-c     calculate FKS-SUBTRACTED virtual amplitudes
-c$$$         call f2sv(s,t,2,matout)
-         amp2mcnlo_ddx=matout(2,2) *ewcoupl**2
-         amp2mcnlo_dxd=matout(4,2) *ewcoupl**2
-         amp2mcnlo_ud=matout(3,2)  *ewcoupl**2
-         amp2mcnlo_du=matout(1,2)  *ewcoupl**2
-
-c     Fill virtual table (no flux, no as/2pi)
-
-c     ttype*flst_born needed because flst_born can be
-c     the tbar-production flavour assignment, and the three_ch
-c     mechanism works for t-production flavour assignment.
-c     Here the use of bflav_loc is not possible, because I need
-c     to run over all i_fb values, not only on the current one.
-
-         do i_fb=1,flst_nborn
-c     ddx
-            if ((three_ch(ttype*flst_born(1,i_fb)).eq.-1).and.
-     #(three_ch(ttype*flst_born(2,i_fb)).eq.1)) then
-               fksfinite(i_fb)=amp2mcnlo_ddx
-     #*CKM(abs(flst_born(1,i_fb)),abs(flst_born(3,i_fb)))**2 
-     #* CKM(abs(flst_born(2,i_fb)),abs(flst_born(4,i_fb)))**2 
-c     dxd
-            elseif ((three_ch(ttype*flst_born(1,i_fb)).eq.1).and.
-     #(three_ch(ttype*flst_born(2,i_fb)).eq.-1)) then
-               fksfinite(i_fb)=amp2mcnlo_dxd
-     #*CKM(abs(flst_born(1,i_fb)),abs(flst_born(4,i_fb)))**2 
-     #* CKM(abs(flst_born(2,i_fb)),abs(flst_born(3,i_fb)))**2
-c     ud
-            elseif ((three_ch(ttype*flst_born(1,i_fb)).eq.2).and.
-     #(three_ch(ttype*flst_born(2,i_fb)).eq.-1)) then
-               fksfinite(i_fb)=amp2mcnlo_ud
-     #*CKM(abs(flst_born(1,i_fb)),abs(flst_born(4,i_fb)))**2 
-     #* CKM(abs(flst_born(2,i_fb)),abs(flst_born(3,i_fb)))**2
-c     du
-         elseif ((three_ch(ttype*flst_born(1,i_fb)).eq.-1).and.
-     #(three_ch(ttype*flst_born(2,i_fb)).eq.2)) then
-            fksfinite(i_fb)=amp2mcnlo_du
-     #*CKM(abs(flst_born(1,i_fb)),abs(flst_born(3,i_fb)))**2 
-     #* CKM(abs(flst_born(2,i_fb)),abs(flst_born(4,i_fb)))**2       
-         else
-            write(*,*) 'Error in fill_virtual, (t), mcnlo check'
-            call exit(1)
-         endif
-      enddo
-
-
-      endif
-
-
-      
 ccccccccccccccccccccccccccccccccccccccccccc
 c     >>> T CHANNEL <<<
 ccccccccccccccccccccccccccccccccccccccccccc
@@ -216,7 +150,7 @@ c     the presence of (mu^2/s) in front of the result.
       double complex c1
 
       logical check_virt
-      parameter (check_virt=.true.)
+      parameter (check_virt=.false.)
 
       if(dabs(m2/topmass_pow**2 -1.).gt.1d-6) then
          write(*,*) 'virt_finite: problem with top offshelness'
@@ -257,27 +191,27 @@ c     Result obtained from Laenen&al. paper.
      $     - 3./2.*(log(mur2/s))**2
 ccccccccccccccccccccccccccccc
 
-      if(check_virt) then
-c     from Campbell-Ellis, MCFM
-c$$$      if     (nwz .eq. +1) then
-c$$$        ub=+fac*virtqqb(1,2,3,4,5,6)
-c$$$        bu=+fac*virtqqb(2,1,3,4,5,6)
-c$$$        bubar=+fac*virtqqb(6,1,3,4,5,2)
-c$$$        ubarb=+fac*virtqqb(6,2,3,4,5,1)
-c$$$      elseif (nwz .eq. -1) then
-c$$$        ub=fac*virtqqb(6,2,4,3,5,1)
-c$$$        bu=fac*virtqqb(6,1,4,3,5,2)
-c$$$        bubar=fac*virtqqb(2,1,4,3,5,6)
-c$$$        ubarb=fac*virtqqb(1,2,4,3,5,6)
+c$$$      if(check_virt) then
+c$$$c     from Campbell-Ellis, MCFM
+c$$$c$$$      if     (nwz .eq. +1) then
+c$$$c$$$        ub=+fac*virtqqb(1,2,3,4,5,6)
+c$$$c$$$        bu=+fac*virtqqb(2,1,3,4,5,6)
+c$$$c$$$        bubar=+fac*virtqqb(6,1,3,4,5,2)
+c$$$c$$$        ubarb=+fac*virtqqb(6,2,3,4,5,1)
+c$$$c$$$      elseif (nwz .eq. -1) then
+c$$$c$$$        ub=fac*virtqqb(6,2,4,3,5,1)
+c$$$c$$$        bu=fac*virtqqb(6,1,4,3,5,2)
+c$$$c$$$        bubar=fac*virtqqb(2,1,4,3,5,6)
+c$$$c$$$        ubarb=fac*virtqqb(1,2,4,3,5,6)
+c$$$c$$$      endif
+c$$$         call coefs(t,m2,cv0,cv,c1)
+c$$$         prop_mcfm=cv0+cv
+c$$$
+c$$$         if(dabs(prop/prop_mcfm-1).gt.1d-6) then
+c$$$            write(*,*) 'POW/MCFM ',prop/prop_mcfm
+c$$$            call exit(1)
+c$$$         endif
 c$$$      endif
-         call coefs(t,m2,cv0,cv,c1)
-         prop_mcfm=cv0+cv
-
-         if(dabs(prop/prop_mcfm-1).gt.1d-6) then
-            write(*,*) 'POW/MCFM ',prop/prop_mcfm
-            call exit(1)
-         endif
-      endif
 
       prop=prop*vcf
       fvirt_ddx=prop*amp2_ddx !2
@@ -312,27 +246,27 @@ c     Result obtained from Laenen&al. paper.
      $     - 3./2.*(log(mur2/s))**2
 ccccccccccccccccccccccccccccc
 
-      if(check_virt) then
-c     from Campbell-Ellis, MCFM
-c$$$      if     (nwz .eq. +1) then
-c$$$        ub=+fac*virtqqb(1,2,3,4,5,6)
-c$$$        bu=+fac*virtqqb(2,1,3,4,5,6)
-c$$$        bubar=+fac*virtqqb(6,1,3,4,5,2)
-c$$$        ubarb=+fac*virtqqb(6,2,3,4,5,1)
-c$$$      elseif (nwz .eq. -1) then
-c$$$        ub=fac*virtqqb(6,2,4,3,5,1)
-c$$$        bu=fac*virtqqb(6,1,4,3,5,2)
-c$$$        bubar=fac*virtqqb(2,1,4,3,5,6)
-c$$$        ubarb=fac*virtqqb(1,2,4,3,5,6)
+c$$$      if(check_virt) then
+c$$$c     from Campbell-Ellis, MCFM
+c$$$c$$$      if     (nwz .eq. +1) then
+c$$$c$$$        ub=+fac*virtqqb(1,2,3,4,5,6)
+c$$$c$$$        bu=+fac*virtqqb(2,1,3,4,5,6)
+c$$$c$$$        bubar=+fac*virtqqb(6,1,3,4,5,2)
+c$$$c$$$        ubarb=+fac*virtqqb(6,2,3,4,5,1)
+c$$$c$$$      elseif (nwz .eq. -1) then
+c$$$c$$$        ub=fac*virtqqb(6,2,4,3,5,1)
+c$$$c$$$        bu=fac*virtqqb(6,1,4,3,5,2)
+c$$$c$$$        bubar=fac*virtqqb(2,1,4,3,5,6)
+c$$$c$$$        ubarb=fac*virtqqb(1,2,4,3,5,6)
+c$$$c$$$      endif
+c$$$         call coefs(u,m2,cv0,cv,c1)
+c$$$         prop_mcfm=cv0+cv
+c$$$
+c$$$         if(dabs(prop/prop_mcfm-1).gt.1d-6) then
+c$$$            write(*,*) 'POW/MCFM ',prop/prop_mcfm
+c$$$            call exit(1)
+c$$$         endif
 c$$$      endif
-         call coefs(u,m2,cv0,cv,c1)
-         prop_mcfm=cv0+cv
-
-         if(dabs(prop/prop_mcfm-1).gt.1d-6) then
-            write(*,*) 'POW/MCFM ',prop/prop_mcfm
-            call exit(1)
-         endif
-      endif
 
       prop=prop*vcf
       fvirt_dxd=prop*amp2_dxd !4
@@ -349,175 +283,134 @@ c     add part not proportional to born
 
 
 
-      subroutine coefs(s12,mtsq,cv0,cv,c1)
-      implicit none
-!:      include 'constants.f'
-      include '../include/pwhg_math.h'
-!:      include 'epinv.f'
-
-!:      include 'epinv2.f'
-
-!:      include 'scale.f'
-      include '../include/pwhg_st.h'
-
-!:      include 'scheme.f'
-
-      
-      double precision cv,cv0,Li2la
-      double precision s12,mtsq,taucs,ddilog,eta,la,oml
-      double complex lnrat,logoml,logla,xl12,logsca,Kfun,c1
-
-cccccccccccccccccccccccccccccccccccccc
-c     !:
-      double precision epinv
-      double precision epinv2
-      real *8 musq
-      double complex cone
-      real *8 pisqo6
-      character*4 scheme
-      external lnrat
-
-
-      cone=(1d0,0d0)
-      pisqo6=pi**2/6.
-      scheme='tH-V'    
-      epinv=0d0
-      epinv2=0d0
-      musq=st_muren2
-cccccccccccccccccccccccccccccccccccccc
-
-      if (scheme .eq.'dred') then
-C------        eta=0 4d-hel
-         eta=0d0
-      elseif (scheme .eq. 'tH-V') then
-C------       eta=1 t'Hooft Veltman
-         eta=1d0
-      endif
-
-C**********************************************************************
-C   Massless case
-C   Taken from
-C   %\cite{Altarelli:1979ub}
-C   \bibitem{Altarelli:1979ub}
-C   G.~Altarelli, R.~K.~Ellis and G.~Martinelli,
-C   %``Large Perturbative Corrections To The Drell-Yan Process In QCD,''
-C   Nucl.\ Phys.\ B {\bf 157}, 461 (1979).
-C   %%CITATION = NUPHA,B157,461;%%
-C   Using Eqn(58) with normalization changed to 
-C   as/2/pi*cf*(4*pi)^ep/Gamma(1-ep) 
-C   Taking account that Gamma(1-ep)^2/Gamma(1-2*ep)=1-ep^2*pi^2/6
-C**********************************************************************
-      xl12=lnrat(-s12,musq) 
-      cv0=-2d0*epinv*(epinv2-dble(xl12))-dble(xl12**2)
-     .           -3d0*(epinv-dble(xl12))-7d0-eta
-
-
-
-C---- this routine has been constructed following closely 
-C---- the notation of
-C---- %\cite{Gottschalk:1980rv}
-C---- \bibitem{Gottschalk:1980rv}
-C---- T.~Gottschalk,
-C---- %``Chromodynamic Corrections To Neutrino Production Of Heavy Quarks,''
-C---- Phys.\ Rev.\ D {\bf 23}, 56 (1981).
-C---- %%CITATION = PHRVA,D23,56;%%
-C----- Adapted from Eqs.(A8,A9)
-
-      taucs=s12-mtsq
-      la=-s12/(mtsq-s12)
-      oml=1d0-la
-C-----oml=mtsq/(mtsq-s12)
-      logoml=-lnrat(-taucs,mtsq)
-      logsca=lnrat(-taucs,musq)
-      Kfun=dcmplx(oml/la)*logoml
-
-c--- Minus sign relative to Gottschalk since incoming b has momentum
-c--- vector reversed for the t-channel process
-c--- s-channel process follows by crossing
-      c1=-dcmplx(2d0)*Kfun
-
-      if (la .lt. 1d0) then
-      Li2la=ddilog(la)
-      else
-      logla=lnrat(-s12,-taucs)
-      Li2la=pisqo6-ddilog(oml)-dble(logla*logoml)
-      endif
-      cv=-epinv*epinv2
-     . -epinv*(2.5d0+dble(logoml-logsca))
-     . -0.5d0*(11d0+eta)-pisqo6+2d0*Li2la-dble(Kfun)
-     .  -0.5d0*dble(logoml*(cone-logoml))
-     .  +2.5d0*dble(logsca)+dble(logsca*logoml)-0.5d0*dble(logsca**2)
-
-      return
-      end
-
-
-      double complex function Lnrat(x,y)
-************************************************************************
-*     Author: R.K. Ellis                                               *
-*     August, 1998.                                                    *
-c     Lnrat(x,y)=log(x-i*ep)-log(y-i*ep)                               *
-c     this function is hard-wired for sign of epsilon we must adjust   *
-c     sign of x and y to get the right sign for epsilon                *
-************************************************************************
-      implicit none
-!:      include 'constants.f'
-      include '../include/pwhg_math.h'
-      double precision x,y,htheta
-C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
-      htheta(x)=0.5+0.5*sign(1d0,x)
-
-
-c$$$      real *8 half,one
-c$$$      one=1d0
-c$$$      half=0.5d0
-
-      double complex impi
-      impi=(0d0,1d0)*pi
-
-
-      Lnrat=dcmplx(dlog(abs(x/y)))-impi*dcmplx((htheta(-x)-htheta(-y)))
-      return
-      end
-
-
-
-
-
-
-c$$$      double precision function virtqqb(ju,jb,jn,je,jc,jd)
+c$$$      subroutine coefs(s12,mtsq,cv0,cv,c1)
 c$$$      implicit none
+c$$$!:      include 'constants.f'
+c$$$      include '../include/pwhg_math.h'
+c$$$!:      include 'epinv.f'
 c$$$
-c$$$      integer ju,jd,jn,je,jc,jb
-c$$$      include 'constants.f'
-c$$$      include 'masses.f'
-c$$$      include 'sprods_com.f'
-c$$$      include 'zprods_com.f'
-c$$$      double precision snec,prop,cv,cv0,mtsq
-c$$$      double complex c1,amp,ampho
+c$$$!:      include 'epinv2.f'
+c$$$
+c$$$!:      include 'scale.f'
+c$$$      include '../include/pwhg_st.h'
+c$$$
+c$$$!:      include 'scheme.f'
+c$$$
+c$$$      
+c$$$      double precision cv,cv0,Li2la
+c$$$      double precision s12,mtsq,taucs,ddilog,eta,la,oml
+c$$$      double complex lnrat,logoml,logla,xl12,logsca,Kfun,c1
+c$$$
+c$$$cccccccccccccccccccccccccccccccccccccc
+c$$$c     !:
+c$$$      double precision epinv
+c$$$      double precision epinv2
+c$$$      real *8 musq
+c$$$      double complex cone
+c$$$      real *8 pisqo6
+c$$$      character*4 scheme
+c$$$      external lnrat
 c$$$
 c$$$
-c$$$      mtsq=mt**2
-c$$$      snec=+s(jn,je)+s(je,jc)+s(jc,jn)
+c$$$      cone=(1d0,0d0)
+c$$$      pisqo6=pi**2/6.
+c$$$      scheme='tH-V'    
+c$$$      epinv=0d0
+c$$$      epinv2=0d0
+c$$$      musq=st_muren2
+c$$$cccccccccccccccccccccccccccccccccccccc
 c$$$
-c$$$      call coefs(s(ju,jd),mtsq,cv0,cv,c1)
-c$$$
-c$$$      if (s(ju,jd) .lt. 0d0) then
-c$$$      prop=(s(ju,jd)-wmass**2)**2
-c$$$      else
-c$$$      prop=(s(ju,jd)-wmass**2)**2+(wmass*wwidth)**2
+c$$$      if (scheme .eq.'dred') then
+c$$$C------        eta=0 4d-hel
+c$$$         eta=0d0
+c$$$      elseif (scheme .eq. 'tH-V') then
+c$$$C------       eta=1 t'Hooft Veltman
+c$$$         eta=1d0
 c$$$      endif
-c$$$      prop=prop*((snec-mt**2)**2+(mt*twidth)**2)
-c$$$      prop=prop*((s(jn,je)-wmass**2)**2+(wmass*wwidth)**2)
 c$$$
-c$$$      amp=za(jc,jn)*zb(ju,jb)
-c$$$     . *(zb(je,jc)*za(jc,jd)+zb(je,jn)*za(jn,jd))
-c$$$      ampho=za(jc,jn)*zb(ju,jb)
-c$$$     . *(dcmplx(cv0+cv)*(zb(je,jc)*za(jc,jd)+zb(je,jn)*za(jn,jd))
-c$$$     . +c1*dcmplx(0.5d0)*zb(je,jb)*za(jb,jd))
+c$$$C**********************************************************************
+c$$$C   Massless case
+c$$$C   Taken from
+c$$$C   %\cite{Altarelli:1979ub}
+c$$$C   \bibitem{Altarelli:1979ub}
+c$$$C   G.~Altarelli, R.~K.~Ellis and G.~Martinelli,
+c$$$C   %``Large Perturbative Corrections To The Drell-Yan Process In QCD,''
+c$$$C   Nucl.\ Phys.\ B {\bf 157}, 461 (1979).
+c$$$C   %%CITATION = NUPHA,B157,461;%%
+c$$$C   Using Eqn(58) with normalization changed to 
+c$$$C   as/2/pi*cf*(4*pi)^ep/Gamma(1-ep) 
+c$$$C   Taking account that Gamma(1-ep)^2/Gamma(1-2*ep)=1-ep^2*pi^2/6
+c$$$C**********************************************************************
+c$$$      xl12=lnrat(-s12,musq) 
+c$$$      cv0=-2d0*epinv*(epinv2-dble(xl12))-dble(xl12**2)
+c$$$     .           -3d0*(epinv-dble(xl12))-7d0-eta
 c$$$
-c$$$      virtqqb=dble(amp*dconjg(ampho))/prop
+c$$$
+c$$$
+c$$$C---- this routine has been constructed following closely 
+c$$$C---- the notation of
+c$$$C---- %\cite{Gottschalk:1980rv}
+c$$$C---- \bibitem{Gottschalk:1980rv}
+c$$$C---- T.~Gottschalk,
+c$$$C---- %``Chromodynamic Corrections To Neutrino Production Of Heavy Quarks,''
+c$$$C---- Phys.\ Rev.\ D {\bf 23}, 56 (1981).
+c$$$C---- %%CITATION = PHRVA,D23,56;%%
+c$$$C----- Adapted from Eqs.(A8,A9)
+c$$$
+c$$$      taucs=s12-mtsq
+c$$$      la=-s12/(mtsq-s12)
+c$$$      oml=1d0-la
+c$$$C-----oml=mtsq/(mtsq-s12)
+c$$$      logoml=-lnrat(-taucs,mtsq)
+c$$$      logsca=lnrat(-taucs,musq)
+c$$$      Kfun=dcmplx(oml/la)*logoml
+c$$$
+c$$$c--- Minus sign relative to Gottschalk since incoming b has momentum
+c$$$c--- vector reversed for the t-channel process
+c$$$c--- s-channel process follows by crossing
+c$$$      c1=-dcmplx(2d0)*Kfun
+c$$$
+c$$$      if (la .lt. 1d0) then
+c$$$      Li2la=ddilog(la)
+c$$$      else
+c$$$      logla=lnrat(-s12,-taucs)
+c$$$      Li2la=pisqo6-ddilog(oml)-dble(logla*logoml)
+c$$$      endif
+c$$$      cv=-epinv*epinv2
+c$$$     . -epinv*(2.5d0+dble(logoml-logsca))
+c$$$     . -0.5d0*(11d0+eta)-pisqo6+2d0*Li2la-dble(Kfun)
+c$$$     .  -0.5d0*dble(logoml*(cone-logoml))
+c$$$     .  +2.5d0*dble(logsca)+dble(logsca*logoml)-0.5d0*dble(logsca**2)
 c$$$
 c$$$      return
 c$$$      end
 c$$$
+c$$$
+c$$$      double complex function Lnrat(x,y)
+c$$$************************************************************************
+c$$$*     Author: R.K. Ellis                                               *
+c$$$*     August, 1998.                                                    *
+c$$$c     Lnrat(x,y)=log(x-i*ep)-log(y-i*ep)                               *
+c$$$c     this function is hard-wired for sign of epsilon we must adjust   *
+c$$$c     sign of x and y to get the right sign for epsilon                *
+c$$$************************************************************************
+c$$$      implicit none
+c$$$!:      include 'constants.f'
+c$$$      include '../include/pwhg_math.h'
+c$$$      double precision x,y,htheta
+c$$$C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
+c$$$      htheta(x)=0.5+0.5*sign(1d0,x)
+c$$$
+c$$$
+c$$$c$$$      real *8 half,one
+c$$$c$$$      one=1d0
+c$$$c$$$      half=0.5d0
+c$$$
+c$$$      double complex impi
+c$$$      impi=(0d0,1d0)*pi
+c$$$
+c$$$
+c$$$      Lnrat=dcmplx(dlog(abs(x/y)))-impi*dcmplx((htheta(-x)-htheta(-y)))
+c$$$      return
+c$$$      end
+

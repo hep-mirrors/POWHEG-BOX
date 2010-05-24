@@ -25,15 +25,43 @@ c     setting physical parameters
 
 c     top mass
       topmass_pow=175d0
+      topmass_pow=powheginput('topmass')
+      if(topmass_pow.lt.0) then
+         write(*,*) 'Input error: topmass ',topmass_pow
+         call exit(1)
+      endif
+
 c     top width
       topwidth_pow=1.7d0
+      topwidth_pow=powheginput('topwidth')
+      if(topwidth_pow.lt.0) then
+         write(*,*) 'Input error: topwidth ',topwidth_pow
+         call exit(1)
+      endif
 
 c     ew parameters
 c     true inputs are wmass, alphaem(zmass), sthw2
 c     alphaem is evaluated at the top mass
       wmass_pow=80.4d0
+      wmass_pow=powheginput('wmass')
+      if(wmass_pow.lt.0) then
+         write(*,*) 'Input error: wmass ',wmass_pow
+         call exit(1)
+      endif
+
       wwidth_pow=2.141d0
+      wwidth_pow=powheginput('wwidth')
+      if(wwidth_pow.lt.0) then
+         write(*,*) 'Input error: wwidth ',wwidth_pow
+         call exit(1)
+      endif
+
       sthw2_pow=0.23113d0
+      sthw2_pow=powheginput('sthw2')
+      if(sthw2_pow.lt.0) then
+         write(*,*) 'Input error: sthw2 ',sthw2_pow
+         call exit(1)
+      endif
 
 c     typical values for alphaem:
 c     Thompson value:    1/137.0359895d0
@@ -44,6 +72,11 @@ c     at top mass (175)  1d0/127.011989
 c     definition of alphaem_pow value, according to aemrun
       if(aemrun.eq.0) then
          alphaem_inv=137.0359895d0
+         alphaem_inv=powheginput('alphaem_inv')
+         if(alphaem_inv.lt.0) then
+            write(*,*) 'Input error: alphaem_inv ',alphaem_inv
+            call exit(1)
+         endif
          alphaem_pow=1d0/alphaem_inv
          zmass_pow=91.188d0   !Not relevant in POWHEG; needed only by set_madgraph_parameters
       elseif(aemrun.eq.1) then
@@ -52,6 +85,7 @@ c     In this case zmass is needed by the alfaem function to set a reference
 c     point for the running of alphaem. zmass needed also by set_madgraph_parameters.
 c     This reference value is read and used by the function alfaem itself
 c     that will assume alfaem(zmass)=1/alphaem_inv.
+         write(*,*) 'aemrun option not yet implemented' 
          alphaem_inv=127.934
          zmass_pow=92d0
          alphaem_pow=alfaem(topmass_pow**2)
@@ -70,6 +104,25 @@ c     ckm matrix entries
       CKM_pow(3,1)= 1d-6
       CKM_pow(3,2)= 1d-6
       CKM_pow(3,3)= 1d0
+
+      CKM_pow(1,1)= powheginput('CKM_Vud')
+      CKM_pow(1,2)= powheginput('CKM_Vus') 
+      CKM_pow(1,3)= powheginput('CKM_Vub') 
+      CKM_pow(2,1)= powheginput('CKM_Vcd') 
+      CKM_pow(2,2)= powheginput('CKM_Vcs') 
+      CKM_pow(2,3)= powheginput('CKM_Vcb') 
+      CKM_pow(3,1)= powheginput('CKM_Vtd') 
+      CKM_pow(3,2)= powheginput('CKM_Vts') 
+      CKM_pow(3,3)= powheginput('CKM_Vtb') 
+
+      do i=1,3
+         do j=1,3
+            if(CKM_pow(i,j).lt.0d0) then
+               write(*,*) 'Input error: CKM (i,j)= ',i,j
+               call exit(1)
+            endif
+         enddo
+      enddo
 
 c$$$c     ckm matrix entries (test 2)
 c$$$      CKM_pow(1,1)= 0.57735
@@ -108,8 +161,8 @@ c$$$      CKM_pow(3,3)= 0.57735
       CKM(6,5)=CKM_pow(3,3)
       CKM(5,6)=CKM_pow(3,3)
 
-c     setting mcnlo parameters (needed for amplitudes subroutines)
-      call set_mcnlo_parameters
+c$$$c     setting mcnlo parameters (needed for amplitudes subroutines)
+c$$$      call set_mcnlo_parameters
 
 c     setting madgraph parameters (needed for madgraph subroutines)
       call set_madgraph_parameters
@@ -135,30 +188,6 @@ c     setting madgraph parameters (needed for madgraph subroutines)
          write(*,*) '--------------------------------------'
       endif
 
-      end
-
-c     setting of MCNLO inputs
-      subroutine set_mcnlo_parameters
-      include 'PhysPars.h'
-      include 'stpcblks.h'
-
-      write(*,*) 'POWHEG: set_mcnlo_parameters called'
-
-c     MCNLO fixed parameters.
-
-c     xm12, con BW, varia da evento a evento e viene settato in gen_born-vars
-
-      xmw2=wmass_pow**2         !Only MCNLO
-      xm2=0d0                   !Only MCNLO
-      xm22=xm2**2               !Only MCNLO
-
-c     MCNLO parameters that can change during the run have to be assigned
-c     in the proper place and not here.
-c     In fact this subroutine is called only at the beginning.
-c$$$      xmuf2h1=qfac**2
-c$$$      xmuf2h2=qfac**2
-c$$$      xm1=topmass_pow        
-c$$$      xm12=xm1**2   
       end
 
 c-------------------------------------------------------------------------

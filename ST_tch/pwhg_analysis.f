@@ -309,11 +309,11 @@ c     we need to tell to this analysis file which program is running it
          write(*,*) '*****************************'
          if(WHCPRG.eq.'NLO   ') then
             write(*,*) '   NLO analysis not implemented        '
+            write(*,*) 'No analysis will be run'
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS            '
          elseif(WHCPRG.eq.'PYTHIA') then
             write (*,*) '           PYTHIA ANALYSIS            '
-            write(*,*) 'No analysis will be run'
          endif
          write(*,*) '*****************************'
 
@@ -322,11 +322,16 @@ c     we need to tell to this analysis file which program is running it
 
       if (WHCPRG.eq.'NLO   ') then
          return
-      elseif (WHCPRG.eq.'HERWIG') then
-         ist_top=155
-         ist_w  =195 !: for undecayed events
-         ist_w  =155 !: for decayed events
-         
+      elseif (WHCPRG.eq.'HERWIG'.or.WHCPRG.eq.'PYTHIA') then
+         if(WHCPRG.eq.'HERWIG') then
+            ist_top=155
+            ist_w  =195 !: for undecayed events
+            ist_w  =155 !: for decayed events
+         elseif(WHCPRG.eq.'PYTHIA') then
+            ist_top=3
+            ist_w  =3
+         endif
+
          nt=0
          nw=0
          nl=0
@@ -440,10 +445,6 @@ c     copy momenta to construct jets
             goto 999
          endif
 
-      elseif(WHCPRG.eq.'PYTHIA') then
-         return
-         write(*,*) 'PYTHIA analysis not implemented yet'
-         call exit(1)
       else
          write(*,*) 'Invalid WHCPRG'
          call exit(1)

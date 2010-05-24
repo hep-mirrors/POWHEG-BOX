@@ -247,6 +247,12 @@ c     pythia common blocks
       double precision PARU,PARJ
       COMMON/PYDAT1/MSTU(200),PARU(200),MSTJ(200),PARJ(200)
 
+      integer idummy
+      real *8 totbr
+      logical firstcall
+      save totbr,firstcall
+      data firstcall/.true./
+      data totbr/1d0/
 c     check parameters
       logical verbose
       parameter (verbose=.true.)
@@ -270,8 +276,149 @@ c$$$     #           mstu(27),mstu(28)
          return
       endif
       nevhep=nevhep+1
-      xwgtup=xwgtup*xsecup(1)
+
+      if(firstcall) then
+         call pickwdecay(-1000,idummy,idummy,idummy,totbr)
+         write(*,*) 'Total branching ratio used in analysis: ',totbr
+         firstcall=.false.
+      endif
+
+      xwgtup=xwgtup*xsecup(1) *totbr
       call analysis(xwgtup)
       call pwhgaccumup 
       end
 
+
+      subroutine pickwdecay(iw1,mdecw1,iw2,mdecw2,totbr)
+c     !: originally taken from POWHEG-hvq
+c     Finds which decays to choose with correct probability, according
+c     to topdecaymode. It returns always particle ids of W+ decay.
+c     iw1, iw2 refer to the pdg ids of W+ decay products 1 and 2;
+c     by convention 1 is down type (e,mu,tau,d,s) and 2 is up type.
+c     topdecaymode has to be an integer with 5 digits that are either 0 or 1
+c     and they represent respectively the maximum number of the following particles
+c     (antiparticles) in the top decay final state:
+c     e  mu tau up charm
+c     Relevant examples:
+c     11111    All decays
+c     leptonic:
+c     10000    t->(b e ve) (with the appropriate signs)
+c     11000    t->(b e ve) or t->(b mu vmu) (with the appropriate signs)
+c     11100    fully leptonic
+c     hadronic:
+c     00010    t->(b u d) (with the appropriate signs)
+c     00001    t->(b c s) (with the appropriate signs)
+c     00011    fully hadronic
+      implicit none
+      include 'PhysPars.h'
+      integer iw1,iw2
+      real * 8 mdecw1,mdecw2,totbr
+c     local
+      integer iwa(2)
+      real * 8 prbs(1:5),totprbs(0:5),mass(16),sin2cabibbo,ebr,hbr,r
+      integer ini,ii(5),j,k,imode,iwp(5,2)
+      data ini/0/
+c     pdg id's of the W+ decay products for e,mu,tau,up and charm decays (ignoring CKM)
+      data ((iwp(j,k),k=1,2),j=1,5)/-11,12, -13,14, -15,16, -1,2, -3,4/
+c     external
+      real * 8 random,powheginput
+      external random,powheginput
+c     save
+      save ini,totprbs,iwp,mass,sin2cabibbo
+      if(ini.eq.2) return
+      if(ini.eq.0.or.iw1.eq.-1000) then
+         ini=1
+c     on first run look for decay mode in powheginput
+         imode=powheginput('topdecaymode')
+         if(imode.le.0) then
+            write(*,*) 'Invalid value for tdecaymode, in pickwdecay'
+            call exit(1)
+         endif
+c$$$         if(imode.eq.0) then
+c$$$            ini=2
+c$$$            return
+c$$$         endif
+         ii(1)=imode/10000
+         imode=imode-ii(1)*10000
+         ii(2)=imode/1000
+         imode=imode-ii(2)*1000
+         ii(3)=imode/100
+         imode=imode-ii(3)*100
+         ii(4)=imode/10
+         imode=imode-ii(4)*10
+         ii(5)=imode
+c     load from input card the branching t->(b l vl) (only one lepton flavour)
+         ebr=powheginput('tdec/elbranching')
+c     from ebr calculates the hadronic branching t->(b u d)
+         hbr=(1-3*ebr)/2
+         do j=1,5
+            if(ii(j).eq.0) then
+               prbs(j)=0
+            else
+               if(j.le.3) then
+                  prbs(j)=ebr
+               else
+                  prbs(j)=hbr
+               endif
+            endif
+         enddo
+c     now in prbs(j) there is the branching ratio assumed by the program for the
+c     j-type decay. If prbs(j)=0, the corresponding decay channel will be closed.
+         totprbs(0)=0d0
+         do j=1,5
+            totprbs(j)=prbs(j)+totprbs(j-1)
+         enddo
+
+         totbr=totprbs(5)
+
+c     mass of decay products. For internal consistency, here one should use
+c     the masses assumed by the shower. Leptonic W decay products masses have to be
+c     assigned here. The 3 light quarks are assumed massless.
+         mass(11)=powheginput('tdec/emass')
+         mass(13)=powheginput('tdec/mumass')
+         mass(15)=powheginput('tdec/taumass')
+         mass(12)=0
+         mass(14)=0
+         mass(16)=0
+         mass(1)=0
+         mass(2)=0
+         mass(3)=0
+         mass(4)=powheginput('tdec/cmass')
+         mass(5)=powheginput('tdec/bmass')
+         sin2cabibbo=(CKM_pow(1,2))**2
+         return
+      endif
+c     end initialization
+
+      r=random()*totprbs(5)
+      do j=1,5
+         if(r.lt.totprbs(j)) goto 1
+      enddo
+ 1    continue
+c     now we have j decay mode
+      if(j.gt.5) then
+         write(*,*) 'Error in pickwdecay, j',r,totprbs
+         call exit(1)
+      endif
+
+c     W decay products
+      iwa(1)=iwp(j,1)
+      iwa(2)=iwp(j,2)
+c     if any W decay product is down (or strange), it may turn to
+c     strange (or down) with a probability sin^2 theta
+      do j=1,2
+         if(abs(iwa(j)).eq.1) then
+            if(random().lt.sin2cabibbo) then
+               iwa(j)=sign(3,iwa(j))
+            endif
+         elseif(abs(iwa(j)).eq.3) then
+            if(random().lt.sin2cabibbo) then
+               iwa(j)=sign(1,iwa(j))
+            endif
+         endif
+      enddo
+      iw1=iwa(1)
+      iw2=iwa(2)
+      mdecw1=mass(abs(iw1))
+      mdecw2=mass(abs(iw2))
+      end

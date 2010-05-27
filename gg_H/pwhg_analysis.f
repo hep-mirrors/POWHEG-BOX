@@ -149,7 +149,7 @@ c arrays to reconstruct jets
          ini=.false.
       endif
 
-     
+      found=0
 
 c     Loop over final state particles to find Higgs
       do ihep=1,nhep
@@ -221,7 +221,6 @@ c     set up arrays for jet finding
          enddo
       enddo
       j1=0
-      found=0
       ntracks=0
       njets=0
 c     Loop over final state particles to find jets 

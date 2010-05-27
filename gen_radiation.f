@@ -85,7 +85,7 @@ c rad_type=3 for regular contributions
       data ini/.true./
       real * 8 pwhg_pt2,powheginput
       external pwhg_pt2,powheginput
-      save ini
+      save ini,firstreg,lastreg
       if(ini) then
          firstreg=powheginput("#radregion")
          if(firstreg.le.0) then

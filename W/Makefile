@@ -3,13 +3,15 @@ ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
+## Use -O2
 F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
+OPT=-O2
 ## For g77 comment the above and uncomment below
 #F77= g77 -Wall -fno-automatic -ffortran-bounds-check
+#OPT=-O3
 # For debugging uncomment the following
 #DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
-OPT=-O3
 #SYSOBJ=trapfpe.o
 endif
 

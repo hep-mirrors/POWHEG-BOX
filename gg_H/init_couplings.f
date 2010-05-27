@@ -24,16 +24,16 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_GF= powheginput('gfermi') 
       ph_topmass = powheginput('topmass')
       
-c     CAVEAT: 
-      ph_CKM(1,1)=0.975 
-      ph_CKM(1,2)=0.222 
-      ph_CKM(1,3)=1d-5
-      ph_CKM(2,1)=0.222 
-      ph_CKM(2,2)=0.975 
-      ph_CKM(2,3)=1d-5
-      ph_CKM(3,1)=1d-5
-      ph_CKM(3,2)=1d-5
-      ph_CKM(3,3)=1.0
+c$$$c     CAVEAT: 
+c$$$      ph_CKM(1,1)=0.975 
+c$$$      ph_CKM(1,2)=0.222 
+c$$$      ph_CKM(1,3)=1d-5
+c$$$      ph_CKM(2,1)=0.222 
+c$$$      ph_CKM(2,2)=0.975 
+c$$$      ph_CKM(2,3)=1d-5
+c$$$      ph_CKM(3,1)=1d-5
+c$$$      ph_CKM(3,2)=1d-5
+c$$$      ph_CKM(3,3)=1.0
 
 c     number of light flavors
       st_nlight = 5
@@ -68,10 +68,10 @@ C     the default vale is 10
       write(*,*) 'sthw2 = ',ph_sthw2
       write(*,*) 'GF = ',ph_GF
       write(*,*) 'top mass = ',ph_topmass
-      write(*,*) 'CKM matrix' 
-      do i=1,3
-         write(*,*) (ph_CKM(i,j),j=1,3)
-      enddo
+c      write(*,*) 'CKM matrix' 
+c      do i=1,3
+c         write(*,*) (ph_CKM(i,j),j=1,3)
+c      enddo
       write(*,*) '*************************************'
       write(*,*)
       write(*,*) '*************************************'

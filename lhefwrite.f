@@ -11,9 +11,9 @@ c...writes initialization information to a les houches events file on unit nlf.
       write(nlf,'(a)') '<!--'
       write(nlf,'(a,f3.1)') 'file generated with POWHEG-BOX version ',
      #     version
-      write(nlf,'(a)') 'Input file powheginput.dat contained:'
+      write(nlf,'(a)') 'Input file powheg.input contained:'
       call wrtpowheginput(nlf)
-      write(nlf,'(a)') 'End of powheginput.dat content'
+      write(nlf,'(a)') 'End of powheg.input content'
       call rm48ut(iran,n1ran,n2ran)
       write(nlf,*) 'Random number generator initialized with: ',
      # iran,' ',n1ran,' ',n2ran

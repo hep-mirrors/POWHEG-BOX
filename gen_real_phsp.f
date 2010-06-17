@@ -30,14 +30,21 @@ c gen_real_phsp_isr: mapping for the initial state radiation
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
       include 'include/pwhg_par.h'
+      include 'include/pwhg_flg.h'
       real * 8 q0,q2,xjac
 c find rad_kinreg as function of kn_emitter
       rad_kinreg=kn_emitter+2-flst_lightpart
 c Boost the underlying Born variables to their cm frame
       q0=2*kn_cmpborn(0,1)
       q2=kn_sborn
-      kn_csitilde=xrad(1)*(1-par_fsrtinycsi)+par_fsrtinycsi
-      xjac=1
+      if(flg_jacsing) then
+         kn_csitilde=(1-par_fsrtinycsi)
+     1        -(1-xrad(1))**2*(1-2*par_fsrtinycsi)
+         xjac=2*(1-xrad(1))
+      else
+         kn_csitilde=xrad(1)*(1-par_fsrtinycsi)+par_fsrtinycsi
+         xjac=1
+      endif
       kn_y=1-2*xrad(2)
       xjac=xjac*2
 c importance sampling for kn_y
@@ -167,7 +174,7 @@ c Set up a unit vector orthogonal to kbar_n and to the z axis
       vec(1)=barredk(2,j)/norm
       vec(2)=-barredk(1,j)/norm
 c Rotate k_n+1 around vec of an amount psi
-      call mrotate(vec,sqrt(1-cpsi**2),cpsi,xk(1,n+1))
+      call mrotate(vec,sqrt(abs(1-cpsi**2)),cpsi,xk(1,n+1))
 c Rotate k_j around vec of an amount psi1 in opposite direction
       call mrotate(vec,-sqrt(1-cpsi1**2),cpsi1,xk(1,j))
 c set up a unit vector parallel to kbar_j

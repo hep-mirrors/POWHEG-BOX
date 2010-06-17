@@ -536,6 +536,7 @@ c     Added this 'if' to be sure that no division by zero occurs
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
       include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       real * 8 r0(maxalr),rc(maxalr),rs(maxalr)
       integer alr,alrpr,iret,em
       integer nmomset,emitter
@@ -629,8 +630,9 @@ c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
                if(em.gt.2.and.flst_alr(em,alr).eq.0.and.
      #              flst_alr(nlegreal,alr).eq.0) then
                   r0(alr)=r0(alr)*2
-     #         *kn_cmpreal(0,em)/
-     #         (kn_cmpreal(0,em)+kn_cmpreal(0,nlegreal))
+     1                 *kn_cmpreal(0,em)**par_2gsupp/
+     2                 (kn_cmpreal(0,em)**par_2gsupp
+     3                 +kn_cmpreal(0,nlegreal)**par_2gsupp)
                endif
                r0(alr)=r0(alr)*flst_mult(alr)
 c supply Born zero damping factor, if required
@@ -682,6 +684,7 @@ c    csi^2 (1-y)   for FSR regions
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       integer imode
       real * 8 r0(maxalr)
       real * 8 rc(maxalr),rs(maxalr),r
@@ -759,8 +762,9 @@ c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
                if(kn_emitter.gt.2.and.flst_alr(kn_emitter,alr).eq.0.and.
      #            flst_alr(nlegreal,alr).eq.0) then
                   r0(alr)=r0(alr)*2
-     #         *kn_cmpreal(0,kn_emitter)/
-     #        (kn_cmpreal(0,kn_emitter)+kn_cmpreal(0,nlegreal))
+     1                 *kn_cmpreal(0,kn_emitter)**par_2gsupp/
+     2                 (kn_cmpreal(0,kn_emitter)**par_2gsupp
+     3                 +kn_cmpreal(0,nlegreal)**par_2gsupp)
                endif
 c supply Born zero damping factor, if required
                if(flg_withdamp) then

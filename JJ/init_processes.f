@@ -15,6 +15,8 @@
       logical condition,newcond
       logical flavequiv
       external flavequiv
+      real * 8 powheginput,tmp
+      external powheginput
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C  DON'T FORGET TO  SET THIS TO THE NUMBER OF FLAVOURS REQUIRED 
       integer nflav
@@ -34,8 +36,23 @@ c     the code and we change often from one process to the other
 c This are set to 1 by default. For jets, we need to change them
       par_diexp = 2
       par_dijexp= 2
+      par_2gsupp=2
+      tmp=powheginput('#par_diexp')
+      if(tmp.gt.0) then
+         par_diexp = tmp
+         par_dijexp= tmp
+      endif
+      tmp=powheginput('#par_2gsupp')
+      if(tmp.gt.0) then
+         par_2gsupp = tmp
+      endif
+      tmp=powheginput('#jacsing')
+      if(tmp.eq.1) flg_jacsing=.true.
 c the default value, 1d-6, causes problems in HELAC routines
-      par_isrtinyy=1d-5
+      par_isrtinycsi = 1d-4
+      par_isrtinyy = 1d-4
+      par_fsrtinycsi = 1d-4
+      par_fsrtinyy = 1d-4
 *********************************************************************
 c     number of light flavors
       st_nlight = nflav

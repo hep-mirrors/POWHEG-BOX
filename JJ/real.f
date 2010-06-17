@@ -36,16 +36,17 @@ c$$$      kr_mad(0,5)=sqrt(dabs(kr_mad(1,5)**2+kr_mad(2,5)**2+kr_mad(3,5)
 c$$$     $     **2))
 
       
-      call compreal(kr_mad,rflav,amp2mad)
-c$$$      call alt_compreal(kr_mad,rflav,amp2mad)
-c$$$      if(abs(amp2mad-tmp)/abs(tmp).gt.0.001) then
-c$$$         write(*,*) 
-c$$$         write(*,*) 'frac diff = ',abs(amp2mad-tmp)/abs(tmp)
-c$$$         write(*,*) 'rflav = ',rflav
-c$$$         write(*,*) 'old = ',amp2mad
-c$$$         write(*,*) 'new = ',tmp
-c$$$
-c$$$      endif
+c      call compreal(kr_mad,rflav,amp2mad)
+      call alt_compreal(kr_mad,rflav,amp2mad)
+c      if(tmp.eq.0) then
+c         write(*,*) ' zero result:',tmp,amp2mad
+c      elseif(abs(amp2mad-tmp)/abs(tmp).gt.0.001) then
+c         write(*,*) 
+c         write(*,*) 'frac diff = ',abs(amp2mad-tmp)/abs(tmp)
+c         write(*,*) 'rflav = ',rflav
+c         write(*,*) 'old = ',amp2mad
+c         write(*,*) 'new = ',tmp
+c      endif
 
       amp2=amp2mad/(st_alpha/2./pi)
 

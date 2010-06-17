@@ -6,9 +6,9 @@
       include 'include/pwhg_rad.h'
       integer iupperisr,iupperfsr
       common/cupper/iupperisr,iupperfsr
-      integer iret,iun,n
-      real * 8 sigtot,errtot,signeg,errneg,sigbtl,errbtl,sigrm,errrm,
-     #         xint,fracneg
+      integer iret,iun
+      real * 8 sigbtl,errbtl,sigrm,errrm,
+     #         xint
       real * 8 btilde,sigremnant
       integer ncall1,ncall2,itmx1,itmx2
       real * 8 xx(ndiminteg),xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
@@ -42,12 +42,9 @@ c
       ncall2=powheginput('ncall2')
       itmx1=powheginput('itmx1')
       itmx2=powheginput('itmx2')
-      call loadgrids(sigbtl,errbtl,sigrm,errrm,fracneg,iret,
-     #               xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
+      call loadgrids(iret,xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm)
       if(iret.ne.0) then
-c debug
-c         goto 111
          call init_hist
          negflag=.false.
          write(*,*)
@@ -67,39 +64,46 @@ c set  up the folding here, if required
          ifold(ndiminteg-2) = powheginput("foldcsi")
          ifold(ndiminteg-1) = powheginput("foldy")
          ifold(ndiminteg)   = powheginput("foldphi")
-c
-         if(.not.flg_bornonly) then
-            negflag=.true.
-            write(*,*)
-            write(*,*)' POWHEG: Computing negative weight contribution'
-     #             //' to inclusive cross section'
-            flg_nlotest=.false.
-            imode=1
-            call mint(btilde,ndiminteg,ncall2,itmx2,ifold,imode,iun,
-     #      xgrid,xint,ymax,signeg,errneg)
-            write(*,*) 'neg. weights:', -signeg,' +-', errneg
-         endif
          negflag=.false.
-         write(*,*)' POWHEG: Computing positive weight contribution'
-     #           //' to inclusive cross section' 
+         if(flg_withnegweights) then
+            write(*,*)' POWHEG: Computing pos.+|neg.| '
+     1           //' weight contribution to inclusive cross section' 
+         else
+            write(*,*)' POWHEG: Computing positive weight'
+     1           //' contribution to inclusive cross section' 
+         endif
          flg_nlotest=.true.
          imode=1
+c Totals will also be made available in the rad_tot*btl variables.
+c The output in sigbtl is: positive weight only (flg_withnegweights=.false.)
+c                          pos-|neg|            (flg_withnegweights=.true.)
+c On the other hand, results in rad_tot*btl do not depend upon flg_withnegweights
+         call resettotals
          call mint(btilde,ndiminteg,ncall2,itmx2,ifold,imode,iun,
      #        xgrid,xint,ymax,sigbtl,errbtl)
+         call finaltotals
 c finalize btilde output in histograms
          call pwhgaddout
          flg_nlotest=.false.
-         write(*,*) 'pos. weights:', sigbtl,' +-', errbtl
-         sigbtl=sigbtl-signeg
-         errbtl=sqrt(errbtl**2+errneg**2)
-         write(*,*) 'pos+neg', sigbtl,' +-', errbtl
+         write(*,*) 'btilde pos.   weights:', rad_totposbtl,' +-',
+     1        rad_etotposbtl
+         write(*,*) 'btilde |neg.| weights:', rad_totnegbtl,' +-',
+     1        rad_etotnegbtl
+         write(*,*) 'btilde Total (pos.-|neg.|):', rad_totbtl,' +-',
+     1        rad_etotbtl
+         write(iunstat,*) 'btilde pos.   weights:', rad_totposbtl,' +-',
+     1        rad_etotposbtl
+         write(iunstat,*) 'btilde |neg.| weights:', rad_totnegbtl,' +-',
+     1        rad_etotnegbtl
+         write(iunstat,*) 'btilde Total (pos.-|neg.|):', rad_totbtl,
+     1        ' +-',rad_etotbtl
 c Now compute the remnant contributions
 c No folding for remnants:
- 111     do j=1,ndiminteg
+         do j=1,ndiminteg
             ifoldrm(j)=1
          enddo
          if((flg_withreg.or.flg_withdamp).and..not.flg_bornonly) then
-            write(*,*)' Computing the integral of the absolute value of'
+            write(*,*)' Computing the integral of the value of'
             write(*,*)' the remnant cross section' 
             write(*,*)' to set up the adaptive grid'
             negflag=.false.
@@ -120,18 +124,31 @@ c No folding for remnants:
 c add finalized remnant contributions in histograms
             call pwhgaddout
             flg_nlotest=.false.
-            write(*,*) 'remnants', sigrm,' +-', errrm
          else
             sigrm=0
             errrm=0
          endif
-         sigtot=sigrm+sigbtl
-         errtot=sqrt(errbtl**2+errrm**2)
-         fracneg=signeg/sigtot
-         write(*,*) 'Total', sigtot,' +-', errtot
+         rad_sigrm=sigrm
+         rad_esigrm=errrm
+c rad_sigtot is used for the generation of the events.
+c btilde and remnant event are chosen in proportion to
+c rad_sigbtl and rad_sigrm.
+         if(flg_withnegweights) then
+            rad_sigbtl=rad_totabsbtl
+            rad_esigbtl=rad_etotabsbtl
+         else
+c notice: this is correct only if the negative fraction is
+c negligible
+            rad_sigbtl=rad_totbtl
+            rad_esigbtl=rad_etotbtl
+         endif
+         rad_sigtotgen=rad_sigrm+rad_sigbtl
+         rad_esigtotgen=sqrt(rad_esigbtl**2+rad_esigrm**2)
+         rad_sigtot=rad_sigrm+rad_totbtl
+         rad_esigtot=sqrt(rad_etotbtl**2+rad_esigrm**2)
+         
 c        
-         call storegrids(sigbtl,errbtl,sigrm,errrm,fracneg,
-     #            xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
+         call storegrids(xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm)
 c Output NLO histograms
          if (powheginput('#testplots').eq.1d0) then
@@ -139,23 +156,41 @@ c Output NLO histograms
             call pwhgtopout
             close(99)
          endif
+
+         if(flg_withreg.or.flg_withdamp) then
+            write(iunstat,*) ' Remnant cross section in pb',
+     1           rad_sigrm,'+-',rad_esigrm
+         endif
+         
+         write(iunstat,*)' total (btilde+remnants) cross section in pb',
+     1        rad_sigtot,'+-',rad_esigtot
+         
+         write(iunstat,*) ' negative weight fraction:',
+     1        rad_totnegbtl/(2*rad_totnegbtl+rad_sigtot)
       else
          write(*,*)
      #     ' stored grids successfully loaded'
          negflag=.false.
-         sigtot=sigbtl+sigrm
-         errtot=sqrt(errbtl**2+errrm**2)
+         write(*,*) 'btilde pos.   weights:', rad_totposbtl,' +-',
+     1        rad_etotposbtl
+         write(*,*) 'btilde |neg.| weights:', rad_totnegbtl,' +-',
+     1        rad_etotnegbtl
+         write(*,*) 'btilde total (pos.-|neg.|):', rad_totbtl,' +-',
+     1        rad_etotbtl
       endif
-      write(*,*) ' Total cross section in pb', sigtot,' +-',errtot
-      write(*,*) ' Estimated fraction of neg. weights', fracneg
-      write(iunstat,*) ' Total cross section in pb', sigtot,' +-',errtot
-      write(iunstat,*) ' Estimated fraction of neg. weights', fracneg
+
       if(flg_withreg.or.flg_withdamp) then
-         write(*,*) ' Positive remnant cross section in pb',
-     #      sigrm,' +-',errrm
-         write(iunstat,*) ' Positive remnant cross section in pb',
-     #      sigrm,' +-',errrm
+         write(*,*) ' Remnant cross section in pb',
+     1        rad_sigrm,'+-',rad_esigrm
       endif
+
+      write(*,*) ' total (btilde+remnants) cross section in pb',
+     1     rad_sigtot,'+-',rad_esigtot
+
+      write(*,*) ' negative weight fraction:',
+     1     rad_totnegbtl/(2*rad_totnegbtl+rad_sigtot)
+
+
       close(iunstat)
       call flush
 c initialize gen; the array xmmm is set up at this stage.
@@ -176,7 +211,7 @@ c initialize gen for remnants
 c     save random number seeds
          call randomsave
 c generate few events from remnants, just to determine the generation efficiency
-         do j=1,min(powheginput('nubound'),10d0)
+         do j=1,int(min(powheginput('nubound'),10d0))
             call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,
      #            1,mcalls,icalls,xx)
          enddo
@@ -190,11 +225,6 @@ c     print statistics
      #                   //' of the remnant variables =',xx(1)
          endif
       endif
-c fill radiation common block with cross sections
-      rad_sigtot=sigtot
-      rad_sigtoterr=errtot 
-      rad_sigbtl=sigbtl
-      rad_sigrm=sigrm
       end
 
 
@@ -241,15 +271,14 @@ c fill radiation common block with cross sections
       end
 
 
-      subroutine storegrids(sigbtl, errbtl, sigrm, errrm, fracneg,
-     #            xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
+      subroutine storegrids(xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_pdf.h'
-      real * 8 sigbtl,errbtl,sigrm,errrm,fracneg
+      include 'include/pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
      #        ,xmmm(0:50,ndiminteg),xmmmrm(0:50,ndiminteg)
@@ -272,19 +301,26 @@ c fill radiation common block with cross sections
       write(iun) (ifold(k),k=1,ndiminteg)
       write(iun) (ifoldrm(k),k=1,ndiminteg)
       write(iun) kn_sbeams, pdf_ih1, pdf_ih2, pdf_ndns1, pdf_ndns2
-      write(iun) sigbtl, errbtl, sigrm, errrm, fracneg
-      close(iun)
+      write(iun)
+     1     rad_totbtl,rad_etotbtl,
+     2     rad_totabsbtl,rad_etotabsbtl,
+     3     rad_totposbtl,rad_etotposbtl,
+     4     rad_totnegbtl,rad_etotnegbtl,
+     5     rad_sigrm,rad_esigrm,
+     6     rad_sigbtl,rad_esigbtl,
+     7     rad_sigtotgen,rad_esigtotgen,
+     8     rad_sigtot,rad_esigtot
+       close(iun)
       end
 
-      subroutine loadgrids(sigbtl,errbtl,sigrm,errrm,fracneg,iret,
-     #               xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
-     #                ifold,ifoldrm)
+      subroutine loadgrids(iret,xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
+     #           ifold,ifoldrm)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_pdf.h'
-      real * 8 sigbtl,errbtl,sigrm,errrm,fracneg
+      include 'include/pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
      #        ,xmmm(0:50,ndiminteg),xmmmrm(0:50,ndiminteg)
@@ -328,7 +364,16 @@ c
          close(iun)
          return
       endif
-      read(iun) sigbtl, errbtl, sigrm, errrm, fracneg
+      read(iun)
+     1     rad_totbtl,rad_etotbtl,
+     2     rad_totabsbtl,rad_etotabsbtl,
+     3     rad_totposbtl,rad_etotposbtl,
+     4     rad_totnegbtl,rad_etotnegbtl,
+     5     rad_sigrm,rad_esigrm,
+     6     rad_sigbtl,rad_esigbtl,
+     7     rad_sigtotgen,rad_esigtotgen,
+     8     rad_sigtot,rad_esigtot
+      close(iun)
       close(iun)
       iret=0
       end

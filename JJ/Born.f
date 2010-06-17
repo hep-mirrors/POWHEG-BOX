@@ -357,7 +357,7 @@ c     performed (add_azimuth called in pwhgevent).
 
 c     TO BE COMPLETED
       
-      write(*,*) "resonances_lh TO BE COMPLETED (not needed ??) " 
-      call exit(1)
+c      write(*,*) "resonances_lh TO BE COMPLETED (not needed ??) " 
+c      call exit(1)
 
       end

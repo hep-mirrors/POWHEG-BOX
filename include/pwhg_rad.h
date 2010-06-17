@@ -26,10 +26,17 @@ c rad_ncsinorms,rad_nynorms: effective number of csi and y subdivisions
       integer rad_ncsinorms,rad_nynorms
 c 1 for Btilde event, 2 for remnant, 3 for regular
       integer rad_type
-c total cross section from B_bar, regular remnants and total
-      real * 8 rad_sigtot,rad_sigrm,rad_sigbtl
-c error on total cross section
-      real * 8 rad_sigtoterr
+c Signed total, absolute value total, positive total and negative total
+c obtained in the integration of btilde
+      real * 8
+     1     rad_totbtl,rad_etotbtl,
+     2     rad_totabsbtl,rad_etotabsbtl,
+     3     rad_totposbtl,rad_etotposbtl,
+     4     rad_totnegbtl,rad_etotnegbtl,
+     5     rad_sigrm,rad_esigrm,
+     6     rad_sigbtl,rad_esigbtl,
+     7     rad_sigtotgen,rad_esigtotgen,
+     8     rad_sigtot,rad_esigtot
 c Grid of the upper bounds of the ratio (R*kn_jacreal/B)/upper_bounding function
 c for each given kinematic region and underlying born
       real * 8 rad_csiynorms(rad_ncsiynormsmx,
@@ -39,6 +46,9 @@ c as above, on the whole grid, for each given underlying born
 c value of btilde for each given underlying Born;
 c filled after each final call to btilde.
       real * 8 rad_btilde_arr(maxprocborn)
+c stores the sign of the above results in case the BOX is used
+c with withnegweights=1.
+      integer  rad_btilde_sign(maxprocborn)
 c filled with contributions to real cross section after
 c a call to sigreal_rad, according to the mapping rad_realalr
       real * 8 rad_real_arr(maxalr)
@@ -59,8 +69,15 @@ c LambdaLL for upper bounding coupling (see notes: running_coupling)
       real * 8 rad_lamll
 c Hardest radiation kt2
       real * 8 rad_pt2max
-      common/pwhg_rad/rad_sigtot,rad_sigtoterr,
-     #     rad_sigrm,rad_sigbtl,
+      common/pwhg_rad/
+     1     rad_totbtl,rad_etotbtl,
+     2     rad_totabsbtl,rad_etotabsbtl,
+     3     rad_totposbtl,rad_etotposbtl,
+     4     rad_totnegbtl,rad_etotnegbtl,
+     5     rad_sigrm,rad_esigrm,
+     6     rad_sigbtl,rad_esigbtl,
+     7     rad_sigtotgen,rad_esigtotgen,
+     8     rad_sigtot,rad_esigtot,
      #     rad_damp_rem_arr,rad_damp_rem_tot,rad_reg_arr,rad_reg_tot,
      #     rad_csiynorms,rad_norms,rad_btilde_arr,rad_real_arr,
      #     rad_normfact,rad_ptsqmin,rad_charmthr2,rad_bottomthr2,
@@ -69,7 +86,7 @@ c     integers
      #     rad_ubornidx,rad_alr_list,rad_alr_nlist,
      #     rad_realidx,rad_realalr,rad_realreg,
      #     rad_kinreg,rad_nkinreg,
-     #     rad_ncsinorms,rad_nynorms,rad_type,
+     #     rad_ncsinorms,rad_nynorms,rad_type,rad_btilde_sign,
 c     logical
      #     rad_kinreg_on
       

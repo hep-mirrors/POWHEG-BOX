@@ -2,6 +2,10 @@ c...lhefheader(nlf)
 c...writes initialization information to a les houches events file on unit nlf. 
       subroutine lhefwritehdr(nlf)
       implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_flg.h'
       integer nlf
       real * 8 version
       common/pwghvq/version
@@ -28,6 +32,18 @@ c...writes initialization information to a les houches events file on unit nlf.
       write(nlf,'(a)') '</init>'
  110  format(1p,2(1x,i8),2(1x,e12.5),6(1x,i6))
  120  format(1p,3(1x,e12.5),1x,i6)
+c if flg_withnegweights is set, output also true cross section
+c as extra info
+      if(flg_withnegweights) then
+         write(nlf,'(a)') '<extra-info-true-sigma>'
+         write(nlf,'(a,d12.6,a,d12.6)') 'true sigma=',rad_sigtot,
+     1        '+-',rad_esigtot
+         write(nlf,'(a,d12.6,a,d12.6)') 'sigma for generation=',
+     1        rad_sigtotgen,'+-',rad_esigtotgen
+         write(nlf,'(a)')' sigma for generation times'//
+     1        ' (Npositive-Nnegative)/ntotal=true sigma'
+         write(nlf,'(a)') '</extra-info-true-sigma>'
+      endif
       end
 
 

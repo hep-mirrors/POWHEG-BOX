@@ -13,6 +13,7 @@ c the two results are compared.
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
+      include 'include/pwhg_par.h'
       integer ncalls1,ncalls2,nbins
       parameter (ncalls1=20000,ncalls2=2000,nbins=40)
       real * 8 hist1(nbins),hist2(nbins),histsq1(nbins),av1,avsq1,err1
@@ -51,11 +52,14 @@ c the two results are compared.
             do j=1,ncalls1
                tmp=random()
                kn_csitilde=tmp**2
+               kn_csitilde=kn_csitilde*(1-par_isrtinycsi)+par_isrtinycsi
+
                xjac=2*tmp
                tmp=random()
                kn_y=1-2*tmp
                xjac=xjac*2
-               xjac=xjac*1.5d0*(1-kn_y**2)
+               xjac=xjac*1.5d0*(1-kn_y**2)*(1-par_fsrtinyy)
+
                kn_y=1.5d0*(kn_y-kn_y**3/3)
                kn_azi=2*pi*random()
                xjac=xjac*2*pi

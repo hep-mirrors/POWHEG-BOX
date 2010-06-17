@@ -89,8 +89,9 @@ c     q Q qb Qb
      1           icolup(1,ia1),icolup(1,ia2))
          endif
       endif
-      call colour_conj(icolup(1,3))
-      call colour_conj(icolup(1,4))   
+c Conjugate incoming colours
+      call colour_conj(icolup(1,1))
+      call colour_conj(icolup(1,2))   
       end
 
       subroutine borncolour4g(icol1,icol2,icol3,icol4,s,t,u)

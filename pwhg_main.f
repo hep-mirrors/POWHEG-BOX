@@ -58,9 +58,9 @@ c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
          call lhefwritev(iun)
          if(flg_debug) call lhefwritextra(iun)
          if(kn_csi.eq.0d0) then
-            call analysis_driver(rad_sigtot,0)
+            call analysis_driver(rad_sigtotgen,0)
          else
-            call analysis_driver(rad_sigtot,1)
+            call analysis_driver(rad_sigtotgen,1)
          endif
          call pwhgaccumup
       enddo

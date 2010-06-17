@@ -5,13 +5,15 @@ ifeq ($(shell uname),Linux)
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
 F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow \
 #       -fbounds-check
+#F77= /opt/intel/Compiler/11.1/072/bin/intel64/ifort -r16 -save -g -O0 -extend_source
+# remember to use the mlmpdf pack with the intel compiler
 ## For g77 comment the above and uncomment below
 #F77= g77 -Wall -fno-automatic -ffortran-bounds-check
 ## IMPORTANT: if using g77 remove -static when linking against LHAPDF
 # For debugging uncomment the following
 DEBUG= -ggdb #-pg
 #Do not uncomment this with gfortran
-OPT=-O3
+#OPT=-O3
 #SYSOBJ=trapfpe.o
 endif
 
@@ -32,13 +34,15 @@ FF=$(F77) $(OPT) $(DEBUG)
 
 INCLUDE =$(shell echo ../include/*.h *.h madgraph/*.inc)
 
-PDFPACK=mlmpdfif.o hvqpdfpho.o
-#LHAPDF_CONFIG=lhapdf-config
-#PDFPACK=lhapdfif.o
-#LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF #-static
-#LIBS=$(LIBSLHAPDF)
+#PDFPACK=mlmpdfif.o hvqpdfpho.o
+LHAPDF_CONFIG=lhapdf-config
+PDFPACK=lhapdfif.o
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF #-static
+LIBS=$(LIBSLHAPDF)
 LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
 LIBS += $(LIBSMADGRAPH)
+
+STATIC= -L /usr/lib/gcc/x86_64-linux-gnu/4.4/ -lstdc++ -static
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
@@ -72,7 +76,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
 pwhg_main:$(PWHG) 
-	$(FF) $(patsubst %.o,obj/%.o,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
+	$(FF) $(patsubst %.o,obj/%.o,$(PWHG)) $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o lhefwrite.o   lhefread.o newunit.o \
@@ -88,7 +92,8 @@ lhef_analysis:$(LHEFANAL)
 HERWIG=main-HERWIG-lhef.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o $(SYSOBJ)
+	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
 

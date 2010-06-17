@@ -79,7 +79,7 @@ endif
 
 FASTJET_CONFIG=fastjet-config
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 FOR = $(F77) $(DEBUG)

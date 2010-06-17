@@ -284,6 +284,7 @@ c find boost velocity
       include 'include/pwhg_math.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_br.h'
+      include 'include/pwhg_par.h'
       integer alr
       real * 8 csi,xocsi,x,q0,kperp(0:3),kperp2,res
       integer iub,em,emflav,raflav,mu,nu
@@ -307,8 +308,9 @@ c find boost velocity
             enddo
          enddo
          ap=ap*2*ca
-c     suppress soft term
-         ap=ap*(1-x)
+c     In case of two equal gluon we also supply e E_em^p/(E_em^p+E_rad^p)
+c     factor, and divide by 2 for the identical particles
+         ap=ap*(1-x)**par_2gsupp/((1-x)**par_2gsupp+x**par_2gsupp)
       elseif(emflav+raflav.eq.0) then
          ap=0d0
          do mu=0,3

@@ -13,6 +13,9 @@
       call init_flsttag
       flg_debug=.true.
       if(powheginput("#flg_debug").eq.1) flg_debug=.true.
+c whether to output negative weights or not
+      flg_withnegweights=.false.
+      if(powheginput("#withnegweights").eq.1)flg_withnegweights=.true.
 c     Set to true to remember and use identical values of the computed 
 c     amplitudes, for Born, real and virtual contributions
       flg_smartsig=.true.
@@ -57,14 +60,18 @@ c pdf set
       pdfsup(1)=-1
       pdfsup(2)=-1
 c unweighted events in input:
-      idwtup = 3
+      if(flg_withnegweights) then
+         idwtup = -3
+      else
+         idwtup = 3
+      endif
 c number of user subprocesses
 c Irrelevant if idwtup=+-3,+-4
       nprup = 1
       call bbinit
 c now the cross section is available
-      xsecup(1)=rad_sigtot  
-      xerrup(1)=rad_sigtoterr
+      xsecup(1)=rad_sigtotgen  
+      xerrup(1)=rad_esigtotgen
       xmaxup(1)=1
       end
 

@@ -5,6 +5,7 @@
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
+      include 'include/LesHouches.h'
       integer iret,iun
       real * 8 random,powheginput
       external random,powheginput
@@ -14,7 +15,7 @@
       integer i
 c     store current random seeds. To be used to restart at problematic events
       call savecurrentrandom
-      if(random().gt.rad_sigrm/rad_sigtot) then
+      if(random().gt.rad_sigrm/rad_sigtotgen) then
 c     generate underlying Born kinematics
          call gen_btilde(mcalls,icalls)
 c     generate underlying Born flavour
@@ -30,6 +31,10 @@ c add a random azimuthal rotation around beam axis
 c --- set up les houches interface
          rad_pt2max=pwhg_pt2()
          call gen_leshouches
+c if negative weight, flip the sign of xwgtup
+         if(rad_btilde_sign(rad_ubornidx).eq.-1) then
+            xwgtup=-xwgtup
+         endif
 c rad_type=1 for btilde events (used only for debugging purposes)
          rad_type=1
       else

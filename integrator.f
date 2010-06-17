@@ -443,8 +443,9 @@ c     the returned coordinate vector of the generated point
 c get final value (x and vol not used in this call)
       f=fun(x,vol,2)
       if(f.lt.0) then
-         write(*,*) 'gen: non positive function'
-         stop
+         write(*,*) 'gen: non positive function',f
+         f=fun(x,vol,2)
+c         stop
       endif
       if(f.gt.ubound) then
          call increasecnt

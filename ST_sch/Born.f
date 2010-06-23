@@ -1622,7 +1622,7 @@ c     assigned here. The 3 light quarks are assumed massless.
          mass(4)=powheginput('tdec/cmass')
          mass(5)=powheginput('tdec/bmass')
          sin2cabibbo=(CKM_pow(1,2))**2
-         return
+         if(iw1.eq.-1000) return
       endif
 c     end initialization
 

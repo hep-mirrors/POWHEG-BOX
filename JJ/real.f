@@ -396,7 +396,7 @@ C - Ellis sextion conventions).
             ENDIF
          ENDDO
       ENDDO
-C - Then we calculate the Ellis Sexton A-function (Eq. 3.4/g_S^6).
+C - Then we calculate the Ellis Marchesini Webber Sum|M^(A)|^2 function
       RESULT = FA_FN(1,2,3,4,5,S)
 C - On the next line we obtain the A function (Eq.3.4).
       RESULT=GS6*RESULT
@@ -413,7 +413,7 @@ C - agreement with the MadGraph (and, hopefully, reality).
       IMPLICIT NONE
       REAL*8 FA_FN
       INTEGER I1,I2,I3,I4,I5
-      REAL*8 S(5,5),SP,SM,TP,TM,UP,UM
+      REAL*8 S(5,5)
       REAL*8 CF,CA
 
       CF = 4./3.
@@ -445,7 +445,8 @@ C ----------------------------------------------------------------- C
       SUBROUTINE ES_B(P1,RESULT,ES_MAP,AVG,SYM)
 C - The squared, spin and colour summed matrix element for qq->qqg
 C - , averaged over initial state colours and spins. This comes from
-C - formulae in Ellis & Sexton, NPB269:445,1986 (Section 3).
+C - formulae in Ellis Marchesini and Webber NPB286:643,1987. Agreement
+C - with MadGraph was very satisfactory.
 C ----------------------------------------------------------------- C
 
       IMPLICIT NONE
@@ -493,69 +494,31 @@ C - agreement with the MadGraph (and, hopefully, reality).
       IMPLICIT NONE
       REAL*8 FB_FN,FA_FN
       INTEGER I1,I2,I3,I4,I5
-      REAL*8 S(5,5),SP,SM,TP,TM,UP,UM
-      REAL*8 V3,V4
+      REAL*8 S(5,5)
+      REAL*8 CF,CA
 
-      V3 = 80./18.
-      V4 = 64./18.
+      CF = 4./3.
+      CA = 3.
 
-      SP = S(I1,I2)+S(I3,I4)
-      SM = S(I1,I2)-S(I3,I4)
-      TP = S(I1,I3)+S(I2,I4)
-      TM = S(I1,I3)-S(I2,I4)
-      UP = S(I1,I4)+S(I2,I3)
-      UM = S(I1,I4)-S(I2,I3)
-      
-      FB_FN = ( 2. * S(I1,I2) * 2. * S(I3,I4)
-     $        - 2. * S(I1,I3) * 2. * S(I2,I4)
-     $        - 2. * S(I1,I4) * 2. * S(I2,I3)
-     $        )
-     $        *
-     $        ( 2. * S(I1,I2) * 2.* S(I1,I2)
-     $        + 2. * S(I3,I4) * 2.* S(I3,I4) 
-     $        )
-     $        *
-     $        V3
-     $        * 
-     $        ( 0.25 * SP * ( 2. * S(I1,I2) * 2. * S(I3,I4)
-     $                      - 2. * S(I1,I3) * 2. * S(I2,I4)
-     $                      - 2. * S(I1,I4) * 2. * S(I2,I3)
+      FB_FN = 
+     $    -CF/CA/CA*(   ( S(I1,I2)**2. + S(I3,I4)**2. )
+     $                * (   S(I1,I2)*S(I3,I4)/S(I1,I3)/S(I2,I4)
+     $                                       /S(I2,I3)/S(I1,I4)
+     $                  -1./S(I2,I3)/S(I1,I4)
+     $                  -1./S(I1,I3)/S(I2,I4)
+     $                  )
+     $              ) / 2.
+     $             *( 
+     $                2.*(CF+1./CA)*( S(I1,I2)/S(I1,I5)/S(I2,I5)
+     $                              + S(I3,I4)/S(I3,I5)/S(I4,I5)
+     $                              )
+     $              + 1./CA*(
+     $                      - S(I1,I3)/S(I1,I5)/S(I3,I5)
+     $                      - S(I1,I4)/S(I1,I5)/S(I4,I5)
+     $                      - S(I2,I3)/S(I2,I5)/S(I3,I5)
+     $                      - S(I2,I4)/S(I2,I5)/S(I4,I5)
      $                      )
-     $        + 0.5 * UP * 2. * S(I1,I3) * 2. * S(I2,I4)
-     $        + 0.5 * TP * 2. * S(I1,I4) * 2. * S(I2,I3)
-     $        )
-     $        +
-     $        ( 2. * S(I1,I2) * 2. * S(I3,I4)
-     $        - 2. * S(I1,I3) * 2. * S(I2,I4)
-     $        - 2. * S(I1,I4) * 2. * S(I2,I3)
-     $        )
-     $        *
-     $        ( 2. * S(I1,I2) * 2.* S(I1,I2)
-     $        + 2. * S(I3,I4) * 2.* S(I3,I4) 
-     $        )
-     $        *
-     $        V4
-     $        *
-     $        ( 0.25 * SP * ( 2. * S(I1,I2) * 2. * S(I3,I4)
-     $                      - 2. * S(I1,I3) * 2. * S(I2,I4)
-     $                      - 2. * S(I1,I4) * 2. * S(I2,I3)
-     $                      )
-     $        - 0.50 * UP * 2. * S(I1,I3) * 2. * S(I2,I4)
-     $        - 0.50 * TP * 2. * S(I1,I4) * 2. * S(I2,I3)
-     $        - 0.25 * 2. * S(I1,I2) * ( 2. * S(I1,I3) * 2. * S(I1,I4)
-     $                                 + 2. * S(I2,I4) * 2. * S(I2,I3)
-     $                                 )
-     $        - 0.25 * 2. * S(I3,I4) * ( 2. * S(I1,I3) * 2. * S(I2,I3)
-     $                                 + 2. * S(I1,I4) * 2. * S(I2,I4)
-     $                                 )
-     $        )
-
-      FB_FN = FB_FN
-     $      / ( 2. * S(I1,I3) * 2. * S(I2,I4)
-     $        * 2. * S(I1,I4) * 2. * S(I2,I3)
-     $        * S(I1,I5) * S(I2,I5)
-     $        * S(I3,I5) * S(I4,I5)
-     $        )
+     $              )*36.0
 
       FB_FN = FB_FN
      $      + FA_FN(I1,I2,I3,I4,I5,S)

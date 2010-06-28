@@ -154,7 +154,7 @@ c      call maxratident
             call sigreal_rad(sig)
             sig=sig*kn_jacreal
             if(born.le.0) then
-               write(23,*) ' born zero'
+               write(*,*) ' inc_norms: Warning, born zero'
                return
             endif
             xnorm=sig/born/pwhg_upperb_rad()

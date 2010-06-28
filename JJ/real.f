@@ -36,7 +36,7 @@ c$$$      kr_mad(0,5)=sqrt(dabs(kr_mad(1,5)**2+kr_mad(2,5)**2+kr_mad(3,5)
 c$$$     $     **2))
 
       
-c      call compreal(kr_mad,rflav,amp2mad)
+c      call compreal(kr_mad,rflav,tmp)
       call alt_compreal(kr_mad,rflav,amp2mad)
 c      if(tmp.eq.0) then
 c         write(*,*) ' zero result:',tmp,amp2mad
@@ -177,13 +177,14 @@ C - Calculate the strong coupling constant prefactor
 C - First calculate the kinematic invariants once and for all (in
 C - Ellis sextion conventions).
       DO IXX=1,5
-         DO JXX=1,5 
+         DO JXX=IXX,5 
             IF(IXX.EQ.JXX) THEN
                S(IXX,JXX) = 0.0
             ELSE
                S(IXX,JXX) = DOTP(P1(0,ABS(ES_MAP(IXX))),
      $                           P1(0,ABS(ES_MAP(JXX))))
                IF((ES_MAP(IXX)*ES_MAP(JXX)).LT.0) S(IXX,JXX)=-S(IXX,JXX)
+               S(JXX,IXX) = S(IXX,JXX)
             ENDIF
          ENDDO
       ENDDO
@@ -200,29 +201,43 @@ C - Sexton paper.
      $             + S(3,4)**4 + S(3,5)**4
      $             + S(4,5)**4 )
 C - Initialise non invariant part and loop over permutations 
-      FD_NONINVARIANT = 0.
-      DO IXX=1,5
-         DO JXX=1,5
-            IF(JXX.EQ.IXX) CYCLE
-            DO KXX=1,5
-               IF((KXX.EQ.IXX).OR.
-     $            (KXX.EQ.JXX)) CYCLE
-               DO LXX=1,5
-                  IF((LXX.EQ.IXX).OR.
-     $               (LXX.EQ.JXX).OR.
-     $               (LXX.EQ.KXX)) CYCLE
-                  DO MXX=1,5
-                     IF((MXX.EQ.IXX).OR.
-     $                  (MXX.EQ.JXX).OR.
-     $                  (MXX.EQ.KXX).OR.
-     $                  (MXX.EQ.LXX)) CYCLE
-                     FD_NONINVARIANT = FD_NONINVARIANT
-     $                               + FD_DENOM(IXX,JXX,KXX,LXX,MXX,S)
-                  ENDDO
-               ENDDO
-            ENDDO
-         ENDDO
-      ENDDO
+      FD_NONINVARIANT = 1/(S(1,2)*S(1,3)*S(2,4)*S(3,5)*S(4,5))
+     $                + 1/(S(1,2)*S(1,3)*S(2,5)*S(3,4)*S(4,5))
+     $                + 1/(S(1,2)*S(1,4)*S(2,3)*S(3,5)*S(4,5))
+     $                + 1/(S(1,2)*S(1,4)*S(2,5)*S(3,4)*S(3,5))
+     $                + 1/(S(1,2)*S(1,5)*S(2,3)*S(3,4)*S(4,5))
+     $                + 1/(S(1,2)*S(1,5)*S(2,4)*S(3,4)*S(3,5))
+     $                + 1/(S(1,3)*S(1,4)*S(2,3)*S(2,5)*S(4,5))
+     $                + 1/(S(1,3)*S(1,4)*S(2,4)*S(2,5)*S(3,5))
+     $                + 1/(S(1,3)*S(1,5)*S(2,3)*S(2,4)*S(4,5))
+     $                + 1/(S(1,3)*S(1,5)*S(2,4)*S(2,5)*S(3,4))
+     $                + 1/(S(1,4)*S(1,5)*S(2,3)*S(2,4)*S(3,5))
+     $                + 1/(S(1,4)*S(1,5)*S(2,3)*S(2,5)*S(3,4))
+
+      FD_NONINVARIANT = FD_NONINVARIANT*10.0
+c      FD_NONINVARIANT = 0.
+c      DO IXX=1,5
+c         DO JXX=1,5
+c            IF(JXX.EQ.IXX) CYCLE
+c            DO KXX=1,5
+c               IF((KXX.EQ.IXX).OR.
+c     $            (KXX.EQ.JXX)) CYCLE
+c               DO LXX=1,5
+c                  IF((LXX.EQ.IXX).OR.
+c     $               (LXX.EQ.JXX).OR.
+c     $               (LXX.EQ.KXX)) CYCLE
+c                  DO MXX=1,5
+c                     IF((MXX.EQ.IXX).OR.
+c     $                  (MXX.EQ.JXX).OR.
+c     $                  (MXX.EQ.KXX).OR.
+c     $                  (MXX.EQ.LXX)) CYCLE
+c                     FD_NONINVARIANT = FD_NONINVARIANT
+c     $                               + FD_DENOM(IXX,JXX,KXX,LXX,MXX,S)
+c                  ENDDO
+c               ENDDO
+c            ENDDO
+c         ENDDO
+c      ENDDO
 C - On the next line we obtain the D function (Eq.3.11).
       RESULT=GS6/10.*FD_INVARIANT*FD_NONINVARIANT
 C - To get the matrix element squared we need to divide by the
@@ -274,13 +289,14 @@ C - Calculate the strong coupling constant prefactor
 C - First calculate the kinematic invariants once and for all (in
 C - Ellis sextion conventions).
       DO IXX=1,5
-         DO JXX=1,5 
+         DO JXX=IXX,5 
             IF(IXX.EQ.JXX) THEN
                S(IXX,JXX) = 0.0
             ELSE
                S(IXX,JXX) = DOTP(P1(0,ABS(ES_MAP(IXX))),
      $                           P1(0,ABS(ES_MAP(JXX))))
                IF((ES_MAP(IXX)*ES_MAP(JXX)).LT.0) S(IXX,JXX)=-S(IXX,JXX)
+               S(JXX,IXX) = S(IXX,JXX)
             ENDIF
          ENDDO
       ENDDO
@@ -375,13 +391,14 @@ C - Calculate the strong coupling constant prefactor
 C - First calculate the kinematic invariants once and for all (in
 C - Ellis sextion conventions).
       DO IXX=1,5
-         DO JXX=1,5 
+         DO JXX=IXX,5 
             IF(IXX.EQ.JXX) THEN
                S(IXX,JXX) = 0.0
             ELSE
                S(IXX,JXX) = DOTP(P1(0,ABS(ES_MAP(IXX))),
      $                           P1(0,ABS(ES_MAP(JXX))))
                IF((ES_MAP(IXX)*ES_MAP(JXX)).LT.0) S(IXX,JXX)=-S(IXX,JXX)
+               S(JXX,IXX) = S(IXX,JXX)
             ENDIF
          ENDDO
       ENDDO
@@ -463,13 +480,14 @@ C - Calculate the strong coupling constant prefactor
 C - First calculate the kinematic invariants once and for all (in
 C - Ellis sextion conventions).
       DO IXX=1,5
-         DO JXX=1,5 
+         DO JXX=IXX,5 
             IF(IXX.EQ.JXX) THEN
                S(IXX,JXX) = 0.0
             ELSE
                S(IXX,JXX) = DOTP(P1(0,ABS(ES_MAP(IXX))),
      $                           P1(0,ABS(ES_MAP(JXX))))
                IF((ES_MAP(IXX)*ES_MAP(JXX)).LT.0) S(IXX,JXX)=-S(IXX,JXX)
+               S(JXX,IXX) = S(IXX,JXX)
             ENDIF
          ENDDO
       ENDDO

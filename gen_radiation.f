@@ -620,8 +620,8 @@ c that some pdf vanish (typically heavy flavour pdf's)
       real * 8 random
       external random
       azi=2d0*pi*random()
-      sazi = dsin(azi)
-      cazi = dcos(azi)
+      sazi = sin(azi)
+      cazi = cos(azi)
       if (kn_csi.eq.0d0) then
          do ileg=1, nlegborn
             call mrotate(dir,sazi,cazi,kn_pborn(1,ileg))

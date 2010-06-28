@@ -13,7 +13,7 @@ F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow \
 # For debugging uncomment the following
 DEBUG= -ggdb #-pg
 #Do not uncomment this with gfortran
-#OPT=-O3
+OPT=-O2
 #SYSOBJ=trapfpe.o
 endif
 
@@ -42,7 +42,7 @@ LIBS=$(LIBSLHAPDF)
 LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
 LIBS += $(LIBSMADGRAPH)
 
-STATIC= -L /usr/lib/gcc/x86_64-linux-gnu/4.4/ -lstdc++ -static
+#STATIC= -L /usr/lib/gcc/x86_64-linux-gnu/4.4/ -lstdc++ -static
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../

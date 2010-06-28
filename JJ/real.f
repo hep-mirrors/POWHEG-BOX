@@ -364,14 +364,8 @@ C ----------------------------------------------------------------- C
       SUBROUTINE ES_A(P1,RESULT,ES_MAP,AVG,SYM)
 C - The squared, spin and colour summed matrix element for qq'->qq'g
 C - , averaged over initial state colours and spins. This comes from
-C - formulae in Ellis & Sexton, NPB269:445,1986 (Section 3). Agreement
-C - with MadGraph was very satisfactory except for the bxb_uuxg type
-C - process where agreement was off by up to 5%. However this disagreement
-C - came only in the phase -before- "POWHEG: initialization", where I
-C - think the limit checking is being done, I also note the fractional
-C - differences were worst in these cases when the ME value was very
-C - largest (which makes sense). Once POWHEG initialization agreement
-C - the ME's agreed to better than 1 in 10^6.
+C - formulae in Ellis Marchesini and Webber NPB286:643,1987. Agreement
+C - with MadGraph was very satisfactory.
 C ----------------------------------------------------------------- C
 
       IMPLICIT NONE
@@ -420,38 +414,29 @@ C - agreement with the MadGraph (and, hopefully, reality).
       REAL*8 FA_FN
       INTEGER I1,I2,I3,I4,I5
       REAL*8 S(5,5),SP,SM,TP,TM,UP,UM
-      REAL*8 V1,V2
+      REAL*8 CF,CA
 
-      V1 = 64./3.
-      V2 =  8./3.
+      CF = 4./3.
+      CA = 3.
 
-      SP = S(I1,I2)+S(I3,I4)
-      SM = S(I1,I2)-S(I3,I4)
-      TP = S(I1,I3)+S(I2,I4)
-      TM = S(I1,I3)-S(I2,I4)
-      UP = S(I1,I4)+S(I2,I3)
-      UM = S(I1,I4)-S(I2,I3)
-      
-      FA_FN = V1*(SP*SP+SM*SM+UP*UP+UM*UM)
-     $      * ( 2.00*UP*( S(I1,I2)*S(I3,I4)
-     $                  + S(I1,I3)*S(I2,I4)
-     $                  - S(I1,I4)*S(I2,I3) )
-     $        + 2.00*S(I1,I4)*(S(I1,I2)*S(I1,I3)+S(I3,I4)*S(I2,I4))
-     $        + 2.00*S(I2,I3)*(S(I1,I2)*S(I2,I4)+S(I3,I4)*S(I1,I3))
-     $        )
-     $      - V2*(SP*SP+SM*SM+UP*UP+UM*UM)
-     $      * ( 2.00*SP*( S(I1,I2)*S(I3,I4)
-     $                  - S(I1,I3)*S(I2,I4)
-     $                  - S(I1,I4)*S(I2,I3)
-     $                  )
-     $        + UP*2.*S(I1,I3)*2.*S(I2,I4)
-     $        + TP*2.*S(I1,I4)*2.*S(I2,I3)
-     $        )
+      FA_FN = CF/CA*( S(I1,I2)**2.+S(I3,I4)**2.
+     $              + S(I1,I4)**2.+S(I2,I3)**2.
+     $              )
+     $              / 2. / S(I1,I3) / S(I2,I4)
+     $             *( 
+     $                (2.*CF-1./CA)*( S(I1,I4)/S(I1,I5)/S(I4,I5)
+     $                              + S(I2,I3)/S(I2,I5)/S(I3,I5)
+     $                              )
+     $              + 1./CA*(
+     $                        2.*S(I1,I2)/S(I1,I5)/S(I2,I5)
+     $                      + 2.*S(I3,I4)/S(I3,I5)/S(I4,I5)
+     $                      -    S(I1,I3)/S(I1,I5)/S(I3,I5)
+     $                      -    S(I2,I4)/S(I2,I5)/S(I4,I5)
+     $                      )
+     $              )
 
-      FA_FN = FA_FN
-     $     / ( 2. * S(I1,I3) * 2. * S(I2,I4) * S(I1,I5) 
-     $            * S(I2,I5)      * S(I3,I5) * S(I4,I5)
-     $       )
+      FA_FN = FA_FN*36.0  ! Removes implicit 2*3*2*3 spin / colour avg
+                          ! factor which goes in later in ES_A.
       RETURN
       END
 

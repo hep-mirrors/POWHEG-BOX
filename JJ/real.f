@@ -36,8 +36,9 @@ c$$$      kr_mad(0,5)=sqrt(dabs(kr_mad(1,5)**2+kr_mad(2,5)**2+kr_mad(3,5)
 c$$$     $     **2))
 
       
-c      call compreal(kr_mad,rflav,tmp)
       call alt_compreal(kr_mad,rflav,amp2mad)
+cc check with madgraph amplitudes
+c      call compreal(kr_mad,rflav,tmp)
 c      if(tmp.eq.0) then
 c         write(*,*) ' zero result:',tmp,amp2mad
 c      elseif(abs(amp2mad-tmp)/abs(tmp).gt.0.001) then
@@ -300,20 +301,41 @@ C - Ellis sextion conventions).
             ENDIF
          ENDDO
       ENDDO
+c nice factorized form, obtained with macsyma real.mac performing
+c the summation over permutations symbolically.
+      result = 4*(
+     1   s(1,5)*s(2,5)*(s(2,5)**2+s(1,5)**2)
+     2  +s(1,4)*s(2,4)*(s(2,4)**2+s(1,4)**2)
+     3  +s(1,3)*s(2,3)*(s(1,3)**2+s(2,3)**2)   )*
+     4 (-s(1,2)*s(1,3)*s(2,4)*s(3,5)*s(4,5)
+     5  -s(1,2)*s(1,4)*s(2,3)*s(3,5)*s(4,5)
+     6  -s(1,2)*s(1,3)*s(2,5)*s(3,4)*s(4,5)
+     7  -s(1,2)*s(1,5)*s(2,3)*s(3,4)*s(4,5)
+     8  -s(1,2)*s(1,4)*s(2,5)*s(3,4)*s(3,5)
+     9  -s(1,2)*s(1,5)*s(2,4)*s(3,4)*s(3,5)
+     1  +9*s(1,3)*s(1,4)*s(2,3)*s(2,5)*s(4,5)
+     2  +9*s(1,3)*s(1,5)*s(2,3)*s(2,4)*s(4,5)
+     3  +9*s(1,3)*s(1,4)*s(2,4)*s(2,5)*s(3,5)
+     4  +9*s(1,4)*s(1,5)*s(2,3)*s(2,4)*s(3,5)
+     5  +9*s(1,3)*s(1,5)*s(2,4)*s(2,5)*s(3,4)
+     6  +9*s(1,4)*s(1,5)*s(2,3)*s(2,5)*s(3,4)
+     7 +10*s(1,2)**2*s(3,4)*s(3,5)*s(4,5)/9)
+     8  /( s(1,2)*s(1,3)*s(1,4)*s(1,5)*s(2,3)*s(2,4)
+     9    *s(2,5)*s(3,4)*s(3,5)*s(4,5));
 C - Then we calculate the Ellis Sexton C-function (Eq. 3.6) as a sum
 C - over permutations of the arguments of the F^C function (Eq. 3.7)
 C - for the gluons only.
-      RESULT=0.
-      DO IXX=3,5
-         DO LXX=3,5
-            IF(LXX.EQ.IXX) CYCLE
-            DO MXX=3,5
-               IF((MXX.EQ.IXX).OR.
-     $            (MXX.EQ.LXX)) CYCLE
-               RESULT = RESULT + FC_FN(1,2,IXX,LXX,MXX,S)
-            ENDDO
-         ENDDO
-      ENDDO
+c      RESULT=0.
+c      DO IXX=3,5
+c         DO LXX=3,5
+c            IF(LXX.EQ.IXX) CYCLE
+c            DO MXX=3,5
+c               IF((MXX.EQ.IXX).OR.
+c     $            (MXX.EQ.LXX)) CYCLE
+c               RESULT = RESULT + FC_FN(1,2,IXX,LXX,MXX,S)
+c            ENDDO
+c         ENDDO
+c      ENDDO
 C - On the next line we obtain the C function (Eq.3.6).
       RESULT=GS6*RESULT
 C - To get the matrix element squared we need to divide by the
@@ -416,26 +438,26 @@ C - agreement with the MadGraph (and, hopefully, reality).
       REAL*8 S(5,5)
       REAL*8 CF,CA
 
-      CF = 4./3.
-      CA = 3.
+      CF = 4d0/3
+      CA = 3
 
-      FA_FN = CF/CA*( S(I1,I2)**2.+S(I3,I4)**2.
-     $              + S(I1,I4)**2.+S(I2,I3)**2.
+      FA_FN = CF/CA*( S(I1,I2)**2+S(I3,I4)**2
+     $              + S(I1,I4)**2+S(I2,I3)**2
      $              )
-     $              / 2. / S(I1,I3) / S(I2,I4)
+     $              / 2 / S(I1,I3) / S(I2,I4)
      $             *( 
-     $                (2.*CF-1./CA)*( S(I1,I4)/S(I1,I5)/S(I4,I5)
-     $                              + S(I2,I3)/S(I2,I5)/S(I3,I5)
+     $                (2*CF-1/CA)*(   S(I1,I4)/(S(I1,I5)*S(I4,I5))
+     $                              + S(I2,I3)/(S(I2,I5)*S(I3,I5))
      $                              )
-     $              + 1./CA*(
-     $                        2.*S(I1,I2)/S(I1,I5)/S(I2,I5)
-     $                      + 2.*S(I3,I4)/S(I3,I5)/S(I4,I5)
-     $                      -    S(I1,I3)/S(I1,I5)/S(I3,I5)
-     $                      -    S(I2,I4)/S(I2,I5)/S(I4,I5)
+     $              + 1/CA*(
+     $                        2*S(I1,I2)/(S(I1,I5)*S(I2,I5))
+     $                      + 2*S(I3,I4)/(S(I3,I5)*S(I4,I5))
+     $                      -   S(I1,I3)/(S(I1,I5)*S(I3,I5))
+     $                      -   S(I2,I4)/(S(I2,I5)*S(I4,I5))
      $                      )
      $              )
 
-      FA_FN = FA_FN*36.0  ! Removes implicit 2*3*2*3 spin / colour avg
+      FA_FN = FA_FN*36    ! Removes implicit 2*3*2*3 spin / colour avg
                           ! factor which goes in later in ES_A.
       RETURN
       END
@@ -497,28 +519,28 @@ C - agreement with the MadGraph (and, hopefully, reality).
       REAL*8 S(5,5)
       REAL*8 CF,CA
 
-      CF = 4./3.
-      CA = 3.
+      CF = 4d0/3
+      CA = 3
 
       FB_FN = 
-     $    -CF/CA/CA*(   ( S(I1,I2)**2. + S(I3,I4)**2. )
-     $                * (   S(I1,I2)*S(I3,I4)/S(I1,I3)/S(I2,I4)
-     $                                       /S(I2,I3)/S(I1,I4)
-     $                  -1./S(I2,I3)/S(I1,I4)
-     $                  -1./S(I1,I3)/S(I2,I4)
+     $    -CF/CA/CA*(   ( S(I1,I2)**2 + S(I3,I4)**2 )
+     $                * (   S(I1,I2)*S(I3,I4)/(S(I1,I3)*S(I2,I4)
+     $                                        *S(I2,I3)*S(I1,I4))
+     $                  -1/(S(I2,I3)*S(I1,I4))
+     $                  -1/(S(I1,I3)*S(I2,I4))
      $                  )
-     $              ) / 2.
+     $              ) / 2
      $             *( 
-     $                2.*(CF+1./CA)*( S(I1,I2)/S(I1,I5)/S(I2,I5)
-     $                              + S(I3,I4)/S(I3,I5)/S(I4,I5)
+     $                2*(CF+1/CA) * ( S(I1,I2)/(S(I1,I5)*S(I2,I5))
+     $                              + S(I3,I4)/(S(I3,I5)*S(I4,I5))
      $                              )
-     $              + 1./CA*(
-     $                      - S(I1,I3)/S(I1,I5)/S(I3,I5)
-     $                      - S(I1,I4)/S(I1,I5)/S(I4,I5)
-     $                      - S(I2,I3)/S(I2,I5)/S(I3,I5)
-     $                      - S(I2,I4)/S(I2,I5)/S(I4,I5)
+     $              + 1/CA*(
+     $                      - S(I1,I3)/(S(I1,I5)*S(I3,I5))
+     $                      - S(I1,I4)/(S(I1,I5)*S(I4,I5))
+     $                      - S(I2,I3)/(S(I2,I5)*S(I3,I5))
+     $                      - S(I2,I4)/(S(I2,I5)*S(I4,I5))
      $                      )
-     $              )*36.0
+     $              )*36
 
       FB_FN = FB_FN
      $      + FA_FN(I1,I2,I3,I4,I5,S)

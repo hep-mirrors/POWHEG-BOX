@@ -11,7 +11,7 @@ F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow \
 #F77= g77 -Wall -fno-automatic -ffortran-bounds-check
 ## IMPORTANT: if using g77 remove -static when linking against LHAPDF
 # For debugging uncomment the following
-DEBUG= -ggdb #-pg
+DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
 OPT=-O2
 #SYSOBJ=trapfpe.o

@@ -31,7 +31,7 @@ c     number of pt Z cuts implemented
       nptZcut=4
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      numplots = 69  ! <========== DO NOT FORGET TO SET THIS
+      numplots = 75  ! <========== DO NOT FORGET TO SET THIS
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       call pwhginihist
 
@@ -260,6 +260,31 @@ c     loop on ptZ cut
       bsz(69) = 2d0
       call pwhgbookup(69+numplots*ncut,'pt j1, zoom2 ptZ>'//cut,'LOG',
      #     bsz(69),0d0,100d0)
+
+
+      bsz(70) = 2d0      
+      call pwhgbookup(70+numplots*ncut,'pt Z pos ptZ>'//cut,'LOG',
+     #     bsz(70),0d0,200d0)
+      bsz(71) = 2d0      
+      call pwhgbookup(71+numplots*ncut,'pt Z neg ptZ>'//cut,'LOG',
+     #     bsz(71),0d0,200d0)
+
+
+      bsz(72) = 2d0      
+      call pwhgbookup(72+numplots*ncut,'pt J1 pos ptZ>'//cut,'LOG',
+     #     bsz(72),0d0,200d0)
+      bsz(73) = 2d0      
+      call pwhgbookup(73+numplots*ncut,'pt J1 neg ptZ>'//cut,'LOG',
+     #     bsz(73),0d0,200d0)
+
+      bsz(74) = 2d0
+      call pwhgbookup(74+numplots*ncut,'pt J2 pos ptZ>'//cut,'LOG',
+     #     bsz(74),0d0,200d0)
+      bsz(75) = 2d0
+      call pwhgbookup(75+numplots*ncut,'pt J2 neg ptZ>'//cut,'LOG',
+     #     bsz(75),0d0,200d0)
+
+
       enddo
       end
 
@@ -301,8 +326,7 @@ c arrays to reconstruct jets
       integer maxnumlep
       parameter (maxnumlep=10)
       integer emvec(maxnumlep),epvec(maxnumlep),iep,iem,ep,em
-      real * 8 inv_mV
-      real * 8  Zmass,Zwidth,Zmasslow,Zmasshigh,mV2ref,mV2
+      real * 8  Zmass,Zwidth,Zmass2low,Zmass2high,mV2ref,mV2
       logical foundlep
       integer nem,nep
       logical findmother
@@ -318,8 +342,6 @@ c arrays to reconstruct jets
       parameter (maxjets=10)
       integer njj(maxjets)      
       real *8 ptj(maxjets),yj(maxjets),pj(0:3,maxjets)
-c 11 o 13 (electron or muon)
-      integer whichlepton
 c     binsize
       real * 8 bsz(100)
       common/pwhghistcommon/bsz
@@ -327,27 +349,13 @@ c     binsize
       external getrapidity0
       real * 8 rsep,rsepn_p
       external rsepn_p
-      logical pass_lept_cuts
-      external pass_lept_cuts
-      real * 8 dist
-      real * 8 yl1
-      real * 8 pep(4,maxnumlep),pem(4,maxnumlep)
-      common/clepton_cuts/yl1
-      real * 8 powheginput
-      external powheginput
-      whichlepton=nint(powheginput(#whichlepton))
-      if(whichlepton.lt.0) whichlepton=11
-      if(whichlepton.ne.11.and.whichlepton.ne.13) then
-         write(*,*) ' not a valid lepton ',whichlepton
-         call exit(1)
-      endif
 
       if (WHCPRG.ne.'POWHEG') then 
 c     set values if analysis file is run by HERWIG and PYTHIA
          Zmass = 91.188d0
          Zwidth = 2.486d0
-         Zmasslow = (Zmass-10*Zwidth)
-         Zmasshigh = (Zmass+10*Zwidth)
+         Zmass2low = (Zmass-10*Zwidth)**2
+         Zmass2high = (Zmass+10*Zwidth)**2
       endif
       if (ini) then
          write(*,*) '**************************************************'
@@ -355,7 +363,7 @@ c     set values if analysis file is run by HERWIG and PYTHIA
          write(*,*) '                ANALYSIS CUTS                     '
          write(*,*) '**************************************************'
          write(*,*) '**************************************************'
-         write(*,*)   Zmasslow,' < M_Z < ',Zmasshigh
+         write(*,*)   sqrt(Zmass2low),' < M_Z < ',sqrt(Zmass2high)
          write(*,*) '**************************************************'
          write(*,*) '**************************************************'
          ini = .false.
@@ -370,10 +378,10 @@ c     set values if analysis file is run by HERWIG and PYTHIA
          enddo
          do ihep=1,nhep
             if (isthep(ihep).eq.1) then
-               if(idhep(ihep).eq.whichlepton) then
+               if(idhep(ihep).eq.11) then
                   neminus=neminus+1
                   emvec(neminus)=ihep
-               elseif(idhep(ihep).eq.-whichlepton) then
+               elseif(idhep(ihep).eq.-11) then
                   neplus=neplus+1
                   epvec(neplus)=ihep
                endif
@@ -399,19 +407,18 @@ c     looking into the shower branchings.
          do ihep=1,nhep
 c     works for POWHEG+HERWIG, POWHEG+PYHIA, HERWIG, PYTHIA and real in
 c     MC@NLO
-            if (isthep(ihep).eq.1.and.abs(idhep(ihep)).eq.whichlepton)
-     1           then
+            if (isthep(ihep).eq.1.and.abs(idhep(ihep)).eq.11) then
                is_Z = idhep(jmohep(1,jmohep(1,ihep))).eq.23
                if (.not.is_Z) then
                   is_Z = idhep(jmohep(1,jmohep(1,jmohep(1,ihep)))).eq.23
                endif
                if (is_Z) then
 c     find first decay product
-                  if(idhep(ihep).eq.whichlepton) then
+                  if(idhep(ihep).eq.11) then
                      iem=ihep
                      nem=nem+1
 c     find second decay product
-                  elseif(idhep(ihep).eq.-whichlepton) then
+                  elseif(idhep(ihep).eq.-11) then
                      iep=ihep
                      nep=nep+1
                   endif
@@ -425,81 +432,44 @@ c     find second decay product
          endif
       endif
 
-      
-      do i=1,maxnumlep
-         emvec(i) = 0
-         epvec(i) = 0
-      enddo
-
 
       if (WHCPRG.eq.'PYTHIA') then
-         neminus=0 
-         neplus=0 
-c     Loop over final state particles to find leptons 
+c     Loop again over final state particles to find products of Z decay, by
+c     looking into the shower branchings.
+         nem=0
+         nep=0
          do ihep=1,nhep
-            if (isthep(ihep).eq.1) then
-               if(idhep(ihep).eq.whichlepton) then
-                  if (pass_lept_cuts(phep(1,ihep))) then 
-                     neminus=neminus+1
-                     emvec(neminus)=ihep
-                     do mu=1,4
-                        pem(mu,neminus)=phep(mu,ihep)
-                     enddo
-                  endif
-               elseif(idhep(ihep).eq.-whichlepton) then
-                  if (pass_lept_cuts(phep(1,ihep))) then 
-                     neplus=neplus+1
-                     epvec(neplus)=ihep
-                     do mu=1,4
-                        pep(mu,neplus)=phep(mu,ihep)
-                     enddo
+c     works both for POWHEG+HERWIG and POWHEG+PYHIA
+            if (isthep(ihep).eq.1.and.abs(idhep(ihep)).eq.11) then
+               is_Z = idhep(jmohep(1,jmohep(1,ihep))).eq.23
+               if (.not.is_Z) then
+                  is_Z = idhep(jmohep(1,jmohep(1,jmohep(1,ihep)))).eq.23
+               endif
+               if (is_Z) then
+c     find first decay product
+                  if(idhep(ihep).eq.11) then
+                     iem=ihep
+                     nem=nem+1
+c     find second decay product
+                  elseif(idhep(ihep).eq.-11) then
+                     iep=ihep
+                     nep=nep+1
                   endif
                endif
-            endif         
+            endif
          enddo
-
-c correct here pep and pem for collinear photons (in the electron case)
-
-         if (neminus*neplus.eq.0) then
-c     no two opposite-sign leptons to reconstruct the Z mass peak
-            return
+         if(nep.ne.1.or.nem.ne.1) then    
+            write(*,*) 'nhep ',nhep
+             do ihep=1,nhep
+                write(*,*) ihep, isthep(ihep)
+                write(*,*) (phep(mu,ihep),mu=1,4)
+             enddo
+            
+            write(*,*) 'Problems with leptons from Z decay', nep, nem
+            write(*,*) 'PROGRAM ABORT'
+            call exit(1)
          endif
-
-         dist = 1e+36
-         iem=0
-         iep=0
-         do nem=1,neminus
-            do nep=1,neplus
-               do i=1,4
-c in case of electron, we may need to add collinear photons here
-                  pvb(i)=pem(i,nem)+pep(i,nep)
-               enddo
-               call getinvmass(pvb,inv_mV)
-               if (inv_mV.gt.Zmasslow.and.inv_mV.lt.Zmasshigh.and.
-     #                 abs(inv_mV-Zmass).lt.dist) then
-                  dist = abs(inv_mV-Zmass)
-                  iem = nem
-                  iep = nep
-               endif
-            enddo
-         enddo
-         
-         if (iem*iep.eq.0) then
-c     no reconstructed Z mass peak in the experimental window
-            return
-         else            
-            do i=1,4
-               pvb(i)=pem(i,iem)+pep(i,iep)
-            enddo        
-         endif         
       endif
-
-c CDF, PRL 100:102001, 2008
-c Hadron level jets, p_t(jet)>30 GeV, |Yjet|<2.1
-c ET(e)>25, |etae1|<1, |etae2<1|
-c or 1.2<|etae2|<2.8
-c 66< Mee < 116, Delta R(e-jet)>0.7 
-
 
 
 c     Z momentum
@@ -517,10 +487,6 @@ c      write(*,*) '>>>>>>>>>>>>>>>>>>>>>>>>>>',sqrt(mV2)
       call getrapidity(phep(1,iep),yep)
       ptem=sqrt(phep(1,iem)**2+phep(2,iem)**2)
       call getrapidity(phep(1,iem),yem)
-
-      call buildjets(njets,pjet)
-
-
 
 c     set up arrays for jet finding
       do jpart=1,maxtrack
@@ -592,6 +558,13 @@ c     loop on ptZ cut
 
 c     plot here ptvb in order to have it even below the cut
       call pwhgfill( 1+numplots*ncut,ptvb,dsig/bsz(1))
+      
+      if (dsig.gt.0d0) then
+         call pwhgfill( 70+numplots*ncut,ptvb,dsig/bsz(70))
+      else
+         call pwhgfill( 71+numplots*ncut,ptvb,abs(dsig)/bsz(71))
+      endif
+
       call pwhgfill(50+numplots*ncut,ptvb,dsig/bsz(50))
       call pwhgfill(51+numplots*ncut,ptvb,dsig/bsz(51))
 
@@ -642,11 +615,21 @@ c     get pt's and rapidities of the jets
                call pwhgfill( 2+numplots*ncut,ptj1,dsig/bsz(2))
                call pwhgfill(52+numplots*ncut,ptj1,dsig/bsz(52))
                call pwhgfill(69+numplots*ncut,ptj1,dsig/bsz(69))
+               if (dsig.gt.0d0) then
+                  call pwhgfill(72+numplots*ncut,ptj1,dsig/bsz(72))
+               else
+                  call pwhgfill(73+numplots*ncut,ptj1,abs(dsig)/bsz(73))
+               endif
             endif
             rsep = 0d0
             if(j2.gt.0) then
                call pwhgfill( 3+numplots*ncut,ptj2,dsig/bsz(3))
                call pwhgfill(53+numplots*ncut,ptj2,dsig/bsz(53))
+               if (dsig.gt.0d0) then
+                  call pwhgfill(74+numplots*ncut,ptj2,dsig/bsz(74))
+               else
+                  call pwhgfill(75+numplots*ncut,ptj2,abs(dsig)/bsz(75))
+               endif
 c     compute the separation in the pseudorapidity-phi plane
                rsep = rsepn_p(pj(0,1),pj(0,2))
                call pwhgfill(58+numplots*ncut,rsep,dsig/bsz(58))
@@ -806,97 +789,6 @@ c     end of loop on ptZ cuts
 
 
 
-      subroutine buildjets(njets,pjet)
-c     arrays to reconstruct jets
-      implicit none
-      include '../include/hepevt.h'
-      integer njets
-      real * 8 pjet(4,*)
-      integer maxtrack,maxjet
-      parameter (maxtrack=2048,maxjet=2048)
-      real *8 ptrack(4,maxtrack)
-      real *8 pp
-      integer jetvec(maxtrack)
-      integer ihep,j,j1,ntracks,jpart,jjet,mu,njets
-      real * 8 found
-      real * 8 random
-      integer seed
-      data seed/1/
-      save seed
-c     get valid tracks
-c     set up arrays for jet finding
-      do jpart=1,maxtrack
-         do mu=1,4
-            ptrack(mu,jpart)=0d0
-         enddo
-         jetvec(jpart)=0
-      enddo      
-      do jjet=1,maxjet
-         do mu=1,4
-            pjet(mu,jjet)=0d0
-         enddo
-      enddo
-      j1=0
-      found=0
-      ntracks=0
-      njets=0
-c     loop over final state particles to find jets 
-      do ihep=1,nhep
-         if (isthep(ihep).eq.1) then
-            if(ntracks.eq.maxtrack) then
-               write(*,*)
-     #              'analyze: too many particles, increase maxtrack'
-               stop
-            endif
-c     copy momenta to construct jets 
-            ntracks=ntracks+1
-            do mu=1,4
-               ptrack(mu,ntracks)=phep(mu,ihep)
-            enddo
-         endif
-      enddo
-      if (ntracks.eq.0) then
-         njets=0
-         return
-      endif
-c     siscone algorithm
-c*********************************************************************
-c      R = 0.7  radius parameter
-c      f = 0.5  overlapping fraction
-c.....run the clustering
-c      call fastjetsiscone(ptrack,ntracks,0.7d0,0.5d0,pjet,njets) 
-c*********************************************************************
-c     fastkt algorithm
-c*********************************************************************
-c      R = 0.7  Radius parameter
-c.....run the clustering 
-c      R = 0.5d0          
-c      ptmin_fastkt = 0d0
-c      call fastjetktwhich(ptrack,ntracks,ptmin_fastkt,R,
-c     #     pjet,njets,jetvec)
-c     now we have the jets
-c MidPoint CDF
-      R=0.7
-      f=0.75
-      sf=1
-      caf=1
-      call fastjetcdfmidpoint(p,npart,r,f,sf,caf,pjet,njets)
-      end
-
-      subroutine getktetaphi(njets,pjet,ktjet,etajet,phijet)
-      implicit none
-      integer njets
-      real * 8 pjet(4,njets),ktjet(njets),etajet(njets),phijet(njets)
-      integer j
-      do j=1,njets
-         ktjet(j)=sqrt(pjet(1,j)**2+pjet(2,j)**2)
-         pp = sqrt(kt(j)**2+pjet(3,j)**2)
-         etajet(j)=0.5d0*log((pp+pjet(3,j))/(pp-pjet(3,j)))
-         phijet(j)=atan2(pjet(2,j),pjet(1,j))
-      enddo
-      end
-      
-
 
       subroutine getrapidity(p,y)
       implicit none
@@ -1039,14 +931,3 @@ c     p1 and p2 in azi and pseudorapidity
       pseudorapidity=0.5*log((1+costh)/(1-costh))
       end
 
-
-
-
-      function pass_lept_cuts(p)
-      implicit none
-      logical pass_lept_cuts
-      real * 8 p(1:4)
-      real * 8 yl1
-      common/clepton_cuts/yl1
-      pass_lept_cuts = .true.
-      end

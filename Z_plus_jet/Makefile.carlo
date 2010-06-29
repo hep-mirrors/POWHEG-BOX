@@ -15,6 +15,7 @@ OPT=-O3
 endif
 
 FASTJET_CONFIG=/home/oleari/bin/fastjet-config
+#FASTJET_CONFIG=/home/oleari/bin/fastjet-config-2.3.4 
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
 #LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/x86_64-linux-gnu/4.4/  -lstdc++
@@ -130,14 +131,34 @@ main-HERWIG-lhef: $(HERWIG)
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
 	boostrot.o powheginput.o \
-        pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+        pwhg_bookhist.o lhefread.o newunit.o fastjetCDFMidPointwrap.o \
+        fastjetD0RunIIConewrap.o fastjetsisconewrap.o fastjetktwrap.o \
+	pwhg_analysis_driver.o \
 	random.o cernroutines.o opencount.o  $(SYSOBJ)
-main-PYTHIA-lhef: $(PYTHIA)
-	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
+main-PYTHIA-lhef: $(PYTHIA)  pwhg_analysis.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis.o -o $@ $(LIBSFASTJET) $(LIBS)
+
+main-PYTHIA-lhef_CDF: $(PYTHIA)  pwhg_analysis_CDF.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_CDF.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
+main-PYTHIA-lhef_CDF_mupmum: $(PYTHIA)  pwhg_analysis_CDF_mupmum.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) \
+	obj/pwhg_analysis_CDF_mupmum.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
+main-PYTHIA-lhef_D0: $(PYTHIA)  pwhg_analysis_D0.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_D0.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
+main-PYTHIA-lhef_D0_epem: $(PYTHIA)  pwhg_analysis_D0_epem.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_D0_epem.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
 
 clean:
 	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \
 	main-PYTHIA-lhef merge_event_files merge_Z_Zj_events \
 	merge_Z_Zj_events_HERWIG merge_Z_Zj_events_POWHEG \
-	merge_Z_Zj_events_PYTHIA
+	merge_Z_Zj_events_PYTHIA main-PYTHIA-lhef_CDF main-PYTHIA-lhef_D0 \
+	main-PYTHIA-lhef_D0_epem main-PYTHIA-lhef_CDF_mupmum

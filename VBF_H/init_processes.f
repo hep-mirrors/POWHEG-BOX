@@ -54,7 +54,7 @@ c     #      -0.33333333333333333333d0/ !   -1d0/3
       endif
 
 
-c     index of the first coloured particle in the final state
+c     index of the first light coloured particle in the final state
 c     (all subsequent particles are coloured)
       flst_lightpart=4
       max_flav = 5

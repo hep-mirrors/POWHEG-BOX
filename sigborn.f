@@ -15,6 +15,10 @@
          res(j)=br_born(j) *
      #  pdf1(flst_born(1,j))*pdf2(flst_born(2,j))*kn_jacborn
          tot=tot+res(j)
+c     if one wants to do only the integration over the whole phase space, then
+c     uncomment the following (with or without the flux factor 1/(2*kn_sborn)
+c        
+c         res(j)=kn_jacborn/(2*kn_sborn)/flst_nborn
       enddo
       end
 

@@ -51,7 +51,12 @@ c         write(*,*) "Higgs decay mode not allowed"
 c         stop
 c      endif   
 
-      
+C   100       A : Rick Field's CDF Tune A                     (Oct 2002)
+C   103      DW : Rick Field's CDF Tune DW                    (Apr 2006)
+C   320 Perugia 0 : "Perugia" update of S0-Pro                (Feb 2009)
+c      call PYTUNE(100)
+
+
 c Set up PYTHIA to accept user processes
       call PYINIT('USER','','',0d0)
       
@@ -71,7 +76,7 @@ c     Convert from PYJETS event record to HEPEVT event record
          call pyhepc(1)
          nevhep=temp
 C     Print out the event record
-         IF (IEV.le.6) THEN 
+         IF (IEV.le.0) THEN 
 c     list the event
 c            CALL PYLIST(7)      ! print the HEPEUP common block
 c            CALL PYLIST(5)      ! print the HEPEVT common block

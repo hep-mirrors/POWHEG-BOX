@@ -6,7 +6,7 @@ c -*- Fortran -*-
       integer nmh,nmh2,nmh3,nmh4,nmb,nxm,nbin,
      1          ihis,iuscore,ioscore,ient,nhist
       parameter(nmh=300,nmh2=2*nmh,nmh3=3*nmh,
-     1          nmh4=4*nmh,nmb=5*nmh,nxm=100)
+     1          nmh4=4*nmh,nmb=5*nmh,nxm=1000)
       common/histo/hist(nmb,nxm),xhis(nmb,nxm),hdel(nmb),hmin(nmb)
      &,hmax(nmb),uscore(nmb),oscore(nmb)
      &,nbin(nmb),ient(nmb),havg(nmb),hint(nmb),hsig(nmb)

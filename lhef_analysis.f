@@ -8,7 +8,7 @@
       do j=1,nev
          call upevnt
          call lhuptohepevt(j)
-         call analysis(xsecup)
+         call analysis(xsecup(1)*xwgtup)
          call pwhgaccumup
          if (mod(j,20000).eq.0) then
             write(*,*) "# of events processed =",j

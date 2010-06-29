@@ -44,16 +44,16 @@ c pick a configuration according to its cross section
 c iret=1: rem contribution (leftover from damping factor on R)
 c iret=2: reg contribution (real graphs without singular regions)
          call gen_remnant(iret)
-         if (pwhg_pt2().lt.rad_ptsqmin) then
-            write(*,*) '****************************************'
-            write(*,*) 'WARNING in gen_remnant'
-            write(*,*) 'pwhg_pt2 < rad_ptsqmin ',
-     #           pwhg_pt2(),' < ',rad_ptsqmin
-            write(*,*) (flst_alr(i,rad_realalr),i=1,nlegreal)
-            write(*,*) 'To generate this event, use the following seeds'
-            call printcurrentrandom
-            write(*,*) '****************************************'
-         endif
+c         if (pwhg_pt2().lt.rad_ptsqmin) then
+c            write(*,*) '****************************************'
+c            write(*,*) 'WARNING in gen_remnant'
+c            write(*,*) 'pwhg_pt2 < rad_ptsqmin ',
+c     #           pwhg_pt2(),' < ',rad_ptsqmin
+c            write(*,*) (flst_alr(i,rad_realalr),i=1,nlegreal)
+c            write(*,*) 'To generate this event, use the following seeds'
+c            call printcurrentrandom
+c            write(*,*) '****************************************'
+c         endif
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
          call add_azimuth
          if(iret.eq.1) then

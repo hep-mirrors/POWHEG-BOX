@@ -1,3 +1,5 @@
+c -*- Fortran -*-
+
 c The user must set nlegborn to the appropriate value for his process.
       integer nlegborn,nlegreal
       
@@ -7,10 +9,10 @@ c The user must set nlegborn to the appropriate value for his process.
 c     ndiminteg is the dimensionality of the full real integral
 c     ndiminteg=(nlegreal-2)*3-4+2-1
 c     if there are undecayed resonances, we need extra variables to pilot
-c     the resonance masses
+c     the resonance's masses
 
       integer ndiminteg
-      parameter (ndiminteg=(nlegreal-2)*3-4+2)
+      parameter (ndiminteg=(nlegreal-2)*3-4+2-1)
 
       integer maxprocborn,maxprocreal
       parameter (maxprocborn=200,maxprocreal=500)

@@ -28,7 +28,7 @@ PWD=$(shell pwd)
 
 WDNAME=$(shell basename $(PWD))
 
-VPATH= ./:../:obj/:madgraph/:madgraph/born/:madgraph/real/
+VPATH= ./:../:obj/:Validation/:madgraph/:madgraph/born/:madgraph/real/
 
 FF=$(F77) $(OPT) $(DEBUG)
 
@@ -73,6 +73,8 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
 	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
+	fastjetD0RunIIConewrap.o \
+	fastjetCDFMidPointwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
 pwhg_main:$(PWHG) 
@@ -80,7 +82,10 @@ pwhg_main:$(PWHG)
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o lhefwrite.o   lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	fastjetsisconewrap.o fastjetktwrap.o \
+	fastjetD0RunIIConewrap.o \
+	fastjetCDFMidPointwrap.o \
+	pwhg_analysis_driver.o \
 	$(SYSOBJ)
 
 # target to analyze LHEF output
@@ -92,7 +97,10 @@ lhef_analysis:$(LHEFANAL)
 HERWIG=main-HERWIG-lhef.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	fastjetsisconewrap.o fastjetktwrap.o \
+	fastjetD0RunIIConewrap.o \
+	fastjetCDFMidPointwrap.o \
+	pwhg_analysis_driver.o \
 	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
@@ -101,7 +109,10 @@ main-HERWIG-lhef: $(HERWIG)
 PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	fastjetsisconewrap.o fastjetktwrap.o \
+	fastjetD0RunIIConewrap.o \
+	fastjetCDFMidPointwrap.o \
+	pwhg_analysis_driver.o \
 	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)

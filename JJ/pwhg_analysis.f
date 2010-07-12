@@ -443,6 +443,28 @@ C - p_T^rel of the 2nd hardest jet (97)
       binsize(diag) = 0.5d0
       call pwhgbookup(diag,'p0T12rel3 J2','LOG',binsize(diag),0d0,50d0)
 
+C ------------------------- C
+C - CDF Coherence plot(s) - C
+C ------------------------- C
+      diag=100
+
+C - Evidence for color coherence in p anti-p collisions at 
+C - s**(1/2) = 1.8-TeV, By CDF Collaboration, PRD50:5562-5579,1994.
+C - http://hepdata.cedar.ac.uk/View/2952106
+
+C - Pseudorapidity of the third hardest jet (98)
+C - Cuts: |eta_1|<0.7, |eta_2|<0.7, |phi_1-phi_2|>2.79
+C - E_T1 > 110 GeV, E_T3 > 10GeV. In an ideal world I
+C - would also know better what exactly was the R=0.7
+C - cone algorithm they used.
+      diag=diag+1
+      binsize(diag) = 0.2d0
+      call pwhgbookup(diag,'H0J31','LOG',binsize(diag),-4d0,4d0)
+C - N.B. If plotting the 'alpha' variable used in this study
+C - one must impose an additional cut 1.1 < DeltaR_23 < pi.
+C - I didn't plot alpha because looking at the results of the 
+C - CDF study, alpha doesn't discriminate much between anything.
+
       end
 
 
@@ -592,6 +614,15 @@ C - |p_T|>100 (94)
      $        call pwhgfill(diag,absy_jet,dsig)
       enddo
 
+      diag=100
+C - Pseudorapidity of the third hardest jet (101)
+C - Cuts: |eta_1|<0.7, |eta_2|<0.7, |phi_1-phi_2|>2.79
+C - E_T1 > 110 GeV, E_T3 > 10GeV.
+      diag=diag+1
+      if(njets.ge.3) then
+         pp=0.5d0*log((pjet(4,3)+pjet(3,3))/(pjet(4,3)-pjet(3,3)))
+         call pwhgfill(diag,pp,dsig)
+      endif
 
 C --------------------------------------------------------------------- C
 C - Everything else is analysed using the D0 RunII midpoint cone algo - C
@@ -701,7 +732,7 @@ C   estimates, spoiling correlated events ...)
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
       real * 8 ktjets(4),etajets(4),rapjets(4),phijets(4),pj(4,4)
-      real * 8 pT_rel_J1,pT_rel_J2
+      real * 8 pT_rel_J1,pT_rel_J2,tmp1,tmp2
       real * 8 getrapidity,y12,phi12,dphi312,dr312,mjj,et1
       integer njets
       character * 6 WHCPRG
@@ -885,7 +916,9 @@ C - Rapidity of the 3rd jet, p_T,3 > 100
          if(ktjets(3).gt.100.0) call pwhgfill(diag,rapjets(3),dsig)
 
          y12     = getrapidity(pj(4,1)+pj(4,2),pj(3,1)+pj(3,2))
-         phi12   = atan2(pj(2,1)+pj(2,2),pj(1,1)+pj(1,2))
+         tmp1    = pj(2,1)+pj(2,2)
+         tmp2    = pj(1,1)+pj(1,2)
+         phi12   = atan2(tmp1,tmp2)
          dphi312 = abs(phijets(3)-phi12)
          if(dphi312.gt.pi) dphi312=dphi312-pi*int(dphi312/pi)
          dr312   = sqrt((rapjets(3)-y12)**2+dphi312**2)

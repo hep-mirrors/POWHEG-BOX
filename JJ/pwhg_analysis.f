@@ -473,13 +473,14 @@ C - CDF study, alpha doesn't discriminate much between anything.
 c     arrays to reconstruct jets
       implicit none
       include   '../include/hepevt.h'
+      include '../include/pwhg_math.h' 
       integer   maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
       real * 8  ptrack(4,maxtrack)
       real * 8  pjet(4,maxjet),pT_rel(maxjet)
       integer   mjets
       real * 8  kt(mjets),eta(mjets),rap(mjets),phi(mjets),pj(4,mjets)
-      real * 8  pp
+      real * 8  pp,phi1,phi2,dphi12,eta1,eta2,eta3,et12,et22,et32
       real * 8  pT_rel_J1,pT_rel_J2
       integer   ntracks,njets
       integer   j,k,mu,jet_algo
@@ -620,8 +621,39 @@ C - Cuts: |eta_1|<0.7, |eta_2|<0.7, |phi_1-phi_2|>2.79
 C - E_T1 > 110 GeV, E_T3 > 10GeV.
       diag=diag+1
       if(njets.ge.3) then
-         pp=0.5d0*log((pjet(4,3)+pjet(3,3))/(pjet(4,3)-pjet(3,3)))
-         call pwhgfill(diag,pp,dsig)
+         call get_pseudorap(pjet(1,1),eta1)
+         call get_pseudorap(pjet(1,2),eta2)
+         call get_pseudorap(pjet(1,3),eta3)
+         if(abs(eta1).le.0.7.and.abs(eta2).le.0.7) then
+            phi1=atan2(pjet(2,1),pjet(1,1))
+            phi2=atan2(pjet(2,2),pjet(1,2))
+            dphi12=abs(phi1-phi2)
+            if(dphi12.gt.pi) dphi12=dphi12-pi*int(dphi12/pi)
+	    if(dphi12>2.79) then
+               et12 = pjet(4,1)*pjet(4,1)
+     $              *(pjet(1,1)*pjet(1,1)
+     $               +pjet(2,1)*pjet(2,1))
+     $              /(pjet(1,1)*pjet(1,1)
+     $               +pjet(2,1)*pjet(2,1)
+     $               +pjet(3,1)*pjet(3,1))
+               et22 = pjet(4,2)*pjet(4,2)
+     $              *(pjet(1,2)*pjet(1,2)
+     $               +pjet(2,2)*pjet(2,2))
+     $              /(pjet(1,2)*pjet(1,2)
+     $               +pjet(2,2)*pjet(2,2)
+     $               +pjet(3,2)*pjet(3,2))
+               et32 = pjet(4,3)*pjet(4,3)
+     $              *(pjet(1,3)*pjet(1,3)
+     $               +pjet(2,3)*pjet(2,3))
+     $              /(pjet(1,3)*pjet(1,3)
+     $               +pjet(2,3)*pjet(2,3)
+     $               +pjet(3,3)*pjet(3,3))
+               if(et12.GT.12100.and.
+     $            et32.GT.100) then
+                  call pwhgfill(diag,eta3,dsig)
+               endif
+	    endif
+	 endif
       endif
 
 C --------------------------------------------------------------------- C
@@ -1158,7 +1190,7 @@ C - p_T^rel of the 2nd hardest jet (97)
 
       subroutine get_pseudorap(p,eta)
       implicit none
-      real*8 p(0:3),eta,pt,th
+      real*8 p(4),eta,pt,th
       real *8 tiny
       parameter (tiny=1.d-5)
 

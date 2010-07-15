@@ -130,12 +130,18 @@ C - ---------------------------------------
 C - Number of plots in files A and B
 C -----------------------------------------
       INTEGER A_NPLOTS,B_NPLOTS,MIN_NPLOTS
-
+      CHARACTER ABORT                  ! Allows execution to stop if no data read
+      
 C - ---------------------------------------
 C - Some spare real numbers
 C -----------------------------------------
       DOUBLE PRECISION RTMP1,RTMP2,RTMP3
-      DOUBLE PRECISION YMIN,YMAX
+      DOUBLE PRECISION YMIN,YMAX,YMIN_POS
+
+C - ---------------------------------------
+C - Spare boolean
+C -----------------------------------------
+      LOGICAL A_BOOL
 
       READING     = .TRUE.
       WRITING     = .TRUE.
@@ -173,8 +179,14 @@ C -----------------------------------------
       IF(A_NPLOTS.NE.B_NPLOTS) THEN
          WRITE(6,*) 'I found ',A_NPLOTS,' plots in the 1st file.'
          WRITE(6,*) 'I found ',B_NPLOTS,' plots in the 2nd file.'
-         WRITE(6,*) 'I will assume that the first',MIN_NPLOTS,'are',
+         WRITE(6,*) 'I will assume that the first',MIN_NPLOTS,'are ',
      $              'common and proceed neglecting the rest.'
+         WRITE(6,*) 'Abort (y/n)?'
+         READ(*,*)  ABORT
+      ENDIF
+      IF(ABORT.EQ.'y'.OR.ABORT.EQ.'Y') THEN
+         WRITE(6,*) 'Aborting now ...' 
+         STOP
       ENDIF
 
       A_PLACE_HOLDER=0
@@ -203,6 +215,58 @@ C - Update file record place holders:
 C - Read the plot data (including footers) from both input files:
          CALL READ_PLOT_DATA(A_STREAM,A_LAST_LINE_READ)
          CALL READ_PLOT_DATA(B_STREAM,B_LAST_LINE_READ)
+         IF((ABS(A_X(2,1)-A_X(1,1))-ABS(B_X(2,1)-B_X(1,1)))
+     $      /ABS(B_X(2,1)-B_X(1,1)).GT.1D-4) THEN
+            WRITE(6,*) 'READ_PLOT_DATA: warning!'
+            WRITE(6,*) 'Found different bin sizes in reading ',
+     $                 'from the two'
+            WRITE(6,*) 'files for plot ',HXX,'in file A.'
+            A_BOOL=.TRUE.
+            IXX=0
+            DO WHILE(A_BOOL.EQV..TRUE..AND.IXX.LT.20)
+               IXX=IXX+1
+               CALL REMOVE_WHITE_SPACES(A_HEADER(IXX),TMP_STRING(1))
+               IF(INDEX(TMP_STRING(1),'TITLE').NE.0.AND.
+     $            INDEX(TMP_STRING(1),'MLM').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'ENT').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'INT').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'UFL').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'OFL').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'SIZE').EQ.0) THEN
+                  WRITE(6,*) 'File As title reads ',A_HEADER(IXX)
+                  A_BOOL=.FALSE.
+               ENDIF
+            ENDDO
+            A_BOOL=.TRUE.
+            IXX=0
+            DO WHILE(A_BOOL.EQV..TRUE..AND.IXX.LT.20)
+               IXX=IXX+1
+               CALL REMOVE_WHITE_SPACES(B_HEADER(IXX),TMP_STRING(1))
+               IF(INDEX(TMP_STRING(1),'TITLE').NE.0.AND.
+     $            INDEX(TMP_STRING(1),'MLM').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'ENT').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'INT').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'UFL').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'OFL').EQ.0.AND.
+     $            INDEX(TMP_STRING(1),'SIZE').EQ.0) THEN
+                  WRITE(6,*) 'File Bs title reads ',B_HEADER(IXX)
+                  A_BOOL=.FALSE.
+               ENDIF
+            ENDDO
+            WRITE(6,*) 'File A bin size = ',ABS(A_X(2,1)-A_X(1,1))
+            WRITE(6,*) 'File B bin size = ',ABS(B_X(2,1)-B_X(1,1))
+            WRITE(6,*) 'Possible one or other of the files contains ',
+     $                 'extra histograms at, or by, this point?'
+            WRITE(6,*) 'If so consider copying the missing ones from'
+            WRITE(6,*) 'A -> B or vice versa.'
+            WRITE(6,*) 'Abort (y/n)?'
+            READ(*,*)  ABORT
+         ENDIF
+         IF(ABORT.EQ.'y'.OR.ABORT.EQ.'Y') THEN
+            WRITE(6,*) 'Aborting now ...' 
+            STOP
+         ENDIF
+            
          A_NDATA_LINES=A_LAST_LINE_READ-A_PLACE_HOLDER
          B_NDATA_LINES=B_LAST_LINE_READ-B_PLACE_HOLDER
 
@@ -234,15 +298,18 @@ C - "UFL=","OFL=","JOIN " and also any lines starting with a number.
          CALL REMOVE_INT_BOX(B_HEADER,B_NHEADER_LINES)
 
 C - Find the minimum and maximum Y values.
-         CALL FIND_Y_BOUNDS(A_X,A_Y,A_NHISTOGRAMS,YMIN ,YMAX )
-         CALL FIND_Y_BOUNDS(B_X,B_Y,B_NHISTOGRAMS,RTMP1,RTMP2)
+         CALL FIND_Y_BOUNDS(A_X,A_Y,A_NHISTOGRAMS,YMIN ,YMAX ,YMIN_POS)
+         CALL FIND_Y_BOUNDS(B_X,B_Y,B_NHISTOGRAMS,RTMP1,RTMP2,RTMP3)
          IF(RTMP1.LT.YMIN) YMIN=RTMP1
          IF(RTMP2.GT.YMAX) YMAX=RTMP2
+         IF(RTMP3.LT.YMIN_POS) YMIN_POS=RTMP3
 
 C - Reset the maximum and minumum Y values in the 
 C - plot so all data is visible.
-         CALL RESET_Y_BOUNDS(A_HEADER,A_NHEADER_LINES,YMIN,YMAX)
-         CALL RESET_Y_BOUNDS(B_HEADER,B_NHEADER_LINES,YMIN,YMAX)
+         CALL RESET_Y_BOUNDS(A_HEADER,A_NHEADER_LINES,YMIN,YMAX,
+     $        YMIN_POS)
+         CALL RESET_Y_BOUNDS(B_HEADER,B_NHEADER_LINES,YMIN,YMAX,
+     $        YMIN_POS)
 
 C - Looks in the histograms for a 'tag' indicating where the data
 C - came from / what it corresponds to. If it doesn't find one it
@@ -261,8 +328,10 @@ C - Write the histogram data and footers taken from the plots:
 
          IF(TRIM(MODE).EQ.'0') THEN
 C - Find new minimum and maximum Y values to feed to WRITE_DELTA_SIG_HEADER:
-           CALL FIND_Y_BOUNDS(A_X,A_CHI2,A_NHISTOGRAMS,YMIN ,YMAX )
-           CALL FIND_Y_BOUNDS(B_X,B_CHI2,B_NHISTOGRAMS,RTMP1,RTMP2)
+           CALL FIND_Y_BOUNDS(A_X,A_CHI2,A_NHISTOGRAMS,YMIN ,YMAX ,
+     $          RTMP3)
+           CALL FIND_Y_BOUNDS(B_X,B_CHI2,B_NHISTOGRAMS,RTMP1,RTMP2,
+     $          RTMP3)
            IF(RTMP1.LT.YMIN) YMIN=RTMP1
            IF(RTMP2.GT.YMAX) YMAX=RTMP2
             
@@ -274,9 +343,11 @@ C - Write the Delta sigma / delta Delta sigma data and footers:
            CALL WRITE_DELTA_SIG_DATA(A_STREAM)
            CALL WRITE_DELTA_SIG_DATA(B_STREAM)
 
-C - Find new minimum and maximum Y values to feed to WRITE_DELTA_SIG_HEADER:
-           CALL FIND_Y_BOUNDS(A_X,A_FRAC_DIFF,A_NHISTOGRAMS,YMIN ,YMAX )
-           CALL FIND_Y_BOUNDS(B_X,B_FRAC_DIFF,B_NHISTOGRAMS,RTMP1,RTMP2)
+C - Find new minimum and maximum Y values to feed to WRITE_FRAC_DIFF_HEADER:
+           CALL FIND_Y_BOUNDS(A_X,A_FRAC_DIFF,A_NHISTOGRAMS,YMIN ,YMAX ,
+     $          RTMP3)
+           CALL FIND_Y_BOUNDS(B_X,B_FRAC_DIFF,B_NHISTOGRAMS,RTMP1,RTMP2,
+     $          RTMP3)
            IF(RTMP1.LT.YMIN) YMIN=RTMP1
            IF(RTMP2.GT.YMAX) YMAX=RTMP2
             
@@ -289,8 +360,10 @@ C - Write the Delta sigma / delta Delta sigma data and footers:
            CALL WRITE_FRAC_DIFF_DATA(B_STREAM)
          ELSEIF(TRIM(MODE).EQ.'1') THEN
 C - Find new minimum and maximum Y values to feed to WRITE_DELTA_SIG_HEADER:
-           CALL FIND_Y_BOUNDS(A_X,A_CHI2,A_NHISTOGRAMS,YMIN ,YMAX )
-           CALL FIND_Y_BOUNDS(B_X,B_CHI2,B_NHISTOGRAMS,RTMP1,RTMP2)
+           CALL FIND_Y_BOUNDS(A_X,A_CHI2,A_NHISTOGRAMS,YMIN ,YMAX ,
+     $          RTMP3)
+           CALL FIND_Y_BOUNDS(B_X,B_CHI2,B_NHISTOGRAMS,RTMP1,RTMP2,
+     $          RTMP3)
            IF(RTMP1.LT.YMIN) YMIN=RTMP1
            IF(RTMP2.GT.YMAX) YMAX=RTMP2
             
@@ -302,9 +375,11 @@ C - Write the Delta sigma / delta Delta sigma data and footers:
            CALL WRITE_DELTA_SIG_DATA(A_STREAM)
            CALL WRITE_DELTA_SIG_DATA(B_STREAM)
          ELSEIF(TRIM(MODE).EQ.'2') THEN
-C - Find new minimum and maximum Y values to feed to WRITE_DELTA_SIG_HEADER:
-           CALL FIND_Y_BOUNDS(A_X,A_FRAC_DIFF,A_NHISTOGRAMS,YMIN ,YMAX )
-           CALL FIND_Y_BOUNDS(B_X,B_FRAC_DIFF,B_NHISTOGRAMS,RTMP1,RTMP2)
+C - Find new minimum and maximum Y values to feed to WRITE_FRAC_DIFF_HEADER:
+           CALL FIND_Y_BOUNDS(A_X,A_FRAC_DIFF,A_NHISTOGRAMS,YMIN ,YMAX ,
+     $          RTMP3)
+           CALL FIND_Y_BOUNDS(B_X,B_FRAC_DIFF,B_NHISTOGRAMS,RTMP1,RTMP2,
+     $          RTMP3)
            IF(RTMP1.LT.YMIN) YMIN=RTMP1
            IF(RTMP2.GT.YMAX) YMAX=RTMP2
             
@@ -448,6 +523,8 @@ C *************** C
       LOGICAL READING                  ! Boolean condition for while loop.
       CHARACTER*80 HEADER(NMAX_HEADER) ! The plot header
       INTEGER NREAD,IXX                ! Loop iterators
+      CHARACTER ABORT                  ! Allows execution to stop if no data read
+      LOGICAL A_BOOL                   ! Spare boolean
 
 C - Initialise the READING boolean so we actually start reading.
       READING     = .TRUE.
@@ -630,6 +707,7 @@ C *************** C
       INTEGER BIN_IDX                  ! Index of an individual histogram bin
       INTEGER MAX_BIN_IDX              ! Index of an individual histogram bin
       INTEGER IXX,JXX                  ! Loop iterators
+      CHARACTER ABORT                  ! Allows execution to stop if no data read
       INTEGER TEMPI1,TEMPI2
 C - Initialise the READING boolean so we actually start reading.
       READING = .TRUE.
@@ -738,6 +816,12 @@ C - Warn if nothing got read!
          WRITE(6,*) 'READ_PLOT_DATA: error!'
          WRITE(6,*) 'NREAD          = ',NREAD
          WRITE(6,*) 'LAST_LINE_READ = ',LAST_LINE_READ
+         WRITE(6,*) 'Abort (y/n)?'
+         READ(*,*)  ABORT
+      ENDIF
+      IF(ABORT.EQ.'y'.OR.ABORT.EQ.'Y') THEN
+         WRITE(6,*) 'Aborting now ...' 
+         STOP
       ENDIF
 
 C - Copy the contents of X_VALUES, Y_VALUES and DY_VALUES into either
@@ -864,7 +948,8 @@ C - Look for INT=,OFL=,UFL=,ENT= and JOIN  in the header lines.
          JXX=0
          KXX=0
          TMP_STRING=""
-         IF((INDEX(THE_HEADER(IXX),"INT=").NE.0).OR.
+         IF((INDEX(THE_HEADER(IXX),"MLM ").NE.0).OR.
+     $      (INDEX(THE_HEADER(IXX),"INT=").NE.0).OR.
      $      (INDEX(THE_HEADER(IXX),"ENT=").NE.0).OR.
      $      (INDEX(THE_HEADER(IXX),"UFL=").NE.0).OR.
      $      (INDEX(THE_HEADER(IXX),"OFL=").NE.0).OR.
@@ -917,7 +1002,13 @@ C - Add a y-axis label template on the left
          CALL REMOVE_WHITE_SPACES(THE_HEADER(IXX),TMP_STRING)
          IF(INDEX(TMP_STRING,"TITLE").NE.0.AND.
      $      INDEX(TMP_STRING,'"').NE.0.AND.
-     $      INDEX(TMP_STRING,'""').EQ.0) THEN
+     $      INDEX(TMP_STRING,'""').EQ.0.AND.
+     $      INDEX(TMP_STRING,'MLM=').EQ.0.AND.
+     $      INDEX(TMP_STRING,'ENT=').EQ.0.AND.
+     $      INDEX(TMP_STRING,'INT=').EQ.0.AND.
+     $      INDEX(TMP_STRING,'UFL=').EQ.0.AND.
+     $      INDEX(TMP_STRING,'OFL=').EQ.0
+     $        ) THEN
             KXX=SCAN(THE_HEADER(IXX),'"')+1
             LXX=SCAN(THE_HEADER(IXX),'"',.TRUE.)-1
             TMP_STRING2=ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))
@@ -942,7 +1033,7 @@ C - Add a y-axis label template on the left
          THE_HEADER(IXX+2)=
      $        'CASE       " G  '//
      $         BLANK(1:LEN(TRIM(TMP_STRING2)))//
-     $        '   S      S'
+     $        '   S      S"'
          NHEADER_LINES=NHEADER_LINES+2
       ENDIF
 
@@ -1215,7 +1306,7 @@ C - into OUT_STRING
 
 
 C *********************************************************************** C
-      SUBROUTINE FIND_Y_BOUNDS(X_VALS,Y_VALS,NHISTOS,YMIN,YMAX)
+      SUBROUTINE FIND_Y_BOUNDS(X_VALS,Y_VALS,NHISTOS,YMIN,YMAX,YMIN_POS)
 C     Finds the maximum and minimum Y-values in a given plot.
 C *********************************************************************** C
 
@@ -1231,11 +1322,13 @@ C - Local variables
       DOUBLE PRECISION X_VALS(NMAX_BINS,NMAX_HISTS)
       DOUBLE PRECISION Y_VALS(NMAX_BINS,NMAX_HISTS)
       INTEGER IXX,JXX                      ! Loop counters
-      DOUBLE PRECISION YMAX,YMIN,BINWIDTH ! Like the name says ...
+      DOUBLE PRECISION YMAX,YMIN,BINWIDTH  ! Like the name says ...
+      DOUBLE PRECISION YMIN_POS            ! The lowest positive value of Y
       INTEGER NHISTOS
 
       YMAX=-9.99D+30               ! <--- Ugly. Minimum allowed by topdrawer.
       YMIN= 9.99D+30               ! <--- Ugly. Maximum allowed by topdrawer.
+      YMIN_POS= 9.99D+30           ! <--- Ugly. Maximum allowed by topdrawer.
       BINWIDTH= 0.0
       DO IXX=1,NHISTOS
          BINWIDTH=X_VALS(2,IXX)-X_VALS(1,IXX)
@@ -1247,8 +1340,11 @@ C - Local variables
      $           GOTO 200
             IF(Y_VALS(JXX,IXX).GT.YMAX) YMAX = Y_VALS(JXX,IXX)
             IF(Y_VALS(JXX,IXX).LT.YMIN.AND.Y_VALS(JXX,IXX).NE.-9.99D+30
-     $                                .AND.Y_VALS(JXX,IXX).NE.-9.99D+2)
-     $           YMIN = Y_VALS(JXX,IXX)
+     $                                .AND.Y_VALS(JXX,IXX).NE.-9.99D+2) 
+     $           THEN
+               YMIN = Y_VALS(JXX,IXX)
+               IF(Y_VALS(JXX,IXX).GT.0) YMIN_POS = Y_VALS(JXX,IXX)
+            ENDIF
          ENDDO
  200     WRITE(6,*) ' '
       ENDDO
@@ -1259,7 +1355,8 @@ C - Local variables
       END
 
 C *********************************************************************** C
-      SUBROUTINE RESET_Y_BOUNDS(THE_HEADER,NHEADER_LINES,YMIN,YMAX)
+      SUBROUTINE RESET_Y_BOUNDS(THE_HEADER,NHEADER_LINES,YMIN,YMAX,
+     $                                                   YMIN_POS)
 C     Removes the upper left corner text box containing INT,OFL,UFL
 C *********************************************************************** C
 
@@ -1277,17 +1374,23 @@ C ---------------------------------
       CHARACTER*80 TMP_STRING1   ! Yes, its a temporary string
       CHARACTER*80 TMP_STRING2   ! Yes, its a temporary string
       CHARACTER*80 TMP_STRING3   ! Yes, its a temporary string
+      CHARACTER*80 TMP_STRING4   ! Yes, its a temporary string
       INTEGER IXX,JXX,KXX        ! Loop counters
+      LOGICAL Y_LOG              ! .TRUE. if the plot is a log plot
       LOGICAL READING            ! Doh!
-      DOUBLE PRECISION YMIN,YMAX ! Minimum and maxnimum Y values in plot
+      DOUBLE PRECISION YMIN,YMAX ! Minimum and maximum Y values in plot
+      DOUBLE PRECISION YMIN_POS  ! Minimum -positive- Y values in plot
 
 C - Make the minimum and maximum Y values a little bit lower and higher,
 C - respectively, than those found while scanning the data for the plot:
       YMIN=0.8*YMIN
       YMAX=1.2*YMAX
+      YMIN_POS=0.8*YMIN_POS
+      Y_LOG=.FALSE.   ! By default the plot is assumed to be linear in Y
 C - Turn YMIN and YMAX into strings for writing in the file:
       WRITE(TMP_STRING2,*) YMIN
       WRITE(TMP_STRING3,*) YMAX
+      WRITE(TMP_STRING4,*) YMIN_POS
 C - Look for SET LIMITS Y in the header and reset it when found:
       DO IXX=1,NHEADER_LINES
          READING=.TRUE.
@@ -1295,12 +1398,21 @@ C - Look for SET LIMITS Y in the header and reset it when found:
          KXX=0
          TMP_STRING1=""
          CALL REMOVE_WHITE_SPACES(THE_HEADER(IXX),TMP_STRING1)
+         IF(INDEX(TMP_STRING1,'SCALEYLOG').NE.0) Y_LOG=.TRUE.
          IF(TMP_STRING1(1:10).EQ.'SETLIMITSY') THEN
-            THE_HEADER(IXX)=
-     $           "SET LIMITS Y "//
-     $           ADJUSTL(TRIM(TMP_STRING2))
-     $           //" "//
-     $           ADJUSTL(TRIM(TMP_STRING3))
+            IF(Y_LOG.EQV..FALSE.) THEN
+               THE_HEADER(IXX)=
+     $              "SET LIMITS Y "//
+     $              ADJUSTL(TRIM(TMP_STRING2))
+     $              //" "//
+     $              ADJUSTL(TRIM(TMP_STRING3))
+            ELSE
+               THE_HEADER(IXX)=
+     $              "SET LIMITS Y "//
+     $              ADJUSTL(TRIM(TMP_STRING4))
+     $              //" "//
+     $              ADJUSTL(TRIM(TMP_STRING3))
+            ENDIF
             GOTO 200
          ENDIF
       ENDDO

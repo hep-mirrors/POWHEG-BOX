@@ -1400,16 +1400,32 @@ C - Look for SET LIMITS Y in the header and reset it when found:
          CALL REMOVE_WHITE_SPACES(THE_HEADER(IXX),TMP_STRING1)
          IF(INDEX(TMP_STRING1,'SCALEYLOG').NE.0) Y_LOG=.TRUE.
          IF(TMP_STRING1(1:10).EQ.'SETLIMITSY') THEN
+            NHEADER_LINES=NHEADER_LINES+2
+            DO JXX=NHEADER_LINES,IXX+2,-1
+               THE_HEADER(JXX)=THE_HEADER(JXX-2)
+            ENDDO
             IF(Y_LOG.EQV..FALSE.) THEN
                THE_HEADER(IXX)=
      $              "SET LIMITS Y "//
      $              ADJUSTL(TRIM(TMP_STRING2))
      $              //" "//
      $              ADJUSTL(TRIM(TMP_STRING3))
+               THE_HEADER(IXX+1)="( IF LOG: SET SCALE Y LOG"
+               THE_HEADER(IXX+2)=
+     $              "( IF LOG: SET LIMITS Y "//
+     $              ADJUSTL(TRIM(TMP_STRING4))
+     $              //" "//
+     $              ADJUSTL(TRIM(TMP_STRING3))
             ELSE
                THE_HEADER(IXX)=
      $              "SET LIMITS Y "//
      $              ADJUSTL(TRIM(TMP_STRING4))
+     $              //" "//
+     $              ADJUSTL(TRIM(TMP_STRING3))
+               THE_HEADER(IXX+1)="( IF LIN: SET SCALE Y LIN"
+               THE_HEADER(IXX+2)=
+     $              "( IF LIN: SET LIMITS Y "//
+     $              ADJUSTL(TRIM(TMP_STRING2))
      $              //" "//
      $              ADJUSTL(TRIM(TMP_STRING3))
             ENDIF

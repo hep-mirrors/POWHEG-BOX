@@ -49,7 +49,7 @@ C - Pseudorapidity of the 2nd jet in >= 2 jet events
 C - Delta Eta between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'DH0J21 E0T11 > 20','LOG',
+      call pwhgbookup(diag,'DH01,21 E0T11 > 20','LOG',
      1                binsize(diag),-5d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
@@ -83,7 +83,7 @@ C - Pseudorapidity of the 2nd jet in >= 2 jet events
 C - Delta Eta between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'DH0J21 E0T11 > 40','LOG',
+      call pwhgbookup(diag,'DH01,21 E0T11 > 40','LOG',
      1                binsize(diag),-5d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
@@ -117,7 +117,7 @@ C - Pseudorapidity of the 2nd jet in >= 2 jet events
 C - Delta Eta between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'DH0J21 E0T11 > 100','LOG',
+      call pwhgbookup(diag,'DH01,21 E0T11 > 100','LOG',
      1                binsize(diag),-5d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events

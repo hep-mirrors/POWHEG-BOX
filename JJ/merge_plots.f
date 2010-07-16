@@ -283,8 +283,8 @@ C - Modifies lines in the header starting like SET WINDOW X / Y:
 C - Edit the plot header to make the fonts nicer and also to comment
 C - out a couple of commands on the bottom axis of the main plot, which
 C - appear in the difference plots which follow beneath it.
-         CALL MAKE_NICER_HEADER(A_HEADER,A_NHEADER_LINES)
-         CALL MAKE_NICER_HEADER(B_HEADER,B_NHEADER_LINES)
+         CALL MAKE_NICER_HEADER(A_HEADER,A_NHEADER_LINES,MODE)
+         CALL MAKE_NICER_HEADER(B_HEADER,B_NHEADER_LINES,MODE)
 
 C - Modifies lines starting with TITLE not followed by INT, ENT,
 C - UFL, OFL, BOTTOM, LEFT, RIGHT, TOP i.e. it should fish out
@@ -972,7 +972,7 @@ C - If the found string is not already commented out comment it now:
       END
 
 C *********************************************************************** C
-      SUBROUTINE MAKE_NICER_HEADER(THE_HEADER,NHEADER_LINES)
+      SUBROUTINE MAKE_NICER_HEADER(THE_HEADER,NHEADER_LINES,MODE)
 C     Repositions the titles to account for the reset window frames
 C *********************************************************************** C
 
@@ -992,6 +992,7 @@ C ---------------------------------
       CHARACTER*80 BLANK       ! An empty string
       INTEGER IXX,KXX,LXX      ! IXX is a loop counters, KXX & LXX are holders
       LOGICAL SET_OPTION       ! Goes true when an option has been reset
+      CHARACTER*80 MODE        ! The mode (see main program).
 
 
       BLANK=''
@@ -1074,8 +1075,12 @@ C - Switch off the axes on the bottom of the main plot
          CALL REMOVE_WHITE_SPACES(THE_HEADER(IXX),TMP_STRING)
          IF((INDEX(TMP_STRING,'SETAXESBOTTOM'  ).NE.0).AND.
      $      (INDEX(TMP_STRING,'(SETAXESBOTTOM' ).EQ.0)) THEN
-            THE_HEADER(IXX)=TRIM(THE_HEADER(IXX))//' ( COMMENT'
-            SET_OPTION=.TRUE.
+            IF(TRIM(MODE).EQ.'0'.OR.
+     $         TRIM(MODE).EQ.'1'.OR.
+     $         TRIM(MODE).EQ.'2') THEN
+               THE_HEADER(IXX)=TRIM(THE_HEADER(IXX))//' ( COMMENT'
+               SET_OPTION=.TRUE.
+            ENDIF
          ENDIF
       ENDDO
       IF(.NOT.SET_OPTION) THEN
@@ -1084,8 +1089,12 @@ C - Switch off the axes on the bottom of the main plot
             THE_HEADER(IXX+1)=THE_HEADER(IXX)
             IXX=IXX-1
          ENDDO
-         THE_HEADER(1)='SET AXES BOTTOM OFF  ( COMMENT'
-         NHEADER_LINES=NHEADER_LINES+1
+            IF(TRIM(MODE).EQ.'0'.OR.
+     $         TRIM(MODE).EQ.'1'.OR.
+     $         TRIM(MODE).EQ.'2') THEN
+               THE_HEADER(1)='SET AXES BOTTOM OFF  ( COMMENT'
+               NHEADER_LINES=NHEADER_LINES+1
+            ENDIF
       ENDIF
 
 C - Set the size of the axes labels
@@ -1634,7 +1643,7 @@ C ------------------
                IF(A_FOOTERS(JXX,IXX).NE.'') WRITING=.FALSE.
                TMP_STRING=''
                CALL REMOVE_WHITE_SPACES(A_FOOTERS(JXX,IXX),TMP_STRING)
-               IF(INDEX(TMP_STRING,'(TAGID').EQ.0) THEN
+               IF(INDEX(TMP_STRING,'(TAG').EQ.0) THEN
                   WRITE(C_STREAM,*) TRIM(A_FOOTERS(JXX,IXX))//' ( CHI2'
                ENDIF
                JXX=JXX+1
@@ -1655,7 +1664,7 @@ C ------------------
                IF(B_FOOTERS(JXX,IXX).NE.'') WRITING=.FALSE.
                TMP_STRING=''
                CALL REMOVE_WHITE_SPACES(B_FOOTERS(JXX,IXX),TMP_STRING)
-               IF(INDEX(TMP_STRING,'(TAGID').EQ.0) THEN
+               IF(INDEX(TMP_STRING,'(TAG').EQ.0) THEN
                   WRITE(C_STREAM,*) TRIM(B_FOOTERS(JXX,IXX))//' ( CHI2'
                ENDIF
                JXX=JXX+1
@@ -2496,7 +2505,7 @@ C ------------------
                IF(A_FOOTERS(JXX,IXX).NE.'') WRITING=.FALSE.
                TMP_STRING=''
                CALL REMOVE_WHITE_SPACES(A_FOOTERS(JXX,IXX),TMP_STRING)
-               IF(INDEX(TMP_STRING,'(TAGID').EQ.0) THEN
+               IF(INDEX(TMP_STRING,'(TAG').EQ.0) THEN
                   WRITE(C_STREAM,*) TRIM(A_FOOTERS(JXX,IXX))//' ( FDIFF'
                ENDIF
                JXX=JXX+1
@@ -2517,7 +2526,7 @@ C ------------------
                IF(B_FOOTERS(JXX,IXX).NE.'') WRITING=.FALSE.
                TMP_STRING=''
                CALL REMOVE_WHITE_SPACES(B_FOOTERS(JXX,IXX),TMP_STRING)
-               IF(INDEX(TMP_STRING,'(TAGID').EQ.0) THEN
+               IF(INDEX(TMP_STRING,'(TAG').EQ.0) THEN
                   WRITE(C_STREAM,*) TRIM(B_FOOTERS(JXX,IXX))//' ( FDIFF'
                ENDIF
                JXX=JXX+1

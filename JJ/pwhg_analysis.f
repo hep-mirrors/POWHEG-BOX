@@ -34,22 +34,16 @@ C ---------------- C
 
       diag=10
 
-C - Pseudorapidity of the 1st jet in >= 2 jet events
+C - Pseudorapidity of the 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'H0J11 E0T11 > 20','LOG',
+      call pwhgbookup(diag,'H0J1/J21 E0T11 > 20','LOG',
      1                binsize(diag),-5d0,5d0)
 
-C - Pseudorapidity of the 2nd jet in >= 2 jet events
+C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'H0J21 E0T11 > 20','LOG',
-     1                binsize(diag),-5d0,5d0)
-
-C - Delta Eta between 1st and 2nd jet in >= 2 jet events
-      diag=diag+1
-      binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'DH01,21 E0T11 > 20','LOG',
+      call pwhgbookup(diag,'abs(DH01,21) E0T11 > 20','LOG',
      1                binsize(diag),-5d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
@@ -61,29 +55,25 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR01,21 E0T11 > 20','LOG',
+      call pwhgbookup(diag,'DR01,21 E0T11 & E0T12 > 20','LOG',
      $                binsize(diag),0d0,6d0)
 
 C ---------------- C
 C - ET1 > 40 GeV - C
 C ---------------- C
 
+      diag=15
+
 C - Pseudorapidity of the 1st jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'H0J11 E0T11 > 40','LOG',
+      call pwhgbookup(diag,'H0J1/J21 E0T11 > 40','LOG',
      1                binsize(diag),-5d0,5d0)
 
-C - Pseudorapidity of the 2nd jet in >= 2 jet events
+C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'H0J21 E0T11 > 40','LOG',
-     1                binsize(diag),-5d0,5d0)
-
-C - Delta Eta between 1st and 2nd jet in >= 2 jet events
-      diag=diag+1
-      binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'DH01,21 E0T11 > 40','LOG',
+      call pwhgbookup(diag,'abs(DH01,21) E0T11 > 40','LOG',
      1                binsize(diag),-5d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
@@ -95,29 +85,25 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR01,21 E0T11 > 40','LOG',
+      call pwhgbookup(diag,'DR01,21 E0T11 & E0T12 > 40','LOG',
      $                binsize(diag),0d0,6d0)
 
 C ----------------- C
 C - ET1 > 100 GeV - C
 C ----------------- C
 
+      diag=20
+
 C - Pseudorapidity of the 1st jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'H0J11 E0T11 > 100','LOG',
+      call pwhgbookup(diag,'H0J1/J21 E0T11 > 100','LOG',
      1                binsize(diag),-5d0,5d0)
 
-C - Pseudorapidity of the 2nd jet in >= 2 jet events
+C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'H0J21 E0T11 > 100','LOG',
-     1                binsize(diag),-5d0,5d0)
-
-C - Delta Eta between 1st and 2nd jet in >= 2 jet events
-      diag=diag+1
-      binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'DH01,21 E0T11 > 100','LOG',
+      call pwhgbookup(diag,'abs(DH01,21) E0T11 > 100','LOG',
      1                binsize(diag),-5d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
@@ -129,7 +115,7 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR01,21 E0T11 > 100','LOG',
+      call pwhgbookup(diag,'DR01,21 E0T11 & E0T12 > 100','LOG',
      $                binsize(diag),0d0,6d0)
 
 
@@ -187,41 +173,6 @@ C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 150
       call pwhgbookup(diag,'Y0J31-Y0J121, p0T,J31>150','LOG',
      $                binsize(diag),-5d0,5d0)
 
-C - Delta Phi between jets 1 & 2 and jet 3 p_T,3 > 10
-      diag=diag+1
-      binsize(diag) = pi/50d0
-      call pwhgbookup(diag,'DF0J3,J121, p0T,J31>10','LOG',
-     $                binsize(diag),pi/2d0,pi)
-
-C - Delta Phi between jets 1 & 2 and jet 3 p_T,3 > 50
-      diag=diag+1
-      binsize(diag) = pi/50d0
-      call pwhgbookup(diag,'DF0J3,J121, p0T,J31>50','LOG',
-     $                binsize(diag),pi/2d0,pi)
-
-C - Delta Phi between jets 1 & 2 and jet 3 p_T,3 > 150
-      diag=diag+1
-      binsize(diag) = pi/50d0
-      call pwhgbookup(diag,'DF0J3,J121, p0T,J31>150','LOG',
-     $                binsize(diag),pi/2d0,pi)
-
-C - Delta R between jets 1 & 2 and jet 3 p_T,3 > 10
-      diag=diag+1
-      binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR0J3,J121, p0T,J31>10','LOG',
-     $                binsize(diag),0d0,6d0)
-
-C - Delta R between jets 1 & 2 and jet 3 p_T,3 > 50
-      diag=diag+1
-      binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR0J3,J121, p0T,J31>50','LOG',
-     $                binsize(diag),0d0,6d0)
-
-C - Delta R between jets 1 & 2 and jet 3 p_T,3 > 150
-      diag=diag+1
-      binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR0J3,J121, p0T,J31>150','LOG',
-     $                binsize(diag),0d0,6d0)
 
 C ------------------------ C
 C - Dijet invariant mass - C
@@ -437,11 +388,13 @@ C ------------------------- C
 C - p_T^rel of the hardest jet (96)
       diag=diag+1
       binsize(diag) = 0.5d0
-      call pwhgbookup(diag,'p0T12rel3 J1','LOG',binsize(diag),0d0,50d0)
+      call pwhgbookup(diag,'p0T12rel3 J1, E0T1>20 GeV','LOG',
+     $                binsize(diag),0d0,50d0)
 C - p_T^rel of the 2nd hardest jet (97)
       diag=diag+1
       binsize(diag) = 0.5d0
-      call pwhgbookup(diag,'p0T12rel3 J2','LOG',binsize(diag),0d0,50d0)
+      call pwhgbookup(diag,'p0T12rel3 J2, E0T1>20 GeV','LOG',
+     $                binsize(diag),0d0,50d0)
 
 C ------------------------- C
 C - CDF Coherence plot(s) - C
@@ -765,7 +718,7 @@ C   estimates, spoiling correlated events ...)
       common/pwhghistcommon/binsize
       real * 8 ktjets(4),etajets(4),rapjets(4),phijets(4),pj(4,4)
       real * 8 pT_rel_J1,pT_rel_J2,tmp1,tmp2
-      real * 8 getrapidity,y12,phi12,dphi312,dr312,mjj,et1
+      real * 8 getrapidity,y12,phi12,dphi312,dr312,mjj,et1,et2
       integer njets
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
@@ -821,18 +774,19 @@ C - 1st, 2nd and 3rd hardest jets in the event:
      $               pT_rel_J1,pT_rel_J2,1) 
 
 
-C ----------------------------------- C
-C - Work out E_T of the hardest jet - C
-C ----------------------------------- C
+C ---------------------------------------- C
+C - Work out E_T of the two hardest jets - C
+C ---------------------------------------- C
 
       et1 = 0.
       if(njets.ge.1) then
          et1 = pj(4,1)**2*ktjets(1)**2/(ktjets(1)**2+pj(3,1)**2)
-         if(et1.ge.0) then
-            et1 =  sqrt( et1)
-         else
-            et1 = -sqrt(-et1)
-         endif
+         et1 =  sqrt(et1)
+      endif
+      et2 = 0.
+      if(njets.ge.2) then
+         et2 = pj(4,2)**2*ktjets(2)**2/(ktjets(2)**2+pj(3,2)**2)
+         et2 =  sqrt(et2)
       endif
 
 C ---------------- C
@@ -845,12 +799,11 @@ C ---------------- C
 C - Pseudorapidity of the 1st & 2nd jets jet in >= 2 jet events
          diag=diag+1
          call pwhgfill(diag,etajets(1),dsig)
-         diag=diag+1
          call pwhgfill(diag,etajets(2),dsig)
          
-C - Delta Eta between 1st and 2nd jet in >= 2 jet events
+C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,etajets(1)-etajets(2),dsig)
+         call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
          dphi=abs(phijets(1)-phijets(2))
@@ -861,7 +814,8 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
          dR=sqrt((etajets(1)-etajets(2))**2+dphi**2)
          diag=diag+1
-         call pwhgfill(diag,dR,dsig)
+         if(et2.ge.20)
+     $        call pwhgfill(diag,dR,dsig)
 
       endif
 
@@ -875,12 +829,11 @@ C ---------------- C
 C - Pseudorapidity of the 1st & 2nd jets jet in >= 2 jet events
          diag=diag+1
          call pwhgfill(diag,etajets(1),dsig)
-         diag=diag+1
          call pwhgfill(diag,etajets(2),dsig)
          
-C - Delta Eta between 1st and 2nd jet in >= 2 jet events
+C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,etajets(1)-etajets(2),dsig)
+         call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
          dphi=abs(phijets(1)-phijets(2))
@@ -891,7 +844,8 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
          dR=sqrt((etajets(1)-etajets(2))**2+dphi**2)
          diag=diag+1
-         call pwhgfill(diag,dR,dsig)
+         if(et2.ge.40)
+     $        call pwhgfill(diag,dR,dsig)
 
       endif
 
@@ -905,12 +859,11 @@ C ----------------- C
 C - Pseudorapidity of the 1st & 2nd jets jet in >= 2 jet events
          diag=diag+1
          call pwhgfill(diag,etajets(1),dsig)
-         diag=diag+1
          call pwhgfill(diag,etajets(2),dsig)
          
-C - Delta Eta between 1st and 2nd jet in >= 2 jet events
+C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,etajets(1)-etajets(2),dsig)
+         call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
          dphi=abs(phijets(1)-phijets(2))
@@ -921,7 +874,8 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
          dR=sqrt((etajets(1)-etajets(2))**2+dphi**2)
          diag=diag+1
-         call pwhgfill(diag,dR,dsig)
+         if(et2.ge.100)
+     $        call pwhgfill(diag,dR,dsig)
 
       endif
 
@@ -964,24 +918,6 @@ C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 50
 C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 100
          diag=diag+1
          if(ktjets(3).gt.100.0) call pwhgfill(diag,rapjets(3)-y12,dsig)
-C - Delta Phi between jets 1 & 2 and jet 3 p_T,3 > 10
-         diag=diag+1
-         if(ktjets(3).gt. 10.0) call pwhgfill(diag,dphi312,dsig)
-C - Delta Phi between jets 1 & 2 and jet 3 p_T,3 > 50
-         diag=diag+1
-         if(ktjets(3).gt. 50.0) call pwhgfill(diag,dphi312,dsig)
-C - Delta Phi between jets 1 & 2 and jet 3 p_T,3 > 100
-         diag=diag+1
-         if(ktjets(3).gt.100.0) call pwhgfill(diag,dphi312,dsig)
-C - Delta R between jets 1 & 2 and jet 3 p_T,3 > 10
-         diag=diag+1
-         if(ktjets(3).gt. 10.0) call pwhgfill(diag,dr312,dsig)
-C - Delta R between jets 1 & 2 and jet 3 p_T,3 > 50
-         diag=diag+1
-         if(ktjets(3).gt. 50.0) call pwhgfill(diag,dr312,dsig)
-C - Delta R between jets 1 & 2 and jet 3 p_T,3 > 100
-         diag=diag+1
-         if(ktjets(3).gt.100.0) call pwhgfill(diag,dr312,dsig)
 
       endif
 
@@ -1168,10 +1104,12 @@ C ------------------------- C
       diag=95
 C - p_T^rel of the hardest jet (96)
       diag=diag+1
-      if(njets.ge.1) call pwhgfill(diag,pT_rel_J1,dsig)
+      if(njets.ge.1.and.et.ge.20.) 
+     $     call pwhgfill(diag,pT_rel_J1,dsig)
 C - p_T^rel of the 2nd hardest jet (97)
       diag=diag+1
-      if(njets.ge.1) call pwhgfill(diag,pT_rel_J2,dsig)
+      if(njets.ge.2.and.et.ge.20.) 
+     $     call pwhgfill(diag,pT_rel_J2,dsig)
 
 
       if(WHCPRG.eq.'NLO   ') then

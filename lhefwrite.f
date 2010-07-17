@@ -41,7 +41,7 @@ c as extra info
          write(nlf,'(a,d12.6,a,d12.6)') 'sigma for generation=',
      1        rad_sigtotgen,'+-',rad_esigtotgen
          write(nlf,'(a)')' sigma for generation times'//
-     1        ' (Npositive-Nnegative)/ntotal=true sigma'
+     1        ' (Npositive-Nnegative)/(Npositive+Nnegative)=true sigma'
          write(nlf,'(a)') '</extra-info-true-sigma>'
       endif
       end

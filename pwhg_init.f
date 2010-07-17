@@ -11,7 +11,7 @@
       external powheginput
       integer i1,n1,n2
       call init_flsttag
-      flg_debug=.true.
+      flg_debug=.false.
       if(powheginput("#flg_debug").eq.1) flg_debug=.true.
 c whether to output negative weights or not
       flg_withnegweights=.false.

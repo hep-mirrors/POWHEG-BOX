@@ -52,7 +52,7 @@ LIBS=-L/home/oleari/fortran/LHAPDF-5.8.0/lib -lLHAPDF -static
 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-		      real.o pwhg_analysis.o 
+		      real.o pwhg_analysis.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o \
@@ -138,8 +138,12 @@ PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
 main-PYTHIA-lhef: $(PYTHIA)  pwhg_analysis.o
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis.o -o $@ $(LIBSFASTJET) $(LIBS)
 
-main-PYTHIA-lhef_CDF: $(PYTHIA)  pwhg_analysis_CDF.o
-	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_CDF.o -o $@ \
+main-PYTHIA-lhef_CDF_epem: $(PYTHIA)  pwhg_analysis_CDF_epem.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_CDF_epem.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
+main-PYTHIA-lhef_D0_mupmum: $(PYTHIA)  pwhg_analysis_D0_mupmum.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_D0_mupmum.o -o $@ \
 	$(LIBSFASTJET) $(LIBS)
 
 main-PYTHIA-lhef_CDF_mupmum: $(PYTHIA)  pwhg_analysis_CDF_mupmum.o
@@ -147,12 +151,13 @@ main-PYTHIA-lhef_CDF_mupmum: $(PYTHIA)  pwhg_analysis_CDF_mupmum.o
 	obj/pwhg_analysis_CDF_mupmum.o -o $@ \
 	$(LIBSFASTJET) $(LIBS)
 
-main-PYTHIA-lhef_D0: $(PYTHIA)  pwhg_analysis_D0.o
-	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_D0.o -o $@ \
-	$(LIBSFASTJET) $(LIBS)
 
 main-PYTHIA-lhef_D0_epem: $(PYTHIA)  pwhg_analysis_D0_epem.o
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_D0_epem.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
+main-PYTHIA-lhef_CDF_D0: $(PYTHIA)  pwhg_analysis_CDF_D0.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_CDF_D0.o -o $@ \
 	$(LIBSFASTJET) $(LIBS)
 
 
@@ -160,5 +165,7 @@ clean:
 	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \
 	main-PYTHIA-lhef merge_event_files merge_Z_Zj_events \
 	merge_Z_Zj_events_HERWIG merge_Z_Zj_events_POWHEG \
-	merge_Z_Zj_events_PYTHIA main-PYTHIA-lhef_CDF main-PYTHIA-lhef_D0 \
-	main-PYTHIA-lhef_D0_epem main-PYTHIA-lhef_CDF_mupmum
+	merge_Z_Zj_events_PYTHIA \
+	main-PYTHIA-lhef_CDF_epem main-PYTHIA-lhef_CDF_mupmum \
+	main-PYTHIA-lhef_D0_epem  main-PYTHIA-lhef_D0_mupmum \
+	main-PYTHIA-lhef_CDF_D0

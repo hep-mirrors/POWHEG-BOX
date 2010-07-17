@@ -27,11 +27,11 @@ c     binsize
       ptZcuts(2) = 10d0
       ptZcuts(3) = 20d0
 c      ptZcuts(4) = 30d0
-c     number of pt Z cuts implemented
-      nptZcut=4
+c     number of pt Z cuts implemented one more than the last previous one
+      nptZcut=3
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      numplots = 75  ! <========== DO NOT FORGET TO SET THIS
+      numplots = 78  ! <========== DO NOT FORGET TO SET THIS
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       call pwhginihist
 
@@ -263,26 +263,36 @@ c     loop on ptZ cut
 
 
       bsz(70) = 2d0      
-      call pwhgbookup(70+numplots*ncut,'pt Z pos ptZ>'//cut,'LOG',
+      call pwhgbookup(70+numplots*ncut,'pt Z pos-|neg| ptZ>'//cut,'LOG',
      #     bsz(70),0d0,200d0)
       bsz(71) = 2d0      
-      call pwhgbookup(71+numplots*ncut,'pt Z neg ptZ>'//cut,'LOG',
+      call pwhgbookup(71+numplots*ncut,'pt Z pos ptZ>'//cut,'LOG',
      #     bsz(71),0d0,200d0)
-
-
       bsz(72) = 2d0      
-      call pwhgbookup(72+numplots*ncut,'pt J1 pos ptZ>'//cut,'LOG',
+      call pwhgbookup(72+numplots*ncut,'pt Z neg ptZ>'//cut,'LOG',
      #     bsz(72),0d0,200d0)
-      bsz(73) = 2d0      
-      call pwhgbookup(73+numplots*ncut,'pt J1 neg ptZ>'//cut,'LOG',
-     #     bsz(73),0d0,200d0)
 
-      bsz(74) = 2d0
-      call pwhgbookup(74+numplots*ncut,'pt J2 pos ptZ>'//cut,'LOG',
+      bsz(73) = 2d0      
+      call pwhgbookup(73+numplots*ncut,'pt J1 pos-|neg| ptZ>'//cut,
+     #     'LOG',
+     #     bsz(73),0d0,200d0)
+      bsz(74) = 2d0      
+      call pwhgbookup(74+numplots*ncut,'pt J1 pos ptZ>'//cut,'LOG',
      #     bsz(74),0d0,200d0)
-      bsz(75) = 2d0
-      call pwhgbookup(75+numplots*ncut,'pt J2 neg ptZ>'//cut,'LOG',
+      bsz(75) = 2d0      
+      call pwhgbookup(75+numplots*ncut,'pt J1 neg ptZ>'//cut,'LOG',
      #     bsz(75),0d0,200d0)
+
+      bsz(76) = 2d0
+      call pwhgbookup(76+numplots*ncut,'pt J2 pos-|neg| ptZ>'//cut,
+     #     'LOG',
+     #     bsz(76),0d0,200d0)
+      bsz(77) = 2d0
+      call pwhgbookup(77+numplots*ncut,'pt J2 pos ptZ>'//cut,'LOG',
+     #     bsz(77),0d0,200d0)
+      bsz(78) = 2d0
+      call pwhgbookup(78+numplots*ncut,'pt J2 neg ptZ>'//cut,'LOG',
+     #     bsz(78),0d0,200d0)
 
 
       enddo
@@ -559,10 +569,11 @@ c     loop on ptZ cut
 c     plot here ptvb in order to have it even below the cut
       call pwhgfill( 1+numplots*ncut,ptvb,dsig/bsz(1))
       
+      call pwhgfill(70+numplots*ncut,ptvb,dsig/bsz(70))
       if (dsig.gt.0d0) then
-         call pwhgfill( 70+numplots*ncut,ptvb,dsig/bsz(70))
+         call pwhgfill(71+numplots*ncut,ptvb,dsig/bsz(71))
       else
-         call pwhgfill( 71+numplots*ncut,ptvb,abs(dsig)/bsz(71))
+         call pwhgfill(72+numplots*ncut,ptvb,abs(dsig)/bsz(72))
       endif
 
       call pwhgfill(50+numplots*ncut,ptvb,dsig/bsz(50))
@@ -615,20 +626,24 @@ c     get pt's and rapidities of the jets
                call pwhgfill( 2+numplots*ncut,ptj1,dsig/bsz(2))
                call pwhgfill(52+numplots*ncut,ptj1,dsig/bsz(52))
                call pwhgfill(69+numplots*ncut,ptj1,dsig/bsz(69))
+
+               call pwhgfill(73+numplots*ncut,ptj1,dsig/bsz(73))
                if (dsig.gt.0d0) then
-                  call pwhgfill(72+numplots*ncut,ptj1,dsig/bsz(72))
+                  call pwhgfill(74+numplots*ncut,ptj1,dsig/bsz(74))
                else
-                  call pwhgfill(73+numplots*ncut,ptj1,abs(dsig)/bsz(73))
+                  call pwhgfill(75+numplots*ncut,ptj1,abs(dsig)/bsz(75))
                endif
             endif
             rsep = 0d0
             if(j2.gt.0) then
                call pwhgfill( 3+numplots*ncut,ptj2,dsig/bsz(3))
                call pwhgfill(53+numplots*ncut,ptj2,dsig/bsz(53))
+
+               call pwhgfill(76+numplots*ncut,ptj2,dsig/bsz(76))
                if (dsig.gt.0d0) then
-                  call pwhgfill(74+numplots*ncut,ptj2,dsig/bsz(74))
+                  call pwhgfill(77+numplots*ncut,ptj2,dsig/bsz(77))
                else
-                  call pwhgfill(75+numplots*ncut,ptj2,abs(dsig)/bsz(75))
+                  call pwhgfill(78+numplots*ncut,ptj2,abs(dsig)/bsz(78))
                endif
 c     compute the separation in the pseudorapidity-phi plane
                rsep = rsepn_p(pj(0,1),pj(0,2))

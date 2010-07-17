@@ -9,8 +9,11 @@
       real * 8 amp2
       real * 8 ps(0:3,nlegreal)
       integer j,mu
+
 c     if present, the gluon is assumed to be the last particle
       call real_ampsq_g_last(p,rflav,amp2)
+
+
 c     if the amplitude is zero, flip last two momenta to have gluon in the 
 c     last position
       if(amp2.eq.0) then
@@ -30,6 +33,9 @@ c     last position
       endif
 c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq
       amp2 = amp2/(st_alpha/(2*pi))     
+
+
+
       end
 
 
@@ -180,7 +186,8 @@ c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3
 
-      subroutine q_aq_to_l_al_g_g(pphy,fermion_type,fermion_charge,amp2)      
+      subroutine 
+     #     q_aq_to_l_al_g_g(pphy,fermion_type,fermion_charge,amp2)      
       implicit none
 c     the 5 4-momentum vectors
 c     p(i,1) is the i-th component of vector p1...   
@@ -304,6 +311,10 @@ c     quindi +1 * il gluone outgoing
          p6(mu) = p(mu,6)
       enddo
       p34=dotp(p3,p4)    
+      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
+      prop34gamma = 1d0/(-2*p34)
+             
+
 c     bra and ket use physical momenta
 c     q
       if (p(0,1).lt.0d0) then
@@ -334,30 +345,38 @@ c     leptonic current
       
       amp2=0.d0
       
+      if (p(0,5).lt.0d0) then
+         do mu=0,3
+            pp5(mu) = -p(mu,5)
+         enddo         
+      endif
+      if (p(0,6).lt.0d0) then
+         do mu=0,3
+            pp6(mu) = -p(mu,6)
+         enddo         
+      endif
+
 c     loop over gluon polarization
       do  pol5=1,2
          do  pol6=1,2         
             if (p(0,5).lt.0d0) then
-               do mu=0,3
-                  pp5(mu) = -p(mu,5)
-               enddo         
+c               do mu=0,3
+c                  pp5(mu) = -p(mu,5)
+c               enddo         
                call POLVEC(pp5,pol5,epsg5(0,pol5))
             else   
                call polvec(p(0,5),pol5,epsg5(0,pol5))
          endif
          
          if (p(0,6).lt.0d0) then
-            do mu=0,3
-               pp6(mu) = -p(mu,6)
-            enddo         
+c            do mu=0,3
+c               pp6(mu) = -p(mu,6)
+c            enddo         
             call POLVEC(pp6,pol6,epsg6(0,pol6))
          else
             call polvec(p(0,6),pol6,epsg6(0,pol6))
          endif
          
-         prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
-         prop34gamma = 1d0/(-2*p34)
-             
          do hel_lep=-1,1,2            
          do hel_qua=-1,1,2
 c     first colour order: 5 before 6             
@@ -426,7 +445,8 @@ c     q(p1) g(p2) -> Z(p3+p4) q(p5) g(p6)  con Z -> l-(p3) l+(p4)
 c     NUMERICALLY, with the bra/ket formalism, not by squaring the analytic 
 c     amplitude. This amplitude is obtained by crossing the formula for 
 c     q_aq_to_l_al_g_g
-      subroutine q_g_to_l_al_q_g(pphy,fermion_type,fermion_charge,amp2)      
+      subroutine 
+     #     q_g_to_l_al_q_g(pphy,fermion_type,fermion_charge,amp2)      
       implicit none
       integer nleg
       parameter (nleg=6)
@@ -473,7 +493,8 @@ c     NUMERICALLY, with the bra/ket formalism, not by squaring the analytic
 c     amplitude. This amplitude is obtained by crossing the formula for 
 c     q_aq_to_l_al_g_g
       
-      subroutine g_q_to_l_al_q_g(pphy,fermion_type,fermion_charge,amp2)
+      subroutine 
+     #     g_q_to_l_al_q_g(pphy,fermion_type,fermion_charge,amp2)
       implicit none
       integer nleg
       parameter (nleg=6)
@@ -515,7 +536,8 @@ c     g(p1) g(p2) -> Z(p3+p4) q(p5) q(p6)  con Z -> l-(p3) l+(p4)
 c     NUMERICALLY, with the bra/ket formalism, not by squaring the analytic 
 c     amplitude. This amplitude is obtained by crossing the formula for 
 c     q_aq_to_l_al_g_g
-      subroutine g_g_to_l_al_q_aq(pphy,fermion_type,fermion_charge,amp2)      
+      subroutine 
+     #     g_g_to_l_al_q_aq(pphy,fermion_type,fermion_charge,amp2)      
       implicit none
       integer nleg
       parameter (nleg=6)
@@ -579,7 +601,8 @@ c                       Z/gamma    c                                    l+
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 c     fermion_charge = +2/3, -1/3, -2/3, +1/3
-      subroutine q_q_to_l_al_q_q(pphy,fermion_type,fermion_charge,amp2)   
+      subroutine 
+     #     q_q_to_l_al_q_q(pphy,fermion_type,fermion_charge,amp2)   
       implicit none
 c     the 5 4-momentum vectors
 c     p(i,1) is the i-th component of vector p1...   
@@ -724,72 +747,75 @@ c     exchance particle 2 and 6
       endif
       
       amp2=0d0      
-      do hel_lep=-1,1,2         
-      do hel_1=-1,1,2            
-      do hel_2=-1,1,2
+
 c     momenti fittizi 
 c     (fermioni-> linea fermionica, bosoni-> outgoing)  
 c     quindi +1 * il gluone outgoing
-         do mu=0,3
-            p1(mu) = ferm_type(1)*px1(mu,1)
-            p2(mu) = ferm_type(2)*px1(mu,2)
-            p3(mu) = ferm_type(3)*px1(mu,3)
-            p4(mu) = ferm_type(4)*px1(mu,4)
-            p5(mu) = ferm_type(5)*px1(mu,5)
-            p6(mu) = ferm_type(6)*px1(mu,6)
+      do mu=0,3
+         p1(mu) = ferm_type(1)*px1(mu,1)
+         p2(mu) = ferm_type(2)*px1(mu,2)
+         p3(mu) = ferm_type(3)*px1(mu,3)
+         p4(mu) = ferm_type(4)*px1(mu,4)
+         p5(mu) = ferm_type(5)*px1(mu,5)
+         p6(mu) = ferm_type(6)*px1(mu,6)
 c     current momenta are built from physical vectors always outgoing         
-            pcurr15(mu) = p5(mu)-p1(mu)
-            pcurr26(mu) = p6(mu)-p2(mu)
-         enddo               
-         p34=dotp(p3,p4)               
+         pcurr15(mu) = p5(mu)-p1(mu)
+         pcurr26(mu) = p6(mu)-p2(mu)
+      enddo               
+      p34=dotp(p3,p4)         
+      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
+      prop34gamma = 1d0/(-2*p34)                  
 c     bra e ket usano momenti fisici
 c     q
-         if (px1(0,1).lt.0d0) then
-            do mu=0,3
-               pp1(mu) = -px1(mu,1)
-            enddo         
-            call ket(pp1,ferm_type(1),psi1)
-         else
-            call ket(px1(0,1),ferm_type(1),psi1)
-         endif                
+      if (px1(0,1).lt.0d0) then
+         do mu=0,3
+            pp1(mu) = -px1(mu,1)
+         enddo         
+         call ket(pp1,ferm_type(1),psi1)
+      else
+         call ket(px1(0,1),ferm_type(1),psi1)
+      endif                
 c     q
-         if (px1(0,5).lt.0d0) then
-            do mu=0,3
-               pp5(mu) = -px1(mu,5)
-            enddo         
-            call bra(pp5,ferm_type(5),psi5)
-         else
-            call bra(px1(0,5),ferm_type(5),psi5)
-         endif
+      if (px1(0,5).lt.0d0) then
+         do mu=0,3
+            pp5(mu) = -px1(mu,5)
+         enddo         
+         call bra(pp5,ferm_type(5),psi5)
+      else
+         call bra(px1(0,5),ferm_type(5),psi5)
+      endif
 c     em
-         call bra(px1(0,3),ferm_type(3),psi3)
+      call bra(px1(0,3),ferm_type(3),psi3)
 c     ep
-         call ket(px1(0,4),ferm_type(4),psi4)
+      call ket(px1(0,4),ferm_type(4),psi4)
 c     qp
-         if (px1(0,6).lt.0d0) then
-            do mu=0,3
-               pp6(mu) = -px1(mu,6)
-            enddo         
-            call bra(pp6,ferm_type(6),psi6)
-         else
-            call bra(px1(0,6),ferm_type(6),psi6)
-         endif
+      if (px1(0,6).lt.0d0) then
+         do mu=0,3
+            pp6(mu) = -px1(mu,6)
+         enddo         
+         call bra(pp6,ferm_type(6),psi6)
+      else
+         call bra(px1(0,6),ferm_type(6),psi6)
+      endif
 c     qp
-         if (px1(0,2).lt.0d0) then
-            do mu=0,3
-               pp2(mu) = -px2(mu,2)
-            enddo         
-            call ket(pp2,ferm_type(2),psi2)
-         else
-            call ket(px1(0,2),ferm_type(2),psi2)
-         endif
+      if (px1(0,2).lt.0d0) then
+         do mu=0,3
+            pp2(mu) = -px1(mu,2)
+         enddo         
+         call ket(pp2,ferm_type(2),psi2)
+      else
+         call ket(px1(0,2),ferm_type(2),psi2)
+      endif
 c     correnti                
-         do i=-1,1,2
-            call bra_gamma_ket(psi3,psi4,i,jlep(0,i))
-            call bra_gamma_ket(psi6,psi2,i,jqua26(0,i))
-            call bra_gamma_ket(psi5,psi1,i,jqua15(0,i))
-         enddo
-         
+      do i=-1,1,2
+         call bra_gamma_ket(psi3,psi4,i,jlep(0,i))
+         call bra_gamma_ket(psi6,psi2,i,jqua26(0,i))
+         call bra_gamma_ket(psi5,psi1,i,jqua15(0,i))
+      enddo
+      
+      do hel_lep=-1,1,2         
+      do hel_1=-1,1,2            
+      do hel_2=-1,1,2
          call bra_gamma_ket_curr(psi6,psi2,hel_2,p6,p2,pcurr15,
      #        jqua15(0,hel_1),jtemp(0,hel_2))
          
@@ -801,83 +827,7 @@ c     correnti
          
          amp_ljj(2,hel_lep,hel_1,hel_2) = 
      #        ccdotp(jlep(0,hel_lep),jtemp(0,hel_1))               
-c     
-c     momenti fittizi 
-c     (fermioni-> linea fermionica, bosoni-> outgoing)  
-c     quindi +1 * il gluone outgoing
-         do mu=0,3
-            p1(mu) = ferm_type(1)*px2(mu,1)
-            p2(mu) = ferm_type(2)*px2(mu,2)
-            p3(mu) = ferm_type(3)*px2(mu,3)
-            p4(mu) = ferm_type(4)*px2(mu,4)
-            p5(mu) = ferm_type(5)*px2(mu,5)
-            p6(mu) = ferm_type(6)*px2(mu,6)
-            pcurr16(mu) = p6(mu)-p1(mu)
-            pcurr25(mu) = p5(mu)-p2(mu)         
-         enddo               
-         p34=dotp(p3,p4)   
-         prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
-         prop34gamma = 1d0/(-2*p34)                    
-c     bra e ket usano momenti fisici               
-c     q
-         if (px2(0,1).lt.0d0) then
-            do mu=0,3
-               pp1(mu) = -px2(mu,1)
-            enddo         
-            call ket(pp1,ferm_type(1),psi1)
-         else
-            call ket(px2(0,1),ferm_type(1),psi1)
-         endif               
-c     q        
-         if (px2(0,5).lt.0d0) then
-            do mu=0,3
-               pp5(mu) = -px2(mu,5)
-            enddo         
-            call bra(pp5,ferm_type(5),psi5)
-         else
-            call bra(px2(0,5),ferm_type(5),psi5)
-         endif
-c     em
-         call bra(px2(0,3),ferm_type(3),psi3)
-c     ep
-         call ket(px2(0,4),ferm_type(4),psi4)
-c     qp
-         if (px2(0,6).lt.0d0) then
-            do mu=0,3
-               pp6(mu) = -px2(mu,6)
-            enddo         
-            call bra(pp6,ferm_type(6),psi6)
-         else
-            call bra(px2(0,6),ferm_type(6),psi6)
-         endif
-c     qp 
-         if (px1(0,2).lt.0d0) then
-            do mu=0,3
-               pp2(mu) = -px2(mu,2)
-            enddo         
-            call ket(pp2,ferm_type(2),psi2)
-         else
-            call ket(px2(0,2),ferm_type(2),psi2)
-         endif
-c     correnti       
-         do i=-1,1,2
-            call bra_gamma_ket(psi3,psi4,i,jlep(0,i))
-            call bra_gamma_ket(psi6,psi1,i,jqua16(0,i))
-            call bra_gamma_ket(psi5,psi2,i,jqua25(0,i))
-         enddo
-         
-         call bra_gamma_ket_curr(psi6,psi1,hel_1,p6,p1,pcurr25,
-     #        jqua25(0,hel_2),jtemp(0,hel_1))
-         
-         amp_ljj(3,hel_lep,hel_1,hel_2) = 
-     #        ccdotp(jlep(0,hel_lep),jtemp(0,hel_1))
-         
-         call bra_gamma_ket_curr(psi5,psi2,hel_2,p5,p2,pcurr16,
-     #        jqua16(0,hel_1),jtemp(0,hel_2))
-         
-         amp_ljj(4,hel_lep,hel_1,hel_2) = 
-     #        ccdotp(jlep(0,hel_lep),jtemp(0,hel_2))
-         
+
 c     to take account of the gamma/Z interference         
          amp_ljj(1,hel_lep,hel_1,hel_2) = 
      #        ((q_q*q_l*prop34gamma) + 
@@ -890,7 +840,93 @@ c     to take account of the gamma/Z interference
      #        (1/(2*ph_sthw*ph_cthw)**2 * 
      #        Zcoup_q(hel_1)*Zcoup_l(hel_lep)*prop34V))*
      #        amp_ljj(2,hel_lep,hel_1,hel_2)
-               
+         
+      enddo
+      enddo
+      enddo
+cccccccccccccc
+c     
+c     momenti fittizi 
+c     (fermioni-> linea fermionica, bosoni-> outgoing)  
+c     quindi +1 * il gluone outgoing
+      do mu=0,3
+         p1(mu) = ferm_type(1)*px2(mu,1)
+         p2(mu) = ferm_type(2)*px2(mu,2)
+         p3(mu) = ferm_type(3)*px2(mu,3)
+         p4(mu) = ferm_type(4)*px2(mu,4)
+         p5(mu) = ferm_type(5)*px2(mu,5)
+         p6(mu) = ferm_type(6)*px2(mu,6)
+         pcurr16(mu) = p6(mu)-p1(mu)
+         pcurr25(mu) = p5(mu)-p2(mu)         
+      enddo               
+      p34=dotp(p3,p4)   
+      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
+      prop34gamma = 1d0/(-2*p34)                    
+c     bra e ket usano momenti fisici               
+c     q
+      if (px2(0,1).lt.0d0) then
+         do mu=0,3
+            pp1(mu) = -px2(mu,1)
+         enddo         
+         call ket(pp1,ferm_type(1),psi1)
+      else
+         call ket(px2(0,1),ferm_type(1),psi1)
+      endif               
+c     q        
+      if (px2(0,5).lt.0d0) then
+         do mu=0,3
+            pp5(mu) = -px2(mu,5)
+         enddo         
+         call bra(pp5,ferm_type(5),psi5)
+      else
+         call bra(px2(0,5),ferm_type(5),psi5)
+      endif
+c     em
+      call bra(px2(0,3),ferm_type(3),psi3)
+c     ep
+      call ket(px2(0,4),ferm_type(4),psi4)
+c     qp
+      if (px2(0,6).lt.0d0) then
+         do mu=0,3
+            pp6(mu) = -px2(mu,6)
+         enddo         
+         call bra(pp6,ferm_type(6),psi6)
+      else
+         call bra(px2(0,6),ferm_type(6),psi6)
+      endif
+c     qp 
+      if (px2(0,2).lt.0d0) then
+         do mu=0,3
+            pp2(mu) = -px2(mu,2)
+         enddo         
+         call ket(pp2,ferm_type(2),psi2)
+      else
+         call ket(px2(0,2),ferm_type(2),psi2)
+      endif
+c     correnti       
+      do i=-1,1,2
+         call bra_gamma_ket(psi3,psi4,i,jlep(0,i))
+         call bra_gamma_ket(psi6,psi1,i,jqua16(0,i))
+         call bra_gamma_ket(psi5,psi2,i,jqua25(0,i))
+      enddo
+         
+      do hel_lep=-1,1,2         
+         do hel_1=-1,1,2            
+              do hel_2=-1,1,2
+                 
+        call bra_gamma_ket_curr(psi6,psi1,hel_1,p6,p1,pcurr25,
+     #        jqua25(0,hel_2),jtemp(0,hel_1))
+         
+         amp_ljj(3,hel_lep,hel_1,hel_2) = 
+     #        ccdotp(jlep(0,hel_lep),jtemp(0,hel_1))
+         
+         call bra_gamma_ket_curr(psi5,psi2,hel_2,p5,p2,pcurr16,
+     #        jqua16(0,hel_1),jtemp(0,hel_2))
+         
+         amp_ljj(4,hel_lep,hel_1,hel_2) = 
+     #        ccdotp(jlep(0,hel_lep),jtemp(0,hel_2))
+         
+c     to take account of the gamma/Z interference         
          amp_ljj(3,hel_lep,hel_1,hel_2) = 
      #        ((q_q*q_l*prop34gamma) + 
      #        (1/(2*ph_sthw*ph_cthw)**2 * 
@@ -902,7 +938,7 @@ c     to take account of the gamma/Z interference
      #        (1/(2*ph_sthw*ph_cthw)**2 * 
      #        Zcoup_q(hel_2)*Zcoup_l(hel_lep)*prop34V))*
      #        amp_ljj(4,hel_lep,hel_1,hel_2)
-         
+
 c     final coherent sum   
 c     minus sign for fermion statistic
          z1=amp_ljj(1,hel_lep,hel_1,hel_2)+
@@ -1192,6 +1228,9 @@ c     quindi +1 * il gluone outgoing
       enddo
 
       p34=dotp(p3,p4)
+      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
+      prop34gamma = 1d0/(-2*p34)
+      
 c     bra e ket usano momenti fisici
 c     q
       call ket(p(0,1),ferm_type(1),psi1)
@@ -1212,9 +1251,6 @@ c     correnti
          call bra_gamma_ket(psi6,psi2,i,jqua26(0,i))
          call bra_gamma_ket(psi5,psi1,i,jqua15(0,i))
       enddo
-      
-      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
-      prop34gamma = 1d0/(-2*p34)
       
       amp2=0d0
       do hel_lep=-1,1,2         
@@ -1445,6 +1481,10 @@ c     quindi +1 * il gluone outgoing
       enddo
 
       p34=dotp(p3,p4)
+      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
+      prop34gamma = 1d0/(-2*p34)
+      
+
 c     bra e ket usano momenti fisici
 c     q
       call ket(p(0,1),ferm_type(1),psi1)
@@ -1465,9 +1505,6 @@ c     correnti
          call bra_gamma_ket(psi5,psi6,i,jqua56(0,i))
          call bra_gamma_ket(psi2,psi1,i,jqua12(0,i))
       enddo
-      
-      prop34V = 1d0/dcmplx(-2*p34-ph_Zmass2,ph_ZmZw) 
-      prop34gamma = 1d0/(-2*p34)
       
       amp2=0d0
       do hel_lep=-1,1,2         

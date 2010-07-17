@@ -54,7 +54,8 @@ c      endif
 C   100       A : Rick Field's CDF Tune A                     (Oct 2002)
 C   103      DW : Rick Field's CDF Tune DW                    (Apr 2006)
 C   320 Perugia 0 : "Perugia" update of S0-Pro                (Feb 2009)
-c      call PYTUNE(100)
+c      call PYTUNE(320)
+      call PYTUNE(100)
 
 
 c Set up PYTHIA to accept user processes

@@ -89,7 +89,7 @@ c finalize btilde output in histograms
      1        rad_etotposbtl
          write(*,*) 'btilde |neg.| weights:', rad_totnegbtl,' +-',
      1        rad_etotnegbtl
-         write(*,*) 'btilde Total (pos.-|neg.|):', rad_totbtl,' +-',
+         write(*,*) 'btilde total (pos.-|neg.|):', rad_totbtl,' +-',
      1        rad_etotbtl
          write(iunstat,*) 'btilde pos.   weights:', rad_totposbtl,' +-',
      1        rad_etotposbtl
@@ -103,9 +103,9 @@ c No folding for remnants:
             ifoldrm(j)=1
          enddo
          if((flg_withreg.or.flg_withdamp).and..not.flg_bornonly) then
-            write(*,*)' Computing the integral of the value of'
-            write(*,*)' the remnant cross section' 
-            write(*,*)' to set up the adaptive grid'
+            write(*,*) ' Computing the integral of the'//
+     #           ' remnant cross section' 
+            write(*,*) ' to set up the adaptive grid'
             negflag=.false.
             flg_nlotest=.false.
             call newunit(iun)

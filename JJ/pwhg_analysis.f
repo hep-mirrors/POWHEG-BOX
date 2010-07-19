@@ -42,9 +42,9 @@ C - Pseudorapidity of the 1st and 2nd jet in >= 2 jet events
 
 C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
-      binsize(diag) = 0.2d0
+      binsize(diag) = 0.1d0
       call pwhgbookup(diag,'abs(DH01,21) E0T11 > 20','LOG',
-     1                binsize(diag),-5d0,5d0)
+     1                binsize(diag),0d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
@@ -72,9 +72,9 @@ C - Pseudorapidity of the 1st jet in >= 2 jet events
 
 C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
-      binsize(diag) = 0.2d0
+      binsize(diag) = 0.1d0
       call pwhgbookup(diag,'abs(DH01,21) E0T11 > 40','LOG',
-     1                binsize(diag),-5d0,5d0)
+     1                binsize(diag),0d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
@@ -102,9 +102,9 @@ C - Pseudorapidity of the 1st jet in >= 2 jet events
 
 C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
-      binsize(diag) = 0.2d0
+      binsize(diag) = 0.1d0
       call pwhgbookup(diag,'abs(DH01,21) E0T11 > 100','LOG',
-     1                binsize(diag),-5d0,5d0)
+     1                binsize(diag),0d0,5d0)
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
@@ -433,11 +433,13 @@ c     arrays to reconstruct jets
       real * 8  pjet(4,maxjet),pT_rel(maxjet)
       integer   mjets
       real * 8  kt(mjets),eta(mjets),rap(mjets),phi(mjets),pj(4,mjets)
-      real * 8  pp,phi1,phi2,dphi12,eta1,eta2,eta3,et12,et22,et32
+      real * 8  pp,phi1,phi2,dphi12,eta0,eta1,eta2,eta3,et12,et22,et32
       real * 8  pT_rel_J1,pT_rel_J2
+      real * 8  mET(2),tot_ET,pT_j,modp_j,ET_j
+      logical   passed_mET
       integer   ntracks,njets
       integer   j,k,mu,jet_algo
-      real * 8  getrapidity,absy_jet
+      real * 8  getrapidity,absy_jet,the_pt
       real * 8  dsig
       integer   diag
       real * 8  random
@@ -491,48 +493,92 @@ C     f = 0.75  overlapping fraction
       call fastjetcdfmidpoint(ptrack,ntracks,0.7d0,0.75d0,pjet,njets,
      $                        pT_rel) 
 
-C -------------------------------------------------- C
-C - Inclusive jet pT spectrum using cone algorithm - C
-C -------------------------------------------------- C
+C ------------------------------------------------------ C
+C - Inclusive jet pT spectrum using CDF cone algorithm - C
+C ------------------------------------------------------ C
+C - Compute the total and missing ET here (CDF arXiv:0807.2204v4).
+      mET(1)=0d0
+      mET(2)=0d0
+      tot_ET=0d0
+      do j=1,njets
+         call get_pseudorap(pjet(1,j),eta0)
+C - N.B. We have neglected a small E_T cut here, which goes with
+C - |eta|<3.6; each calo tower is required to have ET > 100 MeV
+C - (arXiv:0807.2204v4 item 36 in the bibliography)!!!
+C - N.B. Also the sum used to obtain mET and tot_ET is experimentally
+C - defined to be the sum over calorimeter cells, not a sum over jets!
+C - In any case the efficiency of this cut is said to range from
+C - 100 % (for low pT jets) to 90 % for high pT jets. So the impact
+C - of this should in general be small and, hopefully, it is fairly
+C - approximated by our sum over jets instead of calo cells.
+         if(abs(eta0).le.3.6d0) then
+            pT_j   = sqrt(pjet(1,j)**2+pjet(2,j)**2)
+            modp_j = sqrt(pT_j**2     +pjet(3,j)**2)
+            ET_j   = pjet(4,j)*pT_j/modp_j
+            mET(1) = mET(1) - pjet(1,j)*ET_j/pT_j
+            mET(2) = mET(2) - pjet(2,j)*ET_j/pT_j
+            tot_ET = tot_ET + ET_j
+         endif
+      enddo
+      passed_mET=.false.
+      if((sqrt(mET(1)**2+mET(2)**2)/sqrt(tot_ET)).lt.
+     $   min(3d0+0.0125*sqrt(pj(1,1)**2+pj(2,1)**2),6d0))
+     $     passed_mET=.true.
+
       diag=80
 C -   First just with MC generation cuts [NOT in CDF analysis obviously].
       do j=1,njets
          call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
       enddo
 C -     |y_jet|<0.1 (81)
+C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
       diag=diag+1
       do j=1,njets
          absy_jet = abs(getrapidity(pjet(4,j),pjet(3,j)))
-         if(absy_jet.le.0.1d0)
-     $        call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
+         the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
+         if(absy_jet.le.0.1d0.and.the_pt.ge.50d0
+     $      .and.passed_mET)
+     $        call pwhgfill(diag,the_pt,dsig)
       enddo
 C - 0.1<|y_jet|<0.7 (82)
+C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
       diag=diag+1
       do j=1,njets
          absy_jet = abs(getrapidity(pjet(4,j),pjet(3,j)))
-         if(absy_jet.gt.0.1d0.and.absy_jet.le.0.7d0)
-     $        call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
+         the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
+         if(absy_jet.gt.0.1d0.and.absy_jet.le.0.7d0.and.the_pt.ge.50d0
+     $      .and.passed_mET)
+     $        call pwhgfill(diag,the_pt,dsig)
       enddo
 C - 0.7<|y_jet|<1.1 (83)
+C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
       diag=diag+1
       do j=1,njets
          absy_jet = abs(getrapidity(pjet(4,j),pjet(3,j)))
-         if(absy_jet.gt.0.7d0.and.absy_jet.le.1.1d0)
-     $        call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
+         the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
+         if(absy_jet.gt.0.7d0.and.absy_jet.le.1.1d0.and.the_pt.ge.50d0
+     $      .and.passed_mET)
+     $        call pwhgfill(diag,the_pt,dsig)
       enddo
 C - 1.1<|y_jet|<1.6 (84)
+C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
       diag=diag+1
       do j=1,njets
          absy_jet = abs(getrapidity(pjet(4,j),pjet(3,j)))
-         if(absy_jet.gt.1.1d0.and.absy_jet.le.1.6d0)
-     $        call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
+         the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
+         if(absy_jet.gt.1.1d0.and.absy_jet.le.1.6d0.and.the_pt.ge.50d0
+     $      .and.passed_mET)
+     $        call pwhgfill(diag,the_pt,dsig)
       enddo
 C - 1.6<|y_jet|<2.1 (85)
+C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
       diag=diag+1
       do j=1,njets
          absy_jet = abs(getrapidity(pjet(4,j),pjet(3,j)))
-         if(absy_jet.gt.1.6d0.and.absy_jet.le.2.1d0)
-     $        call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
+         the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
+         if(absy_jet.gt.1.6d0.and.absy_jet.le.2.1d0.and.the_pt.ge.50d0
+     $      .and.passed_mET)
+     $        call pwhgfill(diag,the_pt,dsig)
       enddo
 
 C ------------------------------------------------------ C
@@ -540,31 +586,39 @@ C - Inclusive jet Y spectrum using same cone algorithm - C
 C ------------------------------------------------------ C
       diag=90
 C - |p_T|> 10 (91)
+C - ( and missing ET cut )
       diag=diag+1
       do j=1,njets
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
-         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 10d0)
+         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 10d0
+     $      .and.passed_mET)
      $        call pwhgfill(diag,absy_jet,dsig)
       enddo
 C - |p_T|> 20 (92)
+C - ( and missing ET cut )
       diag=diag+1
       do j=1,njets
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
-         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 20d0)
+         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 20d0
+     $      .and.passed_mET)
      $        call pwhgfill(diag,absy_jet,dsig)
       enddo
 C - |p_T|> 50 (93)
+C - ( and missing ET cut )
       diag=diag+1
       do j=1,njets
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
-         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 50d0)
+         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 50d0
+     $      .and.passed_mET)
      $        call pwhgfill(diag,absy_jet,dsig)
       enddo
 C - |p_T|>100 (94)
+C - ( and missing ET cut )
       diag=diag+1
       do j=1,njets
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
-         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt.100d0)
+         if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt.100d0
+     $      .and.passed_mET)
      $        call pwhgfill(diag,absy_jet,dsig)
       enddo
 
@@ -572,6 +626,8 @@ C - |p_T|>100 (94)
 C - Pseudorapidity of the third hardest jet (101)
 C - Cuts: |eta_1|<0.7, |eta_2|<0.7, |phi_1-phi_2|>2.79
 C - E_T1 > 110 GeV, E_T3 > 10GeV.
+C - N.B. There must be another cut here somewhere, requiring
+C - the 3rd jet to actually be IN the calorimeter! 
       diag=diag+1
       if(njets.ge.3) then
          call get_pseudorap(pjet(1,1),eta1)
@@ -709,7 +765,7 @@ C   estimates, spoiling correlated events ...)
       include '../include/hepevt.h'
       include '../include/pwhg_math.h' 
       include  '../include/LesHouches.h'
-      integer ihep,mu
+      integer ihep
       logical ini
       data ini/.true./
       save ini
@@ -723,8 +779,10 @@ C   estimates, spoiling correlated events ...)
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
       data WHCPRG/'NLO   '/
-      integer j,i
-      real *8 et,dphi,dR,absy_max
+      integer j
+      real * 8 et,dphi,dR,absy_max
+      real * 8 mET(2),eta0
+      logical  passed_mET
 
 C - Pico to microbarn conversion:
       dsig=dsig0/1d6
@@ -924,7 +982,30 @@ C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 100
 C ------------------------ C
 C - Dijet invariant mass - C
 C ------------------------ C
-
+C - Compute the missing ET cut here (D0 arXiv:1002.4594v1)
+      mET(1)=0d0
+      mET(2)=0d0
+      do j=1,nhep
+         call get_pseudorap(phep(1,j),eta0)
+         if(isthep(j).eq.1.and.abs(eta0).le.4.2) then
+            mET(1)=mET(1)+phep(1,j)
+            mET(2)=mET(2)+phep(2,j)
+         endif
+      enddo
+      if(ktjets(1).ge.100d0) then
+         if((sqrt(mET(1)**2+mET(2)**2)/ktjets(1)).lt.0.5) then
+            passed_mET=.true.
+         else
+            passed_mET=.false.
+         endif
+      else
+         if((sqrt(mET(1)**2+mET(2)**2)/ktjets(1)).lt.0.7) then
+            passed_mET=.true.
+         else
+            passed_mET=.false.
+         endif
+      endif
+      
       diag=50
       if(njets.ge.2) then
 C - Computing the dijet invariant mass:
@@ -938,9 +1019,11 @@ C - Computing the dijet invariant mass:
             endif
             mjj = mjj / 1000d0 ! Binning is in TeV
          endif
-         absy_max=abs(max(rapjets(1),rapjets(2)))
-C - Both jets must have pT>40 GeV.
-         if(ktjets(1).ge.40.0.and.ktjets(2).ge.40.0) then
+         absy_max=max(abs(rapjets(1)),abs(rapjets(2)))
+C - Both jets must have pT>40 GeV and we are not interested in mjj < 150 GeV
+C - and the missing ET cut needs to be passed too.
+         if(ktjets(1).ge.40.0.and.ktjets(2).ge.40.0.and.
+     $      mjj.ge.0.15.and.passed_mET) then
 C -     |y_max|<0.4 (51)
             diag=diag+1
             if(absy_max.le.0.4)

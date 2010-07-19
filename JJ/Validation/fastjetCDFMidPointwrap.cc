@@ -57,6 +57,14 @@ void fastjetcdfmidpoint_(const double * p, const int & npart,
     vector<fj::PseudoJet> jets = sorted_by_pt(cs.inclusive_jets());
     njets = jets.size();
 
+//     // Tag jets with |Pseudo rapidity| >= 3.6 (beyond fwd calorimeters).
+//     vector<int> invisible_jets;
+//     for (int i=0; i<njets; i++)
+//       if(fabs(jets[i].pseudorapidity())>=3.6) invisible_jets.push_back(i);
+//     for (int i=0; i<invisible_jets.size(); i++)
+//       jets.erase(jets.begin()+invisible_jets(i));
+//     njets-=invisible_jets.size();
+    
     // transfer jets -> f77jets[4*ijet+0..3]
     for (int i=0; i<njets; i++) {
       for (int j=0;j<=3; j++) {

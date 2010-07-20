@@ -21,7 +21,6 @@ c     for x_1 and x_2, and take away an overall azimuth
       integer j
       save resborn,resvirt,wwwtot
       real *8 totborn,totvirt
-
       www=www0*hc2
       do j=1,ndiminteg-3
          xborn(j)=xx(j)
@@ -116,7 +115,12 @@ c analysis routines.
          endif
 c     closing call: accumulate values with correct signs
          btilde=0
+         call adduptotals(results,flst_nborn)
          do j=1,flst_nborn
+c this is only useful if withnegweights on (i.e. =1 in powheg.input,
+c logical true here). However, better set a default (Les Houches
+c interface will simply output this sign for the event.)
+            rad_btilde_sign(j)=1
             if(negflag) then
                if(results(j).lt.0) then
                   results(j)=-results(j)
@@ -124,8 +128,15 @@ c     closing call: accumulate values with correct signs
                   results(j)=0
                endif
             else
-               if(results(j).lt.0) then
-                  results(j)=0
+               if(flg_withnegweights) then
+                  if(results(j).lt.0) then
+                     results(j)=-results(j)
+                     rad_btilde_sign(j)=-1
+                  endif                  
+               else
+                  if(results(j).lt.0) then
+                     results(j)=0
+                  endif
                endif
             endif
             btilde=btilde+results(j)
@@ -140,3 +151,79 @@ c     flavour of the event
       endif
       end
       
+
+      subroutine adduptotals(results,n)
+      implicit none
+      integer n
+      real * 8 results(n)
+      real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
+      integer nentries
+      common/cadduptotals/tot,totabs,totpos,totneg,etot,etotabs,
+     1     etotpos,etotneg,nentries
+      real * 8 dtot,dtotabs,dtotpos,dtotneg
+      integer j
+      nentries=nentries+1
+      dtot=0
+      dtotabs=0
+      dtotpos=0
+      dtotneg=0
+      do j=1,n
+         dtot=dtot+results(j)
+         dtotabs=dtotabs+abs(results(j))
+         if(results(j).gt.0) then
+            dtotpos=dtotpos+results(j)
+         else
+            dtotneg=dtotneg-results(j)
+         endif
+      enddo
+      tot=tot+dtot
+      totabs=totabs+dtotabs
+      totpos=totpos+dtotpos
+      totneg=totneg+dtotneg      
+      etot=etot+dtot**2
+      etotabs=etotabs+dtotabs**2
+      etotpos=etotpos+dtotpos**2
+      etotneg=etotneg+dtotneg**2
+      end
+
+      subroutine resettotals
+      implicit none
+      real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
+      integer nentries
+      common/cadduptotals/tot,totabs,totpos,totneg,etot,etotabs,
+     1     etotpos,etotneg,nentries
+      nentries=0
+      tot=0
+      etot=0
+      totabs=0
+      etotabs=0
+      totpos=0
+      etotpos=0
+      totneg=0
+      etotneg=0
+      end
+
+      subroutine finaltotals
+      implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
+      integer nentries,n
+      common/cadduptotals/tot,totabs,totpos,totneg,etot,etotabs,
+     1     etotpos,etotneg,nentries
+      n=nentries
+      rad_totbtl=tot/n
+      rad_etotbtl=sqrt((etot/n-(tot/n)**2)/n)
+      rad_totabsbtl=totabs/n
+      rad_etotabsbtl=sqrt((etotabs/n-(totabs/n)**2)/n)
+      rad_totposbtl=totpos/n
+      rad_etotposbtl=sqrt((etotpos/n-(totpos/n)**2)/n)
+      rad_totnegbtl=totneg/n
+      rad_etotnegbtl=sqrt((etotneg/n-(totneg/n)**2)/n)
+      write(*,*) 'tot:',rad_totbtl,'+-',rad_etotbtl
+      write(*,*) 'abs:',rad_totabsbtl,'+-',rad_etotabsbtl
+      write(*,*) 'pos:',rad_totposbtl,'+-',rad_etotposbtl
+      write(*,*) 'neg:',rad_totnegbtl,'+-',rad_etotnegbtl
+      end
+

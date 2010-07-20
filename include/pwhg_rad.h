@@ -69,6 +69,9 @@ c LambdaLL for upper bounding coupling (see notes: running_coupling)
       real * 8 rad_lamll
 c Hardest radiation kt2
       real * 8 rad_pt2max
+c Branching ratio (useful to change xsecup properly when a decay is
+c added a posteriori)
+      real * 8 rad_branching
       common/pwhg_rad/
      1     rad_totbtl,rad_etotbtl,
      2     rad_totabsbtl,rad_etotabsbtl,
@@ -82,6 +85,7 @@ c Hardest radiation kt2
      #     rad_csiynorms,rad_norms,rad_btilde_arr,rad_real_arr,
      #     rad_normfact,rad_ptsqmin,rad_charmthr2,rad_bottomthr2,
      #     rad_lamll,rad_xradremn,rad_pt2max,
+     #     rad_branching,
 c     integers
      #     rad_ubornidx,rad_alr_list,rad_alr_nlist,
      #     rad_realidx,rad_realalr,rad_realreg,

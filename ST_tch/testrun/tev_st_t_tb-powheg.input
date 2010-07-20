@@ -23,38 +23,12 @@ itmx2    5     ! number of iterations for computing the integral and finding upp
 foldcsi   2    ! number of folds on csi integration
 foldy     5    ! number of folds on  y  integration
 foldphi   1    ! number of folds on phi integration
-nubound 20000  ! number of bbarra calls to setup norm of upper bounding function
-icsimax  5     ! <= 100, number of csi subdivision when computing the upper bounds
+nubound 50000  ! number of bbarra calls to setup norm of upper bounding function
+icsimax  1     ! <= 100, number of csi subdivision when computing the upper bounds
 iymax    5     ! <= 100, number of y subdivision when computing the upper bounds
 xupbound 2d0   ! increase upper bound for radiation generation
 
 withdamp    1      ! (default 0, do not use) use Born-zero damping factor
-
-! OPTIONAL PARAMETERS
-
-#renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
-#facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
-#ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
-#bornonly   0      ! (default 0) if 1 do Born only
-#smartsig   0      ! (default 1) remember equal amplitudes (0 do not remember)
-#withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
-#ptsqmin    0.8    ! (default 0.8 GeV) minimum pt for generation of radiation
-#charmthr   1.5    ! (default 1.5 GeV) charm treshold for gluon splitting 
-#bottomthr  5.0    ! (default 5.0 GeV) bottom treshold for gluon splitting
-#testplots  1      ! (default 0, do not) do NLO and PWHG distributions
-#hfact    100d0    ! (default no dumping factor) dump factor for high-pt radiation: > 0 dumpfac=h**2/(pt2+h**2)
-#testsuda  1       ! (default 0, do not test) test Sudakov form factor
-#radregion 1       ! (default all regions) only generate radiation in the selected singular region  
-#charmthrpdf  1.5  ! (default 1.5 GeV) pdf charm treshold
-#bottomthrpdf 5.0  ! (default 5.0 GeV) pdf bottom treshold
-
-#iseed    6093726  !12345    ! initialize random number sequence 
-#rand1     2       !-1      ! initialize random number sequence 
-#rand2     2       !-1      ! initialize random number sequence 
-
-#iupperisr 1 ! (default 1) choice of ISR upper bounding functional form 
-#iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
-
 
 ! PROCESS SPECIFIC PARAMETERS
 ! production parameters
@@ -86,5 +60,29 @@ tdec/elbranching 0.108  ! W electronic branching fraction
 tdec/emass 0.000511
 tdec/mumass 0.1056      
 tdec/taumass 1.777      
-tdec/cmass 1.5
-tdec/bmass 5.0
+
+
+! OPTIONAL PARAMETERS
+#renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
+#facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
+#ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
+#bornonly   0      ! (default 0) if 1 do Born only
+#smartsig   0      ! (default 1) remember equal amplitudes (0 do not remember)
+#withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
+#ptsqmin    0.8    ! (default 0.8 GeV) minimum pt for generation of radiation
+#charmthr   1.5    ! (default 1.5 GeV) charm treshold for gluon splitting 
+#bottomthr  5.0    ! (default 5.0 GeV) bottom treshold for gluon splitting
+#testplots  1      ! (default 0, do not) do NLO and PWHG distributions
+#hfact    100d0    ! (default no dumping factor) dump factor for high-pt radiation: > 0 dumpfac=h**2/(pt2+h**2)
+#testsuda  1       ! (default 0, do not test) test Sudakov form factor
+#radregion 1       ! (default all regions) only generate radiation in the selected singular region  
+#charmthrpdf  1.5  ! (default 1.5 GeV) pdf charm treshold
+#bottomthrpdf 5.0  ! (default 5.0 GeV) pdf bottom treshold
+
+#iseed    6093726  !12345    ! initialize random number sequence 
+#rand1     2       !-1      ! initialize random number sequence 
+#rand2     2       !-1      ! initialize random number sequence 
+
+#iupperisr 1 ! (default 1) choice of ISR upper bounding functional form 
+#iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
+

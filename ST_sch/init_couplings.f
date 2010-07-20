@@ -3,16 +3,25 @@
       include 'PhysPars.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
+      include 'nlegborn.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_rad.h'
+c$$$      include '../include/pwhg_par.h'
       logical verbose
       parameter(verbose=.true.)
       integer aemrun
       real *8 powheginput
       external powheginput
-      real *8 alfaem,pwhg_alphas
+      real *8 alfaem,pwhg_alphas,totbr
       external alfaem,pwhg_alphas
-      integer i,j
+      integer i,j,idummy
       real *8 alphaem_inv
       common/calphaem_inv/alphaem_inv
+
+c$$$      par_isrtinycsi = 1d-6
+c$$$      par_isrtinyy =   .5d-6
+c$$$      par_fsrtinycsi = 1d-6
+c$$$      par_fsrtinyy =   1d-6
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
@@ -22,6 +31,10 @@ c     number of light flavors
 
 c     setting physical parameters
       write(*,*) 'POWHEG: loading-setting physical parameters'
+
+c     branching ratio (used only in LH event file)
+      call pickwdecay(-1000,idummy,idummy,idummy,totbr)
+      rad_branching=totbr
 
 c     top mass
       topmass_pow=175d0
@@ -185,6 +198,8 @@ c     setting madgraph parameters (needed for madgraph subroutines)
      $,pwhg_alphas(91.2d0**2,st_lambda5MSB,st_nlight)
          write(*,'(1X,A,f7.3,A,f15.7)') 'alpha_s(',topmass_pow,')'
      $,pwhg_alphas(topmass_pow**2,st_lambda5MSB,st_nlight)
+         write(*,*)
+         write(*,*) 'top branching ratio ',totbr
          write(*,*) '--------------------------------------'
       endif
 

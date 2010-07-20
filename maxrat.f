@@ -166,16 +166,16 @@ cccccccccccccccccccccccccccccccc
                write(*,*) ' *****************************'
                write(*,*) ' inc_norms: Warning, born zero'
                write(*,*) ' RAD REG: ', rad_kinreg
-               write(*,*) 'inc_norms: x1,x2', kn_xb1,kn_xb2
+               write(*,*) ' inc_norms: x1,x2', kn_xb1,kn_xb2
                write(*,*) ' muf= ',sqrt(st_mufact2)
-               write(*,*) 'Flavour: ', (flst_born(ind,rad_ubornidx),ind
+               write(*,*) ' Flavour: ', (flst_born(ind,rad_ubornidx),ind
      $              =1,5) 
                
-               write(*,*) 'Born w/o pdf: ',br_born(rad_ubornidx)
+               write(*,*) ' Born w/o pdf: ',br_born(rad_ubornidx)
      $              ,'  jac: ',kn_jacborn 
                call pdfcall(1,kn_xb1,pdf1)
                call pdfcall(2,kn_xb2,pdf2)
-               write(*,*) "PDF's ",pdf1(flst_born(1
+               write(*,*) " PDF's ",pdf1(flst_born(1
      $              ,rad_ubornidx)),pdf2(flst_born(2,rad_ubornidx))
 
                if ((abs(flst_born(1

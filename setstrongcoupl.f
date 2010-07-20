@@ -51,6 +51,14 @@ c ad hoc value here (mlmpdf does not provide this)
       endif
       st_mufact2=max(q2min,ptsq) 
 cccccccccccccccccccccccccccccccccc
+c     In case of final-state radiation, Born and real PDF's
+c     should always cancel out in the ratio R/B. If the radiation scale
+c     is too low, this cancellation can be spoilt because PDF's can vanish,
+c     typically when a heavy flavour is present as initial state.
+c     To prevent this, we use a scale higher than the heavy-flavour
+c     threshold, so that PDF's are evaluated with a safe value for
+c     mufact (50 is an arbitrary choice).
+      if(rad_kinreg.ge.2) st_mufact2=50.**2
       st_muren2=ptsq
       st_alpha = pwhg_alphas(st_muren2,st_lambda5MSB,-1)
       if(st_muren2.lt.rad_charmthr2) then

@@ -141,7 +141,13 @@ clean:
 	rm -f obj/*.o madgraph/dhelas3.2/*.o madgraph/dhelas3.2/*.a \
 	pwhg_main lhef_analysis \
 	main-HERWIG-lhef main-PYTHIA-lhef \
-        main-HERWIG main-PYTHIA
+        merge_t_tb
+
+MERGE_t_tb=merge_t_tb.o newunit.o random.o cernroutines.o
+
+#  target to merge t and tbar samples
+merge_t_tb: $(MERGE_t_tb)
+	$(FF) $(patsubst %.o,obj/%.o,$(MERGE_t_tb)) -o $@
 
 
 

@@ -70,8 +70,8 @@ c Irrelevant if idwtup=+-3,+-4
       nprup = 1
       call bbinit
 c now the cross section is available
-      xsecup(1)=rad_sigtotgen  
-      xerrup(1)=rad_esigtotgen
+      xsecup(1)=rad_sigtotgen  *rad_branching
+      xerrup(1)=rad_esigtotgen *rad_branching
       xmaxup(1)=1
       end
 

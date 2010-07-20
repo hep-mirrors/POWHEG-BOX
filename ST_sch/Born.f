@@ -661,7 +661,7 @@ c     data
       real *8 s,t,u,ewcoupl
 
       logical verbose
-      parameter (verbose=.true.)
+      parameter (verbose=.false.)
 
       real *8 tiny
       parameter (tiny=1.d-6)
@@ -670,7 +670,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     variables needed to generate the decay with the veto method:
 c     phase space & luminosity upper bound
       real *8 cfacbound
-      data cfacbound/1.5d0/
+      data cfacbound/2.0d0/
       save cfacbound
 c     decay upper bound normalization factor
       real *8 boundnorm
@@ -712,6 +712,7 @@ c     in m12 rest frame (PDG eq. 38.16)
       decmom(m12,m1,m2)=
      $sqrt((m12**2-(m1+m2)**2)*(m12**2-(m1-m2)**2))/2./m12
 cccccccccccccccccccccccccccccccccc
+
 
 c     to keep track of relabelling.
 c     If at the end reorder=true, exchange momenta
@@ -1163,8 +1164,10 @@ c     It can be argued that other choices are more appropriate.
 c     hit-and-miss rule, as in POWHEG-hvq
 
       if(cfac.gt.cfacbound) then
-         write(*,*) 'PS&LUM upper bound violation: cfac/cfacbound= ',
-     $cfac/cfacbound,' new PS&LUM upper bound is = ',cfac
+         if(verbose) then
+            write(*,*) 'PS&LUM upper bound violation: cfac/cfacbound= ',
+     $           cfac/cfacbound,' new PS&LUM upper bound is = ',cfac
+         endif
          cfacbound=cfac
       endif
 
@@ -1619,8 +1622,12 @@ c     assigned here. The 3 light quarks are assumed massless.
          mass(1)=0
          mass(2)=0
          mass(3)=0
-         mass(4)=powheginput('tdec/cmass')
-         mass(5)=powheginput('tdec/bmass')
+c         mass(5)=powheginput('tdec/bmass')
+         mass(5)=powheginput('#bottomthr')
+         if (mass(5).lt.0d0) mass(5)=5.
+c         mass(4)=powheginput('tdec/cmass')
+         mass(4)=powheginput('#charmthr')
+         if (mass(4).lt.0d0) mass(4)=1.5
          sin2cabibbo=(CKM_pow(1,2))**2
          if(iw1.eq.-1000) return
       endif
@@ -1898,11 +1905,11 @@ c     b
 
       if(nup.eq.nlegreal) then
          do mu=0,3
-            klab(mu,ileg)=xklab(mu,ileg)
+            klab(mu,nlegreal)=xklab(mu,nlegreal)
          enddo
-         if(idup(ileg).ne.21) then
-            m(ileg)=mcmass(abs(idup(ileg)))
-            m_s(ileg)=mcmass(abs(idup(ileg)))
+         if(idup(nlegreal).ne.21) then
+            m(nlegreal)=mcmass(abs(idup(nlegreal)))
+            m_s(nlegreal)=mcmass(abs(idup(nlegreal)))
          else
             m(ileg)=mcmass(0)
             m_s(ileg)=mcmass(0)

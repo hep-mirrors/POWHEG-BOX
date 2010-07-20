@@ -25,7 +25,8 @@ c
       par_isrtinyy = 1d-6
       par_fsrtinycsi = 1d-5
       par_fsrtinyy = 1d-6
-
+c
+      rad_branching=1
 c this is set to true in processes where the FSR jacobian
 c can become singular (massless recoil particle)
       flg_jacsing=.false.

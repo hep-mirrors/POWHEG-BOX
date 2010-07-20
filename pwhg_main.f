@@ -5,7 +5,6 @@
       include 'include/pwhg_rad.h'
       include 'include/pwhg_st.h'
       include 'include/pwhg_kn.h'
-      include 'include/pwhg_flg.h'
       integer j,iun,nev
       real * 8 powheginput
       character * 20 pwgprefix
@@ -56,7 +55,6 @@ c The event file is called 'pwgprefix'events-'j'.lhe
          call pwhgevent
 c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
          call lhefwritev(iun)
-         if(flg_debug) call lhefwritextra(iun)
          if(kn_csi.eq.0d0) then
             call analysis_driver(rad_sigtotgen,0)
          else

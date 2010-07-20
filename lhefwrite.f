@@ -29,21 +29,21 @@ c...writes initialization information to a les houches events file on unit nlf.
          write(nlf,120) xsecup(ipr),xerrup(ipr),xmaxup(ipr),
      &        lprup(ipr)
  100  continue
-      write(nlf,'(a)') '</init>'
- 110  format(1p,2(1x,i8),2(1x,e12.5),6(1x,i6))
- 120  format(1p,3(1x,e12.5),1x,i6)
 c if flg_withnegweights is set, output also true cross section
 c as extra info
       if(flg_withnegweights) then
-         write(nlf,'(a)') '<extra-info-true-sigma>'
-         write(nlf,'(a,d12.6,a,d12.6)') 'true sigma=',rad_sigtot,
+         write(nlf,'(a)') '# Start extra-info-true-sigma'
+         write(nlf,'(a,d12.6,a,d12.6)') '# true sigma=',rad_sigtot,
      1        '+-',rad_esigtot
-         write(nlf,'(a,d12.6,a,d12.6)') 'sigma for generation=',
+         write(nlf,'(a,d12.6,a,d12.6)') '# sigma for generation=',
      1        rad_sigtotgen,'+-',rad_esigtotgen
-         write(nlf,'(a)')' sigma for generation times'//
+         write(nlf,'(a)')'# sigma for generation times'//
      1        ' (Npositive-Nnegative)/(Npositive+Nnegative)=true sigma'
-         write(nlf,'(a)') '</extra-info-true-sigma>'
+         write(nlf,'(a)') '# End extra-info-true-sigma'
       endif
+      write(nlf,'(a)') '</init>'
+ 110  format(1p,2(1x,i8),2(1x,e12.5),6(1x,i6))
+ 120  format(1p,3(1x,e12.5),1x,i6)
       end
 
 
@@ -58,6 +58,7 @@ c...writes event information to a les houches events file on unit nlf.
       implicit none
       integer nlf
       include 'include/LesHouches.h'
+      include 'include/pwhg_flg.h'
       integer i,j
       write(nlf,'(a)')'<event>'
       write(nlf,210) nup,idprup,xwgtup,scalup,aqedup,aqcdup
@@ -66,6 +67,7 @@ c...writes event information to a les houches events file on unit nlf.
      & mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      & vtimup(i),spinup(i)
  200  continue
+      if(flg_debug) call lhefwritextra(nlf)
       write(nlf,'(a)')'</event>'      
  210  format(1p,2(1x,i6),4(1x,e12.5))
  220  format(1p,i8,5(1x,i5),5(1x,e16.9),1x,e12.5,1x,e10.3)
@@ -94,12 +96,12 @@ c     save last random number
       include 'include/pwhg_flg.h'
       integer nlf
       integer iran,n1ran,n2ran
-      write(nlf,'(a)') '<extra-info-previous-event>'
-      write(nlf,*) rad_kinreg,'      ! rad_kinreg'
-      write(nlf,*) rad_type,'        ! rad_type'
+      write(nlf,'(a)') '# Start extra-info-previous-event'
+      write(nlf,*) '# ',rad_kinreg,'       rad_kinreg'
+      write(nlf,*) '# ',rad_type,'         rad_type'
       call getcurrentrandom(iran,n1ran,n2ran)
-      write(nlf,*) iran,' ',n1ran,' ',n2ran,
-     #     "   ! previous event's random seeds "
-      write(nlf,'(a)') '</extra-info-previous-event>'
+      write(nlf,*) '# ', iran,' ',n1ran,' ',n2ran,
+     #     "    previous event's random seeds "
+      write(nlf,'(a)') '# End extra-info-previous-event'
       end
 

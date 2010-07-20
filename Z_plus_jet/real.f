@@ -48,14 +48,7 @@ c     q q -> e- e+ g g
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
-c      include '../include/QuarkFlavs.h'
-c -*- Fortran -*-
-c      character *2 flav(-5:5)
       real * 8 charge(-5:5)
-c      data (charge(ijkh),ijkh=-5,5) 
-c      data (flav(ijkh),ijkh=-5,5) 
-c      data flav
-c     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
       data charge
      #     / 0.33333333333333333333d0, !   1d0/3
      #      -0.66666666666666666667d0, !  -2d0/3

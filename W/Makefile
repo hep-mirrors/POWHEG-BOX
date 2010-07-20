@@ -4,18 +4,18 @@ ifeq ($(shell uname),Linux)
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
 ## Use -O2
-F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
-OPT=-O2
+#F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
+#OPT=-O2
 ## For g77 comment the above and uncomment below
-#F77= g77 -Wall -fno-automatic -ffortran-bounds-check
-#OPT=-O3
+F77= g77 -Wall -fno-automatic -ffortran-bounds-check
+OPT=-O3
 # For debugging uncomment the following
 #DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
 #SYSOBJ=trapfpe.o
 endif
 
-FASTJET_CONFIG=/home/nason/bin/fastjet-config
+FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/x86_64-linux-gnu/4.4/  -lstdc++
@@ -32,10 +32,11 @@ FF=$(F77) $(OPT) $(DEBUG)
 
 INCLUDE =$(shell echo ../include/*.h *.h)
 
+#PDFPACK=mlmpdfif.o hvqpdfpho.o
+LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
-LIBS=-L/home/nason/Pheno/PDFpacks/lha-5.8.1/lib -lLHAPDF -static
-# In order to use mlmpdf uncomment the following and comment previous lines
-# PDFPACK=mlmpdfif.o hvqpdfpho.o
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF #-static
+LIBS=$(LIBSLHAPDF)
 
 
 %.o: %.f $(INCLUDE)

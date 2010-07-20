@@ -146,6 +146,14 @@ c      call maxratident
       external pwhg_pt2,pwhg_upperb_rad
       logical debug
       parameter (debug=.false.)
+ccccccccccccccccccccccccccccccccc
+      logical verbose
+      parameter (verbose=.false.)
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_br.h'
+      real * 8 pdf1(-6:6),pdf2(-6:6)
+cccccccccccccccccccccccccccccccc
       ptsq=pwhg_pt2()
       if(ptsq.gt.rad_ptsqmin) then
          call set_rad_scales(ptsq)
@@ -154,7 +162,32 @@ c      call maxratident
             call sigreal_rad(sig)
             sig=sig*kn_jacreal
             if(born.le.0) then
+               if(verbose) then
+               write(*,*) ' *****************************'
                write(*,*) ' inc_norms: Warning, born zero'
+               write(*,*) ' RAD REG: ', rad_kinreg
+               write(*,*) 'inc_norms: x1,x2', kn_xb1,kn_xb2
+               write(*,*) ' muf= ',sqrt(st_mufact2)
+               write(*,*) 'Flavour: ', (flst_born(ind,rad_ubornidx),ind
+     $              =1,5) 
+               
+               write(*,*) 'Born w/o pdf: ',br_born(rad_ubornidx)
+     $              ,'  jac: ',kn_jacborn 
+               call pdfcall(1,kn_xb1,pdf1)
+               call pdfcall(2,kn_xb2,pdf2)
+               write(*,*) "PDF's ",pdf1(flst_born(1
+     $              ,rad_ubornidx)),pdf2(flst_born(2,rad_ubornidx))
+
+               if ((abs(flst_born(1
+     $              ,rad_ubornidx)).ge.4).or.(abs(flst_born(2
+     $              ,rad_ubornidx)).ge.4)) then
+                  
+                  write(*,*) ' inc_norms: hvq in initial state!'
+               else
+                  write(*,*) ' inc_norms: more serious problem!'
+               endif
+               write(*,*) ' *****************************'
+               endif
                return
             endif
             xnorm=sig/born/pwhg_upperb_rad()

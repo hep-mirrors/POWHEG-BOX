@@ -55,7 +55,7 @@ C - Delta Phi between 1st and 2nd jet in >= 2 jet events
 C - Delta R between 1st and 2nd jet in >= 2 jet events
       diag=diag+1
       binsize(diag) = 0.15d0
-      call pwhgbookup(diag,'DR01,21 E0T11 & E0T12 > 20','LOG',
+      call pwhgbookup(diag,'DR01,21 E0T11 & E0T21 > 20','LOG',
      $                binsize(diag),0d0,6d0)
 
 C ---------------- C
@@ -739,26 +739,9 @@ C - Copying the momenta of the hardest jets
          enddo
       enddo
 
-C - If we only have two tracks, the hardest jet is ill defined;
-C   take one of the two randomly (this will screw up the error
-C   estimates, spoiling correlated events ...)
-      if(ntracks.eq.2) then
-         if(random(seed).gt.0.5) then
-            pp=eta(1)
-            eta(1) = eta(2)
-            eta(2) = pp
-            pp=rap(1)
-            rap(1) = rap(2)
-            rap(2) = pp
-            pp = phi(1)
-            phi(1) = phi(2)
-            phi(2) = pp
-         endif
-      endif
-
       end
-      
-     
+
+
       subroutine analysis(dsig0)
       implicit none
       real * 8 dsig0,dsig

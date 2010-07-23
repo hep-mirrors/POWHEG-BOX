@@ -123,6 +123,8 @@ C ----------------------------------------------------------------------
       LOGICAL READING,NOT_READING,WRITING,NOT_WRITING
       INTEGER A_NHEADER_LINES       ! Holds the No. of header lines for A plot.
       INTEGER B_NHEADER_LINES       ! Holds the No. of header lines for B plot.
+      INTEGER A_SKIPPED             ! Number of lines skipped reading A header 
+      INTEGER B_SKIPPED             ! Number of lines skipped reading B header 
       INTEGER A_NDATA_LINES         ! Holds the No. of data lines for A plot.
       INTEGER B_NDATA_LINES         ! Holds the No. of data lines for B plot.
 
@@ -203,10 +205,10 @@ C - Update file record place holders:
          B_PLACE_HOLDER=B_LAST_LINE_READ
 
 C - Read the plot header info from both input files:
-         CALL READ_PLOT_HEADER(A_STREAM,A_LAST_LINE_READ)
-         CALL READ_PLOT_HEADER(B_STREAM,B_LAST_LINE_READ)
-         A_NHEADER_LINES=A_LAST_LINE_READ-A_PLACE_HOLDER
-         B_NHEADER_LINES=B_LAST_LINE_READ-B_PLACE_HOLDER
+         CALL READ_PLOT_HEADER(A_STREAM,A_LAST_LINE_READ,A_SKIPPED)
+         CALL READ_PLOT_HEADER(B_STREAM,B_LAST_LINE_READ,B_SKIPPED)
+         A_NHEADER_LINES=A_LAST_LINE_READ-A_PLACE_HOLDER-A_SKIPPED
+         B_NHEADER_LINES=B_LAST_LINE_READ-B_PLACE_HOLDER-B_SKIPPED
 
 C - Update file record place holders:
          A_PLACE_HOLDER=A_LAST_LINE_READ
@@ -255,8 +257,23 @@ C - Read the plot data (including footers) from both input files:
             ENDDO
             WRITE(6,*) 'File A bin size = ',ABS(A_X(2,1)-A_X(1,1))
             WRITE(6,*) 'File B bin size = ',ABS(B_X(2,1)-B_X(1,1))
-            WRITE(6,*) 'Possible one or other of the files contains ',
-     $                 'extra histograms at, or by, this point?'
+            WRITE(6,*)
+            WRITE(6,*) 'This may be a simple case of having a few ',
+     $                 'empty bins in one or both histograms.'
+            WRITE(6,*)
+            WRITE(6,*) 'It is recommended to run ** completetop ** ',
+     $                 'on all input files before running this ',
+     $                 'program on them. Otherwise errors can result ',
+     $                 'in the sub-plots showing the differences:'
+            WRITE(6,*)
+            WRITE(6,*) 'cat bad_file.top | completetop > good_file.top'
+            WRITE(6,*)
+            WRITE(6,*) 'Alternatively it may be that one of the files ',
+     $                 'contains a different histogram or different ',
+     $                 'number of histograms to the other one.'
+            WRITE(6,*)
+            WRITE(6,*) 'In this case consider copying / deleting ',
+     $                 'stuff so the files have the same structure.'
             WRITE(6,*) 'If so consider copying the missing ones from'
             WRITE(6,*) 'A -> B or vice versa.'
             WRITE(6,*) 'Abort (y/n)?'
@@ -474,7 +491,7 @@ C -   *************
       END
 
 C *********************************************************************** C
-      SUBROUTINE READ_PLOT_HEADER(THE_STREAM,LAST_LINE_READ)
+      SUBROUTINE READ_PLOT_HEADER(THE_STREAM,LAST_LINE_READ,SKIPPED)
 C     Reads a plot header from the file with stream THE_STREAM
 C     returning the number of the last line it read in the file.
 C *********************************************************************** C
@@ -520,6 +537,7 @@ C *************** C
       CHARACTER*80 TMP_STRING2         ! Temporary string storage.
       CHARACTER*80 TMP_STRING3         ! Temporary string storage.
       INTEGER LAST_LINE_READ           ! Doh!
+      INTEGER SKIPPED                  ! Number of lines skipped reading header
       LOGICAL READING                  ! Boolean condition for while loop.
       CHARACTER*80 HEADER(NMAX_HEADER) ! The plot header
       INTEGER NREAD,IXX                ! Loop iterators
@@ -546,7 +564,10 @@ C - First go to the line before the HEADER starts (LAST_LINE_READ):
       ENDDO
 
 C - Now read the plot header:
+      write(6,*) 'last line read was - ',LAST_LINE_READ
       NREAD=0
+      IXX=0
+      SKIPPED=0
       DO WHILE(READING)
          READ(THE_STREAM,'(A80)',IOSTAT=STAT) TMP_STRING1
          IF(STAT.EQ.-1) THEN 
@@ -557,11 +578,24 @@ C - Now read the plot header:
          NREAD=NREAD+1
          TMP_STRING1=ADJUSTL(TMP_STRING1)
          TMP_STRING1=TRIM(TMP_STRING1)
-         IF(TMP_STRING1.EQ.'') CYCLE
+         IF(TMP_STRING1.EQ.'') THEN
+            SKIPPED=SKIPPED+1
+            CYCLE
+         ENDIF
+         IF(INDEX(TMP_STRING1,'FDIFF').NE.0) THEN
+            SKIPPED=SKIPPED+1
+            CYCLE
+         ENDIF
+         IF(INDEX(TMP_STRING1,'CHI2').NE.0) THEN
+            SKIPPED=SKIPPED+1
+            CYCLE
+         ENDIF
 C - Basically if the line begins with anything from the alphabet we
 C - assume it is the header and so we store it:
-         IF(SCAN(TMP_STRING1,'ABCDFGHIJKLMNOPQRSTUVWXYZ(').NE.0) THEN
-            HEADER(NREAD)=TMP_STRING1
+         IF(SCAN(TMP_STRING1(1:2),'ABCDFGHIJKLMNOPQRSTUVWXYZ(').NE.0)
+     $        THEN
+            IXX=IXX+1
+            HEADER(IXX)=TMP_STRING1
          ELSE 
 C - However, sometimes the header contains the lines for the box on 
 C - the plot which contains the integral etc. To get around this we
@@ -764,7 +798,7 @@ C - assume it is either part of the plot header or a histogram footer.
      $         ).OR.
      $          (INDEX(TMP_STRING1,'HIST').NE.0).OR.
      $          (INDEX(TMP_STRING1,'JOIN').NE.0).OR.
-     $          (INDEX(TMP_STRING1,'TAG ID').NE.0)
+     $          (INDEX(TMP_STRING1,'TAG').NE.0)
      $        ) THEN
 C - It's part of a footer ...
                IF(PREVIOUS_LINE_WAS_FOOTER.EQV..FALSE.) THEN
@@ -1078,7 +1112,8 @@ C - Switch off the axes on the bottom of the main plot
             IF(TRIM(MODE).EQ.'0'.OR.
      $         TRIM(MODE).EQ.'1'.OR.
      $         TRIM(MODE).EQ.'2') THEN
-               THE_HEADER(IXX)=TRIM(THE_HEADER(IXX))//' ( COMMENT'
+               IF(INDEX(TMP_STRING,'(COMMENT').EQ.0) 
+     $              THE_HEADER(IXX)=TRIM(THE_HEADER(IXX))//' ( COMMENT'
                SET_OPTION=.TRUE.
             ENDIF
          ENDIF
@@ -1239,46 +1274,57 @@ C ---------------------------------
       CHARACTER*80 TMP_STRING  ! Yes, its a temporary string
       INTEGER IXX,KXX,LXX      ! IXX is a loop counters, KXX & LXX are holders
       LOGICAL READING          ! Doh!
+      LOGICAL TITLE_TOP_DONE   ! Indicates that the header contains TITLE TOP 
+
+      TITLE_TOP_DONE=.FALSE.
 
 C - Look for TITLE NOT followed by one of INT=, ENT=, UFL= etc etc
       DO IXX=1,NHEADER_LINES
          CALL REMOVE_WHITE_SPACES(THE_HEADER(IXX),TMP_STRING)
+         IF(TMP_STRING(1:5).NE.'TITLE') CYCLE
+         IF(INDEX(TMP_STRING,'TOP').NE.0) THEN
+            TITLE_TOP_DONE=.TRUE.
+         ENDIF
+      ENDDO
+      WRITE(6,*) 'TITLE_TOP_SONE was set',TITLE_TOP_DONE
+      DO IXX=1,NHEADER_LINES
+         CALL REMOVE_WHITE_SPACES(THE_HEADER(IXX),TMP_STRING)
+         IF(TMP_STRING(1:5).NE.'TITLE') CYCLE
+         IF(INDEX(TMP_STRING,'INT=').NE.0) CYCLE
+         IF(INDEX(TMP_STRING,'ENT=').NE.0) CYCLE
+         IF(INDEX(TMP_STRING,'UFL=').NE.0) CYCLE
+         IF(INDEX(TMP_STRING,'OFL=').NE.0) CYCLE
+         IF(INDEX(TMP_STRING,'MLM').NE.0) CYCLE
          KXX=SCAN(THE_HEADER(IXX),'"')+1
          LXX=SCAN(THE_HEADER(IXX),'"',.TRUE.)-1
-         IF(TMP_STRING(1:5).EQ.'TITLE'.AND.
-     $     ((INDEX(TMP_STRING,'INT=').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'ENT=').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'UFL=').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'OFL=').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'TOP').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'BOTTOM').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'RIGHT').EQ.0).AND.
-     $      (INDEX(TMP_STRING,'LEFT').EQ.0)
-     $     ))
-C - Assuming we found TITLE #X #Y "Blah Blah" and now replace it:
-     $      THE_HEADER(IXX)=
+         IF(INDEX(TMP_STRING,'TOP').NE.0) THEN
+            THE_HEADER(IXX)=
      $         'TITLE TOP "'//
      $         ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))//'"'
-         IF((TMP_STRING(1:5).EQ.'TITLE').AND.
-     $      (INDEX(TMP_STRING,'TOP').NE.0)) 
-     $      THE_HEADER(IXX)=
-     $         'TITLE TOP "'//
-     $         ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))//'"'
-         IF((TMP_STRING(1:5).EQ.'TITLE').AND.
-     $      (INDEX(TMP_STRING,'BOTTOM').NE.0))
-     $      THE_HEADER(IXX)=
+            CYCLE
+         ELSEIF(INDEX(TMP_STRING,'BOTTOM').NE.0) THEN
+            THE_HEADER(IXX)=
      $         'TITLE BOTTOM "'//
      $         ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))//'"'
-         IF((TMP_STRING(1:5).EQ.'TITLE').AND.
-     $      (INDEX(TMP_STRING,'LEFT').NE.0))
-     $      THE_HEADER(IXX)=
+            CYCLE
+         ELSEIF(INDEX(TMP_STRING,'LEFT').NE.0) THEN
+            THE_HEADER(IXX)=
      $         'TITLE LEFT "'//
      $         ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))//'"'
-         IF((TMP_STRING(1:5).EQ.'TITLE').AND.
-     $      (INDEX(TMP_STRING,'RIGHT').NE.0))
-     $      THE_HEADER(IXX)=
+            CYCLE
+         ELSEIF(INDEX(TMP_STRING,'RIGHT').NE.0) THEN
+            THE_HEADER(IXX)=
      $         'TITLE RIGHT "'//
      $         ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))//'"'
+            CYCLE
+         ELSE
+C - Assuming we found TITLE #X #Y "Blah Blah" and now replace it:
+            IF(TITLE_TOP_DONE.EQV..TRUE.) CYCLE
+            TITLE_TOP_DONE=.TRUE.
+            THE_HEADER(IXX)=
+     $           'TITLE TOP "'//
+     $           ADJUSTL(TRIM(THE_HEADER(IXX)(KXX:LXX)))//'"'
+         ENDIF
       ENDDO
       
       RETURN
@@ -2128,8 +2174,9 @@ C -------------------
 
       DO IXX=2,A_NHISTOGRAMS
          DO JXX=1,NMAX_BINS
-            IF(A_Y(JXX,1).NE.0.0) THEN
-               A_FRAC_DIFF(JXX,IXX)=(A_Y(JXX,IXX)-A_Y(JXX,1))/A_Y(JXX,1)
+            IF(A_Y(JXX,1).GT.0.0.AND.
+     $         A_Y(JXX,IXX).GT.0.0) THEN
+               A_FRAC_DIFF(JXX,IXX)=A_Y(JXX,IXX)/A_Y(JXX,1)-1D0
             ELSE
                A_FRAC_DIFF(JXX,IXX)=-9.99D+2
             ENDIF
@@ -2137,8 +2184,9 @@ C -------------------
       ENDDO
       DO IXX=1,B_NHISTOGRAMS
          DO JXX=1,NMAX_BINS
-            IF(B_Y(JXX,IXX).GT.0.0) THEN
-               B_FRAC_DIFF(JXX,IXX)=(B_Y(JXX,IXX)-A_Y(JXX,1))/A_Y(JXX,1)
+            IF(A_Y(JXX,1).GT.0.0.AND.
+     $         B_Y(JXX,IXX).GT.0.0) THEN
+               B_FRAC_DIFF(JXX,IXX)=B_Y(JXX,IXX)/A_Y(JXX,1)-1D0
             ELSE
                B_FRAC_DIFF(JXX,IXX)=-9.99D+2
             ENDIF

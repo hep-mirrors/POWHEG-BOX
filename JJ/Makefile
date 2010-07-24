@@ -3,25 +3,24 @@ ifeq ($(shell uname),Linux)
 ## -fbounds-check causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
-F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow \
+# F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow \
 #       -fbounds-check
 #F77= /opt/intel/Compiler/11.1/072/bin/intel64/ifort -r16 -save -g -O0 -extend_source
 # remember to use the mlmpdf pack with the intel compiler
 ## For g77 comment the above and uncomment below
-#F77= g77 -Wall -fno-automatic -ffortran-bounds-check
+F77= g77 -Wall -fno-automatic -ffortran-bounds-check
 ## IMPORTANT: if using g77 remove -static when linking against LHAPDF
 # For debugging uncomment the following
 DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
-OPT=-O2
+OPT=-O3
 #SYSOBJ=trapfpe.o
 endif
 
 FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i386-redhat-linux/4.3.0/
-# -lstdc++
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -L/sw/lib/gcc4.4/lib/ -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
@@ -42,17 +41,17 @@ LIBS=$(LIBSLHAPDF)
 LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
 LIBS += $(LIBSMADGRAPH)
 
-#STATIC= -L /usr/lib/gcc/x86_64-linux-gnu/4.4/ -lstdc++ -static
+STATIC= -L/sw/lib/gcc4.4/lib/ -lstdc++
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
 	$(FF) -c -o obj/$@ $<
 
 %.o: %.c
-	$(CC) $(DEBUG) -c -o obj/$@ $^ 
+	gcc $(DEBUG) -c -o obj/$@ $^ 
 
 %.o: %.cc
-	$(CC) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
+	gcc $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 
 

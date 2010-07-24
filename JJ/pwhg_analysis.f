@@ -11,7 +11,7 @@ c  pwhgfill  :  fills the histograms with data
       include '../pwhg_book.h'
       include '../include/pwhg_math.h'
       integer diag
-      real * 8 binsize(100)
+      real * 8 binsize(700)
       common/pwhghistcommon/binsize
       character * 10 cut
 
@@ -429,6 +429,8 @@ c     arrays to reconstruct jets
       include '../include/pwhg_math.h' 
       integer   maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
+      real * 8 binsize(700)
+      common/pwhghistcommon/binsize
       real * 8  ptrack(4,maxtrack)
       real * 8  pjet(4,maxjet),pT_rel(maxjet)
       integer   mjets
@@ -755,7 +757,7 @@ C - Copying the momenta of the hardest jets
       data ini/.true./
       save ini
       integer diag
-      real * 8 binsize(100)
+      real * 8 binsize(700)
       common/pwhghistcommon/binsize
       real * 8 ktjets(4),etajets(4),rapjets(4),phijets(4),pj(4,4)
       real * 8 pT_rel_J1,pT_rel_J2,tmp1,tmp2

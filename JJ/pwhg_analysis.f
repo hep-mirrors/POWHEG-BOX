@@ -528,7 +528,8 @@ C - approximated by our sum over jets instead of calo cells.
       diag=80
 C -   First just with MC generation cuts [NOT in CDF analysis obviously].
       do j=1,njets
-         call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),dsig)
+         call pwhgfill(diag,sqrt(pjet(1,j)**2+pjet(2,j)**2),
+     $                 dsig/binsize(diag))
       enddo
 C -     |y_jet|<0.1 (81)
 C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
@@ -538,7 +539,7 @@ C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
          the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
          if(absy_jet.le.0.1d0.and.the_pt.ge.50d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,the_pt,dsig)
+     $        call pwhgfill(diag,the_pt,dsig/binsize(diag))
       enddo
 C - 0.1<|y_jet|<0.7 (82)
 C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
@@ -548,7 +549,7 @@ C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
          the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
          if(absy_jet.gt.0.1d0.and.absy_jet.le.0.7d0.and.the_pt.ge.50d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,the_pt,dsig)
+     $        call pwhgfill(diag,the_pt,dsig/binsize(diag))
       enddo
 C - 0.7<|y_jet|<1.1 (83)
 C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
@@ -558,7 +559,7 @@ C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
          the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
          if(absy_jet.gt.0.7d0.and.absy_jet.le.1.1d0.and.the_pt.ge.50d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,the_pt,dsig)
+     $        call pwhgfill(diag,the_pt,dsig/binsize(diag))
       enddo
 C - 1.1<|y_jet|<1.6 (84)
 C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
@@ -568,7 +569,7 @@ C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
          the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
          if(absy_jet.gt.1.1d0.and.absy_jet.le.1.6d0.and.the_pt.ge.50d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,the_pt,dsig)
+     $        call pwhgfill(diag,the_pt,dsig/binsize(diag))
       enddo
 C - 1.6<|y_jet|<2.1 (85)
 C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
@@ -578,7 +579,7 @@ C - ( and missing ET cut, and nothing gets plotted below 50 GeV )
          the_pt = sqrt(pjet(1,j)**2+pjet(2,j)**2)
          if(absy_jet.gt.1.6d0.and.absy_jet.le.2.1d0.and.the_pt.ge.50d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,the_pt,dsig)
+     $        call pwhgfill(diag,the_pt,dsig/binsize(diag))
       enddo
 
 C ------------------------------------------------------ C
@@ -592,7 +593,7 @@ C - ( and missing ET cut )
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
          if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 10d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,absy_jet,dsig)
+     $        call pwhgfill(diag,absy_jet,dsig/binsize(diag))
       enddo
 C - |p_T|> 20 (92)
 C - ( and missing ET cut )
@@ -601,7 +602,7 @@ C - ( and missing ET cut )
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
          if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 20d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,absy_jet,dsig)
+     $        call pwhgfill(diag,absy_jet,dsig/binsize(diag))
       enddo
 C - |p_T|> 50 (93)
 C - ( and missing ET cut )
@@ -610,7 +611,7 @@ C - ( and missing ET cut )
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
          if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt. 50d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,absy_jet,dsig)
+     $        call pwhgfill(diag,absy_jet,dsig/binsize(diag))
       enddo
 C - |p_T|>100 (94)
 C - ( and missing ET cut )
@@ -619,7 +620,7 @@ C - ( and missing ET cut )
          absy_jet = getrapidity(pjet(4,j),pjet(3,j))
          if(sqrt(pjet(1,j)**2+pjet(2,j)**2).gt.100d0
      $      .and.passed_mET)
-     $        call pwhgfill(diag,absy_jet,dsig)
+     $        call pwhgfill(diag,absy_jet,dsig/binsize(diag))
       enddo
 
       diag=100
@@ -637,7 +638,8 @@ C - the 3rd jet to actually be IN the calorimeter!
             phi1=atan2(pjet(2,1),pjet(1,1))
             phi2=atan2(pjet(2,2),pjet(1,2))
             dphi12=abs(phi1-phi2)
-            if(dphi12.gt.pi) dphi12=dphi12-pi*int(dphi12/pi)
+            dphi12=dphi12-2*pi*int(dphi12/(2*pi))
+            if(dphi12.gt.pi) dphi12=2*pi-dphi12
 	    if(dphi12>2.79) then
                et12 = pjet(4,1)*pjet(4,1)
      $              *(pjet(1,1)*pjet(1,1)
@@ -659,7 +661,7 @@ C - the 3rd jet to actually be IN the calorimeter!
      $               +pjet(3,3)*pjet(3,3))
                if(et12.GT.12100.and.
      $            et32.GT.100) then
-                  call pwhgfill(diag,eta3,dsig)
+                  call pwhgfill(diag,eta3,dsig/binsize(diag))
                endif
 	    endif
 	 endif
@@ -805,7 +807,7 @@ C - Only with MC generation cuts!
          endif
       enddo
       diag=1
-      call pwhgfill(diag,et,dsig)
+      call pwhgfill(diag,et,dsig/binsize(diag))
 
 C - OK have the total E_T from all the particles in the event.
 C - Everything we want to look at from now on involves only the
@@ -839,24 +841,26 @@ C ---------------- C
 
 C - Pseudorapidity of the 1st & 2nd jets jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,etajets(1),dsig)
-         call pwhgfill(diag,etajets(2),dsig)
+         call pwhgfill(diag,etajets(1),dsig/binsize(diag))
+         call pwhgfill(diag,etajets(2),dsig/binsize(diag))
          
 C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
+         call pwhgfill(diag,abs(etajets(1)-etajets(2)),
+     $                 dsig/binsize(diag))
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
          dphi=abs(phijets(1)-phijets(2))
-         if(dphi.gt.pi) dphi=dphi-pi*int(dphi/pi)
+         dphi=dphi-2*pi*int(dphi/(2*pi))
+         if(dphi.gt.pi) dphi=2*pi-dphi
          diag=diag+1
-         call pwhgfill(diag,dphi,dsig)
+         call pwhgfill(diag,dphi,dsig/binsize(diag))
 
 C - Delta R between 1st and 2nd jet in >= 2 jet events
          dR=sqrt((etajets(1)-etajets(2))**2+dphi**2)
          diag=diag+1
          if(et2.ge.20)
-     $        call pwhgfill(diag,dR,dsig)
+     $        call pwhgfill(diag,dR,dsig/binsize(diag))
 
       endif
 
@@ -869,24 +873,26 @@ C ---------------- C
 
 C - Pseudorapidity of the 1st & 2nd jets jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,etajets(1),dsig)
-         call pwhgfill(diag,etajets(2),dsig)
+         call pwhgfill(diag,etajets(1),dsig/binsize(diag))
+         call pwhgfill(diag,etajets(2),dsig/binsize(diag))
          
 C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
+         call pwhgfill(diag,abs(etajets(1)-etajets(2)),
+     $                 dsig/binsize(diag))
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
          dphi=abs(phijets(1)-phijets(2))
-         if(dphi.gt.pi) dphi=dphi-pi*int(dphi/pi)
+         dphi=dphi-2*pi*int(dphi/(2*pi))
+         if(dphi.gt.pi) dphi=2*pi-dphi
          diag=diag+1
-         call pwhgfill(diag,dphi,dsig)
+         call pwhgfill(diag,dphi,dsig/binsize(diag))
 
 C - Delta R between 1st and 2nd jet in >= 2 jet events
          dR=sqrt((etajets(1)-etajets(2))**2+dphi**2)
          diag=diag+1
          if(et2.ge.40)
-     $        call pwhgfill(diag,dR,dsig)
+     $        call pwhgfill(diag,dR,dsig/binsize(diag))
 
       endif
 
@@ -899,24 +905,26 @@ C ----------------- C
 
 C - Pseudorapidity of the 1st & 2nd jets jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,etajets(1),dsig)
-         call pwhgfill(diag,etajets(2),dsig)
+         call pwhgfill(diag,etajets(1),dsig/binsize(diag))
+         call pwhgfill(diag,etajets(2),dsig/binsize(diag))
          
 C - abs(Delta Eta) between 1st and 2nd jet in >= 2 jet events
          diag=diag+1
-         call pwhgfill(diag,abs(etajets(1)-etajets(2)),dsig)
+         call pwhgfill(diag,abs(etajets(1)-etajets(2)),
+     $                 dsig/binsize(diag))
 
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events
          dphi=abs(phijets(1)-phijets(2))
-         if(dphi.gt.pi) dphi=dphi-pi*int(dphi/pi)
+         dphi=dphi-2*pi*int(dphi/(2*pi))
+         if(dphi.gt.pi) dphi=2*pi-dphi
          diag=diag+1
-         call pwhgfill(diag,dphi,dsig)
+         call pwhgfill(diag,dphi,dsig/binsize(diag))
 
 C - Delta R between 1st and 2nd jet in >= 2 jet events
          dR=sqrt((etajets(1)-etajets(2))**2+dphi**2)
          diag=diag+1
          if(et2.ge.100)
-     $        call pwhgfill(diag,dR,dsig)
+     $        call pwhgfill(diag,dR,dsig/binsize(diag))
 
       endif
 
@@ -928,37 +936,45 @@ C -------------------------- C
       if(njets.ge.3) then
 C - p_T of the 3rd jet
          diag=diag+1
-         call pwhgfill(diag,ktjets(3),dsig)
+         call pwhgfill(diag,ktjets(3),dsig/binsize(diag))
 C - Pseudorapidity of the 3rd jet, p_T,3 > 10
          diag=diag+1
-         if(ktjets(3).gt.10.0) call pwhgfill(diag,etajets(3),dsig)
+         if(ktjets(3).gt.10.0) 
+     $        call pwhgfill(diag,etajets(3),dsig/binsize(diag))
 C - Rapidity of the 3rd jet, p_T,3 > 10
          diag=diag+1
-         if(ktjets(3).gt.10.0) call pwhgfill(diag,rapjets(3),dsig)
+         if(ktjets(3).gt.10.0) 
+     $        call pwhgfill(diag,rapjets(3),dsig/binsize(diag))
 C - Pseudorapidity of the 3rd jet, p_T,3 > 100
          diag=diag+1
-         if(ktjets(3).gt.100.0) call pwhgfill(diag,etajets(3),dsig)
+         if(ktjets(3).gt.100.0) 
+     $        call pwhgfill(diag,etajets(3),dsig/binsize(diag))
 C - Rapidity of the 3rd jet, p_T,3 > 100 
          diag=diag+1
-         if(ktjets(3).gt.100.0) call pwhgfill(diag,rapjets(3),dsig)
+         if(ktjets(3).gt.100.0) 
+     $        call pwhgfill(diag,rapjets(3),dsig/binsize(diag))
 
          y12     = getrapidity(pj(4,1)+pj(4,2),pj(3,1)+pj(3,2))
          tmp1    = pj(2,1)+pj(2,2)
          tmp2    = pj(1,1)+pj(1,2)
          phi12   = atan2(tmp1,tmp2)
          dphi312 = abs(phijets(3)-phi12)
-         if(dphi312.gt.pi) dphi312=dphi312-pi*int(dphi312/pi)
+         dphi312 = dphi312-2*pi*int(dphi312/(2*pi))
+         if(dphi312.gt.pi) dphi312=2*pi-dphi312
          dr312   = sqrt((rapjets(3)-y12)**2+dphi312**2)
 
 C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 10
          diag=diag+1
-         if(ktjets(3).gt. 10.0) call pwhgfill(diag,rapjets(3)-y12,dsig)
+         if(ktjets(3).gt. 10.0) 
+     $        call pwhgfill(diag,rapjets(3)-y12,dsig/binsize(diag))
 C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 50
          diag=diag+1
-         if(ktjets(3).gt. 50.0) call pwhgfill(diag,rapjets(3)-y12,dsig)
+         if(ktjets(3).gt. 50.0) 
+     $        call pwhgfill(diag,rapjets(3)-y12,dsig/binsize(diag))
 C - Rapidity gap between jets 1 & 2 and jet 3 p_T,3 > 100
          diag=diag+1
-         if(ktjets(3).gt.100.0) call pwhgfill(diag,rapjets(3)-y12,dsig)
+         if(ktjets(3).gt.100.0) 
+     $        call pwhgfill(diag,rapjets(3)-y12,dsig/binsize(diag))
 
       endif
 
@@ -993,8 +1009,10 @@ C - Compute the missing ET cut here (D0 arXiv:1002.4594v1)
       if(njets.ge.2) then
 C - Computing the dijet invariant mass:
          if(njets.ge.2) then 
-            mjj = pj(4,1)*pj(4,2) - pj(1,1)*pj(1,2)
-     $          - pj(2,1)*pj(2,2) - pj(3,1)*pj(3,2)
+            mjj = (pj(4,1)+pj(4,2)-pj(3,1)-pj(3,2))
+     $           *(pj(4,1)+pj(4,2)+pj(3,1)+pj(3,2))
+     $           -(pj(1,1)+pj(1,2))**2
+     $           -(pj(2,1)+pj(2,2))**2
             if(mjj.ge.0) then
                mjj =  sqrt(mjj)
             else
@@ -1010,27 +1028,27 @@ C - and the missing ET cut needs to be passed too.
 C -     |y_max|<0.4 (51)
             diag=diag+1
             if(absy_max.le.0.4)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 0.4<|y_max|<0.8 (52)
             diag=diag+1
             if(absy_max.gt.0.4.and.absy_max.le.0.8)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 0.8<|y_max|<1.2 (53)
             diag=diag+1
             if(absy_max.gt.0.8.and.absy_max.le.1.2)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 1.2<|y_max|<1.6 (54)
             diag=diag+1
             if(absy_max.gt.1.2.and.absy_max.le.1.6)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 1.6<|y_max|<2.0 (55)
             diag=diag+1
             if(absy_max.gt.1.6.and.absy_max.le.2.0)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 2.0<|y_max|<2.4 (56)
             diag=diag+1
             if(absy_max.gt.2.0.and.absy_max.le.2.4)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
          endif
       endif
 
@@ -1042,27 +1060,27 @@ C - Both jets must have pT>20 GeV.
 C -     |y_max|<0.4 (61)
             diag=diag+1
             if(absy_max.le.0.4)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 0.4<|y_max|<0.8 (62)
             diag=diag+1
             if(absy_max.gt.0.4.and.absy_max.le.0.8)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 0.8<|y_max|<1.2 (63)
             diag=diag+1
             if(absy_max.gt.0.8.and.absy_max.le.1.2)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 1.2<|y_max|<1.6 (64)
             diag=diag+1
             if(absy_max.gt.1.2.and.absy_max.le.1.6)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 1.6<|y_max|<2.0 (65)
             diag=diag+1
             if(absy_max.gt.1.6.and.absy_max.le.2.0)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
 C - 2.0<|y_max|<2.4 (66)
             diag=diag+1
             if(absy_max.gt.2.0.and.absy_max.le.2.4)
-     $           call pwhgfill(diag,mjj,dsig)
+     $           call pwhgfill(diag,mjj,dsig/binsize(diag))
          endif
       endif
 
@@ -1077,23 +1095,24 @@ C --------------------------------- C
 C - Delta Phi between 1st and 2nd jet in >= 2 jet events for
 C - |yJ1| < 0.5, |yJ2| < 0.5, pT,J2 > 40 ... 
          dphi=abs(phijets(1)-phijets(2))
-         if(dphi.gt.pi) dphi=dphi-pi*int(dphi/pi)
+         dphi=dphi-2*pi*int(dphi/(2*pi))
+         if(dphi.gt.pi) dphi=2*pi-dphi
 C - ... and 75<pT,J1<100 GeV
          diag=diag+1
          if(ktjets(1).gt. 75d0.and.ktjets(1).le.100d0)
-     $        call pwhgfill(diag,dphi,dsig)
+     $        call pwhgfill(diag,dphi,dsig/binsize(diag))
 C - ... and 100<pT,J1<130 GeV
          diag=diag+1
          if(ktjets(1).gt.100d0.and.ktjets(1).le.130d0)
-     $        call pwhgfill(diag,dphi,dsig)
+     $        call pwhgfill(diag,dphi,dsig/binsize(diag))
 C - ... and 130<pT,J1<180 GeV
          diag=diag+1
          if(ktjets(1).gt.130d0.and.ktjets(1).le.180d0)
-     $        call pwhgfill(diag,dphi,dsig)
+     $        call pwhgfill(diag,dphi,dsig/binsize(diag))
 C - ... and     pT,J1>180 GeV
          diag=diag+1
          if(ktjets(1).gt.180d0)
-     $        call pwhgfill(diag,dphi,dsig)
+     $        call pwhgfill(diag,dphi,dsig/binsize(diag))
       endif
 
 C - The following analysis was moved into the buildjets
@@ -1107,37 +1126,37 @@ c$$$
 c$$$      diag=80
 c$$$C -   First just with MC generation cuts [NOT in CDF analysis obviously].
 c$$$      do j=1,njets
-c$$$         call pwhgfill(diag,ktjets(j),dsig)
+c$$$         call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
 c$$$      enddo
 c$$$C -     |y_jet|<0.1 (81)
 c$$$      diag=diag+1
 c$$$      do j=1,njets
 c$$$         if(abs(rapjets(j)).le.0.1d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig)
+c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
 c$$$      enddo
 c$$$C - 0.1<|y_jet|<0.7 (82)
 c$$$      diag=diag+1
 c$$$      do j=1,njets
 c$$$         if(abs(rapjets(j)).gt.0.1d0.and.abs(rapjets(j)).le.0.7d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig)
+c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
 c$$$      enddo
 c$$$C - 0.7<|y_jet|<1.1 (83)
 c$$$      diag=diag+1
 c$$$      do j=1,njets
 c$$$         if(abs(rapjets(j)).gt.0.7d0.and.abs(rapjets(j)).le.1.1d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig)
+c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
 c$$$      enddo
 c$$$C - 1.1<|y_jet|<1.6 (84)
 c$$$      diag=diag+1
 c$$$      do j=1,njets
 c$$$         if(abs(rapjets(j)).gt.1.1d0.and.abs(rapjets(j)).le.1.6d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig)
+c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
 c$$$      enddo
 c$$$C - 1.6<|y_jet|<2.1 (85)
 c$$$      diag=diag+1
 c$$$      do j=1,njets
 c$$$         if(abs(rapjets(j)).gt.1.6d0.and.abs(rapjets(j)).le.2.1d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig)
+c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
 c$$$      enddo
 C ------------------------------------------------------ C
 C - Inclusive jet Y spectrum using same cone algorithm - C
@@ -1146,22 +1165,26 @@ C ------------------------------------------------------ C
 C - |p_T|> 10 (91)
       diag=diag+1
       do j=1,njets
-         if(ktjets(j).gt. 10d0) call pwhgfill(diag,rapjets(j),dsig)
+         if(ktjets(j).gt. 10d0) 
+     $        call pwhgfill(diag,rapjets(j),dsig/binsize(diag))
       enddo
 C - |p_T|> 20 (92)
       diag=diag+1
       do j=1,njets
-         if(ktjets(j).gt. 20d0) call pwhgfill(diag,rapjets(j),dsig)
+         if(ktjets(j).gt. 20d0)
+     $        call pwhgfill(diag,rapjets(j),dsig/binsize(diag))
       enddo
 C - |p_T|> 50 (93)
       diag=diag+1
       do j=1,njets
-         if(ktjets(j).gt. 50d0) call pwhgfill(diag,rapjets(j),dsig)
+         if(ktjets(j).gt. 50d0) 
+     $        call pwhgfill(diag,rapjets(j),dsig/binsize(diag))
       enddo
 C - |p_T|>100 (94)
       diag=diag+1
       do j=1,njets
-         if(ktjets(j).gt.100d0) call pwhgfill(diag,rapjets(j),dsig)
+         if(ktjets(j).gt.100d0) 
+     $        call pwhgfill(diag,rapjets(j),dsig/binsize(diag))
       enddo
 
 C ------------------------- C
@@ -1171,11 +1194,11 @@ C ------------------------- C
 C - p_T^rel of the hardest jet (96)
       diag=diag+1
       if(njets.ge.1.and.et.ge.20.) 
-     $     call pwhgfill(diag,pT_rel_J1,dsig)
+     $     call pwhgfill(diag,pT_rel_J1,dsig/binsize(diag))
 C - p_T^rel of the 2nd hardest jet (97)
       diag=diag+1
       if(njets.ge.2.and.et.ge.20.) 
-     $     call pwhgfill(diag,pT_rel_J2,dsig)
+     $     call pwhgfill(diag,pT_rel_J2,dsig/binsize(diag))
 
 
       if(WHCPRG.eq.'NLO   ') then

@@ -1,7 +1,7 @@
 #!/bin/bash
 ##########################################################
 # What this does:
-# It is supposed to combine all histograms found in a
+# It is supposed to combine all histograms found in a 
 # file for the same quantity evaluated at different
 # cuts and combine them into one plot, which it sticks
 # on the end of the file.
@@ -14,7 +14,7 @@
 # How it is supposed to work:
 # (see comments below).
 #
-# To run:                           
+# To run:
 # ./mJJ_combination_pT_20.sh the_file.top
 #
 # Scope:
@@ -29,8 +29,8 @@ sed -i -e '/( NEW PLOT/d' $1
 ##########################################################
 # Find all of the TITLE TOP "blah blah" lines numbers 
 # with sed and put them in an array ...
-echo "Finding all of the TITLE TOP \"M0JJ1.*40 ..."
-title_lines=`sed -n '/TITLE TOP.*M0JJ1.*40/=' $1`
+echo "Finding all of the TITLE TOP \"M0JJ1.*20 ..."
+title_lines=`sed -n '/TITLE TOP.*M0JJ1.*20/=' $1`
 title_array_size=0
 for i in $title_lines
 do 
@@ -41,7 +41,7 @@ if [ "$title_array_size" -eq 0 ]
 then
     echo "Didn't find any TITLE TOP \"M0JJ1 ..."
     echo "Trying TITLE TOP \"m0JJ1 ... instead ..."
-    title_lines=`sed -n '/TITLE TOP.*m0JJ1.*40/=' $1`
+    title_lines=`sed -n '/TITLE TOP.*m0JJ1.*20/=' $1`
     title_array_size=0
     for i in $title_lines
     do 
@@ -195,11 +195,11 @@ done
 # First a bit of a header taken from the first of the plots
 # we are combining and modified a little bit:
 sed -n "$((new_plot_array[1])),$((int_eq_array[1])) p" $1 > temp
-sed -i -e 's/TITLE TOP.*\"/TITLE TOP \"m0JJ1 p0T1>40\"/g' temp
+sed -i -e 's/TITLE TOP.*\"/TITLE TOP \"m0JJ1 p0T1>20\"/g' temp
 sed -i -e '/TITLE TOP.*\"/ a CASE \" X  X  X X   \" ' temp
-sed -i -e '/(/!s/TITLE BOTTOM.*\"/TITLE BOTTOM \"m0JJ1 p0T1>40\"/g' temp
+sed -i -e '/(/!s/TITLE BOTTOM.*\"/TITLE BOTTOM \"m0JJ1 p0T1>20\"/g' temp
 sed -i -e '/^  TITLE BOTTOM.*\"/ a CASE \" X  X  X X   \" ' temp
-sed -i -e 's/TITLE LEFT.*\"/TITLE LEFT \"dS\/d(m0JJ1 p0T1>40) (pb\/bin)\"/g' temp
+sed -i -e 's/TITLE LEFT.*\"/TITLE LEFT \"dS\/d(m0JJ1 p0T1>20) (pb\/bin)\"/g' temp
 sed -i -e '/TITLE LEFT.*\"/ a CASE \" G    X  X  X X     S      S\" ' temp
 echo "SET WINDOW Y 1.6 TO 9." >> temp
 echo "SET SCALE  Y LOG" >> temp
@@ -222,8 +222,8 @@ do
     # Extract the title of the histogram currently being processed:
     the_label=`sed -n "$((title_array[$((i))])) p" $1`
     the_label=`echo $the_label | sed 's/\(.*\)\"\(.*\)\"/\2/g'`
-    the_label=`echo $the_label | sed 's/.*pT>40//g'`
-    the_label=`echo $the_label | sed 's/.*p0T1>40//g'`
+    the_label=`echo $the_label | sed 's/.*pT>20//g'`
+    the_label=`echo $the_label | sed 's/.*p0T1>20//g'`
     # Calculate the vertical position to write it at:
     ypos=`echo 6.5+0.2*$((i-1)) | bc `
     echo "SET TITLE SIZE 1.2" > temp

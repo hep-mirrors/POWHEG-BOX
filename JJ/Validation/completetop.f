@@ -1,8 +1,8 @@
       implicit none
-      character * 100 line
+      character * 100 line,lines(10000)
       character * 100 command
       integer j,i,k,iline
-      real * 8 x,y,e,xx,yy,ee,xl,xh,xbin
+      real * 8 x,ox,y,e,xl,xh,xbin
       do j=1,10000
          read(*,'(a)',end=20) line
          i=index(line,'SET LIMITS X')
@@ -14,27 +14,36 @@
          i=index(line,' ( INT=')
          if(i.gt.0) then
             call writeout(line)
-            xx=0
-            yy=0
-            ee=0
-            xbin=0
+c store histogram lines
+            do k=1,10000
+               read(*,'(a)') lines(k)
+               i=index(lines(k),'HIST')
+               if(i.ne.0) goto 21
+               read(lines(k),*) x,y,e
+               if(k.eq.1) then
+                  xbin=(x-xl)*2
+               else
+                  xbin=min(xbin,x-ox)
+               endif
+               ox=x
+            enddo
+ 21         continue
             iline=0
             do k=1,10000
-               read(*,'(a)') line
+               line=lines(k)
                iline=iline+1
                i=index(line,'HIST')
                if(i.ne.0) then
                   do while(iline.lt.nint((xh-xl)/xbin))
-                     write(*,*) (iline+0.5d0)*xbin,0,0
+                     write(*,*) xl+(iline+0.5d0)*xbin,0,0
                      iline=iline+1
                   enddo
                   call writeout(line)
                   goto 10
                endif
                read(line,*) x,y,e
-               if(xbin.eq.0) xbin=2*(x-xl)
-               do while(nint((x+xbin/2)/xbin).gt.iline)
-                  write(*,*) (iline-0.5d0)*xbin,0,0
+               do while(nint((x-xl+xbin/2)/xbin).gt.iline)
+                  write(*,*) xl+(iline-0.5d0)*xbin,0,0
                   iline=iline+1
                enddo
                call writeout(line)

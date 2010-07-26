@@ -318,8 +318,7 @@ C -------------------------------------------------- C
 
 C - Inclusive jet pT spectrum using cuts from arXiv:0807.2204v4,
 C - Figure. 15 (CDF).
-C - http://hepdata.cedar.ac.uk/View/7828950 (also CDF_2008_S7828950.aida 
-C - in rivet if REACTION database is still broken).
+C - http://hepdata.cedar.ac.uk/view/p7628
 C - CDF midpoint cone algorithm R=0.7, f_merge=0.75, (Rsep=1.3 - Sec. VII)
 C - Data starts with pTJet>62 GeV so feel free to use an appropriate cut
 C - when binning.
@@ -390,10 +389,10 @@ C - p_T^rel of the hardest jet (96)
       binsize(diag) = 0.5d0
       call pwhgbookup(diag,'p0T12rel3 J1, E0T1>20 GeV','LOG',
      $                binsize(diag),0d0,50d0)
-C - p_T^rel of the 2nd hardest jet (97)
+C - p_T^rel inclusive in jets 1 and 2 in >= 2 jet events (97)
       diag=diag+1
       binsize(diag) = 0.5d0
-      call pwhgbookup(diag,'p0T12rel3 J2, E0T1>20 GeV','LOG',
+      call pwhgbookup(diag,'p0T12rel3 J1 and J2, E0T1>20 GeV','LOG',
      $                binsize(diag),0d0,50d0)
 
 C ------------------------- C
@@ -523,7 +522,7 @@ C - approximated by our sum over jets instead of calo cells.
          endif
       enddo
       passed_mET=.false.
-      if((sqrt(mET(1)**2+mET(2)**2)/sqrt(tot_ET)).lt.
+      if(sqrt(mET(1)**2+mET(2)**2).lt.sqrt(tot_ET)*
      $   min(3d0+0.0125*sqrt(pj(1,1)**2+pj(2,1)**2),6d0))
      $     passed_mET=.true.
 
@@ -1197,11 +1196,12 @@ C - p_T^rel of the hardest jet (96)
       diag=diag+1
       if(njets.ge.1.and.et.ge.20.) 
      $     call pwhgfill(diag,pT_rel_J1,dsig/binsize(diag))
-C - p_T^rel of the 2nd hardest jet (97)
+C - p_T^rel inclusive in jets 1 and 2 in >= 2 jet events (97)
       diag=diag+1
-      if(njets.ge.2.and.et.ge.20.) 
-     $     call pwhgfill(diag,pT_rel_J2,dsig/binsize(diag))
-
+      if(njets.ge.2.and.et.ge.20.) then
+         call pwhgfill(diag,pT_rel_J1,dsig/binsize(diag))
+         call pwhgfill(diag,pT_rel_J2,dsig/binsize(diag))
+      endif
 
       if(WHCPRG.eq.'NLO   ') then
          continue

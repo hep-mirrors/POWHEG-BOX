@@ -172,34 +172,78 @@ sed -i -e '/TITLE LEFT.*m0JJ1.*<.*</ a\
 # Add case statements for DF plots 75 < pT1^max < 100
 sed -i -e '/TITLE TOP.*DF 75.*100/ a CASE "FG       X XX   X"' $1
 sed -i -e '/TITLE BOTTOM.*DF 75.*100/ a CASE "FG       X XX   X"' $1
-sed -i -e '/TITLE LEFT.*DF 75.*100/ a\
-            CASE " G   FG       X XX   X            S      S"' $1
 sed -i -e '/TITLE TOP.*DF  75.*100/ a CASE "FG        X XX   X"' $1
 sed -i -e '/TITLE BOTTOM.*DF  75.*100/ a CASE "FG        X XX   X"' $1
-sed -i -e '/TITLE LEFT.*DF  75.*100/ a\
-            CASE " G   FG        X XX   X            S      S"' $1
+unit_norm=`sed -n "/TITLE TOP.*DF.*75.*100.*Unit Norm/p" $1`
+if [ -z "$unit_norm" ]
+then
+    sed -i -e '/TITLE LEFT.*DF 75.*100/ a\
+                CASE " G   FG       X XX   X            S      S"' $1
+    sed -i -e '/TITLE LEFT.*DF  75.*100/ a\
+                CASE " G   FG        X XX   X            S      S"' $1
+else
+    sed -i -e '/TITLE TOP.*DF.*75.*100/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF.*75.*100/ s/\".*dS\/d(/\"1\/SdS\/d(/g' $1
+    sed -i -e '/TITLE LEFT.*DF.*75.*100/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF 75.*100/ a\
+                CASE "  G G   FG       X XX   X            S      S"' $1
+    sed -i -e '/TITLE LEFT.*DF  75.*100/ a\
+                CASE "  G G   FG        X XX   X            S      S"' $1
+fi
 
 # Add case statements for DF plots 100 < pT1^max < 130
 sed -i -e '/TITLE TOP.*DF.*100.*130/ a CASE "FG        X XX   X"' $1
 sed -i -e '/TITLE BOTTOM.*DF.*100.*130/ a CASE "FG        X XX   X"' $1
-sed -i -e '/TITLE LEFT.*DF.*100.*130/ a\
-            CASE " G   FG        X XX   X            S      S"' $1
+unit_norm=`sed -n "/TITLE TOP.*DF.*100.*130.*Unit Norm/p" $1`
+if [ -z "$unit_norm" ]
+then
+    sed -i -e '/TITLE LEFT.*DF.*100.*130/ a\
+                CASE " G   FG        X XX   X            S      S"' $1
+else
+    sed -i -e '/TITLE TOP.*DF.*100.*130/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF.*100.*130/ s/\".*dS\/d(/\"1\/SdS\/d(/g' $1
+    sed -i -e '/TITLE LEFT.*DF.*100.*130/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF.*100.*130/ a\
+                CASE "  G G   FG        X XX   X            S      S"' $1
+fi
 
 # Add case statements for DF plots 130 < pT1^max < 180
 sed -i -e '/TITLE TOP.*DF.*130.*180/ a CASE "FG        X XX   X"' $1
 sed -i -e '/TITLE BOTTOM.*DF.*130.*180/ a CASE "FG        X XX   X"' $1
-sed -i -e '/TITLE LEFT.*DF.*130.*180/ a\
-            CASE " G   FG        X XX   X            S      S"' $1
+unit_norm=`sed -n "/TITLE TOP.*DF.*130.*180.*Unit Norm/p" $1`
+if [ -z "$unit_norm" ]
+then
+    sed -i -e '/TITLE LEFT.*DF.*130.*180/ a\
+                CASE " G   FG        X XX   X            S      S"' $1
+else
+    sed -i -e '/TITLE TOP.*DF.*130.*180/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF.*130.*180/ s/\".*dS\/d(/\"1\/SdS\/d(/g' $1
+    sed -i -e '/TITLE LEFT.*DF.*130.*180/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF.*130.*180/ a\
+                CASE "  G G   FG        X XX   X            S      S"' $1
+fi
 
 # Add case statements for DF plots pT1^max > 180
 sed -i -e '/TITLE TOP.*DF p.*>.*180/ a CASE "FG  X XX   X"' $1
 sed -i -e '/TITLE BOTTOM.*DF p.*>.*180/ a CASE "FG  X XX   X"' $1
-sed -i -e '/TITLE LEFT.*DF p.*>.*180/ a\
-            CASE " G   FG  X XX   X            S      S"' $1
 sed -i -e '/TITLE TOP.*DF       p.*>.*180/ a CASE "FG        X XX   X"' $1
 sed -i -e '/TITLE BOTTOM.*DF       p.*>.*180/ a CASE "FG        X XX   X"' $1
-sed -i -e '/TITLE LEFT.*DF       p.*>.*180/ a\
-            CASE " G   FG        X XX   X            S      S"' $1
+unit_norm=`sed -n "/TITLE TOP.*DF[ ]*p.*>.*180.*Unit Norm/p" $1`
+if [ -z "$unit_norm" ]
+then
+    sed -i -e '/TITLE LEFT.*DF p.*>.*180/ a\
+                CASE " G   FG  X XX   X            S      S"' $1
+    sed -i -e '/TITLE LEFT.*DF       p.*>.*180/ a\
+                CASE " G   FG        X XX   X            S      S"' $1
+else
+    sed -i -e '/TITLE TOP.*DF.*p.*>.*180/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF.*p.*>.*180/ s/\".*dS\/d(/\"1\/SdS\/d(/g' $1
+    sed -i -e '/TITLE LEFT.*DF.*p.*>.*180/ s/ Unit Norm//g' $1
+    sed -i -e '/TITLE LEFT.*DF p.*>.*180/ a\
+                CASE "  G G   FG  X XX   X            S      S"' $1
+    sed -i -e '/TITLE LEFT.*DF       p.*>.*180/ a\
+                CASE "  G G   FG        X XX   X            S      S"' $1
+fi
 
 ######################################################################
 # Add case statements p0T12JET3 only generation cuts
@@ -282,23 +326,32 @@ sed -i -e '/TITLE LEFT.*p0T12rel3 J1, E0T1>20 GeV/ a\
             CASE " G    X XX   X      X X         S      S"' $1
 
 ######################################################################
-# Add case statements for p0T12rel3 J2, E0T1>20 GeV
-sed -i -e '/TITLE TOP.*p0T12rel3 J2, E0T1>20 GeV/ a\
-            CASE " X XX   X      X X       "' $1
-sed -i -e '/TITLE BOTTOM.*p0T12rel3 J2, E0T1>20 GeV/ a\
-            CASE " X XX   X      X X       "' $1
-sed -i -e '/TITLE LEFT.*p0T12rel3 J2, E0T1>20 GeV/ a\
-            CASE " G    X XX   X      X X         S      S"' $1
+# Add case statements for p0T12rel3 J1 and J2, E0T1>20 GeV
+sed -i -e '/TITLE TOP.*p0T12rel3 J1 and J2, E0T1>20 GeV/ a\
+            CASE " X XX   X                  X X       "' $1
+sed -i -e '/TITLE BOTTOM.*p0T12rel3 J1 and J2, E0T1>20 GeV/ a\
+            CASE " X XX   X                     X X       "' $1
+sed -i -e '/TITLE LEFT.*p0T12rel3 J1 and J2, E0T1>20 GeV/ a\
+            CASE " G    X XX   X              X X         S      S"' $1
 
 ######################################################################
 # Add case statements for H0J31 at the end
+unit_norm=`sed -n "/TITLE TOP \"H0J31 Unit Norm\"/p" $1`
 sed -i -e 's/\"H0J31 \"/\"H031\"/g' $1
 sed -i -e 's/\"H0J31\"/\"H031\"/g' $1
-sed -i -e 's/d(H0J31)/d(H031)/g' $1
+sed -i -e 's/\"H0J31 Unit Norm\"/\"H031\"/g' $1
 sed -i -e '/TITLE TOP.*\"H031\"/ a\
             CASE "GX X"' $1
 sed -i -e '/TITLE BOTTOM.*\"H031\"/ a\
             CASE "GX X"' $1
-sed -i -e '/TITLE LEFT.*d(H031)/ a\
-            CASE " G   GX X  S      S"' $1
+if [ "$unit_norm" = "" ]
+then
+    sed -i -e 's/d(H0J31)/d(H031)/g' $1
+    sed -i -e '/TITLE LEFT.*d(H031)/ a\
+                CASE " G   GX X  S      S"' $1
+else
+    sed -i -e 's/\".*dS\/d(H0J31.*Unit.*)/\"1\/SdS\/d(H031)/g' $1
+    sed -i -e '/TITLE LEFT.*d(H031)/ a\
+                CASE "  G G   GX X  S      S"' $1
+fi
 

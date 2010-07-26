@@ -42,7 +42,7 @@ j=0
 for (( i=1 ; i<=`sed -n '$=' $1` ; i++ ))
 do 
     line=`sed -n "$i p" $1`
-    line=`echo $line | sed 's/.*[a-z].*//g' | sed 's/.*[A-Z].*//g' `
+    line=`echo $line | sed 's/.*[a-z].*//g' | sed 's/.*[ABCDFGHIKLMNOPQRSTUVWXYZ].*//g' `
     if [ -z "$line" ]
     then 
 	h=$((h+1))
@@ -51,8 +51,8 @@ do
 	continue
     fi
     j=$((j+1))
-    line=`echo $line | sed 's/+//g' | sed 's/-//g'`
     k=0
+    line=`echo $line | sed 's/ +/ /g'`
     for val in $line
     do 
 	k=$((k+1))
@@ -61,13 +61,13 @@ do
 	XL[$((j))]=${array[2]}
 	XH[$((j))]=${array[3]}
 	Y[$((j))]=${array[4]}
-	DYSTATP[$((j))]=${array[5]}
-	DYSTATM[$((j))]=${array[6]}
-	DYSYSP[$((j))]=${array[7]}
-	DYSYSM[$((j))]=${array[8]}
+	MEAN[$((j))]=${array[5]}
+	DYSTATP[$((j))]=${array[6]}
+	DYSTATM[$((j))]=${array[7]}
+	DYSYSP[$((j))]=${array[8]}
+	DYSYSM[$((j))]=${array[9]}
     done
 done
-
 ####################################################################
 # Now we write out the numbers we got: this should basically be
 # exactly the same as in the input text file. This is just some
@@ -75,7 +75,7 @@ done
 echo "x	xlow	xhigh	x2	y	dy+	dy-	dy+	dy-"
 for (( i=1 ; i<=j ; i++ ))
 do 
-    echo ${X[i]} ${XL[i]} ${XH[i]} ${Y[i]} ${DYSTATP[i]} ${DYSTATM[i]} ${DYSYSP[i]} ${DYSYSM[i]}
+    echo ${X[i]} ${XL[i]} ${XH[i]} ${Y[i]} ${MEAN[i]} ${DYSTATP[i]} ${DYSTATM[i]} ${DYSYSP[i]} ${DYSYSM[i]}
 done
 
 ####################################################################
@@ -85,10 +85,43 @@ done
 # DY and likewise DYSTATM and DYSYSM to give NDY.
 for (( i=1 ; i<=j ; i++ ))
 do 
-    DX[$((i))]=`echo "${XH[$((i))]}-${X[$((i))]} " | bc`
-    NDX[$((i))]=`echo "${X[$((i))]}-${XL[$((i))]} " | bc`
-    DY[$((i))]=`echo "sqrt(${DYSTATP[$((i))]}^2+${DYSYSP[$((i))]}^2)" | bc`
-    NDY[$((i))]=`echo "sqrt(${DYSTATM[$((i))]}^2+${DYSYSM[$((i))]}^2)" | bc`
+    # First turn the scientific number notation to floating point
+    # so that bc doesn't complain or give crap back
+    X[$((i))]=`echo ${X[$((i))]} | sed 's/E+/\*10\^/g' `
+    X[$((i))]=`echo ${X[$((i))]} | sed 's/E-/\/10\^/g' `
+    X[$((i))]=`echo "scale=10; ${X[$i]}" | bc `
+    XL[$((i))]=`echo ${XL[$((i))]} | sed 's/E+/\*10\^/g' `
+    XL[$((i))]=`echo ${XL[$((i))]} | sed 's/E-/\/10\^/g' `
+    XL[$((i))]=`echo "scale=10; ${XL[$i]}" | bc `
+    XH[$((i))]=`echo ${XH[$((i))]} | sed 's/E+/\*10\^/g' `
+    XH[$((i))]=`echo ${XH[$((i))]} | sed 's/E-/\/10\^/g' `
+    XH[$((i))]=`echo "scale=10; ${XH[$i]}" | bc `
+    MEAN[$((i))]=`echo ${MEAN[$((i))]} | sed 's/E+/\*10\^/g' `
+    MEAN[$((i))]=`echo ${MEAN[$((i))]} | sed 's/E-/\/10\^/g' `
+    MEAN[$((i))]=`echo "scale=10; ${MEAN[$i]}" | bc `
+    Y[$((i))]=`echo ${Y[$((i))]} | sed 's/E+/\*10\^/g' `
+    Y[$((i))]=`echo ${Y[$((i))]} | sed 's/E-/\/10\^/g' `
+    Y[$((i))]=`echo "scale=10; ${Y[$i]}" | bc `
+    MEAN[$((i))]=`echo ${MEAN[$((i))]} | sed 's/E+/\*10\^/g' `
+    MEAN[$((i))]=`echo ${MEAN[$((i))]} | sed 's/E-/\/10\^/g' `
+    MEAN[$((i))]=`echo "scale=10; ${MEAN[$i]}" | bc `
+    DYSTATP[$((i))]=`echo ${DYSTATP[$((i))]} | sed 's/E+/\*10\^/g' `
+    DYSTATP[$((i))]=`echo ${DYSTATP[$((i))]} | sed 's/E-/\/10\^/g' `
+    DYSTATP[$((i))]=`echo "scale=10; ${DYSTATP[$i]}" | bc `
+    DYSTATM[$((i))]=`echo ${DYSTATM[$((i))]} | sed 's/E+/\*10\^/g' `
+    DYSTATM[$((i))]=`echo ${DYSTATM[$((i))]} | sed 's/E-/\/10\^/g' `
+    DYSTATM[$((i))]=`echo "scale=10; ${DYSTATM[$i]}" | bc `
+    DYSYSP[$((i))]=`echo ${DYSYSP[$((i))]} | sed 's/E+/\*10\^/g' `
+    DYSYSP[$((i))]=`echo ${DYSYSP[$((i))]} | sed 's/E-/\/10\^/g' `
+    DYSYSP[$((i))]=`echo "scale=10; ${DYSYSP[$i]}" | bc `
+    DYSYSM[$((i))]=`echo ${DYSYSM[$((i))]} | sed 's/E+/\*10\^/g' `
+    DYSYSM[$((i))]=`echo ${DYSYSM[$((i))]} | sed 's/E-/\/10\^/g' `
+    DYSYSM[$((i))]=`echo "scale=10; ${DYSYSM[$i]}" | bc `
+    # Now we actually compute the things topdrawer needs:
+    DX[$((i))]=`echo "scale=10; ${XH[$((i))]}*0.0245437-${MEAN[$((i))]} " | bc`
+    NDX[$((i))]=`echo "scale=10; ${MEAN[$((i))]}-${XL[$((i))]}*0.0245437 " | bc`
+    DY[$((i))]=`echo "scale=10; sqrt(${DYSTATP[$((i))]}^2+${DYSYSP[$((i))]}^2)" | bc`
+    NDY[$((i))]=`echo "scale=10; sqrt(${DYSTATM[$((i))]}^2+${DYSYSM[$((i))]}^2)" | bc`
     echo ${X[i]} ${DX[i]} ${NDX[i]} ${Y[i]} ${DY[i]} ${NDY[i]}
 done
 
@@ -110,6 +143,6 @@ echo "TITLE TOP \"${header[1]}\"" >> $1.top
 echo "SET ORDER X DX NDX Y DY NDY" >> $1.top
 for (( i=1 ; i<=j ; i++ ))
 do
-    echo ${X[i]} ${DX[i]} ${NDX[i]} ${Y[i]} ${DY[i]} ${NDY[i]} >> $1.top
+    echo ${MEAN[i]} ${DX[i]} ${NDX[i]} ${Y[i]} ${DY[i]} ${NDY[i]} >> $1.top
 done
 echo "PLOT" >> $1.top

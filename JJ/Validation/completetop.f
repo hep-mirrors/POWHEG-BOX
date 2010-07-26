@@ -35,7 +35,7 @@ c store histogram lines
                i=index(line,'HIST')
                if(i.ne.0) then
                   do while(iline.lt.nint((xh-xl)/xbin))
-                     write(*,*) xl+(iline+0.5d0)*xbin,0,0
+                     write(*,100) xl+(iline+0.5d0)*xbin,0E0,0E0
                      iline=iline+1
                   enddo
                   call writeout(line)
@@ -43,7 +43,7 @@ c store histogram lines
                endif
                read(line,*) x,y,e
                do while(nint((x-xl+xbin/2)/xbin).gt.iline)
-                  write(*,*) xl+(iline-0.5d0)*xbin,0,0
+                  write(*,100) xl+(iline-0.5d0)*xbin,0E0,0E0
                   iline=iline+1
                enddo
                call writeout(line)
@@ -53,6 +53,7 @@ c store histogram lines
          endif
  10      continue
       enddo
+ 100  format(3(F10.4,1X))
  20   end
 
       subroutine writeout(string)

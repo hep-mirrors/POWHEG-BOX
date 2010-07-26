@@ -1398,14 +1398,18 @@ C - Local variables
      $                                .AND.Y_VALS(JXX,IXX).NE.-9.99D+2) 
      $           THEN
                YMIN = Y_VALS(JXX,IXX)
-               IF(Y_VALS(JXX,IXX).GT.0) YMIN_POS = Y_VALS(JXX,IXX)
+               IF(Y_VALS(JXX,IXX).GT.0D0) YMIN_POS = Y_VALS(JXX,IXX)
             ENDIF
          ENDDO
  200     WRITE(6,*) ' '
       ENDDO
  220     WRITE(6,*) 'Found bin width is ',BINWIDTH
       WRITE(6,*) 'Found ',YMIN,'< Y < ',YMAX
-      
+C - In case something went wrong finding the minimum y-value or
+C - the minimum positive y-value.     
+      IF(YMIN.GT.YMAX) YMIN=YMAX/1D6
+      IF(YMIN_POS.GT.YMAX) YMIN_POS=YMAX/1D6
+
       RETURN
       END
 

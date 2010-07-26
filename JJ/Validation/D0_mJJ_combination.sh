@@ -74,36 +74,38 @@ do
 done
 new_plot_array_size=$((new_plot_array_size-1))
 
+
 ##########################################################
 # Here we want to basically find the positions of the
 # end of each of the plot headers, so we do the following.  
 # Find all of the ( INT= line numbers which ** directly
 # following** each of the line numbers of TITLE TOP "blah
 # blah", just found above, and put them in an array ...
-# If it can't find any ( INT= lines then it tries
-# looking for TITLE LEFT "dS/d(blah blah)" instead
+# If it can't find any ( INT= lines. Alternatively
+# , if the file has been merged using merge_plots.f
+# it looks for TITLE LEFT "dS/d(blah blah)" instead
 # because that can sometimes also be the thing that
 # appears at the start of the numbers (which are the
 # positions we are really looking for).
-int_eq_lines=`sed -n '/( INT=/=' $1`
-int_eq_array_size=1
-for i in $title_lines
-do
-    for j in $int_eq_lines
-    do 
-	if [ $((j)) -gt $((i)) ]
-	then
-	    int_eq_array[$((int_eq_array_size))]=$j
-	    int_eq_array_size=$((int_eq_array_size+1))
-	    break
-	fi
-    done
-done
-int_eq_array_size=$((int_eq_array_size-1))
-if [ "$int_eq_array_size" -eq 0 ] 
+merged_flag=`sed -n '/SET WINDOW Y.*2.8/p' $1`
+if [ "$merged_flag" = "" ] 
 then
-    echo "Didn't find any ( INT= ..."
-    echo "Trying TITLE LEFT ds/d... instead ..."
+    int_eq_lines=`sed -n '/( INT=/=' $1`
+    int_eq_array_size=1
+    for i in $title_lines
+    do
+	for j in $int_eq_lines
+	do 
+	    if [ $((j)) -gt $((i)) ]
+	    then
+		int_eq_array[$((int_eq_array_size))]=$j
+		int_eq_array_size=$((int_eq_array_size+1))
+		break
+	    fi
+	done
+    done
+    int_eq_array_size=$((int_eq_array_size-1))
+else
     int_eq_lines=`sed -n '/TITLE LEFT \"dS\/d/=' $1`
     int_eq_array_size=1
     for i in $title_lines
@@ -114,7 +116,7 @@ then
 	    then
 		int_eq_array[$((int_eq_array_size))]=$((j+2))
 		int_eq_array_size=$((int_eq_array_size+1))
-	    break
+		break
 	    fi
 	done
     done
@@ -199,7 +201,7 @@ sed -i -e 's/TITLE TOP.*\"/TITLE TOP \"m0JJ1 p0T1>40\"/g' temp
 sed -i -e '/TITLE TOP.*\"/ a CASE \" X  X  X X   \" ' temp
 sed -i -e '/(/!s/TITLE BOTTOM.*\"/TITLE BOTTOM \"m0JJ1 p0T1>40\"/g' temp
 sed -i -e '/^  TITLE BOTTOM.*\"/ a CASE \" X  X  X X   \" ' temp
-sed -i -e 's/TITLE LEFT.*\"/TITLE LEFT \"dS\/d(m0JJ1 p0T1>40) (pb\/bin)\"/g' temp
+sed -i -e 's/TITLE LEFT.*\"/TITLE LEFT \"dS\/d(m0JJ1 p0T1>40) (mb\/bin)\"/g' temp
 sed -i -e '/TITLE LEFT.*\"/ a CASE \" G    X  X  X X     S      S\" ' temp
 echo "SET WINDOW Y 1.6 TO 9." >> temp
 echo "SET SCALE  Y LOG" >> temp
@@ -227,16 +229,16 @@ do
     # Calculate the vertical position to write it at:
     ypos=`echo 6.5+0.2*$((i-1)) | bc `
     echo "SET TITLE SIZE 1.2" > temp
-    echo "TITLE  7.50 "$ypos" \""$the_label" (x10^"$((i-1))")\"" >> temp
+    echo "TITLE  7.50 "$ypos" \""$the_label" (x102"$((i-1))"3)\"" >> temp
     # In the case of the mJJ plots the various histos are scaled
     # up by factors which we calculate here according to the loop 
     # index
     if [ "$i" -eq 1 ] 
     then
-        echo "CASE \"  X   X \"" >> temp
+        echo "CASE \"  X   X          X X \"" >> temp
 	echo "SET ORDER X Y 2.5E6 DY 2.5E6" >> temp
     else
-        echo "CASE \"      X   X \"" >> temp
+        echo "CASE \"      X   X          X X \"" >> temp
 	echo "SET ORDER X Y 2.5E"$((6+(i-1)))" DY 2.5E"$((6+(i-1))) >> temp
     fi
     # Here we paste in the corresponding big data chunk

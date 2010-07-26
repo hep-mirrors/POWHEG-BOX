@@ -15,7 +15,7 @@
 # (see comments below).
 #
 # To run:
-# ./mJJ_combination_pT_20.sh the_file.top
+# ./dphiJJ_combination.sh the_file.top
 #
 # Scope:
 # 90% of the code is not specific to mJJ and could
@@ -29,26 +29,14 @@ sed -i -e '/( NEW PLOT/d' $1
 ##########################################################
 # Find all of the TITLE TOP "blah blah" lines numbers 
 # with sed and put them in an array ...
-echo "Finding all of the TITLE TOP \"M0JJ1.*20 ..."
-title_lines=`sed -n '/TITLE TOP.*M0JJ1.*20/=' $1`
+echo "Finding all of the TITLE TOP.*DF.*p0T12max3.*GeV ..."
+title_lines=`sed -n "/TITLE TOP.*DF.*p0T12max3/=" $1`
 title_array_size=0
 for i in $title_lines
 do 
     title_array_size=$((title_array_size+1))
     title_array[$((title_array_size))]=$i
 done
-if [ "$title_array_size" -eq 0 ] 
-then
-    echo "Didn't find any TITLE TOP \"M0JJ1 ..."
-    echo "Trying TITLE TOP \"m0JJ1 ... instead ..."
-    title_lines=`sed -n '/TITLE TOP.*m0JJ1.*20/=' $1`
-    title_array_size=0
-    for i in $title_lines
-    do 
-	title_array_size=$((title_array_size+1))
-	title_array[$((title_array_size))]=$i
-    done
-fi
 
 ##########################################################
 # Find the position of each NEW PLOT command just ABOVE
@@ -196,15 +184,15 @@ done
 # First a bit of a header taken from the first of the plots
 # we are combining and modified a little bit:
 sed -n "$((new_plot_array[1])),$((int_eq_array[1])) p" $1 > temp
-sed -i -e 's/TITLE TOP.*\"/TITLE TOP \"m0JJ1 p0T1>20\"/g' temp
-sed -i -e '/TITLE TOP.*\"/ a CASE \" X  X  X X   \" ' temp
-sed -i -e '/(/!s/TITLE BOTTOM.*\"/TITLE BOTTOM \"m0JJ1 p0T1>20\"/g' temp
-sed -i -e '/^  TITLE BOTTOM.*\"/ a CASE \" X  X  X X   \" ' temp
-sed -i -e 's/TITLE LEFT.*\"/TITLE LEFT \"dS\/d(m0JJ1 p0T1>20) (mb\/bin)\"/g' temp
-sed -i -e '/TITLE LEFT.*\"/ a CASE \" G    X  X  X X     S      S\" ' temp
+sed -i -e 's/TITLE TOP.*\"/TITLE TOP \"DF0dijet1\"/g' temp
+sed -i -e '/TITLE TOP.*\"/ a CASE \"FGX     X\" ' temp
+sed -i -e '/(/!s/TITLE BOTTOM.*\"/TITLE BOTTOM \"DF0dijet1\"/g' temp
+sed -i -e '/^  TITLE BOTTOM.*\"/ a CASE \"FGX     X\" ' temp
+sed -i -e 's/TITLE LEFT.*\"/TITLE LEFT \"1\/SdS\/d(DF0dijet1)\"/g' temp
+sed -i -e '/TITLE LEFT.*\"/ a CASE \"  G G   FGX     X \" ' temp
 echo "SET WINDOW Y 1.6 TO 9." >> temp
 echo "SET SCALE  Y LOG" >> temp
-echo "SET LIMITS Y 1E-3 1E15" >> temp
+echo "SET LIMITS Y 1E-3 1E5" >> temp
 echo "SET AXES BOTTOM ON" >> temp
 
 # Check if the TITLE LEFT command is present in this header (needed later)
@@ -223,22 +211,25 @@ do
     # Extract the title of the histogram currently being processed:
     the_label=`sed -n "$((title_array[$((i))])) p" $1`
     the_label=`echo $the_label | sed 's/\(.*\)\"\(.*\)\"/\2/g'`
-    the_label=`echo $the_label | sed 's/.*pT>20//g'`
-    the_label=`echo $the_label | sed 's/.*p0T1>20//g'`
     # Calculate the vertical position to write it at:
     ypos=`echo 6.5+0.2*$((i-1)) | bc `
     echo "SET TITLE SIZE 1.2" > temp
-    echo "TITLE  7.50 "$ypos" \""$the_label" (x102"$((i-1))"3)\"" >> temp
+    the_factor=`echo "20^$((i-1))" | bc`
+    echo "TITLE  2.80 "$ypos" \""$the_label" (x"$the_factor")\"" >> temp
     # In the case of the mJJ plots the various histos are scaled
     # up by factors which we calculate here according to the loop 
     # index
     if [ "$i" -eq 1 ] 
     then
-        echo "CASE \"  X   X          X X \"" >> temp
-	echo "SET ORDER X Y 2.5E6 DY 2.5E6" >> temp
+        echo "CASE \"FG       X XX   X\"" >> temp
+	echo "SET ORDER X Y DY" >> temp
+    elif [ "$i" -ne "$((int_eq_array_size))" ]
+    then
+        echo "CASE \"FG        X XX   X\"" >> temp
+	echo "SET ORDER X Y "$the_factor" DY "$the_factor >> temp
     else
-        echo "CASE \"      X   X          X X \"" >> temp
-	echo "SET ORDER X Y 2.5E"$((6+(i-1)))" DY 2.5E"$((6+(i-1))) >> temp
+        echo "CASE \"FG  X XX   X\"" >> temp
+	echo "SET ORDER X Y "$the_factor" DY "$the_factor >> temp
     fi
     # Here we paste in the corresponding big data chunk
     sed -n "$((int_eq_array[$((i))]+1)), \

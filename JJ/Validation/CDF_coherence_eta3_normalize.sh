@@ -47,11 +47,11 @@ echo "in file "$1
 sed -i -e '/( NEW PLOT/d' $1
 
 ##########################################################
-# Find all of the TITLE TOP "blah blah" lines numbers 
+# Find all of the TITLE X Y "blah blah" lines numbers 
 # with sed and put them in an array ...
 # Note that if you want to adapt 
-echo "Finding all of the TITLE.*[0-9]\.[0-9].*DF.*p0T12max3.*GeV ..."
-title_lines=`sed -n '/TITLE.*[0-9]\.[0-9].*DF.*p0T12max3.*GeV/=' $1`
+echo "Finding all of the TITLE.*[0-9].*\" H0J31   .*\" ..."
+title_lines=`sed -n '/TITLE.*[0-9].*\" H0J31   .*\"/=' $1`
 title_array_size=0
 for i in $title_lines
 do 
@@ -60,8 +60,8 @@ do
 done
 
 ##########################################################
-# Find the position of each NEW PLOT command just ABOVE
-# the corresponding TITLE TOP "blah blah" line and, you
+# Find the position of each PLOT command just ABOVE
+# the corresponding TITLE X Y "blah blah" line and, you
 # guessed it, put it in an array ... these are obviously
 # the line numbers where each of the plots we want to
 # combine starts! 
@@ -177,6 +177,15 @@ do
     sed -i -e "$((int_eq_array[$((i))]+1)), \
             $((new_plot_2_array[$((i))])) d" $1
     no_lines=`sed -n '$ =' temp`
+    binwidth=0
+    prev_x=0
+    for (( j=1 ; j<=$((no_lines)); j++ ))
+    do
+	jth_line=`sed -n "$j p" temp`
+	jth_x=`echo $jth_line | sed 's/\(.*\) \(.*\) \(.*\)/\1/g'`
+	binwidth=`echo "scale=8 ; $jth_x - $prev_x " | bc `
+	prev_x=$jth_x
+    done
     for (( j=1 ; j<=$((no_lines)); j++ ))
     do
 	jth_line=`sed -n "$j p" temp`
@@ -199,24 +208,49 @@ do
 	    echo "precision is truncated to 10 decimal places"
 	    echo "and no scientific formatting of numbers, so"
 	    echo "rounding errors may occur which may be severe."
-	    jth_y=`echo "scale=10 ; ( $jth_y ) / ( $the_factor ) " | bc `
-	    jth_dy=`echo "scale=10 ; ( $jth_dy ) / ( $the_factor ) " | bc `
+	    jth_y=`echo "scale=8 ; ( $jth_y ) / ( $the_factor ) " | bc `
+#	    jth_y=`echo "scale=8 ; ( $jth_y ) / ( $binwidth ) " | bc `
+	    jth_dy=`echo "scale=8 ; ( $jth_dy ) / ( $the_factor ) " | bc `
+#	    jth_dy=`echo "scale=8 ; ( $jth_dy ) / ( $binwidth ) " | bc `
 	else
-	    jth_y_mant=`echo "scale=10 ; $jth_y_mant / $the_factor_mant " | bc `
-	    jth_y_exp=`echo "scale=10 ; $jth_y_exp - $the_factor_exp " | bc `
+	    jth_y_mant=`echo "scale=8 ; $jth_y_mant / $the_factor_mant " | bc `
+#	    jth_y_mant=`echo "scale=8 ; $jth_y_mant / $binwidth " | bc `
+	    jth_y_exp=`echo "scale=8 ; $jth_y_exp - $the_factor_exp " | bc `
 	    jth_y=`echo $jth_y_mant"E"$jth_y_exp`
-	    jth_dy_mant=`echo "scale=10 ; $jth_dy_mant / $the_factor_mant " | bc `
-	    jth_dy_exp=`echo "scale=10 ; $jth_dy_exp - $the_factor_exp " | bc `
+	    jth_dy_mant=`echo "scale=8 ; $jth_dy_mant / $the_factor_mant " | bc `
+#	    jth_dy_mant=`echo "scale=8 ; $jth_dy_mant / $binwidth " | bc `
+	    jth_dy_exp=`echo "scale=8 ; $jth_dy_exp - $the_factor_exp " | bc `
 	    jth_dy=`echo $jth_dy_mant"E"$jth_dy_exp`
 	fi
 	new_jth_line=`echo $jth_x $jth_y $jth_dy`
+	sed -i -e "$j a $new_jth_line" temp
+	sed -i -e "$j d" temp
 	sed -i -e "$((int_eq_array[$((i))]+j-1)) a $new_jth_line" $1
     done
+    sum_y=0
+    for (( j=1 ; j<=$((no_lines)); j++ ))
+    do
+	jth_line=`sed -n "$j p" temp`
+	jth_y=`echo $jth_line | sed 's/\(.*\) \(.*\) \(.*\)/\2/g'`
+	jth_y=`echo $jth_y | sed 's/E/\*10\^/g' `
+	sum_y=`echo "scale=20 ; $sum_y + $jth_y " | bc `
+    done
+    echo "Now sum of y values = " `echo "scale=20 ; $sum_y" | bc `
+    echo "N.B. The CDF analysis does not divide by the bin width so nor do we."
 done
 
 ######################################################################
-echo "all done ..."
 
+##########################################################
+# Rename the relevant titles so that it is clear that
+# this plot is now normalised to one:
+sed -i -e "s/\".*H0J31        .*\"/\"H0J31 Unit Norm\"/g" $1
+
+echo "all done ..."
+echo "N.B. The y limits in the plots header(s) will need to be"
+echo "     modified by hand to make the data visible, unless"
+echo "     the output is to be given to merge_plots.f which"
+echo "     will correct for this automatically."
 
 
 

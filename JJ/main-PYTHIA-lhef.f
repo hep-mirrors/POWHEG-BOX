@@ -1,94 +1,150 @@
-      PROGRAM HWIGPR
-C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
-      INCLUDE '../HERWIG65.INC'
+      program main_pythia
+      implicit none
       include '../include/LesHouches.h'
-      integer n
-      logical uevent 
-      parameter (uevent=.false.)
-c     we need to tell to the analysis file which program is running it
+      include '../include/hepevt.h'
+c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
+c     &     JMOHEP,JDAHEP
+c      double precision phep,vhep
+c      PARAMETER (NMXHEP=4000)
+c      COMMON/HEPEVT/NEVHEP,NHEP,ISTHEP(NMXHEP),IDHEP(NMXHEP),
+c     &     JMOHEP(2,NMXHEP),JDAHEP(2,NMXHEP),PHEP(5,NMXHEP),
+c     &     VHEP(4,NMXHEP)
+      real * 8 parp,pari
+      integer mstp,msti
+      common/pypars/mstp(200),parp(200),msti(200),pari(200)
+      integer MSTU,MSTJ
+      double precision PARU,PARJ
+      COMMON/PYDAT1/MSTU(200),PARU(200),MSTJ(200),PARJ(200)
+      integer maxev
+      common/mcmaxev/maxev
+      integer MDCY,MDME,KFDP
+      double precision brat
+      COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
+      integer pycomp
+      external pycomp
+      integer iev,temp,i
+      external pydata
+      real * 8 powheginput
+      external powheginput
+      integer hdecaymode
       character * 6 WHCPRG
-      integer iun
       common/cWHCPRG/WHCPRG
-      WHCPRG='HERWIG'
-C---PROCESS; set to negative for user supplied me
-      iproc=-1                  ! Les Houches interface
-C--- Opens input file and counts number of events, setting MAXEV;
-c    MAXEV must be set before HWIGIN call.
-      call opencount(maxev)
-C---INITIALISE OTHER COMMON BLOCKS
-      CALL HWIGIN
-C---USER CAN RESET PARAMETERS AT
-C   THIS POINT, OTHERWISE DEFAULT
-C   VALUES IN HWIGIN WILL BE USED.
-c      PTMIN=100.
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      ptrms=2.5d0
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      maxpr=2
-      if(.not.uevent) PRSOF=0d0
-c----DO NOT USE SOFT ME CORRECTION     
-      SOFTME=.FALSE.
-C---COMPUTE PARAMETER-DEPENDENT CONSTANTS
-      CALL HWUINC
-C---CALL HWUSTA TO MAKE ANY PARTICLE STABLE
-      CALL HWUSTA('PI0     ')
-      CALL HWUSTA('HIGGS   ')
-C---USER'S INITIAL CALCULATIONS
-      CALL HWABEG
-C---INITIALISE ELEMENTARY PROCESS
-      CALL HWEINI
-C---LOOP OVER EVENTS
-      DO N=1,maxev
-C---  INITIALISE EVENT
-         CALL HWUINE
-C---GENERATE HARD SUBPROCESS
-         CALL HWEPRO
-         if(nup.eq.0) goto 111
-C---GENERATE PARTON CASCADES
-         CALL HWBGEN
-C---DO HEAVY OBJECT DECAYS
-         CALL HWDHOB
-C---DO CLUSTER FORMATION
-         CALL HWCFOR
-C---DO CLUSTER DECAYS
-         CALL HWCDEC
-C---DO UNSTABLE PARTICLE DECAYS
-         CALL HWDHAD
-C---DO HEAVY FLAVOUR HADRON DECAYS
-         CALL HWDHVY
-C---ADD SOFT UNDERLYING EVENT IF NEEDED
-         CALL HWMEVT
-C---FINISH EVENT
-         CALL HWUFNE    
-C---USER'S EVENT ANALYSIS
-         CALL HWANAL
-         if (mod(nevhep,20000).eq.0) then
-            write(*,*) "# of events processed =",nevhep
-            call hwaend
-         endif
-      ENDDO
- 111  continue
-C---  TERMINATE ELEMENTARY PROCESS
-      CALL HWEFIN
-C---  USER'S TERMINAL CALCULATIONS
-      CALL HWAEND
       
-c      call newunit(iun)
-c      open(unit=iun,file='HERWIGcounters.dat',status='unknown')
-c      call printcnt(iun)
-c      close(iun)
+      WHCPRG='PYTHIA'
+      
+c PARAMETERS
+c     mstj(41)=3 !No photon radiations off leptons
+c     mstp(61)=0 !No IS shower
+c     mstp(71)=0 !No FS shower
+      mstp(81)=0 !No Multiple interactions (MI increases the execution time)
+c     mstp(91)=0  !No Primordial kt
+c     mstp(131)=0 !No Pile Up
+c     mstp(111)=0               !No hadronization
+      
+c     Make PI0 stable as in herwig default
+      mdcy(pycomp(111),1)=0
+c     Make tau stable
+      mdcy(pycomp(15),1)=0
+C---PROCESS; 
+c      hdecaymode=powheginput('hdecaymode')
+c      if ((hdecaymode.lt.-1).or.(hdecaymode.gt.12)) then
+c         write(*,*) "Higgs decay mode not allowed"
+c         stop
+c      endif   
+      hdecaymode=-1
 
+c     choose Higgs decay channel
+      if (hdecaymode.eq.-1) then
+         mdcy(pycomp(25),1)=0
+      else   
+         mdcy(pycomp(25),1)=1
+         if (hdecaymode.gt.0) then
+            do i=210,288
+               if (mdme(i,1).ne.-1) mdme(i,1)=0
+            enddo
+            if (hdecaymode.eq.12) then
+               mdme(223,1)=1
+            elseif(hdecaymode.eq.11) then
+               mdme(225,1)=1
+            elseif(hdecaymode.eq.10) then
+               mdme(226,1)=1
+            elseif(hdecaymode.eq.7) then
+               mdme(218,1)=1
+            elseif(hdecaymode.eq.8) then
+               mdme(219,1)=1
+            elseif(hdecaymode.eq.9) then
+               mdme(220,1)=1   
+            else
+               mdme(209+hdecaymode,1)=1
+            endif
+         endif      
+      endif
+      
+c Set up PYTHIA to accept user processes
+      call PYINIT('USER','','',0d0)
+      
+      call PYABEG
+      nevhep=0
+      do iev=1,maxev
+         call pyevnw
+         if(nup.eq.0) goto 111
+c     Convert from PYJETS event record to HEPEVT event record
+         temp=nevhep
+         call pyhepc(1)
+         nevhep=temp
+C     Print out the event record
+         IF (IEV.le.6) THEN 
+c     list the event
+c            CALL PYLIST(7)      ! print the HEPEUP common block
+c            CALL PYLIST(5)      ! print the HEPEVT common block
+
+            CALL PYLIST(5)      ! print the event
+
+c     call PYLIST(1) ! as PYLIST(2) but with less information
+         ENDIF
+         
+         call PYANAL
+         
+         IF(MOD(IEV,20000).EQ.0) THEN
+            WRITE(*,*)'# of events processed=',NEVHEP
+            CALL PYAEND
+         ENDIF          
+      enddo
+ 111  continue
+      write(*,*) 'At the end NEVHEP is ',nevhep
+      call PYAEND
       END
+
 
       subroutine UPINIT
       implicit none
+      integer maxev
+      common/mcmaxev/maxev      
+C--- Opens input file and counts number of events, setting MAXEV;
+      call opencount(maxev)
+      rewind(97)
       call lhefreadhdr(97)
       end
 
+
+      subroutine countevents
+      implicit none
+      character * 6 string
+      integer maxev
+      common/mcmaxev/maxev
+ 1    continue
+      read(unit=97,fmt='(a)',end=2) string
+      if(string.eq.'<event') then
+         maxev=maxev+1
+         goto 1
+      endif
+      goto 1
+ 2    continue
+      write(*,*) ' found ',maxev,' events in file'
+      end
+
+
       subroutine UPEVNT
-
-      INCLUDE '../HERWIG65.INC'
-
       include '../include/LesHouches.h'
 
       LOGICAL MASSIVE_FS_PARTONS,DEBUGGING
@@ -169,7 +225,8 @@ C - Show debugging output
                WRITE(6,*) 
      $           IXX,IDUP(IXX),
      $           PUP(1,IXX),PUP(2,IXX),PUP(3,IXX),PUP(4,IXX),PUP(5,IXX),
-     $           RMASS(ABS(IDUP(IXX)))
+     $           PYMASS(ABS(IDUP(IXX)))
+              
             ENDDO
          ENDIF
 
@@ -188,12 +245,12 @@ C - the partonic COM frame: PARTON_MOM(JXX,IXX), MODP2(IXX),MASS2(IXX)
             CALL HWULF4(POUT,PUP(1,IXX),PARTON_MOM(1,IXX))
             IF(ISTUP(IXX).NE.-1) THEN
                NFS=NFS+1
-               THRESHOLD=THRESHOLD+RMASS(ABS(IDUP(IXX)))
+               THRESHOLD=THRESHOLD+PYMASS(ABS(IDUP(IXX)))
             ENDIF
             DO JXX=1,3
                MODP2(IXX)=MODP2(IXX)+PARTON_MOM(JXX,IXX)**2
             ENDDO
-            MASS2(IXX)=RMASS(ABS(IDUP(IXX)))**2
+            MASS2(IXX)=PYMASS(ABS(IDUP(IXX)))**2
          ENDDO
 
 C - If the threshold condition is met then we attempt to solve for the
@@ -216,7 +273,7 @@ C - final state momentum rescaling factor using the Newton Raphson method
                DIFF=TMP2-TMP1      ! To test convergence   
                TMP1=TMP2           ! Next trial value equals new best guess
                IF(TMP1.LE.0) THEN
-                  WRITE(6,*) 'main-HERWIG-lhef UPEVNT warning:'
+                  WRITE(6,*) 'main-PYTHIA-lhef UPEVNT warning:'
                   WRITE(6,*) 'Negative value encountered in solving'
                   WRITE(6,*) 'for the momentum rescaling factor.'
                   WRITE(6,*) 'Momenta will not be rescaled to the HW'
@@ -255,7 +312,7 @@ C - errors in the calculation of their mass components, almost always
 C - the initial state ones. This is dealt with here:
             IF(PUP(5,IXX).LT.0D0) THEN
                IF(DEBUGGING.OR.PUP(5,IXX).LT.-1D-6) THEN
-               WRITE(6,*) 'main-HERWIG-lhef: UPEVNT warning'
+               WRITE(6,*) 'main-PYTHIA-lhef: UPEVNT warning'
                WRITE(6,*) 'PUP(JXX,',IXX,') has E^2-|p|^2 = ',PUP(5,IXX)
                WRITE(6,*) 'Setting PUP(JXX,IXX) = -SQRT(',PUP(5,IXX),')'
                ENDIF
@@ -306,7 +363,7 @@ C - Show debugging output
                WRITE(6,*) 
      $           IXX,IDUP(IXX),
      $           PUP(1,IXX),PUP(2,IXX),PUP(3,IXX),PUP(4,IXX),PUP(5,IXX),
-     $           RMASS(ABS(IDUP(IXX)))
+     $           PYMASS(ABS(IDUP(IXX)))
             ENDDO
          ENDIF
 
@@ -315,30 +372,106 @@ C - Show debugging output
       end
 
 
-      subroutine hwabeg
-      call init_hist
+      subroutine upveto
+c pythia routine to abort event
       end
 
 
-      subroutine hwaend
+      subroutine pyabeg
+      call init_hist
+      end
+
+c      subroutine pyabeg
+c      implicit none
+c      include '../include/hepevt.h'
+c      nevhep=0
+c      call abegin
+c      end
+
+      subroutine pyaend
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
-      open(unit=99,file=pwgprefix(1:lprefix)//'POWHEG+HERWIG-output.top'
+      open(unit=99,file=pwgprefix(1:lprefix)//'POWHEG+PYTHIA-output.top'
      #     ,status='unknown')
       call pwhgsetout
       call pwhgtopout
       close(99)
       end
-      
 
-      subroutine hwanal
-      INCLUDE '../HERWIG65.INC'
+
+      subroutine pyanal
+      implicit none
       include '../include/LesHouches.h'
-      if (ierror.ne.0) then
-         return
+      include '../include/hepevt.h'
+c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
+c     &     JMOHEP,JDAHEP
+c      double precision phep,vhep
+c      PARAMETER (NMXHEP=4000)
+c      COMMON/HEPEVT/NEVHEP,NHEP,ISTHEP(NMXHEP),IDHEP(NMXHEP),
+c     &   JMOHEP(2,NMXHEP),JDAHEP(2,NMXHEP),PHEP(5,NMXHEP),VHEP(4,NMXHEP)
+      integer MDCY,MDME,KFDP
+      double precision brat
+      COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
+      integer pycomp
+      external pycomp
+      real * 8 powheginput,bratio
+      external powheginput
+      integer hdecaymode
+
+      nevhep=nevhep+1
+c      hdecaymode=powheginput('hdecaymode')
+      hdecaymode=-1
+      if (hdecaymode.eq.0) then
+         bratio=1d0
+      elseif (hdecaymode.eq.12) then
+         bratio=brat(223)
+      elseif(hdecaymode.eq.11) then
+         bratio=brat(225)
+      elseif(hdecaymode.eq.10) then
+         bratio=brat(226)
+      elseif(hdecaymode.eq.7) then
+         bratio=brat(218)
+      elseif(hdecaymode.eq.8) then
+         bratio=brat(219)
+      elseif(hdecaymode.eq.9) then
+         bratio=brat(220) 
+      elseif(hdecaymode.eq.-1) then
+         bratio=1d0  
+      else
+         bratio=brat(209+hdecaymode)
       endif
-      xwgtup=xwgtup*xsecup(1)
+      xwgtup=xwgtup*xsecup(1)*bratio
       call analysis(xwgtup)
       call pwhgaccumup 
       end
+
+
+
+
+CDECK  ID>, HWULF4.
+*CMZ :-        -05/11/95  19.33.42  by  Mike Seymour
+*-- Author :    Adapted by Bryan Webber
+C-----------------------------------------------------------------------
+      SUBROUTINE HWULF4(PS,PI,PF)
+C-----------------------------------------------------------------------
+C     TRANSFORMS PI (GIVEN IN LAB) INTO PF (IN REST FRAME OF PS)
+C     N.B. P(1,2,3,4) = (PX,PY,PZ,E); PS(5)=M
+C-----------------------------------------------------------------------
+      IMPLICIT NONE
+      DOUBLE PRECISION PF4,FN,PS(5),PI(4),PF(4)
+      IF (PS(4).EQ.PS(5)) THEN
+        PF(1)= PI(1)
+        PF(2)= PI(2)
+        PF(3)= PI(3)
+        PF(4)= PI(4)
+      ELSE
+        PF4  = (PI(4)*PS(4)-PI(3)*PS(3)
+     &         -PI(2)*PS(2)-PI(1)*PS(1))/PS(5)
+        FN   = (PF4+PI(4)) / (PS(4)+PS(5))
+        PF(1)= PI(1) - FN*PS(1)
+        PF(2)= PI(2) - FN*PS(2)
+        PF(3)= PI(3) - FN*PS(3)
+        PF(4)= PF4
+      END IF
+      END

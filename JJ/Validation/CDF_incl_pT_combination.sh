@@ -224,27 +224,27 @@ do
     then    
 	# Divide by width of rapidity bin too:
 	the_factor=`echo "scale=6; 1000*$the_factor/0.1" | bc`
-        echo "CASE \" X XX   X   X   X           X X \"" >> temp
+        echo "CASE \" X XX   X   X   X          X X \"" >> temp
     elif [ "$i" -eq 2 ]
     then
 	# Divide by width of rapidity bin too:
 	the_factor=`echo "scale=6; 1000*$the_factor/0.6" | bc`
-        echo "CASE \" X XX   X       X   X           X X \"" >> temp
+        echo "CASE \" X XX   X       X   X          X X \"" >> temp
     elif [ "$i" -eq 3 ]
     then
 	# Divide by width of rapidity bin too:
 	the_factor=`echo "scale=6; 1000*$the_factor/0.4" | bc`
-        echo "CASE \" X XX   X       X   X           X X \"" >> temp
+        echo "CASE \" X XX   X       X   X          X X \"" >> temp
     elif [ "$i" -eq 4 ]
     then
 	# Divide by width of rapidity bin too:
 	the_factor=`echo "scale=6; 1000*$the_factor/0.5" | bc`
-        echo "CASE \" X XX   X       X   X           X  X \"" >> temp
+        echo "CASE \" X XX   X       X   X          X  X \"" >> temp
     elif [ "$i" -eq 5 ]
     then
 	# Divide by width of rapidity bin too:
 	the_factor=`echo "scale=6; 1000*$the_factor/0.5" | bc`
-        echo "CASE \" X XX   X       X   X           X  X \"" >> temp
+        echo "CASE \" X XX   X       X   X          X  X \"" >> temp
     else
 	echo "Error, too many inclusive jet pT distributions encountered!"
     fi

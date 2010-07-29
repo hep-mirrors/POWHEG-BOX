@@ -216,10 +216,18 @@ do
 	    jth_y_mant=`echo "scale=8 ; $jth_y_mant / $the_factor_mant " | bc `
 	    jth_y_mant=`echo "scale=8 ; $jth_y_mant / $binwidth " | bc `
 	    jth_y_exp=`echo "scale=8 ; $jth_y_exp - $the_factor_exp " | bc `
+	    if [ "$jth_y_mant" = "0" ]
+	    then
+		jth_y_exp="0"
+	    fi
 	    jth_y=`echo $jth_y_mant"E"$jth_y_exp`
 	    jth_dy_mant=`echo "scale=8 ; $jth_dy_mant / $the_factor_mant " | bc `
 	    jth_dy_mant=`echo "scale=8 ; $jth_dy_mant / $binwidth " | bc `
 	    jth_dy_exp=`echo "scale=8 ; $jth_dy_exp - $the_factor_exp " | bc `
+	    if [ "$jth_dy_mant" = "0" ]
+	    then
+		jth_dy_exp="0"
+	    fi
 	    jth_dy=`echo $jth_dy_mant"E"$jth_dy_exp`
 	fi
 	new_jth_line=`echo $jth_x $jth_y $jth_dy`

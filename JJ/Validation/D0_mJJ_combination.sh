@@ -235,10 +235,10 @@ do
     # index
     if [ "$i" -eq 1 ] 
     then
-        echo "CASE \"  X   X          X X \"" >> temp
+        echo "CASE \"   X   X          X X \"" >> temp
 	echo "SET ORDER X Y 2.5E6 DY 2.5E6" >> temp
     else
-        echo "CASE \"      X   X          X X \"" >> temp
+        echo "CASE \"       X   X          X X \"" >> temp
 	echo "SET ORDER X Y 2.5E"$((6+(i-1)))" DY 2.5E"$((6+(i-1))) >> temp
     fi
     # Here we paste in the corresponding big data chunk

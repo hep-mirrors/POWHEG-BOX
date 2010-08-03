@@ -71,7 +71,7 @@ do
 	initial_line_count=`sed -n '$ =' $i`
 	final_line_count=`sed -n '$ =' temp`
 	deleted_lines=$((initial_line_count-final_line_count))
-	echo "Deleted $deleted lines and merged in the $n_events events."
+	echo "Deleted $deleted_lines lines and merged in the $n_events events."
 	cat temp >> $output_file
 	echo
     fi

@@ -7,6 +7,7 @@
       include 'include/pwhg_rad.h'
       include 'include/LesHouches.h'
       integer iret,iun
+      real * 8 suppfact
       real * 8 random,powheginput
       external random,powheginput
       integer mcalls,icalls
@@ -37,6 +38,13 @@ c if negative weight, flip the sign of xwgtup
          endif
 c rad_type=1 for btilde events (used only for debugging purposes)
          rad_type=1
+         call born_suppression(suppfact)
+         if(suppfact.eq.0) then
+            write(*,*) ' 0 suppression factor in event generation'
+            write(*,*) ' aborting'
+            call exit(-1)
+         endif
+         xwgtup=xwgtup/suppfact
       else
 c generate remnant n+1 body cross section
          call gen_sigremnant
@@ -61,6 +69,13 @@ c     set st_muren2 equal to pt2 for scalup value
             rad_pt2max=max(rad_ptsqmin,pwhg_pt2())
             call set_rad_scales(rad_pt2max)
             call gen_leshouches
+            call born_suppression(suppfact)
+            if(suppfact.eq.0) then
+               write(*,*) ' 0 suppression factor in event generation'
+               write(*,*) ' aborting'
+               call exit(-1)
+            endif
+            xwgtup=xwgtup/suppfact
 c     rad_type=2 for remnants
             rad_type=2
          else

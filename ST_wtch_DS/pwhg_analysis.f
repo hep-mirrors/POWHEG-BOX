@@ -671,7 +671,7 @@ c     !: look only for W associated to wcode
       elseif (WHCPRG.eq.'HERWIG'.or.WHCPRG.eq.'PYTHIA') then
          if(WHCPRG.eq.'HERWIG') then
             ist_top=155
-            ist_w  =195 !: for undecayed events
+            ist_w  =155 !: (195 for undecayed events)
          elseif(WHCPRG.eq.'PYTHIA') then
             ist_top=3
             ist_w  =3

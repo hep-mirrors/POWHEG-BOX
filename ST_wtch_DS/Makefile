@@ -69,9 +69,9 @@ USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
 MADGRAPH= $(LIBSMADGRAPH) my_setpara.o switchmom.o \
 	MAD_born_routines.o \
 	MAD_real_routines_DS_tt.o MAD_real_routines_DS_full.o \
-	MAD_real_routines_DR.o
-#	MAD_born_undec_routines.o MAD_real_undec_routines_DR.o \
-#	MAD_born_dec_routines.o MAD_real_dec_routines.o #printout.o
+	MAD_real_routines_DR.o \
+	MAD_born_undec_routines.o MAD_real_undec_routines_DS_full.o \
+	MAD_born_dec_routines.o MAD_real_dec_routines.o #printout.o
 ################
 
 #############

@@ -85,11 +85,11 @@ c     we need to tell to this analysis file which program is running it
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS            '
             write(*,*) 'not implemented analysis'
-            call exit(1)
+            write(*,*) 'no plots will be present at the end of the run'
          elseif(WHCPRG.eq.'PYTHIA') then
             write (*,*) '           PYTHIA ANALYSIS            '
             write(*,*) 'not implemented analysis'
-            call exit(1)
+            write(*,*) 'no plots will be present at the end of the run'
          endif
          write(*,*) '*****************************'
          vdecaytemp=lprup(1)-10000 ! Z decay product, with positive id
@@ -130,8 +130,7 @@ c     find Z decay products
             endif
          enddo
       else
-         write(*,*) 'Error, not implemented analysis'
-         call exit(1)
+         return
       endif
 
 c     lminus transverse momentum

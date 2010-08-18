@@ -1,24 +1,28 @@
 #-*- Makefile -*-
 ifeq ($(shell uname),Linux)
-## -fbounds-check causes a weird error due to non-lazy evaluation
-## of boolean in gfortran.
+## gfortran compiler
+## -fbounds-check causes a weird error due to non-lazy 
+## evaluation of boolean in gfortran
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
-## Use -O2
-F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
-OPT=-O2
-## For g77 comment the above and uncomment below
+## Always use -O2
+F77= gfortran -Wall -fno-automatic #-ffpe-trap=invalid,zero,overflow
+## g77 compiler
 #F77= g77 -Wall -fno-automatic -ffortran-bounds-check
-#OPT=-O3
-# For debugging uncomment the following
-#DEBUG= -ggdb -pg
-#Do not uncomment this with gfortran
-#SYSOBJ=trapfpe.o
 endif
 
-FASTJET_CONFIG=/home/nason/bin/fastjet-config
+OPT= -O2
+# For debugging uncomment the following
+DEBUG= #-ggdb -pg
+# Do not uncomment this with gfortran
+SYSOBJ= #trapfpe.o
+
+HERWIG_VERSION=herwig6510
+PYTHIA_VERSION=pythia-6.4.21
+
+FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/x86_64-linux-gnu/4.4/  -lstdc++
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/i486-linux-gnu/4.3/  -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
@@ -29,14 +33,16 @@ VPATH= ./:../:obj/
 
 FF=$(F77) $(OPT) $(DEBUG)
 
-
 INCLUDE =$(shell echo ../include/*.h *.h)
 
+#PDFPACK=mlmpdfif.o hvqpdfpho.o
+LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
-LIBS=-L/home/nason/Pheno/PDFpacks/lha-5.8.1/lib -lLHAPDF -static
-# In order to use mlmpdf uncomment the following and comment previous lines
-# PDFPACK=mlmpdfif.o hvqpdfpho.o
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF -static
+LIBS=$(LIBSLHAPDF)
 
+HERWIG_OBJ=$(HERWIG_VERSION).o
+PYTHIA_OBJ=$(PYTHIA_VERSION).o
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
@@ -80,16 +86,16 @@ lhef_analysis:$(LHEFANAL)
 
 
 # target to read event file, shower events with HERWIG + analysis
-HERWIG=main-HERWIG-lhef.o herwig6510.o \
+HERWIG=main-HERWIG-lhef.o $(HERWIG_OBJ) \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
 	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
-	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
+	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)  $(LIBS)
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
+PYTHIA=main-PYTHIA-lhef.o $(PYTHIA_OBJ) \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \

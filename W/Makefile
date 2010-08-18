@@ -4,7 +4,7 @@ ifeq ($(shell uname),Linux)
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
 ## Use -O2
-#F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
+#F77= gfortran -Wall -fno-automatic #-ffpe-trap=invalid,zero,overflow
 #OPT=-O2
 ## For g77 comment the above and uncomment below
 F77= g77 -Wall -fno-automatic -ffortran-bounds-check
@@ -14,6 +14,9 @@ OPT=-O3
 #Do not uncomment this with gfortran
 #SYSOBJ=trapfpe.o
 endif
+
+HERWIG_VERSION=herwig6510
+PYTHIA_VERSION=pythia-6.4.21
 
 FASTJET_CONFIG=fastjet-config
 
@@ -38,6 +41,8 @@ PDFPACK=lhapdfif.o
 LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF #-static
 LIBS=$(LIBSLHAPDF)
 
+HERWIG_OBJ=$(HERWIG_VERSION).o
+PYTHIA_OBJ=$(PYTHIA_VERSION).o
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
@@ -66,7 +71,6 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
-
 # target to generate LHEF output
 pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
@@ -82,16 +86,16 @@ lhef_analysis:$(LHEFANAL)
 
 
 # target to read event file, shower events with HERWIG + analysis
-HERWIG=main-HERWIG-lhef.o herwig6510.o \
+HERWIG=main-HERWIG-lhef.o $(HERWIG_OBJ) \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
 	random.o cernroutines.o opencount.o  $(SYSOBJ)
 main-HERWIG-lhef: $(HERWIG)
-	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
+	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET) $(LIBS)
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
+PYTHIA=main-PYTHIA-lhef.o $(PYTHIA_OBJ) \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \

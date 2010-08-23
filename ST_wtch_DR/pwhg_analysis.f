@@ -1,4 +1,5 @@
-c     !ER: sistemare per ttype
+c     !ER: ttype DOVREBBE essere a posto
+c     !ER: Entra solo tramite wcode. Ininfluente per NLO.
 c     !ER: attenzione quando cerco il W...ce ne sono due,
 c     !ER: e qui si vuole solo quello primary...
 
@@ -569,8 +570,10 @@ c     other common blocks
      $     ,skipjet
       data ini/.true./
       save ini
-      integer tcode,wcode
-      save tcode,wcode
+      integer tcode,wcode,ttype
+      save tcode,wcode,ttype
+      real *8 powheginput
+      external powheginput
 
 
       integer maxnum
@@ -625,8 +628,15 @@ c     we need to tell to this analysis file which program is running it
          endif
          write(*,*) '*****************************'
          ini=.false.
-         tcode=6    !*ttype
-         wcode=-24  !*ttype
+         tcode=6
+c     decide t or tbar process
+         ttype=powheginput('ttype')
+         if(abs(ttype).ne.1) then
+            write(*,*) 'Unrecognised ttype in input file'
+            write(*,*) 'admitted values: 1 for t, -1 for tbar'
+            call exit(1)
+         endif
+         wcode=-24  *ttype
       endif
 
       if(WHCPRG.eq.'NLO   ') then

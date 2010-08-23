@@ -374,9 +374,10 @@ c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
+      implicit none
       include '../include/LesHouches.h'
-      include 'nlegborn.h'
-      integer ileg
+      include 'PhysPars.h'
+      integer ileg,tmp
       integer tgcol,bgcol
       data tgcol/501/
       data bgcol/502/
@@ -415,7 +416,7 @@ c     g gggggg         WWWWW W
       endif
 
 c     final state
-      do ileg=3,nlegborn
+      do ileg=3,4
          if(abs(idup(ileg)).eq.24) then
             icolup(1,ileg)=0
             icolup(2,ileg)=0
@@ -1110,7 +1111,7 @@ c$$$      logical reorder
       real *8 s,t,u,ewcoupl
 
       logical verbose
-      parameter (verbose=.true.)
+      parameter (verbose=.false.)
 
       real *8 tiny
       parameter (tiny=1.d-6)
@@ -1512,7 +1513,7 @@ c     'phase-space & luminosity' hit-and-miss return point
 c     ->> generate top virtuality (offshellness)
       m678_2=virt2(topmass_pow,topwidth_pow,random())
 c     Uncomment the following to test strict t pole approximation
-c$$$      m678_2=topmass_pow**2
+      m678_2=topmass_pow**2
       if(m678_2.lt.wmass_pow**2) then
 c$$$         write(*,*) 'PS&LUM HIT&MISS, m678'
          goto 2
@@ -1552,7 +1553,7 @@ c$$$         write(*,*) 'extreme value for m67: ',sqrt(m67_2),' regenerate'
 c     ->> generate W virtuality (offshellness)
       m910_2=virt2(wmass_pow,wwidth_pow,random())
 c     Uncomment the following to test strict w pole approximation
-c$$$      m910_2=wmass_pow**2
+      m910_2=wmass_pow**2
       if(m910_2.lt.(m9+m10)**2) then
 c$$$         write(*,*) 'PS&LUM HIT&MISS, m910',m910_2
          goto 2

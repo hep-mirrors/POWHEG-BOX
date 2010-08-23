@@ -1,6 +1,4 @@
-c     !ER: sistemare per ttype
-
-
+c     !ER: ttype DOVREBBE ESSERE A POSTO
 
 c     returns 2 Re(M_B * M_V)/(as/(2pi)), 
 c     where M_B is the Born amplitude and 
@@ -21,6 +19,8 @@ c     The as/(2pi) factor is attached at a later point
       logical ini
       data ini/.true./
       save ini
+
+      integer ileg,vflav_loc(nleg)
 
       integer nf
       real *8 alphas,gs,gw_loc,s,m,m2t,q2,t1,u1,t,u,lns,lnt,lnu,musq,mu2
@@ -81,7 +81,21 @@ c     to check with Chris, using his scalar integrals
       zeta2=pi**2/6.
 cccccccccccccccccccccccccccccccccccccccccccccccc
 
+c     check
+      if (abs(vflav(4)).ne.6) then
+         write(*,*) 'setvirtual: ERROR in flavor assignement'
+         call exit(1)
+      endif
 
+ccccccccccccccccccccccccccccccccccccccc
+c     charge conjugation
+c     if ttype=-1, then bflav has been filled with tbar-production flavours.
+c     Subroutines here work for t-production flavour assignment.
+c     Therefore, invert the sign of local flavours.
+      do ileg=1,nleg
+         vflav_loc(ileg)= ttype *vflav(ileg)
+      enddo
+ccccccccccccccccccccccccccccccccccccccc
 
 
 
@@ -109,7 +123,7 @@ c     ca, cf, nc, pi already defined in pwhg_math.h
       mu2=st_muren2
 
 
-      if(vflav(1).eq.0) then
+      if(vflav_loc(1).eq.0) then
 c     the computation assumes g b -> t w and t1 and u1 are
 c     defined as
 c     t1 = t-m2t
@@ -123,11 +137,11 @@ c     g b -> w t
          u=u1+m2t
 
 c     CKM coupling
-         if(vflav(2).eq.1) then
+         if(vflav_loc(2).eq.1) then
             ckmtmp=Vtd**2
-         elseif(vflav(2).eq.3) then
+         elseif(vflav_loc(2).eq.3) then
             ckmtmp=Vts**2
-         elseif(vflav(2).eq.5) then
+         elseif(vflav_loc(2).eq.5) then
             ckmtmp=Vtb**2
          else
             write(*,*) 'Error 1 in setvirtual'
@@ -147,11 +161,11 @@ c     ER: CAVEAT, check this !
 ccccccccccccccccccccccccccccccccccccccccccccc
 
 c     CKM coupling
-         if(vflav(1).eq.1) then
+         if(vflav_loc(1).eq.1) then
             ckmtmp=Vtd**2
-         elseif(vflav(1).eq.3) then
+         elseif(vflav_loc(1).eq.3) then
             ckmtmp=Vts**2
-         elseif(vflav(1).eq.5) then
+         elseif(vflav_loc(1).eq.5) then
             ckmtmp=Vtb**2
          else
             write(*,*) 'Error 2 in setvirtual'
@@ -1711,7 +1725,7 @@ c$$$            endif
 c$$$         enddo
 c$$$
 c$$$
-c$$$c$$$         if(vflav(2).eq.0) then
+c$$$c$$$         if(vflav_loc(2).eq.0) then
 c$$$c$$$            res_virtual=amp2mcnlo_bg/(st_alpha/(2*pi)) *ckmtmp
 c$$$c$$$         else
 c$$$c$$$            res_virtual=amp2mcnlo_gb/(st_alpha/(2*pi)) *ckmtmp

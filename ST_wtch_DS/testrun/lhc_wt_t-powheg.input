@@ -63,7 +63,7 @@ wdecaymode 10000   ! decay mode: the 5 digits correspond to the following
                      ! primary-w-decay channels (l,mu,tau,u,c) 
                      ! 0 means close, 1 open
 
-tdec/elbranching 1.0  ! W electronic branching fraction
+tdec/elbranching 0.108  ! W electronic branching fraction
 tdec/emass 0.000511
 tdec/mumass 0.1056      
 tdec/taumass 1.777     

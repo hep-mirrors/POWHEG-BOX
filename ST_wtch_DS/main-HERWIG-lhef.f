@@ -22,6 +22,10 @@ c     MAXEV must be set before HWIGIN call.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C---INITIALISE OTHER COMMON BLOCKS
       CALL HWIGIN
+cccccccc
+c$$$      nrn(1)=12345
+c$$$      nrn(2)=54321
+cccccccc
 C---USER CAN RESET PARAMETERS AT
 C   THIS POINT, OTHERWISE DEFAULT
 C   VALUES IN HWIGIN WILL BE USED.
@@ -139,9 +143,6 @@ c     Needed to force t->e ve b decay.
       CALL HWMODK(6,ONE,100,12,-11,5,0,0)
       CALL HWMODK(-6,ONE,100,-12,11,-5,0,0)
 c     call HWIODK to see the HERWIG decay table
-
-c     Needed to force W->e ve decay for primary W
-      modbos(1)=2
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 C---USER'S INITIAL CALCULATIONS

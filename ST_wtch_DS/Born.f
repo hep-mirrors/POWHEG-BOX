@@ -3,9 +3,6 @@ c     !ER: pickwdecay dovrebbe essere OK.
 c     !ER: Reshuffling machinery AL MOMENTO NON VIENE CHIAMATA.
 c     !ER: Bisogna infatti rivedere put_on_mass_shell.
 
-c     !ER: >>>>>>> decay machinery MISSING <<<<<<<<<
-c     !ER: Solo pickwdecay e' stata aggiunta.
-
 c     !: Born.f should be very similar between DR and DS.
 c     !: Differences should be confined in the decay
 c     !: generation machinery.
@@ -377,9 +374,10 @@ c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
+      implicit none
       include '../include/LesHouches.h'
-      include 'nlegborn.h'
-      integer ileg
+      include 'PhysPars.h'
+      integer ileg,tmp
       integer tgcol,bgcol
       data tgcol/501/
       data bgcol/502/
@@ -418,7 +416,7 @@ c     g gggggg         WWWWW W
       endif
 
 c     final state
-      do ileg=3,nlegborn
+      do ileg=3,4
          if(abs(idup(ileg)).eq.24) then
             icolup(1,ileg)=0
             icolup(2,ileg)=0
@@ -1113,7 +1111,7 @@ c$$$      logical reorder
       real *8 s,t,u,ewcoupl
 
       logical verbose
-      parameter (verbose=.true.)
+      parameter (verbose=.false.)
 
       real *8 tiny
       parameter (tiny=1.d-6)

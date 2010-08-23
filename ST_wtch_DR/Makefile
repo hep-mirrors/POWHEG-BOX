@@ -146,26 +146,26 @@ force_look :
 clean:
 	rm -f obj/*.o madgraph/dhelas3.2/*.o madgraph/dhelas3.2/*.a \
 	pwhg_main lhef_analysis \
-	main-HERWIG-lhef main-PYTHIA-lhef \
-        main-HERWIG main-PYTHIA
+	main-HERWIG-lhef main-PYTHIA-lhef
+
+#####################
+
+# USER_check=$(USER) sigsoftvirt_check_massive_integrals.o mcnlo-wt.o
+
+# PWHG_check=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
+# 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o \
+# 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
+#         pt2maxreg.o Bornzerodamp.o sigremnants.o random.o boostrot.o \
+# 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
+#         pdfcalls.o  sigreal.o sigcollremn.o \
+#         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
+# 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
+# 	sigcollsoft.o sigvirtual.o \
+# 	fastjetsisconewrap.o fastjetktwrap.o \
+# 	$(PDFPACK) $(USER_check) $(SYSOBJ)
 
 
-USER_check=$(USER) sigsoftvirt_check_massive_integrals.o mcnlo-wt.o
 
-PWHG_check=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
-	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o \
-	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
-        pt2maxreg.o Bornzerodamp.o sigremnants.o random.o boostrot.o \
-	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
-        pdfcalls.o  sigreal.o sigcollremn.o \
-        pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
-	setstrongcoupl.o integrator.o newunit.o mwarn.o \
-	sigcollsoft.o sigvirtual.o \
-	fastjetsisconewrap.o fastjetktwrap.o \
-	$(PDFPACK) $(USER_check) $(SYSOBJ)
-
-
-
-pwhg_main_check:$(PWHG_check)
-	$(FF) $(patsubst %.o,obj/%.o,$(PWHG_check)) $(LIBS) $(LIBSFASTJET) $(LIBSMADGRAPH) $(LIBSQCDLOOP) -o $@
+# pwhg_main_check:$(PWHG_check)
+# 	$(FF) $(patsubst %.o,obj/%.o,$(PWHG_check)) $(LIBS) $(LIBSFASTJET) $(LIBSMADGRAPH) $(LIBSQCDLOOP) -o $@
 

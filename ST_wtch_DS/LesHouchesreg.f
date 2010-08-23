@@ -1,4 +1,4 @@
-c     !ER: ttype DOVREBBE essere per ora a POSTO.
+c     !ER: ttype ORA DOVREBBE essere a POSTO. Prima errato.
       subroutine gen_leshouches_reg
       implicit none
       include '../include/pwhg_math.h'
@@ -82,10 +82,10 @@ c     for Wt-channel is unambiguos.
          elseif(abs(idup(ileg)).eq.6) then
             icolup(1,ileg)=tcol
             icolup(2,ileg)=0
-         elseif(idup(ileg).gt.0) then
+         elseif(ttype*idup(ileg).gt.0) then
             icolup(1,ileg)=tcol
             icolup(2,ileg)=0
-         elseif(idup(ileg).lt.0) then
+         elseif(ttype*idup(ileg).lt.0) then
             icolup(1,ileg)=0
             icolup(2,ileg)=col2
          else

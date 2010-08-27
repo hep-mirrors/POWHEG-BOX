@@ -44,8 +44,8 @@ c
          enddo
          eptz=sqrt(eptz)/5
          vptz=vptz/5
-         write(*,*) a0(1,j),a0(2,j)/vptz*total,a0(2,j)/vptz*total*
-     1     sqrt((a0(3,j)/a0(2,j))**2+(eptz/vptz)**2+(errtot/total)**2)
+         write(*,*) a0(1,j),a0(2,j)/vptz,a0(2,j)/vptz*
+     1     sqrt((a0(3,j)/a0(2,j))**2+(eptz/vptz)**2)
       enddo
       write(*,*) ' hist'
       write(*,*) ' plot'

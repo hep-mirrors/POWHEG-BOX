@@ -386,28 +386,28 @@ c
       
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(0)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(0)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(1)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(1)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(2)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(2)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(3)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(3)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(4)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(4)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(5)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(5)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(6)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(6)/binsize(diag))
 
       diag=diag+1
-      call pwhgfill(diag,ptvb,a(7)/binsize(diag))
+      call pwhgfill(diag,ptvb,dsig*a(7)/binsize(diag))
 
      
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -492,6 +492,8 @@ c     //======================================================
       subroutine calCSVariables(p1,p2,res,swap)
       implicit none
       include '../include/LesHouches.h'
+      include 'nlegborn.h'
+      include '../include/pwhg_kn.h'
       real *8 p1(0:3),p2(0:3),res(0:3)
       logical swap
       real *8 Pbeam(0:3),Ptarget(0:3),Q(0:3)

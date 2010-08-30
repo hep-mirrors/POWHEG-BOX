@@ -3,6 +3,7 @@
       include 'include/pwhg_math.h'
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
+      include 'include/pwhg_flg.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
       include 'include/LesHouches.h'
@@ -14,9 +15,17 @@
       real * 8 pwhg_pt2,pt2max_regular
       external pwhg_pt2,pt2max_regular
       integer i
+      if(idwtup.eq.3) then
+         xwgtup=1
+      elseif(idwtup.eq.-4) then
+         xwgtup=rad_totgen
+      else
+         write(*,*) ' only 3 and -4 are allowed for idwtup'
+         call exit(-1)
+      endif
 c     store current random seeds. To be used to restart at problematic events
       call savecurrentrandom
-      if(random().gt.rad_sigrm/rad_sigtotgen) then
+      if(random().gt.rad_totrm/rad_totgen) then
 c     generate underlying Born kinematics
          call gen_btilde(mcalls,icalls)
 c     generate underlying Born flavour
@@ -38,13 +47,15 @@ c if negative weight, flip the sign of xwgtup
          endif
 c rad_type=1 for btilde events (used only for debugging purposes)
          rad_type=1
-         call born_suppression(suppfact)
-         if(suppfact.eq.0) then
-            write(*,*) ' 0 suppression factor in event generation'
-            write(*,*) ' aborting'
-            call exit(-1)
+         if(flg_weightedev) then
+            call born_suppression(suppfact)
+            if(suppfact.eq.0) then
+               write(*,*) ' 0 suppression factor in event generation'
+               write(*,*) ' aborting'
+               call exit(-1)
+            endif
+            xwgtup=xwgtup/suppfact
          endif
-         xwgtup=xwgtup/suppfact
       else
 c generate remnant n+1 body cross section
          call gen_sigremnant
@@ -187,36 +198,34 @@ c Generate a Born like event
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
       include 'include/pwhg_st.h'
-      integer iupperisr,iupperfsr
-      common/cupper/iupperisr,iupperfsr
       real * 8 x,y,csi
       csi=kn_csi
       x=1-csi
       y=kn_y
       if(rad_kinreg.eq.1) then
-         if(iupperisr.eq.1) then
+         if(rad_iupperisr.eq.1) then
             pwhg_upperb_rad = st_alpha/((1-x)*(1-y**2))
 c Possible alternatives:
-c iupper=2   pwhg_upperb_rad = st_alpha/(x*(1-x)*(1-y**2))
+c rad_iupper=2   pwhg_upperb_rad = st_alpha/(x*(1-x)*(1-y**2))
 c 
-c iupper=3:  pwhg_upperb_rad = st_alpha/(x**2*(1-x)*(1-y**2))
+c rad_iupper=3:  pwhg_upperb_rad = st_alpha/(x**2*(1-x)*(1-y**2))
          else
-            write(*,*) ' iupper=',iupperisr,
+            write(*,*) ' rad_iupper=',rad_iupperisr,
      1        'alternative not implemented'
             stop
          endif
       else
 c for now use the same
-         if(iupperfsr.eq.1) then
+         if(rad_iupperfsr.eq.1) then
             pwhg_upperb_rad = st_alpha/(csi*(1-y))
-         elseif(iupperfsr.eq.2) then
+         elseif(rad_iupperfsr.eq.2) then
             pwhg_upperb_rad = st_alpha/(csi**2*(1-y)*(1-csi/2*(1-y))**2)
      2          *csi
-         elseif(iupperfsr.eq.3) then
+         elseif(rad_iupperfsr.eq.3) then
             pwhg_upperb_rad = st_alpha/(csi*(1-y)*
      2         (1-csi/2*(1-y)))
          else
-            write(*,*) ' iupper=',iupperfsr,
+            write(*,*) ' rad_iupper=',rad_iupperfsr,
      1            'alternative not implemented'
             stop
          endif
@@ -241,13 +250,11 @@ c before a normal exit; not used here
       real * 8 xlr,q2,xlam2c,kt2max,cunorm
       integer nlc
       common/cpt2solve/xlr,q2,kt2max,xlam2c,cunorm,nlc
-      integer iupperisr,iupperfsr
-      common/cupper/iupperisr,iupperfsr
       real * 8 b0,sborn,xm,p
       sborn=kn_sborn
       b0=(11*CA-4*TF*nlc)/(12*pi)
       if(rad_kinreg.eq.1) then
-         if(iupperisr.eq.1) then
+         if(rad_iupperisr.eq.1) then
 c see Notes/upperbounding-isr.pdf
             if(pt2.lt.sborn) then
                if(sborn.lt.kt2max) then
@@ -268,28 +275,28 @@ c see Notes/upperbounding-isr.pdf
      #           + xlr
             endif
          else
-            write(*,*) ' iupper=',iupperisr,' not implemented'
+            write(*,*) ' rad_iupper=',rad_iupperisr,' not implemented'
             stop
-c Alternatives: iupper=2
+c Alternatives: rad_iupper=2
 c         pt2solve=cunorm*pi/b0/2
 c     #        *(log(q2/xlam2c)*log(log(kt2max/xlam2c)/log(pt2/xlam2c))
 c     #        - log(kt2max/pt2)) + xlr
          endif
       else
-         if(iupperfsr.eq.1) then
+         if(rad_iupperfsr.eq.1) then
 c final state radiation
          pt2solve=cunorm*pi/b0*(
      #     (log(kt2max/xlam2c)*log(log(kt2max/xlam2c)/log(pt2/xlam2c))
      #        - log(kt2max/pt2)) )
      #           + xlr
-         elseif(iupperfsr.eq.2) then
+         elseif(rad_iupperfsr.eq.2) then
             xm=kn_csimax
             p=sqrt(pt2/sborn)
             pt2solve=cunorm*2*pi*2*(
      3   (log(xm-xm**2)+(2*xm-2)*log(xm)-2*log(1-xm)*xm-2)/xm/2.d+0
      1   -(p*log(xm-p**2)+(2*p*log(p)-2*log(1-p)*p-2)*xm-2*p*log(p))
      2   /(p*xm)/2.d+0) + xlr
-         elseif(iupperfsr.eq.3) then
+         elseif(rad_iupperfsr.eq.3) then
             xm=kn_csimax
             p=sqrt(pt2/sborn)
             pt2solve=cunorm*2*pi*2*(
@@ -297,7 +304,7 @@ c final state radiation
      1   -(p*log(xm-p**2)+(2*p*log(p)-2*log(1-p)*p-2)*xm-2*p*log(p))
      2   /(p*xm)/2.d+0) + xlr
          else
-            write(*,*) ' iupper=',iupperfsr,' not implemented'
+            write(*,*) ' rad_iupper=',rad_iupperfsr,' not implemented'
             stop
          endif            
       endif
@@ -321,8 +328,6 @@ c
       real * 8 xlr,q2,xlam2c,kt2max,unorm
       integer nlc
       common/cpt2solve/xlr,q2,kt2max,xlam2c,unorm,nlc
-      integer iupperisr,iupperfsr
-      common/cupper/iupperisr,iupperfsr
       real * 8 xmin,rv,xp,xm,chi,tk,uk,ubound,ufct,
      #   sborn,value,err,tmp1,tmp2,tmp,rvalue,born,sig
       common/cdfxmin/xmin
@@ -341,12 +346,12 @@ c See Notes/kt2max.pdf
          goto 3
       endif
 c upper bound is log(q2/t)
-      if(iupperisr.eq.1) then
+      if(rad_iupperisr.eq.1) then
          q2=2*sborn
-      elseif(iupperisr.eq.2) then
-         write(*,*) ' iupper=',iupperisr,' not implemented'
+      elseif(rad_iupperisr.eq.2) then
+         write(*,*) ' rad_iupper=',rad_iupperisr,' not implemented'
          stop
-c Alternative iupper=2
+c Alternative rad_iupper=2
 c         q2=4*sborn/min(x1b,x2b)**2
       endif
 c see section 4 in ZZ paper, last paragraph
@@ -387,7 +392,7 @@ c vetoes:
 c tmp1: V(t)/tilde{V}(t) in appendix D of ZZ paper;
 c (typo: in D.13, log log -> log
       xmin=min(x1b,x2b)/(2*sqrt(1+t/sborn))
-      if(iupperisr.eq.1) then
+      if(rad_iupperisr.eq.1) then
          tmp1=log((sqrt(xp-xmin)+sqrt(xm-xmin))
      #       /(sqrt(xp-xmin)-sqrt(xm-xmin)))
          if(t.lt.sborn) then
@@ -395,7 +400,7 @@ c (typo: in D.13, log log -> log
          else
             tmp1=tmp1/(log(2d0)/2)
          endif
-      elseif(iupperisr.eq.2) then
+      elseif(rad_iupperisr.eq.2) then
          tmp1=log(2/xmin*(sqrt((xp-xmin)*(xm-xmin))
      # +1-xmin/2*(xp+xm))/(xp-xm)) /(log(q2/t)/2)
       endif
@@ -415,13 +420,13 @@ c to set xmuren2:
 c At this stage: pt generated according to D.2
 c generate x proportional to 1/(x sqrt((xp-x)*(xm-x)))
 c in the range xmin < x < xm (cf. D.5)
-c Generate in d sqrt(xm-x) /sqrt(xp-x)  (iupper=1) or d sqrt(xm-x) /(x sqrt(xp-x)) (iupper=2)
-c using       d sqrt(xm-x) /sqrt(xp-xm) (iupper=1) or d sqrt(xm-x) /(xmin sqrt(xp-xm)) (iupper=2) as upper bound using hit and miss
+c Generate in d sqrt(xm-x) /sqrt(xp-x)  (rad_iupper=1) or d sqrt(xm-x) /(x sqrt(xp-x)) (rad_iupper=2)
+c using       d sqrt(xm-x) /sqrt(xp-xm) (rad_iupper=1) or d sqrt(xm-x) /(xmin sqrt(xp-xm)) (rad_iupper=2) as upper bound using hit and miss
  2    chi=sqrt(xm-xmin)*random()
       x=xm-chi**2
-      if(iupperisr.eq.1) then
+      if(rad_iupperisr.eq.1) then
          if(random().gt.sqrt(xp-xm)/sqrt(xp-x)) goto 2
-      elseif(iupperisr.eq.2) then
+      elseif(rad_iupperisr.eq.2) then
          if(random().gt.(xmin*sqrt(xp-xm))/(x*sqrt(xp-x))) goto 2
       endif
 c get y (abs to avoid tiny negative values)
@@ -487,8 +492,6 @@ c
       real * 8 xlr,q2,xlam2c,kt2max,unorm
       integer nlc
       common/cpt2solve/xlr,q2,kt2max,xlam2c,unorm,nlc
-      integer iupperisr,iupperfsr
-      common/cupper/iupperisr,iupperfsr
       real * 8 xmin,rv,ubound,ufct,
      #   s,value,err,tmp,rvalue,born,sig
       common/cdfxmin/xmin
@@ -541,11 +544,11 @@ c radiation in highest bid loop): generate a born event
 c vetoes:
       rv=random()
       call set_rad_scales(t)
-      if(iupperfsr.eq.1) then
+      if(rad_iupperfsr.eq.1) then
          tmp=st_alpha / pwhg_alphas0(t,rad_lamll,nlc)
-      elseif(iupperfsr.eq.2) then
+      elseif(rad_iupperfsr.eq.2) then
          tmp=st_alpha
-      elseif(iupperfsr.eq.3) then
+      elseif(rad_iupperfsr.eq.3) then
          tmp=st_alpha
       endif
       if(tmp.gt.1) then
@@ -556,7 +559,7 @@ c vetoes:
       if(rv.gt.tmp) then
          goto 1
       endif
-      if(iupperfsr.eq.1) then         
+      if(rad_iupperfsr.eq.1) then         
 c At this stage: pt generated according to (1) of upperbounding-fsr.pdf;
 c generate csi uniformly in 1/csi
 c in the range t/s < csi^2 < csimax^2
@@ -566,7 +569,7 @@ c get y
          y=1-2*t/(s*csi**2)
 c At this point a csi-y pair is generated according to the
 c distribution upper(). It is automatically within range.
-      elseif(iupperfsr.eq.2) then
+      elseif(rad_iupperfsr.eq.2) then
 c     csi distributed uniformly in 1/(csi-t/s)
          rv=random()
          csi=1/(rv/(sqrt(t/s)-t/s)+(1-rv)/(kn_csimax-t/s))+t/s
@@ -576,7 +579,7 @@ c get y
          y=1-2*t/(s*csi**2)
 c At this point a csi-y pair is generated according to the
 c distribution upper(). It is automatically within range.
-      elseif(iupperfsr.eq.3) then
+      elseif(rad_iupperfsr.eq.3) then
 c     csi distributed uniformly in 1/(csi-t/s)
          rv=random()
          csi=1/(rv/(sqrt(t/s)-t/s)+(1-rv)/(kn_csimax-t/s))+t/s
@@ -584,7 +587,8 @@ c get y
          y=1-2*t/(s*csi**2)
          if(random().gt.(csi-t/s)) goto 1
       else
-         write(*,*) ' gen_rad_fsr:  iupper=',iupperfsr,' invalid'
+         write(*,*) ' gen_rad_fsr:  rad_iupper=',rad_iupperfsr,
+     1        ' invalid'
       endif
 c
 c extra suppression factor of upper bounding function (may depend upon radiation variables)

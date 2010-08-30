@@ -42,7 +42,7 @@ c Boost the underlying Born variables to their cm frame
      1        -(1-xrad(1))**2*(1-2*par_fsrtinycsi)
          xjac=2*(1-xrad(1))
       else
-         kn_csitilde=xrad(1)*(1-par_fsrtinycsi)+par_fsrtinycsi
+         kn_csitilde=xrad(1)*(1-2*par_fsrtinycsi)+par_fsrtinycsi
          xjac=1
       endif
       kn_y=1-2*xrad(2)
@@ -220,7 +220,7 @@ c ISR:
       rad_kinreg=1
       kn_csitilde=(3-2*xrad(1))*xrad(1)**2
       xjac=6*(1-xrad(1))*xrad(1)
-      kn_csitilde=kn_csitilde*(1-par_isrtinycsi)+par_isrtinycsi
+      kn_csitilde=kn_csitilde*(1-2*par_isrtinycsi)+par_isrtinycsi
       kn_y=1-2*xrad(2)
       xjac=xjac*2
       xjac=xjac*1.5d0*(1-kn_y**2)

@@ -754,7 +754,8 @@ c     debug information
       subroutine from_number_to_madgraph(n,flav,emitter,string)
       implicit none
       integer n,flav(n),emitter
-      character * 35 string,string0
+      include 'nlegborn.h'
+      character * (*) string
       integer max_partnames
       parameter (max_partnames=16)
       character * 3 partnames(-max_partnames:max_partnames)
@@ -763,6 +764,11 @@ c     debug information
      $     'b ','t ','  ','  ','',' ','e-','ve','mu-','vmu','ta-','vta'/
       integer j,nsp
       parameter (nsp=4)
+      if(len(string).lt.nsp*(n+1)+7) then
+         write(*,*)'from_number_to_madgraph: string too short;'
+         write(*,*)'Increase its size'
+         call exit(-1)
+      endif
       string=' '
       do j=1,n
          if (abs(flav(j)).le.max_partnames) then
@@ -771,6 +777,7 @@ c     debug information
             string(nsp*j:nsp*j+1)='**'
          endif
       enddo
+      string(nsp*j:nsp*j)='|'
       if(emitter.gt.0) then
          string(nsp*emitter-1:nsp*emitter-1)='('
          string(nsp*emitter+2:nsp*emitter+2)=')'
@@ -778,16 +785,18 @@ c     debug information
          string(nsp-1:nsp-1)='('
          string(3*nsp-2:3*nsp-2)=')'
       endif
-      string0=string
-      string=string0(1:2*nsp+2)//'  ==>  '//string0(2*nsp+3:)
+      do j=len(string)-7,2*nsp+1,-1
+         string(j+7:j+7)=string(j:j)
+      enddo
+      string(2*nsp+3:2*nsp+10)='  ==>  '
       end
 
       subroutine pretty_print_flst
       implicit none
-      character * 35 string,stringb
       include 'nlegborn.h'
+      character * 200 string,stringb
       include 'include/pwhg_flst.h'
-      integer j,k,l,iun
+      integer j,k,l,iun,lstring,lstringb
       call newunit(iun)
       open(unit=iun,file='FlavRegList',status='unknown')
       do j=1,flst_nalr
@@ -795,8 +804,17 @@ c     debug information
      #         (nlegreal,flst_alr(1,j),flst_emitter(j),string)
          call from_number_to_madgraph
      #         (nlegborn,flst_uborn(1,j),-1,stringb)
-         write(iun,*) string, ' mult=', flst_mult(j)
-         write(iun,*) stringb, ' <=== uborn', ' mult=', flst_ubmult(j)
+         do lstring=len(string),0,-1
+            if(string(lstring:lstring).ne.' ') goto 10
+         enddo
+ 10      continue
+         do lstringb=len(stringb),0,-1
+            if(stringb(lstringb:lstringb).ne.' ') goto 11
+         enddo
+ 11      continue
+         write(iun,'(a,i3)') string(1:lstring)//' mult=', flst_mult(j)
+         write(iun,'(a,i3)') stringb(1:lstringb)//' uborn, mult=',
+     1        flst_ubmult(j)
          write(iun,'(20(1x,2(1x,i1)))')
      #   ((flst_allreg(l,k,j),l=1,2),k=1,flst_allreg(1,0,j))
       enddo

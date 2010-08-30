@@ -6,6 +6,7 @@
       include 'include/pwhg_st.h'
       include 'include/pwhg_kn.h'
       integer j,iun,nev
+      real * 8 weight
       real * 8 powheginput
       character * 20 pwgprefix
       character * 40 file
@@ -55,10 +56,18 @@ c The event file is called 'pwgprefix'events-'j'.lhe
          call pwhgevent
 c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
          call lhefwritev(iun)
-         if(kn_csi.eq.0d0) then
-            call analysis_driver(rad_sigtotgen,0)
+         if(idwtup.eq.3) then
+            weight=rad_totgen*xwgtup
+         elseif(idwtup.eq.-4) then
+            weight=xwgtup
          else
-            call analysis_driver(rad_sigtotgen,1)
+            write(*,*) ' only 3 and -4 are allowed for idwtup'
+            call exit(-1)
+         endif
+         if(kn_csi.eq.0d0) then
+            call analysis_driver(weight,0)
+         else
+            call analysis_driver(weight,1)
          endif
          call pwhgaccumup
       enddo

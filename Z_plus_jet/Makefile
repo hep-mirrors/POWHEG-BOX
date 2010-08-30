@@ -6,11 +6,12 @@ ifeq ($(shell uname),Linux)
 ## Use -O2
 F77= gfortran -Wall -fno-automatic -ffpe-trap=invalid,zero,overflow
 OPT=-O2
+#DEBUG= -ggdb -pg  -fbounds-check 
 ## For g77 comment the above and uncomment below
-#F77= g77 -Wall -fno-automatic -ffortran-bounds-check
+#F77= g77 -Wall -fno-automatic
 #OPT=-O3
 # For debugging uncomment the following
-#DEBUG= -ggdb -pg
+#DEBUG= -ggdb -pg  -ffortran-bounds-check
 #Do not uncomment this with gfortran
 #SYSOBJ=trapfpe.o
 endif

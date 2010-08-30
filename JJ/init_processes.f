@@ -6,6 +6,7 @@
       include '../include/pwhg_flg.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_par.h'
+      include '../include/pwhg_rad.h'
       integer i1,i2,i3,i4,i5,k,ii(nlegreal)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
@@ -53,6 +54,9 @@ c the default value, 1d-6, causes problems in HELAC routines
       par_isrtinyy = 1d-4
       par_fsrtinycsi = 1d-4
       par_fsrtinyy = 1d-4
+c Overraid generl default; make 1 the default
+      rad_iupperfsr=powheginput("#iupperfsr")
+      if(rad_iupperfsr.lt.0) rad_iupperfsr=1      
 *********************************************************************
 c     number of light flavors
       st_nlight = nflav

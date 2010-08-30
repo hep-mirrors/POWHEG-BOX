@@ -4,8 +4,6 @@
       include 'include/pwhg_flst.h'
       include 'include/pwhg_flg.h'
       include 'include/pwhg_rad.h'
-      integer iupperisr,iupperfsr
-      common/cupper/iupperisr,iupperfsr
       integer iret,iun
       real * 8 sigbtl,errbtl,sigrm,errrm,
      #         xint
@@ -25,13 +23,6 @@
       integer j,mcalls,icalls,imode,iunstat
       real * 8 powheginput
       external btilde,sigremnant,powheginput
-
-c select which upper bounding function form
-      iupperisr=powheginput("#iupperisr")
-      if(iupperisr.lt.0) iupperisr=1
-      iupperfsr=powheginput("#iupperfsr")
-      if(iupperfsr.lt.0) iupperfsr=2
-c
       do j=1,ndiminteg
          ifold(j)=1
       enddo
@@ -74,10 +65,10 @@ c set  up the folding here, if required
          endif
          flg_nlotest=.true.
          imode=1
-c Totals will also be made available in the rad_tot*btl variables.
+c Totals will also be made available in the rad_tot???btl variables.
 c The output in sigbtl is: positive weight only (flg_withnegweights=.false.)
 c                          pos-|neg|            (flg_withnegweights=.true.)
-c On the other hand, results in rad_tot*btl do not depend upon flg_withnegweights
+c Results in rad_tot???btl do not depend upon flg_withnegweights
          call resettotals
          call mint(btilde,ndiminteg,ncall2,itmx2,ifold,imode,iun,
      #        xgrid,xint,ymax,sigbtl,errbtl)
@@ -128,24 +119,24 @@ c add finalized remnant contributions in histograms
             sigrm=0
             errrm=0
          endif
-         rad_sigrm=sigrm
-         rad_esigrm=errrm
-c rad_sigtot is used for the generation of the events.
+         rad_totrm=sigrm
+         rad_etotrm=errrm
+c rad_totgen is used for the generation of the events.
 c btilde and remnant event are chosen in proportion to
-c rad_sigbtl and rad_sigrm.
+c rad_totbtlgen and rad_totrm.
          if(flg_withnegweights) then
-            rad_sigbtl=rad_totabsbtl
-            rad_esigbtl=rad_etotabsbtl
+            rad_totbtlgen=rad_totabsbtl
+            rad_etotbtlgen=rad_etotabsbtl
          else
 c notice: this is correct only if the negative fraction is
 c negligible
-            rad_sigbtl=rad_totbtl
-            rad_esigbtl=rad_etotbtl
+            rad_totbtlgen=rad_totbtl
+            rad_etotbtlgen=rad_etotbtl
          endif
-         rad_sigtotgen=rad_sigrm+rad_sigbtl
-         rad_esigtotgen=sqrt(rad_esigbtl**2+rad_esigrm**2)
-         rad_sigtot=rad_sigrm+rad_totbtl
-         rad_esigtot=sqrt(rad_etotbtl**2+rad_esigrm**2)
+         rad_totgen=rad_totrm+rad_totbtlgen
+         rad_etotgen=sqrt(rad_etotbtlgen**2+rad_etotrm**2)
+         rad_tot=rad_totrm+rad_totbtl
+         rad_etot=sqrt(rad_etotbtl**2+rad_etotrm**2)
          
 c        
          call storegrids(xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
@@ -159,14 +150,14 @@ c Output NLO histograms
 
          if(flg_withreg.or.flg_withdamp) then
             write(iunstat,*) ' Remnant cross section in pb',
-     1           rad_sigrm,'+-',rad_esigrm
+     1           rad_totrm,'+-',rad_etotrm
          endif
          
          write(iunstat,*)' total (btilde+remnants) cross section in pb',
-     1        rad_sigtot,'+-',rad_esigtot
+     1        rad_tot,'+-',rad_etot
          
          write(iunstat,*) ' negative weight fraction:',
-     1        rad_totnegbtl/(2*rad_totnegbtl+rad_sigtot)
+     1        rad_totnegbtl/(2*rad_totnegbtl+rad_tot)
       else
          write(*,*)
      #     ' stored grids successfully loaded'
@@ -181,14 +172,14 @@ c Output NLO histograms
 
       if(flg_withreg.or.flg_withdamp) then
          write(*,*) ' Remnant cross section in pb',
-     1        rad_sigrm,'+-',rad_esigrm
+     1        rad_totrm,'+-',rad_etotrm
       endif
 
       write(*,*) ' total (btilde+remnants) cross section in pb',
-     1     rad_sigtot,'+-',rad_esigtot
+     1     rad_tot,'+-',rad_etot
 
       write(*,*) ' negative weight fraction:',
-     1     rad_totnegbtl/(2*rad_totnegbtl+rad_sigtot)
+     1     rad_totnegbtl/(2*rad_totnegbtl+rad_tot)
 
 
       close(iunstat)
@@ -306,10 +297,10 @@ c     print statistics
      2     rad_totabsbtl,rad_etotabsbtl,
      3     rad_totposbtl,rad_etotposbtl,
      4     rad_totnegbtl,rad_etotnegbtl,
-     5     rad_sigrm,rad_esigrm,
-     6     rad_sigbtl,rad_esigbtl,
-     7     rad_sigtotgen,rad_esigtotgen,
-     8     rad_sigtot,rad_esigtot
+     5     rad_totrm,rad_etotrm,
+     6     rad_totbtlgen,rad_etotbtlgen,
+     7     rad_totgen,rad_etotgen,
+     8     rad_tot,rad_etot
        close(iun)
       end
 
@@ -369,10 +360,10 @@ c
      2     rad_totabsbtl,rad_etotabsbtl,
      3     rad_totposbtl,rad_etotposbtl,
      4     rad_totnegbtl,rad_etotnegbtl,
-     5     rad_sigrm,rad_esigrm,
-     6     rad_sigbtl,rad_esigbtl,
-     7     rad_sigtotgen,rad_esigtotgen,
-     8     rad_sigtot,rad_esigtot
+     5     rad_totrm,rad_etotrm,
+     6     rad_totbtlgen,rad_etotbtlgen,
+     7     rad_totgen,rad_etotgen,
+     8     rad_tot,rad_etot
       close(iun)
       close(iun)
       iret=0

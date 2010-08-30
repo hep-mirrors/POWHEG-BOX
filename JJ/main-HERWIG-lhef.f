@@ -338,7 +338,7 @@ C - Show debugging output
       if (ierror.ne.0) then
          return
       endif
-      xwgtup=xwgtup*xsecup(1)
+      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

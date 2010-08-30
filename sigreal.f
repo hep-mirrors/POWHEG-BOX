@@ -549,6 +549,7 @@ c     Added this 'if' to be sure that no division by zero occurs
       real * 8 pdf1(-6:6),pdf2(-6:6)
       real * 8 ptsq,pwhg_pt2
       logical computed(maxalr)
+      logical condition
       logical ini
       data ini/.true./
       save ini,equivto,equivcoef
@@ -617,7 +618,17 @@ c check if we have a g -> Q Qbar splitting below threshold:
                endif
             endif
 c ----------------
-            if(equivto(alr).lt.0.or..not.computed(equivto(alr))) then
+c Gimnastic to avoid problem with non-lazy evaluation of logical
+c expressions in gfortran; replaces the line
+c            if(equivto(alr).lt.0.or..not.computed(equivto(alr))) then
+            if(equivto(alr).lt.0) then
+               condition=.true.
+            elseif(.not.computed(equivto(alr))) then
+               condition=.true.
+            else
+               condition=.false.
+            endif
+            if(condition) then
                call realgr(flst_alr(1,alr),kn_cmpreal,r0(alr))
                sumdijinv=0
                do k=1,flst_allreg(1,0,alr)
@@ -759,12 +770,14 @@ c flst_allreg({1,2},...) are the two legs that identify the k'th region
                r0(alr)=r0(alr)/kn_dijterm(kn_emitter,nlegreal)/sumdijinv
 c If the emitter is in the final state, and if the emitted and emitter
 c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
-               if(kn_emitter.gt.2.and.flst_alr(kn_emitter,alr).eq.0.and.
-     #            flst_alr(nlegreal,alr).eq.0) then
-                  r0(alr)=r0(alr)*2
-     1                 *kn_cmpreal(0,kn_emitter)**par_2gsupp/
-     2                 (kn_cmpreal(0,kn_emitter)**par_2gsupp
-     3                 +kn_cmpreal(0,nlegreal)**par_2gsupp)
+               if(kn_emitter.gt.2) then
+                  if(flst_alr(kn_emitter,alr).eq.0.and.
+     1                 flst_alr(nlegreal,alr).eq.0) then
+                     r0(alr)=r0(alr)*2
+     1                    *kn_cmpreal(0,kn_emitter)**par_2gsupp/
+     2                    (kn_cmpreal(0,kn_emitter)**par_2gsupp
+     3                    +kn_cmpreal(0,nlegreal)**par_2gsupp)
+                  endif
                endif
 c supply Born zero damping factor, if required
                if(flg_withdamp) then

@@ -72,7 +72,8 @@ c     Output value of the error on the integral
 c
       implicit none
       integer nintervals,ndimmax
-      parameter (nintervals=50,ndimmax=10)
+      include 'nlegborn.h'
+      parameter (nintervals=50,ndimmax=ndiminteg)
       integer ncalls0,ndim,nitmax,imode,iun
       real * 8 fun,xgrid(0:nintervals,ndim),xint,ymax(nintervals,ndim),
      #  ans,err
@@ -86,6 +87,11 @@ c
       integer kdim,kint,kpoint,nit,ncalls,ibin,iret,nintcurr,ifirst
       real * 8 random
       external random,fun
+      if(ndim.gt.ndiminteg) then
+         write(*,*) 'Mint: at most ',ndiminteg,' dimensions'
+         write(*,*) 'Got ',ndim
+         call exit(-1)
+      endif
       if(imode.eq.0) then
          do kdim=1,ndim
             ifold(kdim)=1
@@ -225,7 +231,9 @@ c integrands
       implicit none
       integer  nint,nhits(nint),kdim,nit,iun
       real * 8 xacc(0:nint),xgrid(0:nint)
-      real * 8 xn(100),r
+      integer nintervals
+      parameter (nintervals=50)
+      real * 8 xn(nintervals),r
       integer kint,jint
       do kint=1,nint
 c xacc (xerr) already containe a factor equal to the interval size
@@ -370,7 +378,8 @@ c     the returned coordinate vector of the generated point
       implicit none
       integer ndim,imode
       integer nintervals,ndimmax
-      parameter (nintervals=50,ndimmax=10)
+      include 'nlegborn.h'
+      parameter (nintervals=50,ndimmax=ndiminteg)
       real * 8 fun,xgrid(0:nintervals,ndim),
      #         ymax(nintervals,ndim),x(ndim)
       real * 8 dx(ndimmax)
@@ -380,7 +389,11 @@ c     the returned coordinate vector of the generated point
       real * 8 rand(ndimmax)
       external fun,random
       integer icalls,mcalls,kdim,kint,nintcurr,iret,ifirst
- 
+      if(ndim.gt.ndiminteg) then
+         write(*,*) 'Mint: at most ',ndiminteg,' dimensions'
+         write(*,*) 'Got ',ndim
+         call exit(-1)
+      endif
       if(imode.eq.0) then
          do kdim=1,ndim
             nintcurr=nintervals/ifold(kdim)

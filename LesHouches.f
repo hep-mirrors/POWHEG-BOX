@@ -166,7 +166,6 @@ c      include 'include/PhysPars.h'
       nup=nlegborn
 c id of the event
       idprup=lprup(1)
-      xwgtup=+1
 ccccc CAVEAT: aqedup must not be set here
 ccccc since otherwise a dependence on the
 ccccc process-dependent PhysPars.h must be

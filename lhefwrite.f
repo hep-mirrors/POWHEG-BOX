@@ -29,18 +29,6 @@ c...writes initialization information to a les houches events file on unit nlf.
          write(nlf,120) xsecup(ipr),xerrup(ipr),xmaxup(ipr),
      &        lprup(ipr)
  100  continue
-c if flg_withnegweights is set, output also true cross section
-c as extra info
-      if(flg_withnegweights) then
-         write(nlf,'(a)') '# Start extra-info-true-sigma'
-         write(nlf,'(a,d12.6,a,d12.6)') '# true sigma=',rad_sigtot,
-     1        '+-',rad_esigtot
-         write(nlf,'(a,d12.6,a,d12.6)') '# sigma for generation=',
-     1        rad_sigtotgen,'+-',rad_esigtotgen
-         write(nlf,'(a)')'# sigma for generation times'//
-     1        ' (Npositive-Nnegative)/(Npositive+Nnegative)=true sigma'
-         write(nlf,'(a)') '# End extra-info-true-sigma'
-      endif
       write(nlf,'(a)') '</init>'
  110  format(1p,2(1x,i8),2(1x,e12.5),6(1x,i6))
  120  format(1p,3(1x,e12.5),1x,i6)

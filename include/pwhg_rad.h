@@ -33,10 +33,10 @@ c obtained in the integration of btilde
      2     rad_totabsbtl,rad_etotabsbtl,
      3     rad_totposbtl,rad_etotposbtl,
      4     rad_totnegbtl,rad_etotnegbtl,
-     5     rad_sigrm,rad_esigrm,
-     6     rad_sigbtl,rad_esigbtl,
-     7     rad_sigtotgen,rad_esigtotgen,
-     8     rad_sigtot,rad_esigtot
+     5     rad_totrm,rad_etotrm,
+     6     rad_totbtlgen,rad_etotbtlgen,
+     7     rad_totgen,rad_etotgen,
+     8     rad_tot,rad_etot
 c Grid of the upper bounds of the ratio (R*kn_jacreal/B)/upper_bounding function
 c for each given kinematic region and underlying born
       real * 8 rad_csiynorms(rad_ncsiynormsmx,
@@ -72,26 +72,28 @@ c Hardest radiation kt2
 c Branching ratio (useful to change xsecup properly when a decay is
 c added a posteriori)
       real * 8 rad_branching
+      integer rad_iupperfsr,rad_iupperisr
       common/pwhg_rad/
      1     rad_totbtl,rad_etotbtl,
      2     rad_totabsbtl,rad_etotabsbtl,
      3     rad_totposbtl,rad_etotposbtl,
      4     rad_totnegbtl,rad_etotnegbtl,
-     5     rad_sigrm,rad_esigrm,
-     6     rad_sigbtl,rad_esigbtl,
-     7     rad_sigtotgen,rad_esigtotgen,
-     8     rad_sigtot,rad_esigtot,
-     #     rad_damp_rem_arr,rad_damp_rem_tot,rad_reg_arr,rad_reg_tot,
-     #     rad_csiynorms,rad_norms,rad_btilde_arr,rad_real_arr,
-     #     rad_normfact,rad_ptsqmin,rad_charmthr2,rad_bottomthr2,
-     #     rad_lamll,rad_xradremn,rad_pt2max,
-     #     rad_branching,
+     5     rad_totrm,rad_etotrm,
+     6     rad_totbtlgen,rad_etotbtlgen,
+     7     rad_totgen,rad_etotgen,
+     8     rad_tot,rad_etot,
+     9     rad_damp_rem_arr,rad_damp_rem_tot,rad_reg_arr,rad_reg_tot,
+     1     rad_csiynorms,rad_norms,rad_btilde_arr,rad_real_arr,
+     2     rad_normfact,rad_ptsqmin,rad_charmthr2,rad_bottomthr2,
+     3     rad_lamll,rad_xradremn,rad_pt2max,
+     4     rad_branching,
 c     integers
-     #     rad_ubornidx,rad_alr_list,rad_alr_nlist,
-     #     rad_realidx,rad_realalr,rad_realreg,
-     #     rad_kinreg,rad_nkinreg,
-     #     rad_ncsinorms,rad_nynorms,rad_type,rad_btilde_sign,
+     1     rad_ubornidx,rad_alr_list,rad_alr_nlist,
+     2     rad_realidx,rad_realalr,rad_realreg,
+     3     rad_kinreg,rad_nkinreg,
+     4     rad_ncsinorms,rad_nynorms,rad_type,rad_btilde_sign,
+     5     rad_iupperfsr,rad_iupperisr,
 c     logical
-     #     rad_kinreg_on
+     6     rad_kinreg_on
       
       

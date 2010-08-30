@@ -16,6 +16,9 @@
 c whether to output negative weights or not
       flg_withnegweights=.false.
       if(powheginput("#withnegweights").eq.1)flg_withnegweights=.true.
+c See if we have weighted events
+      flg_weightedev=.false.
+      if(powheginput("#ptsupp").gt.0) flg_weightedev=.true.
 c     Set to true to remember and use identical values of the computed 
 c     amplitudes, for Born, real and virtual contributions
       flg_smartsig=.true.
@@ -39,6 +42,12 @@ c     initialize random number sequence
       if (n1.lt.0) n1=0
       n2=powheginput('#rand2')
       if (n2.lt.0) n2=0
+c select which upper bounding function form
+      rad_iupperisr=powheginput("#iupperisr")
+      if(rad_iupperisr.lt.0) rad_iupperisr=1
+      rad_iupperfsr=powheginput("#iupperfsr")
+      if(rad_iupperfsr.lt.0) rad_iupperfsr=2
+c
       call setrandom(i1,n1,n2)
 c     assign a default id for the process at hand
 c     if the user want to assign different id's
@@ -59,9 +68,15 @@ c pdf group; negative to use internal herwig pdf's for showering
 c pdf set
       pdfsup(1)=-1
       pdfsup(2)=-1
-c unweighted events in input:
-      if(flg_withnegweights) then
-         idwtup = -3
+c If either weighted events or event with negative weights are
+c required, use idwtup=-4. Thuse, in both these cases, the average of the
+c event weight is the total cross section.
+c Otherwise the weight is set to 1 for each event.
+c User processes may override these choices. In particular, using -4 in
+c all cases is recommended for new processes. Using 3 is left here for
+c compatibility with older implementations.
+      if(flg_withnegweights.or.flg_weightedev) then
+         idwtup = -4
       else
          idwtup = 3
       endif
@@ -70,8 +85,13 @@ c Irrelevant if idwtup=+-3,+-4
       nprup = 1
       call bbinit
 c now the cross section is available
-      xsecup(1)=rad_sigtotgen  *rad_branching
-      xerrup(1)=rad_esigtotgen *rad_branching
+      if(flg_weightedev) then
+         xsecup(1)=-1
+         xerrup(1)=-1
+      else
+         xsecup(1)=rad_tot  *rad_branching
+         xerrup(1)=rad_etot *rad_branching
+      endif
       xmaxup(1)=1
       end
 

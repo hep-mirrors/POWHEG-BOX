@@ -131,11 +131,6 @@ c CAVEAT!!!  process dependent subroutine
       else         
          pt2=kn_pborn(1,5)**2+kn_pborn(2,5)**2
          fact=pt2/(pt2+pt2supp)         
-c      if (pt2.gt.10) then
-c         fact = 1d0
-c      else
-c         fact = 0d0
-c      endif
       endif
       end
 

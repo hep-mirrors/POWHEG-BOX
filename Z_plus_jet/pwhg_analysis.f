@@ -336,7 +336,8 @@ c arrays to reconstruct jets
       integer maxnumlep
       parameter (maxnumlep=10)
       integer emvec(maxnumlep),epvec(maxnumlep),iep,iem,ep,em
-      real * 8  Zmass,Zwidth,Zmass2low,Zmass2high,mV2ref,mV2
+      real * 8  Zmass,Zwidth,Zmass2low,Zmass2high,mV2ref,Zmasslow,
+     #     Zmasshigh
       logical foundlep
       integer nem,nep
       logical findmother
@@ -359,6 +360,7 @@ c     binsize
       external getrapidity0
       real * 8 rsep,rsepn_p
       external rsepn_p
+ 
 
       if (WHCPRG.ne.'POWHEG') then 
 c     set values if analysis file is run by HERWIG and PYTHIA
@@ -367,13 +369,17 @@ c     set values if analysis file is run by HERWIG and PYTHIA
          Zmass2low = (Zmass-10*Zwidth)**2
          Zmass2high = (Zmass+10*Zwidth)**2
       endif
+
+      Zmasslow = 65d0
+      Zmasshigh = 116d0      
+      
       if (ini) then
          write(*,*) '**************************************************'
          write(*,*) '**************************************************'
          write(*,*) '                ANALYSIS CUTS                     '
          write(*,*) '**************************************************'
          write(*,*) '**************************************************'
-         write(*,*)   sqrt(Zmass2low),' < M_Z < ',sqrt(Zmass2high)
+         write(*,*)   Zmasslow,' GeV < M_epem < ',Zmasshigh,' GeV'
          write(*,*) '**************************************************'
          write(*,*) '**************************************************'
          ini = .false.
@@ -486,12 +492,17 @@ c     Z momentum
       do mu=1,4
          pvb(mu)=phep(mu,iem)+phep(mu,iep)         
       enddo
-      mV2 = pvb(4)**2-pvb(1)**2-pvb(2)**2-pvb(3)**2
+c      mV2 = pvb(4)**2-pvb(1)**2-pvb(2)**2-pvb(3)**2
 c      write(*,*) '>>>>>>>>>>>>>>>>>>>>>>>>>>',sqrt(mV2)
 
       ptvb=sqrt(pvb(1)**2+pvb(2)**2)
 
       call getinvmass(pvb,mvb)
+
+c     select ONLY the events around the Z mass peak
+      if (mvb.lt.Zmasslow.or.mvb.gt.Zmasshigh) return
+
+
       call getrapidity(pvb,yvb)
       ptep=sqrt(phep(1,iep)**2+phep(2,iep)**2)
       call getrapidity(phep(1,iep),yep)

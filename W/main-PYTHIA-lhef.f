@@ -191,7 +191,7 @@ c     check parameters
          return
       endif
       nevhep=nevhep+1
-      xwgtup=xwgtup*xsecup(1)
+      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

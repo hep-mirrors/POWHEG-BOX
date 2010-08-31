@@ -35,7 +35,7 @@ c PARAMETERS
       mstj(41)=3 !No photon radiations off leptons
 c     mstp(61)=0 !No IS shower
 c     mstp(71)=0 !No FS shower
-      mstp(81)=0 !No Multiple interactions (MI increases the execution time)
+c      mstp(81)=0 !No Multiple interactions (MI increases the execution time)
 c     mstp(91)=0  !No Primordial kt
 c     mstp(131)=0 !No Pile Up
 c     mstp(111)=0               !No hadronization
@@ -70,7 +70,8 @@ c     number of warnings printed on the shell
       call PYABEG
       nevhep=0
       do iev=1,maxev
-         call pyevnw
+c         call pyevnw
+         call pyevnt
          if(nup.eq.0) goto 111
 c     Convert from PYJETS event record to HEPEVT event record
          temp=nevhep
@@ -179,7 +180,7 @@ c     &   JMOHEP(2,NMXHEP),JDAHEP(2,NMXHEP),PHEP(5,NMXHEP),VHEP(4,NMXHEP)
       real * 8 powheginput
       external powheginput
       nevhep=nevhep+1
-      xwgtup=xwgtup*xsecup(1)
+      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

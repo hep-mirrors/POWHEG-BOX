@@ -184,7 +184,8 @@ c     &   JMOHEP(2,NMXHEP),JDAHEP(2,NMXHEP),PHEP(5,NMXHEP),VHEP(4,NMXHEP)
       else
          bratio=brat(209+hdecaymode)
       endif
-      xwgtup=xwgtup*xsecup(1)*bratio
+      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
+      xwgtup=xwgtup*bratio
       call analysis(xwgtup)
       call pwhgaccumup 
       end

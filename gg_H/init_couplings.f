@@ -53,7 +53,9 @@ C     masswindow is an optonal  parameter passed by the user
 C     the default vale is 10 
       masswindow = powheginput("#masswindow")
       if(masswindow.lt.0d0) masswindow=10d0
-      ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)**2
+c      ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)^2
+      ph_Hmass2low=max(0d0,ph_Hmass-masswindow*ph_Hwidth)
+      ph_Hmass2low= ph_Hmass2low**2
       ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)**2
       ph_HmHw = ph_Hmass * ph_Hwidth
 

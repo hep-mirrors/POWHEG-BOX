@@ -360,7 +360,9 @@ c     binsize
       external getrapidity0
       real * 8 rsep,rsepn_p
       external rsepn_p
- 
+      integer problem_with_lep
+      save problem_with_lep
+      data problem_with_lep/0/
 
       if (WHCPRG.ne.'POWHEG') then 
 c     set values if analysis file is run by HERWIG and PYTHIA
@@ -474,16 +476,23 @@ c     find second decay product
                endif
             endif
          enddo
-         if(nep.ne.1.or.nem.ne.1) then    
+         if(nep.ne.1.or.nem.ne.1) then   
+            problem_with_lep=problem_with_lep+1
+            write(*,*) 'nep ',nep
+            write(*,*) 'nem ',nem
+            goto 1000
             write(*,*) 'nhep ',nhep
              do ihep=1,nhep
                 write(*,*) ihep, isthep(ihep)
                 write(*,*) (phep(mu,ihep),mu=1,4)
-             enddo
-            
-            write(*,*) 'Problems with leptons from Z decay', nep, nem
-            write(*,*) 'PROGRAM ABORT'
-            call exit(1)
+             enddo            
+ 1000        write(*,*) 
+     $            '******  Problems with leptons from Z decay  *****'  
+             write(*,*) 'number of recurrences of the problem=',
+     $            problem_with_lep
+            return
+c            write(*,*) 'PROGRAM ABORT'
+c            call exit(1)
          endif
       endif
 

@@ -67,7 +67,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 
 # target to generate LHEF output
 pwhg_main:$(PWHG)
-	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
+	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@ -static
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \

@@ -938,7 +938,7 @@ c set random seeds
       end
       
 
-*-- Author :    F. James, modified by Mike Seymour
+c*-- Author :    F. James, modified by Mike Seymour
 C-----------------------------------------------------------------------
       FUNCTION random2(iseed1,iseed2)
 C     MAIN RANDOM NUMBER GENERATOR

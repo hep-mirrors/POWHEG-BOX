@@ -99,7 +99,7 @@ c  pwhgfill  :  fills the histograms with data
 
 
       diag=diag+1
-      binsize(diag) = 5d0
+      binsize(diag) = 1d0
       call pwhgbookup(diag,'A0','LIN',binsize(diag),0d0,100d0)
 
       diag=diag+1
@@ -445,6 +445,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       subroutine get_ang_coeffs(p1,p2,a,lcos,genphi)
       implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_kn.h'
       real *8 p1(0:3),p2(0:3),res(0:3)
       real *8 a(0:7)
       real *8 theta,lcos,genphi
@@ -463,11 +465,14 @@ c     //======================================================
       call calCSVariables(p1,p2,res,.false.)
       
       theta=dacos(res(0))
+c      if(abs(res(0)-kn_cthdec).gt.1d-16) then
+c         write(*,*) ' cos theta: ', res(0), kn_cthdec,res(0)/kn_cthdec
+c      endif
       lcos=res(0)
       genphi=res(3)
 
-      mom0 = 0.5*(1.0-3.0*lcos*lcos)
-      mom1 = dsin(2.0*theta)*dcos(genphi)
+      mom0 = 0.5d0*(1-3*lcos*lcos)
+      mom1 = dsin(2d0*theta)*dcos(genphi)
       mom2 = dsin(theta)*dsin(theta)*dcos(2d0*genphi)
       mom3 = dsin(theta)*dcos(genphi)
       mom4 = lcos                 
@@ -475,14 +480,14 @@ c     //======================================================
       mom6 = dsin(2d0*theta)*dsin(genphi)
       mom7 = dsin(theta)*dsin(genphi)
 
-      a(0)   = (20.0/3.0)*mom0 + (2.0/3.0)
-      a(1)   = 5.0*mom1
-      a(2)   = 10.0*mom2
-      a(3)   = 4.0*mom3
-      a(4)   = 4.0*mom4
-      a(5)   = 5.0*mom5
-      a(6)   = 5.0*mom6
-      a(7)   = 4.0*mom7
+      a(0)   = (20d0/3d0)*mom0 + (2d0/3d0)
+      a(1)   = 5*mom1
+      a(2)   = 10*mom2
+      a(3)   = 4*mom3
+      a(4)   = 4*mom4
+      a(5)   = 5*mom5
+      a(6)   = 5*mom6
+      a(7)   = 4*mom7
 
       end
 
@@ -524,12 +529,12 @@ c*
 c*
 c*********************************************************************
     
-      p1plus=1.0/sqrt(2.0) * (p1(0) + p1(3))
-      p1minus = 1.0/sqrt(2.0) * (p1(0) - p1(3))
-      p2plus=1.0/sqrt(2.0) * (p2(0) + p2(3))
-      p2minus = 1.0/sqrt(2.0) * (p2(0) - p2(3))
+      p1plus=1d0/sqrt(2d0) * (p1(0) + p1(3))
+      p1minus = 1d0/sqrt(2d0) * (p1(0) - p1(3))
+      p2plus=1d0/sqrt(2d0) * (p2(0) + p2(3))
+      p2minus = 1d0/sqrt(2d0) * (p2(0) - p2(3))
 
-      costheta = 2.0 / Qmag / sqrt(Qmag**2 + 
+      costheta = 2d0 / Qmag / sqrt(Qmag**2 + 
      $     Qpt**2) * (p1plus * p2minus - p1minus * p2plus)
 
       if (swap) costheta = -costheta
@@ -544,7 +549,7 @@ c********************************************************************
       enddo
       Dpt=sqrt(D(1)**2+D(2)**2)
       dt_qt = D(1)*Q(1) + D(2)*Q(2)
-      sin2theta=(DPt/QMag)**2 -1.0/QMag**2/(QMag**2 + QPt**2)*dt_qt**2
+      sin2theta=(DPt/QMag)**2 -1d0/QMag**2/(QMag**2 + QPt**2)*dt_qt**2
 
 c      if (abs(sin2theta+(costheta*costheta)-1d0).gt.1d-6) then
 c         write (*,*) "HAHA",abs(sin2theta+(costheta*costheta)-1d0),Qpt
@@ -589,7 +594,7 @@ c// unit vector on R direction
      $        *dotp3(Dt,Qtunit))
 
 
-         if (swap) phi = atan2(-1.*sqrt(QMag**2+ QPt**2)*dotp3(Dt,Runit)
+         if (swap) phi = atan2(-sqrt(QMag**2+ QPt**2)*dotp3(Dt,Runit)
      $        ,QMag*dotp3(Dt,Qtunit))
 
       else

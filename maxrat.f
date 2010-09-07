@@ -5,12 +5,17 @@
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
+      include 'include/pwhg_rnd.h'
       integer mcalls,icalls
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
+      character * 4 chseed
       integer nubound,ios,iun,nynormsold,ncsinormsold,
-     #  icsi,iy,j,k
+     #  icsi,iy,j,k,jfile,nfiles
+      real * 8 csiynorms(rad_ncsiynormsmx,
+     1     rad_ncsiynormsmx,nlegborn-1,maxprocborn)
+      logical lpresent,loaded,manyfiles
       real * 8 powheginput,random
       external powheginput,random      
       call zerohistnorms
@@ -28,37 +33,95 @@
          write(*,*) ' ubound set =0, cannot proceed'
          call exit(1)
       endif
+      call newunit(iun)
       if(powheginput('use-old-ubound').eq.1) then
          call newunit(iun)
          open(unit=iun,file=pwgprefix(1:lprefix)//'ubound.dat',
-     #        status='old',iostat=ios)
+     1        status='old',iostat=ios)
          if(ios.eq.0) then
+            nfiles=1
+         else
+            if(rnd_cwhichseed.ne.'none') then
+c Are we required to generate a grid file or to load a bunch of them?
+c See if the grid file exists already
+               inquire(file=pwgprefix(1:lprefix)//'ubound-'//
+     1           rnd_cwhichseed//'.dat',exist=lpresent)
+               if(.not.lpresent) then
+c we must generate it: go to grid computation
+                  goto 111
+               endif
+            endif
+c try sequence of number files
+            nfiles=9999
+            manyfiles=.true.
+         endif
+      else
+c new grid required: go to grid computation
+         goto 111
+      endif
+      do jfile=1,nfiles
+         if(nfiles.ne.1) then
+c sequence of number files
+            write(chseed,'(i4)') jfile
+            do j=1,4
+               if(chseed(j:j).eq.' ') chseed(j:j)='0'
+            enddo
+            inquire(file=pwgprefix(1:lprefix)//'ubound-'//
+     1           chseed//'.dat',exist=lpresent)
+c This one is not present: skip it and go to the next
+            if(.not.lpresent) goto 110
+            open(unit=iun,file=pwgprefix(1:lprefix)//'ubound-'//
+     1           chseed//'.dat',  status='old',iostat=ios)
+c error in loading; assume that grids have to be redone
+            if(ios.ne.0) goto 111
+            write(*,*) ' opened ',pwgprefix(1:lprefix)//'ubound-'//
+     1           chseed//'.dat'
+         endif
 c rad_ncsinorms, rad_nynorms will be overridden by nynormsold,ncsinormsold
 c if all goes well
-            read(iun,fmt=*,iostat=ios,end=10) nynormsold,ncsinormsold
-            do j=1,flst_nborn
-               read(iun,fmt=*,iostat=ios,end=10)
-               do iy=1,nynormsold
-                  read(iun,fmt=*,iostat=ios,end=10)
-                  do icsi=1,ncsinormsold
-                     read(iun,fmt=*,iostat=ios,end=10)
-                     read(iun,fmt=*,iostat=ios,end=10)
-     # (rad_csiynorms(icsi,iy,k,j),k=1,rad_nkinreg)
+         read(iun,fmt=*,iostat=ios,end=111) nynormsold,ncsinormsold
+         do j=1,flst_nborn
+            read(iun,fmt=*,iostat=ios,end=111)
+            do iy=1,nynormsold
+               read(iun,fmt=*,iostat=ios,end=111)
+               do icsi=1,ncsinormsold
+                  read(iun,fmt=*,iostat=ios,end=111)
+                  read(iun,fmt=*,iostat=ios,end=111)
+     1                 (csiynorms(icsi,iy,k,j),k=1,rad_nkinreg)
+               enddo
+            enddo
+         enddo
+         close(iun)
+         do iy=1,nynormsold
+            do icsi=1,ncsinormsold
+               do j=1,flst_nborn
+                  do k=1,rad_nkinreg
+                     if(jfile.eq.1) then
+                        rad_csiynorms(icsi,iy,k,j)=
+     1                       csiynorms(icsi,iy,k,j)
+                     else
+                        rad_csiynorms(icsi,iy,k,j)=max(
+     1                       rad_csiynorms(icsi,iy,k,j),
+     2                       csiynorms(icsi,iy,k,j))
+                     endif
                   enddo
                enddo
             enddo
- 10         close(iun)
-         endif
-         if(ios.eq.0) then
+         enddo
 c all went well: override rad_ncsinorms, rad_nynorms
-            rad_ncsinorms=ncsinormsold
-            rad_nynorms=nynormsold
-            write(*,*)
-     # ' normalization of upper bounding function for radiation',
-     # ' successfully loaded'
-            goto 998
-         endif
+         rad_ncsinorms=ncsinormsold
+         rad_nynorms=nynormsold
+         loaded=.true.
+ 110     continue
+      enddo
+      if(loaded) then
+         write(*,*)
+     1 ' normalization of upper bounding function for radiation',
+     2 ' successfully loaded'
+         goto 998      
       endif
+c Compute and store normalization grid
+ 111  continue
       write(*,*)
       write(*,*)
      # ' POWHEG: computing normalization of upper'//
@@ -74,7 +137,7 @@ c all went well: override rad_ncsinorms, rad_nynorms
          enddo
       enddo
       do j=1,nubound
-         call gen_btilde(mcalls,icalls)
+         call gen_born(mcalls,icalls)
          call gen_uborn_idx
          kn_csitilde=random()
          kn_y=2*random()-1
@@ -92,8 +155,13 @@ c     final state radiation
          enddo    
       enddo
       call newunit(iun)
-      open(unit=iun,file=pwgprefix(1:lprefix)//'ubound.dat',
-     #        status='unknown')
+      if(rnd_cwhichseed.eq.'none') then
+         open(unit=iun,file=pwgprefix(1:lprefix)//'ubound.dat',
+     1        status='unknown')
+      else
+         open(unit=iun,file=pwgprefix(1:lprefix)//'ubound-'
+     1        //rnd_cwhichseed//'.dat',status='unknown')
+      endif
       write(iun,*) rad_nynorms,rad_ncsinorms, '    n-y and n-csi grid'
       do j=1,flst_nborn
          write(iun,fmt=*,iostat=ios) j,'   Born index'
@@ -439,3 +507,79 @@ c
       endif
       end
       
+
+
+      subroutine gen_born(mcalls,icalls)
+      implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_flg.h'
+      integer mcalls,icalls
+      real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
+     1     ,xmmm(0:50,ndiminteg),xint,sigbtl,errbtl
+      integer ifold(ndiminteg),ncall1,ncall2,
+     1     itmx1,itmx2,imode,j,k,iun
+      character * 20 pwgprefix
+      integer lprefix
+      common/cpwgprefix/pwgprefix,lprefix
+      logical savenegflag,savenlotest,ini
+      data ini/.true./
+      logical negflag
+      common /cbbarra/negflag
+      real * 8 xx(ndiminteg)      
+      real * 8 btilde,powheginput
+      external btilde,powheginput
+      save xgrid,ymax,xmmm,ini
+      if(flg_bornonly) then
+         call gen_btilde(mcalls,icalls)
+         return
+      endif
+      flg_bornonly=.true.
+c
+      savenegflag=negflag
+      negflag=.false.
+c
+      savenlotest=flg_nlotest
+      flg_nlotest=.false.
+      if(ini) then
+         write(*,'(/,a,/,a)') 
+     1       ' Initializing grids for the generation of the underlying',
+     1       ' Born configurations according to the Born cross section'
+c set up the grids
+         do j=1,ndiminteg
+            do k=0,50
+               xgrid(k,j)=0
+               xmmm(k,j)=0
+            enddo
+            do k=1,50
+               ymax(k,j)=0
+            enddo
+            ifold(j)=1
+         enddo
+         call newunit(iun)
+         open(unit=iun,file=pwgprefix(1:lprefix)//'borngrid.top',
+     1        status='unknown')
+         imode=0
+         ncall1=powheginput('ncall1')
+         itmx1=powheginput('itmx1')
+c This is not really needed; the accumulated totals
+c will not be used;
+         call resettotals
+         call mint(btilde,ndiminteg,ncall1,itmx1,ifold,imode,iun,
+     1        xgrid,xint,ymax,sigbtl,errbtl)
+         close(iun)
+         imode=1
+         ncall2=powheginput('ncall2')
+         itmx2=powheginput('itmx2')
+         call mint(btilde,ndiminteg,ncall2,itmx2,ifold,imode,iun,
+     1        xgrid,xint,ymax,sigbtl,errbtl)
+         call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,0,
+     1        mcalls,icalls,xx)
+         ini=.false.
+      endif
+      call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,1,
+     #    mcalls,icalls,xx)
+      negflag=savenegflag
+      flg_nlotest=savenlotest
+      flg_bornonly=.false.
+      end

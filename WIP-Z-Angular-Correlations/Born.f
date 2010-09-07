@@ -147,17 +147,21 @@ c     colored particles
 
 
       subroutine resonances_lh
+      implicit none
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
 c     lepton masses
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
+      real * 8 powheginput
 c     Resonance Z -> e-(3) e+(4)
       call add_resonance(23,3,4)
 c     The following routine also performs the reshuffling of momenta if
 c     a massive decay is chosen
-      call momenta_reshuffle(3,4,5,decmass)
+      if(powheginput('#reshuffle').eq.1) then
+         call momenta_reshuffle(3,4,5,decmass)
+      endif
       end
 
 

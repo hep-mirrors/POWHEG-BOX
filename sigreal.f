@@ -638,12 +638,14 @@ c            if(equivto(alr).lt.0.or..not.computed(equivto(alr))) then
                r0(alr)=r0(alr)/kn_dijterm(em,nlegreal)/sumdijinv
 c If the emitter is in the final state, and if the emitted and emitter
 c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
-               if(em.gt.2.and.flst_alr(em,alr).eq.0.and.
-     #              flst_alr(nlegreal,alr).eq.0) then
-                  r0(alr)=r0(alr)*2
-     1                 *kn_cmpreal(0,em)**par_2gsupp/
-     2                 (kn_cmpreal(0,em)**par_2gsupp
-     3                 +kn_cmpreal(0,nlegreal)**par_2gsupp)
+               if(em.gt.2) then
+                  if(flst_alr(em,alr).eq.0.and.
+     1              flst_alr(nlegreal,alr).eq.0) then
+                     r0(alr)=r0(alr)*2
+     1                    *kn_cmpreal(0,em)**par_2gsupp/
+     2                    (kn_cmpreal(0,em)**par_2gsupp
+     3                    +kn_cmpreal(0,nlegreal)**par_2gsupp)
+                  endif
                endif
                r0(alr)=r0(alr)*flst_mult(alr)
 c supply Born zero damping factor, if required

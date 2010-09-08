@@ -2,9 +2,10 @@
 ifeq ($(shell uname),Linux)
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
 ## Use -O2
-F77= gfortran -Wall -fno-automatic # -ffpe-trap=invalid,zero,overflow
+F77= gfortran -Wall -fno-automatic #-ffpe-trap=invalid,zero,overflow
 OPT=-O2
-#DEBUG= -ggdb -pg  -fbounds-check 
+#DEBUG= -ggdb -pg
+#  -fbounds-check 
 ## For g77 comment the above and uncomment below
 #F77= g77 -Wall -fno-automatic
 #OPT=-O3

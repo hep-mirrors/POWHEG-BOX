@@ -1,12 +1,12 @@
 numevts 500000
 ih1 1
-ih2 -1
+ih2 1
 ! To be used when using the mlmpdf package
 !ndns1 131
 !ndns2 131
 
-ebeam1 980d0
-ebeam2 980d0
+ebeam1 3500d0
+ebeam2 3500d0
 
 bornktmin 10d0  ! Generation cut; minimmum kt in underlying born
 

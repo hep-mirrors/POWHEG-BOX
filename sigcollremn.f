@@ -35,9 +35,9 @@ c log coeff., from 2.102, with partonic s=sb/z
 c same, with soft limit s
       plfr0(z)=1/(1-z)*log(sb/st_mufact2)+2*log(1-z)/(1-z)
 c End Statement Functions
-      z1=1-par_isrtinycsi-(1-kn_xb1)*xrad
+      z1=1-par_isrtinycsi-(1-kn_xb1-par_isrtinycsi)*xrad
       xjac1=(1-kn_xb1)
-      z2=1-par_isrtinycsi-(1-kn_xb2)*xrad
+      z2=1-par_isrtinycsi-(1-kn_xb2-par_isrtinycsi)*xrad
       xjac2=(1-kn_xb2)
 
       sb=kn_sborn

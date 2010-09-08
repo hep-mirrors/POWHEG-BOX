@@ -20,15 +20,18 @@
       external powheginput,random      
       call zerohistnorms
       nubound=powheginput('nubound')
-      rad_nynorms=powheginput('iymax')
-      rad_ncsinorms=powheginput('icsimax')
+      rad_nynorms=powheginput('#iymax')
+      if(rad_nynorms.lt.0) rad_nynorms=1
+      rad_ncsinorms=powheginput('#icsimax')
+      if(rad_ncsinorms.lt.0) rad_ncsinorms=1
       if(rad_nynorms.gt.rad_ncsiynormsmx.or.
      #    rad_ncsinorms.gt.rad_ncsiynormsmx) then
          write(*,*)
      #  ' error in poweg.input: rad_nynorms or rad_ncsinorms too large'
          stop
       endif
-      rad_normfact=powheginput('xupbound')
+      rad_normfact=powheginput('#xupbound')
+      if(rad_normfact.lt.0) rad_normfact=2
       if(nubound.eq.0) then
          write(*,*) ' ubound set =0, cannot proceed'
          call exit(1)

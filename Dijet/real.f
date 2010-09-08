@@ -140,7 +140,6 @@ C -   *************
       include 'nlegborn.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
-c      Include "madgraph_5_flavours/genps.inc"
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 FD_INVARIANT,FD_NONINVARIANT,FD_DENOM
       REAL*8 DOTP
@@ -255,7 +254,6 @@ C -   *************
       include 'nlegborn.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
-      Include "madgraph_5_flavours/genps.inc"
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 DOTP
       EXTERNAL DOTP
@@ -373,7 +371,6 @@ C -   *************
       include 'nlegborn.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
-      Include "madgraph_5_flavours/genps.inc"
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 DOTP
       EXTERNAL DOTP
@@ -455,7 +452,6 @@ C -   *************
       include 'nlegborn.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
-      Include "madgraph_5_flavours/genps.inc"
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 DOTP
       EXTERNAL DOTP

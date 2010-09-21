@@ -194,6 +194,12 @@ C -      call checkmass(2,kn_pborn(0,3))
       save ini,pt2supp,pt     
       if (ini) then
          pt = powheginput("#ptsupp")         
+         if(pt.gt.0) then
+            write(*,*) ' ******** WARNING: ptsupp is deprecated'
+            write(*,*) ' ******** Replace it with bornsuppfact'
+         else
+            pt = powheginput("#bornsuppfact")
+         endif
          ini = .false.
          pt2supp = pt**2
       endif

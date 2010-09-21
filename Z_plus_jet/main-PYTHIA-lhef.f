@@ -180,7 +180,7 @@ c     &   JMOHEP(2,NMXHEP),JDAHEP(2,NMXHEP),PHEP(5,NMXHEP),VHEP(4,NMXHEP)
       real * 8 powheginput
       external powheginput
       nevhep=nevhep+1
-      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
+      if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

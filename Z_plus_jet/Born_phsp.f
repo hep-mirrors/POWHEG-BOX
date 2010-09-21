@@ -122,7 +122,15 @@ c minimal final state mass
       save ini,pt2supp,pt     
 c CAVEAT!!!  process dependent subroutine
       if (ini) then
-         pt = powheginput("#ptsupp")         
+         pt = powheginput("#ptsupp")
+         if(pt.gt.0) then
+            write(*,*) ' ******** WARNING: ptsupp is deprecated'
+            write(*,*) ' ******** Replace it with bornsuppfact'
+            call flush
+            call exit(-1)
+         else
+            pt = powheginput("#bornsuppfact")
+         endif
          ini = .false.
          pt2supp = pt**2
       endif

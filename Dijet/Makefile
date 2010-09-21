@@ -39,6 +39,7 @@ LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF #-static
 LIBS=$(LIBSLHAPDF)
 
 #STATIC= -L /usr/lib/gcc/x86_64-linux-gnu/4.4/ -lstdc++ -static
+#STATIC=-static
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
@@ -52,7 +53,10 @@ LIBS=$(LIBSLHAPDF)
 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o \
-        virtual.o real.o pwhg_analysis.o
+        virtual.o real.o
+
+USER1=init_couplings.o init_processes.o Born_phsp.o Born.o \
+        virtual.o real.o pwhg_analysis-antikt.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \
@@ -68,8 +72,28 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	fastjetCDFMidPointwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
-pwhg_main:$(PWHG) 
-	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
+PWHG1=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
+	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \
+	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
+	Bornzerodamp.o sigremnants.o random.o boostrot.o \
+	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
+        pdfcalls.o  sigreal.o sigcollremn.o \
+        pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
+	setstrongcoupl.o integrator.o newunit.o mwarn.o \
+	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
+	fastjetktwrap.o \
+	fastjetD0RunIIConewrap.o \
+	fastjetCDFMidPointwrap.o \
+	$(PDFPACK) $(USER) $(SYSOBJ) fastjetfortran.o
+
+pwhg_main:$(PWHG)  pwhg_analysis.o
+	$(FF) $(patsubst %,obj/%,$(PWHG)) obj/pwhg_analysis.o $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
+
+pwhg_main-asycuts:$(PWHG)  pwhg_analysis-asycuts.o
+	$(FF) $(patsubst %,obj/%,$(PWHG)) obj/pwhg_analysis-asycuts.o $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
+
+pwhg_main-antikt:$(PWHG) 
+	$(FF) $(patsubst %,obj/%,$(PWHG)) obj/pwhg_analysis-antikt.o  $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
 	powheginput.o pwhg_bookhist.o pwhg_analysis.o lhefwrite.o   lhefread.o newunit.o \
@@ -79,9 +103,21 @@ LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
 	pwhg_analysis_driver.o \
 	$(SYSOBJ)
 
+LHEFANAL1=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
+	powheginput.o pwhg_bookhist.o pwhg_analysis-antikt.o lhefwrite.o   lhefread.o newunit.o \
+	fastjetktwrap.o \
+	fastjetD0RunIIConewrap.o \
+	fastjetCDFMidPointwrap.o \
+	pwhg_analysis_driver.o \
+	$(SYSOBJ) fastjetfortran.o
+
+
 # target to analyze LHEF output
 lhef_analysis:$(LHEFANAL)
 	$(FF) $(patsubst %,obj/%,$(LHEFANAL)) -o $@ $(LIBS) $(LIBSFASTJET)
+
+lhef_analysis-antikt:$(LHEFANAL1)
+	$(FF) $(patsubst %,obj/%,$(LHEFANAL1)) -o $@ $(LIBS) $(LIBSFASTJET)
 
 
 # target to read event file, shower them with HERWIG, + generic analysis

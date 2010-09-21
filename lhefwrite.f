@@ -55,6 +55,7 @@ c...writes event information to a les houches events file on unit nlf.
      & mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      & vtimup(i),spinup(i)
  200  continue
+      if(flg_pdfreweight) call lhefwritepdfrw(nlf)
       if(flg_debug) call lhefwritextra(nlf)
       write(nlf,'(a)')'</event>'      
  210  format(1p,2(1x,i6),4(1x,e12.5))
@@ -93,3 +94,12 @@ c     save last random number
       write(nlf,'(a)') '# End extra-info-previous-event'
       end
 
+      subroutine lhefwritepdfrw(nlf)
+      implicit none
+      integer nlf
+      integer id1,id2
+      real * 8 x1,x2,xf1,xf2,xmufact
+      call pdfreweightinfo(id1,id2,x1,x2,xmufact,xf1,xf2)
+      write(nlf,111)'#pdf ',id1,id2,x1,x2,xmufact,xf1,xf2
+ 111  format(a,2(1x,i2),5(1x,d14.8))
+      end

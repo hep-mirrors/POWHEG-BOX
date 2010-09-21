@@ -47,6 +47,9 @@ c select which upper bounding function form
       if(rad_iupperisr.lt.0) rad_iupperisr=1
       rad_iupperfsr=powheginput("#iupperfsr")
       if(rad_iupperfsr.lt.0) rad_iupperfsr=2
+c info on pdf for each event
+      flg_pdfreweight=.false.
+      if(powheginput("#pdfreweight").eq.1)flg_pdfreweight=.true.
 c
       call setrandom(i1,n1,n2)
 c     assign a default id for the process at hand

@@ -8,8 +8,7 @@
       do j=1,nev
          call upevnt
          call lhuptohepevt(j)
-         if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
-c         xwgtup=xwgtup*xsecup(1)
+         if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
          call analysis(xwgtup)
          call pwhgaccumup
          if (mod(j,20000).eq.0) then

@@ -136,7 +136,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       if (ierror.ne.0) then
          return
       endif
-      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
+      if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

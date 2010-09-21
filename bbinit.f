@@ -95,7 +95,7 @@ c importance sampling grids have been initialized with default seed;
 c they must all be the same. Now set current seed, if required
       if(rnd_cwhichseed.ne.'none') call setrandom(rnd_initialseed,0,0)
       if(iret1.ne.0) then
-         call init_hist
+         if (powheginput('#testplots').eq.1d0) call init_hist
 c set  up the folding here, if required
          ifold(ndiminteg-2) = powheginput("foldcsi")
          ifold(ndiminteg-1) = powheginput("foldy")

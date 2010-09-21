@@ -370,3 +370,40 @@ c first conjugate incoming colors
       call colour_conj(icolup(1,2))
       write(*,*) (icol(j),j=1,ilist)
       end
+
+
+      subroutine pdfreweightinfo(id1,id2,x1,x2,xmufact,xf1,xf2)
+      implicit none
+      integer id1,id2
+      real * 8 x1,x2,xf1,xf2,xmufact
+      real * 8 pdf(-6:6)
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/LesHouches.h'
+      if(rad_type.eq.1) then
+c Btilde event: pass x1 and x2, id1, id2 etc. of the current underlying Born
+         id1=flst_born(1,rad_ubornidx)
+         id2=flst_born(2,rad_ubornidx)
+         x1=kn_xb1
+         x2=kn_xb2
+         call setscalesbtilde
+      elseif(rad_type.eq.2.or.rad_type.eq.3) then
+         id1=idup(1)
+         id2=idup(2)
+         if(id1.eq.21) id1=0
+         if(id2.eq.21) id2=0         
+         x1=kn_x1
+         x2=kn_x2
+         call setscalesbtilde
+      endif
+      xmufact=sqrt(st_mufact2)
+      call pdfcall(1,x1,pdf)
+      xf1=x1*pdf(id1)
+      call pdfcall(2,x2,pdf)
+      xf2=x2*pdf(id2)
+      if(id1.eq.0) id1=21
+      if(id2.eq.0) id2=21
+      end

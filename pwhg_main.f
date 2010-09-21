@@ -66,7 +66,7 @@ c The event file is called 'pwgprefix'events-'j'.lhe
          call exit(0)
       endif
       call lhefwritehdr(iun)
-      call init_hist 
+      if (powheginput('#testplots').eq.1d0) call init_hist 
       do j=1,nev
          call pwhgevent
 c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)

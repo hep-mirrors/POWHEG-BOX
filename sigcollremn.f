@@ -17,6 +17,8 @@ c pdfb: born pdf's, pdfs: pdfs with scaled x->x/z
       real * 8 z,omzpgg,omzpqq,ppqq,omzpqg,ppqg,omzpgq,ppgq,
      #         sb,tot,plfrc,plfr0,z1,z2,xjac1,xjac2,rm1,rm2,res1,res2
       integer j,jb,fl1,fl2
+      logical pwhg_isfinite
+      external pwhg_isfinite
 c Statement Functions
 c omz:(1-z)*pgg(z), 2.106 of FNO2007
       omzpgg(z)=2*ca*(z+(1-z)**2/z+z*(1-z)**2)
@@ -111,6 +113,12 @@ c gq remnant
      #    *br_born(jb)*st_alpha/(2*pi)*kn_jacborn
          tot=tot+rescoll(jb)
       enddo
+      if (.not.pwhg_isfinite(tot)) then
+         do jb=1,flst_nborn
+            rescoll(jb)=0d0
+         enddo
+         tot=0d0
+      endif
       if(flg_nlotest) then
          tot=tot*www
          call analysis_driver(tot,0)

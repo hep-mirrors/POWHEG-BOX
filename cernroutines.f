@@ -1605,3 +1605,26 @@ C     ICMPCH=+1 IF HEX VALUES OF IC1 IS GREATER THAN IC2
  80   ICMPCH=1
       RETURN
       END
+
+
+
+
+
+c **********  THIS IS NOT A CERN ROUTINE!!  ***************
+      logical function pwhg_isfinite(x)
+      implicit none
+      real * 8 x
+c this to avoid generating an fptrap signal if on
+      if(x.ne.0) then
+c According to ieee standards, a NaN is the only real not
+c satisfying x.eq.x.
+c We assume here that 1/(+-Infinity)=0 (better be so!).
+c It works with g77, gfortran, ifort (intel compiler) up to -O3
+         if ((.not.(x.eq.x)).or.(1/x.eq.0)) then
+            pwhg_isfinite = .false.
+            call increasecnt('NaN exception')
+            return
+         endif
+      endif
+      pwhg_isfinite = .true.
+      end

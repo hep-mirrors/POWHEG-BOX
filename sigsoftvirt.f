@@ -24,6 +24,8 @@
       real * 8 ll
       real * 8 Intm_ep,Int0m_0,Int0m_ep,Intmm_0,Intmm_ep
       external Intm_ep,Int0m_0,Int0m_ep,Intmm_0,Intmm_ep
+      logical pwhg_isfinite
+      external pwhg_isfinite
 c from 2.100 of FNO2007
       if(ini) then
          do j=-6,6
@@ -129,6 +131,11 @@ c we only summed over j>i, multiply by 2
      #       *pdfb1(fl1)*pdfb2(fl2)*kn_jacborn
          tot=tot+resvirt(jb)
       enddo
+      if (.not.pwhg_isfinite(tot)) then
+         do jb=1,flst_nborn
+            resvirt(jb)=0d0
+         enddo
+      endif
       end
 
 

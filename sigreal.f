@@ -924,6 +924,10 @@ c flux factor
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
       real * 8 amp2 
+      logical pwhg_isfinite
+      external pwhg_isfinite
       call setreal(p,rflav,amp2)
+c     check if amp2 is finite
+      if (.not.pwhg_isfinite(amp2)) amp2=0d0
       amp2 = amp2*st_alpha/(2*pi)
       end

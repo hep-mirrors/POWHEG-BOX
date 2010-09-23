@@ -25,9 +25,11 @@ c      ph_Hmass  = 300d0
 c      ph_Hwidth = 8.4086d0
 c      ph_Hmass  = 400d0
 c      ph_Hwidth = 29.42d0 
+c      ph_Hmass  = 300d0
+c      ph_Hwidth = 8.445d0 
+      ph_Hmass  = 600d0
+      ph_Hwidth = 122.6d0 
 
-      ph_Hmass  = 300d0
-      ph_Hwidth = 8.445d0 
 
 
       ph_alphaem = 1d0/128.930d0

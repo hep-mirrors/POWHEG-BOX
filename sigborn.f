@@ -186,7 +186,25 @@ c provide the flux factor to the user Born routine
       integer bflav(nlegs)
       real * 8 born,bornjk(nlegs,nlegs),bmunu(0:3,0:3,nlegs)
       integer j,k,mu,nu
+      logical pwhg_isfinite
+      external pwhg_isfinite
       call setborn(p,bflav,born,bornjk,bmunu)
+c     check if born, bornjk and bmunu are finite
+      if (.not.pwhg_isfinite(born)) born=0d0
+      do j=1,nlegs
+         do mu=0,3
+            do nu=0,3
+               if (.not.pwhg_isfinite(bmunu(mu,nu,j))) 
+     $               bmunu(mu,nu,j)=0d0
+            enddo
+         enddo
+      enddo
+      do j=1,nlegs
+         do k=1,nlegs
+            if (.not.pwhg_isfinite(bornjk(j,k))) bornjk(j,k)=0d0
+         enddo
+      enddo
+c
       born=born/(2*kn_sborn)
       do j=1,nlegs
          do mu=0,3

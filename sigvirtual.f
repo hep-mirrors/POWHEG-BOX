@@ -16,6 +16,8 @@
       logical ini
       data ini/.true./
       save ini,equivto,equivcoef
+      logical pwhg_isfinite
+      external pwhg_isfinite
       if(ini) then
          do iborn=1,flst_nborn
             equivto(iborn)=-1
@@ -27,6 +29,9 @@
                do j=1,nmomset
                   call setvirtual(pborn(0,1,j),flst_born(1,iborn),
      #                 virtual(j,iborn))
+c     check if virtual(j,iborn) is finite
+                  if (.not.pwhg_isfinite(virtual(j,iborn))) 
+     #                 virtual(j,iborn)=0d0
                enddo
                call compare_vecsv(nmomset,iborn,virtual,ibornpr,
      #              cprop,iret)
@@ -46,6 +51,9 @@
          if(equivto(iborn).lt.0) then
             call setvirtual(kn_cmpborn,flst_born(1,iborn),
      #           virt_arr(iborn))
+c     check if virt_arr(iborn) is finite
+                  if (.not.pwhg_isfinite(virt_arr(iborn))) 
+     #                 virt_arr(iborn)=0d0
             virt_arr(iborn)=virt_arr(iborn)/(2*kn_sborn)
          else
             virt_arr(iborn)=virt_arr(equivto(iborn))*equivcoef(iborn)

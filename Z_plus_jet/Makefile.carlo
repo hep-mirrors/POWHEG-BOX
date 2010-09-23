@@ -160,6 +160,10 @@ main-PYTHIA-lhef_CDF_D0: $(PYTHIA)  pwhg_analysis_CDF_D0.o
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_CDF_D0.o -o $@ \
 	$(LIBSFASTJET) $(LIBS)
 
+main-PYTHIA-lhef_CDF_D0_LHC: $(PYTHIA)  pwhg_analysis_CDF_D0_LHC.o
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) obj/pwhg_analysis_CDF_D0_LHC.o -o $@ \
+	$(LIBSFASTJET) $(LIBS)
+
 
 clean:
 	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \

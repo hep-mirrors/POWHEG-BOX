@@ -1628,3 +1628,103 @@ c It works with g77, gfortran, ifort (intel compiler) up to -O3
       endif
       pwhg_isfinite = .true.
       end
+
+
+      subroutine increasecnt(string)
+      implicit none
+      character *(*) string
+      integer maxnum
+      parameter (maxnum=100)
+      character * 100 keywords(maxnum)
+      real * 8 counters(maxnum)
+      integer ncounters
+      common/ccounters/keywords,counters,ncounters
+      integer ini,j
+      data ini/0/
+      save ini
+      if(ini.eq.0) then
+         ncounters=0
+         ini=1
+      endif
+      do j=1,ncounters
+         if(string.eq.keywords(j)) then
+            counters(j)=counters(j)+1
+            return
+         endif
+      enddo
+c not found
+      if(ncounters.eq.maxnum) then
+         write(*,*) ' too many counters requested'
+         stop
+      endif
+      ncounters=ncounters+1
+      keywords(ncounters)=string
+      counters(ncounters)=1
+      end
+
+      subroutine incrcntrs(string,k)
+      implicit none
+      integer k
+      character *(*) string
+      character * 20 line
+      line=string
+      line(17:)=' '
+      write(line(17:),'(i4)') k
+      call increasecnt(line)
+      end
+
+      subroutine incrcntrs2(string,j,k)
+      implicit none
+      integer j,k
+      character *(*) string
+      character * 20 line
+      line=string
+      line(17:)=' '
+      write(line(13:),'(i4)') j
+      write(line(17:),'(i4)') k
+      call increasecnt(line)
+      end
+
+      subroutine printcnt(iun)
+      implicit none
+      integer iun
+      integer maxnum
+      parameter (maxnum=100)
+      character * 100 keywords(maxnum)
+      real * 8 counters(maxnum)
+      integer ncounters
+      common/ccounters/keywords,counters,ncounters
+      integer j,k
+      if(ncounters.eq.0) return
+      write(iun,*)
+      write(iun,*) 'Value of counters at end of run:'
+      do j=1,ncounters
+         k=100
+ 1       if(keywords(j)(k:k).eq.' ') then
+            k=k-1
+            goto 1
+         endif
+         write(iun,*) keywords(j)(1:k),' = ',counters(j)
+      enddo
+      write(iun,*)
+      end
+
+      function getcnt(string)
+      implicit none
+      real * 8 getcnt
+      character *(*) string
+      integer maxnum
+      parameter (maxnum=100)
+      character * 100 keywords(maxnum)
+      real * 8 counters(maxnum)
+      integer ncounters
+      common/ccounters/keywords,counters,ncounters
+      integer j
+      do j=1,ncounters
+         if(string.eq.keywords(j)) then
+            getcnt=counters(j)
+            return
+         endif
+      enddo
+      getcnt=0
+      end

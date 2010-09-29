@@ -56,9 +56,9 @@ testplots  1      ! (default 0, do not) do NLO and PWHG distributions
 #iupperisr 1 ! (default 1) choice of ISR upper bounding functional form 
 #iupperfsr 2 ! (default 2) choice of FSR upper bounding functional form 
 
-! Z+jet production
-#bornktmin  20d0    ! (default 0d0) kt min at Born level for jet in Z+jet 
 
 
+#pdfreweight 1 ! (default 0) write extra pdf infos on LHEF
 
+#manyseeds 1 ! (default 0) allow for the generation of different statistically independent samples (see Docs/Manyseeds.pdf) 
 

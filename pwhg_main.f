@@ -40,7 +40,13 @@ c The event file is called 'pwgprefix'events-'j'.lhe
          endif
          rewind(iun)
          do j=1,rnd_iwhichseed
+c Commented line to be used instead, for testing that manyseed runs
+c yield the same results as single seed runs, provided the total number
+c of calls is the same.
+c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
             read(iun,*) rnd_initialseed
+            rnd_i1=0
+            rnd_i2=0
          enddo
          close(iun)
          write(rnd_cwhichseed,'(i4)') rnd_iwhichseed

@@ -221,8 +221,12 @@ c integrands
          elseif(err.eq.0) then
             err=etot
          endif
-         ans=(ans/err**2+vtot/etot**2)/(1/err**2+1/etot**2)
-         err=1/sqrt(1/err**2+1/etot**2)
+c The following formulae are such that by doing nitmax iterations
+c with ncalls call the result is exactly equivalent to do 1 iteration with
+c nitmax*ncalls calls.
+         err=sqrt((err**2*(nit-1)**2+etot**2)/nit**2
+     1     +(nit-1)*(ans-vtot)**2/(ncalls*nit**3))
+         ans=((nit-1)*ans+vtot)/nit
       endif
       goto 10
       end

@@ -93,7 +93,8 @@
       endif
 c importance sampling grids have been initialized with default seed;
 c they must all be the same. Now set current seed, if required
-      if(rnd_cwhichseed.ne.'none') call setrandom(rnd_initialseed,0,0)
+      if(rnd_cwhichseed.ne.'none')
+     1     call setrandom(rnd_initialseed,rnd_i1,rnd_i2)
       if(iret1.ne.0) then
          if (powheginput('#testplots').eq.1d0) call init_hist
 c set  up the folding here, if required
@@ -168,7 +169,7 @@ c negligible
          rad_etot=sqrt(rad_etotbtl**2+rad_etotrm**2)
          
 c        
-         call storegrids(xgrid,ymax,xgridrm,ymaxrm,ifold,ifoldrm)
+         call storegrids(xgrid,ymax,xgridrm,ymaxrm,ifold,ifoldrm,ncall2)
 c Output NLO histograms
          if (powheginput('#testplots').eq.1d0) then
             if(rnd_cwhichseed.eq.'none') then
@@ -296,7 +297,7 @@ c     print statistics
 
 
       subroutine storegrids(xgrid,ymax,xgridrm,ymaxrm,
-     #                ifold,ifoldrm)
+     #                ifold,ifoldrm,ncall2)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
@@ -308,7 +309,7 @@ c     print statistics
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       integer nbins
       parameter (nbins=50)
-      integer ifold(ndiminteg),ifoldrm(ndiminteg)
+      integer ifold(ndiminteg),ifoldrm(ndiminteg),ncall2
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
@@ -328,6 +329,7 @@ c     print statistics
       write(iun) ((ymaxrm(j,k),k=1,ndiminteg),j=1,nbins)
       write(iun) (ifold(k),k=1,ndiminteg)
       write(iun) (ifoldrm(k),k=1,ndiminteg)
+      write(iun) ncall2
       write(iun) kn_sbeams, pdf_ih1, pdf_ih2, pdf_ndns1, pdf_ndns2
       write(iun)
      1     rad_totbtl,rad_etotbtl,
@@ -357,7 +359,7 @@ c     print statistics
       real * 8 tot(2,8),rtot(2,8)
       integer ifold(ndiminteg),ifoldrm(ndiminteg)
       integer iifold(ndiminteg),iifoldrm(ndiminteg)
-      integer iret
+      integer iret,jfound
 c
       integer ios
       integer nbins
@@ -368,7 +370,7 @@ c
       character * 4 chseed
       real * 8 shx
       integer ih1x, ih2x, ndns1x, ndns2x
-      integer j,k,iun,jfile,nfiles
+      integer j,k,iun,jfile,nfiles,ncall2
       logical lpresent,manyfiles,filefound
       real * 8 powheginput
       external powheginput
@@ -399,6 +401,7 @@ c See if the grid file exists already
 c Try to open and merge a set of grid files, generated with different
 c random seeds
       filefound=.false.
+      jfound=0
       do jfile=1,nfiles
          if(manyfiles) then
             write(chseed,'(i4)') jfile
@@ -432,6 +435,8 @@ c random seeds
          if(ios.ne.0) goto 998
          read(iun,iostat=ios) (iifoldrm(k),k=1,ndiminteg)
          if(ios.ne.0) goto 998
+         read(iun,iostat=ios) ncall2
+         if(ios.ne.0) goto 998
          read(iun,iostat=ios) shx, ih1x, ih2x, ndns1x, ndns2x
          if(ios.ne.0) goto 998
          if(shx.ne.kn_sbeams.or.ih1x.ne.pdf_ih1.or.ih2x.ne.pdf_ih2
@@ -439,6 +444,7 @@ c random seeds
      2        goto 998
          read(iun,iostat=ios) ((tot(k,j),k=1,2),j=1,8)
          if(ios.ne.0) goto 998
+         jfound=jfound+1
          if(jfile.lt.2) then
             do k=1,ndiminteg
                do j=0,nbins
@@ -489,9 +495,10 @@ c random seeds
                enddo
             enddo
             do j=1,8
-               rtot(1,j)=(tot(1,j)/tot(2,j)**2+rtot(1,j)/rtot(2,j)**2)
-     1              /(1/tot(2,j)**2+1/rtot(2,j)**2)
-               rtot(2,j)=sqrt(1/(1/tot(2,j)**2+1/rtot(2,j)**2))
+               rtot(2,j)=sqrt((rtot(2,j)**2*(jfound-1)**2+tot(2,j)**2)
+     1              /jfound**2+(jfound-1)*(rtot(1,j)-tot(1,j))**2/
+     2              (jfound**3*ncall2))
+               rtot(1,j)=(rtot(1,j)*(jfound-1)+tot(1,j))/jfound
             enddo
          endif
          rad_totbtl     =rtot(1,1)

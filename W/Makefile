@@ -4,11 +4,11 @@ ifeq ($(shell uname),Linux)
 ## of boolean in gfortran.
 ## As of gfortran 4.4.1 optimizing with -O3 yields erroneous results
 ## Use -O2
-#F77= gfortran -Wall -fno-automatic #-ffpe-trap=invalid,zero,overflow
-#OPT=-O2
+F77= gfortran -Wall -fno-automatic #-ffpe-trap=invalid,zero,overflow
+OPT=-O2
 ## For g77 comment the above and uncomment below
-F77= g77 -Wall -fno-automatic -ffortran-bounds-check
-OPT=-O3
+#F77= g77 -Wall -fno-automatic -ffortran-bounds-check
+#OPT=-O3
 # For debugging uncomment the following
 #DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
@@ -16,7 +16,7 @@ OPT=-O3
 endif
 
 HERWIG_VERSION=herwig6510
-PYTHIA_VERSION=pythia-6.4.21
+PYTHIA_VERSION=pythia-6.4.23
 
 FASTJET_CONFIG=fastjet-config
 
@@ -103,6 +103,14 @@ PYTHIA=main-PYTHIA-lhef.o $(PYTHIA_OBJ) \
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
 
+# target to cleanup
+.PHONY: clean
 clean:
 	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef \
 	main-PYTHIA-lhef
+
+MERGE_wp_wm=merge_wp_wm.o newunit.o random.o cernroutines.o
+
+#  target to merge t and tbar samples
+merge_wp_wm: $(MERGE_wp_wm)
+	$(FF) $(patsubst %.o,obj/%.o,$(MERGE_wp_wm)) -o $@

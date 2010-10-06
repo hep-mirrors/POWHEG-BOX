@@ -7,9 +7,8 @@
       include 'PhysPars.h'
 
       real * 8 xborn(ndiminteg-3)
-      real * 8 vec(3),cth,cthdec,phidec,s,
-     #     z,zhigh,zlow
-      integer mu,k,j
+      real * 8 vec(3),phidec
+      integer mu,k
       logical ini
       data ini/.true./
       save ini
@@ -20,16 +19,13 @@ c     from POWHEG-st_dec code
       real *8 tau,tau_min,tau_max,tmp,ycm,ycm_min,ycm_max
       real *8 jacb,shat,s_had,ro,beta
 
-      real *8 tmin,tmax,random_min,random_max,random_t
-
-      integer ixx_mtop,ixx_tau,ixx_ycm,ixx_cth1
+      integer ixx_tau,ixx_ycm,ixx_cth1
       parameter(
      #ixx_tau  =1,
      #ixx_ycm  =2,
      #ixx_cth1 =3)
       real *8 E_t,E_w,ecm,mom
 ccccccccccccccccccccc
-      integer i
 
       real *8 dotp
       external dotp
@@ -225,9 +221,6 @@ c      call checkmass(2,kn_pborn(0,3))
       real * 8 muf,mur
       logical ini
       data ini/.true./
-      real *8 muref
-      real *8 dotp
-      external dotp
       if (ini) then
          write(*,*) '*************************************'
          write(*,*) '    Factorization and renormalization '
@@ -237,9 +230,5 @@ c      call checkmass(2,kn_pborn(0,3))
       endif
       muf=topmass_pow
       mur=topmass_pow
-
-c     CAVEAT:
-c     Never tried to set mu_r != mu_f for single-top s and t channel
-
       end
 

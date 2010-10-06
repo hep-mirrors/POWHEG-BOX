@@ -1,20 +1,24 @@
-!!!!!!!!!ER:
-c     Questa e' la versione migliore. Fa uso della variabile genrad
-!!!!!!!!!
+c     !: Final version.
 
-!!!!!!!!!ER:
-c     attenzione: quando il reale e' negativo, in gen_rad_isr sigreal_rad
-c     torna output negativo. In quel caso radiazione sempre vetata.
-!!!!!!!!!!
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     !: WARNING: subroutines here use the genrad variable and
+c     !: its corresponding common block.
+c     !: >>> THIS NEEDS A SLIGHTLY MODIFIED sigreal.f FILE: in fact,
+c     !: >>> I NEED TO KNOW WHETHER THE REAL CALL IS DONE FOR THE
+c     !: >>> BBAR EVALUATION OR FOR THE SUDAKOV CALCULATION.
+c     !: >>> In the BBAR CASE, THE PROGRAM RUNS NORMALLY (WITH NEGATIVE
+c     !: >>> WEIGHTS THAT CAN BE HANDLED WITH FOLDED INTEGRATION).
+c     !: >>> In the SUDAKOV CASE, THE DOUBLY-RESONANT REGION IS CUTOFF.
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-!!!!!!!!!ER:
-c     Attenzione, per qualche ragione anche i remnant SONO NEGATIVI.
-c     Lo sono perche' i remnant sono i processi di tipo qqbar -> Wt qbar',
-c     con qbar' quark di tipo b MA DIVERSO da q. Questi processi non hanno
-c     underlying Born (non sono singolari), ma hanno uno dei due grafici che
-c     e' double-resonant (un tbar interno puo' andare onshell).
-c     Quindi necessitano di sottrazione 'DS', che non garantisce la positivita'.
-!!!!!!!!!!!!
+c     !: There are remnants that can become negative too.
+c     !: In particular this can happen for qqbar -> Wt qbar',
+c     !: when qbar' is a b-type quark different from q.
+c     !: These subprocesses don't have underlying born, but one of the
+c     !: 2 graphs is doubly-resonant (an internal tbar can become
+c     !: resonant). Therefore, they need 'DS' subtraction.
+c     !: Their contribution is negligible. See region marked with
+c     !: '!:!:!' to see the corresponding code.
 
       subroutine setreal(p,rflav,amp2)
       implicit none
@@ -66,19 +70,17 @@ ccccccccccccccccccccccccccccccccc
       real *8 dotp
       external dotp
 
-      logical check1
-      parameter (check1=.false.)
-      logical check2
-      parameter (check2=.false.)
-
-      real *8 tiny
-      data tiny/1.d-5/
-
-      include '../include/pwhg_flg.h'
-      real *8 ptb,wt_plus_int_ofull
+c$$$      logical check1
+c$$$      parameter (check1=.false.)
+c$$$      logical check2
+c$$$      parameter (check2=.false.)
+c$$$      real *8 tiny
+c$$$      data tiny/1.d-5/
       
       real *8 powheginput
       external powheginput
+
+      real *8 nwidthcutoff
 
 ccccccccccccccccccccccccccccccccccccccc
 c     charge conjugation
@@ -159,17 +161,17 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       x1=kn_x1
       x2=kn_x2
 
-      !check that these values correspond to the current s for kr
-      if(check1) then
-         if(dabs(x1*x2*kn_sbeams/s-1).gt.tiny) then
-            write(*,*) 'Error 1 in setreal', s,x1*x2*kn_sbeams
-            write(*,*) 'This check1 has to be switched off if'//
-     $' smartsig is on'
-            write(*,*) '  Conflict with the kinematics generated'//
-     $' during the process of finding proportional matrix elements'
-            call exit(1)
-         endif
-      endif
+c$$$      !check that these values correspond to the current s for kr
+c$$$      if(check1) then
+c$$$         if(dabs(x1*x2*kn_sbeams/s-1).gt.tiny) then
+c$$$            write(*,*) 'Error 1 in setreal', s,x1*x2*kn_sbeams
+c$$$            write(*,*) 'This check1 has to be switched off if'//
+c$$$     $' smartsig is on'
+c$$$            write(*,*) '  Conflict with the kinematics generated'//
+c$$$     $' during the process of finding proportional matrix elements'
+c$$$            call exit(1)
+c$$$         endif
+c$$$      endif
 
       call generate_reshuffled_kinematics(x1,x2,s,krcm_mad,x1p,x2p,sp,
      $krcm_mad_resh)
@@ -191,16 +193,10 @@ c     this means that original PDF's were vanishing
      $         ((wbmass2 -tmass**2)**2 + tmass**2 *twidth**2)      
 
       fluxfactor=1.
+c     to test different flux factors
       if(powheginput('#withfluxfactor').eq.1) fluxfactor=s/sp
+
 ccccccccccccccccccccccccccccccccccccc
-
-
-ccccccccccccccccccccccc
-
-c      PDFfactor=1d0 !ER: to test
-
-c      BWfactor=BWfactor**(1.1) !ER: to test
-
 
  999  continue
 c     if the flavour string does not contain a w-b pair in the
@@ -211,77 +207,52 @@ c     choose_real_process_tt, that returns 0.
 c     assign output
       amp2=amp2_mad-BWfactor*PDFfactor*fluxfactor*amp2tt_mad
 
-c     check that subtraction works well close to the t pole
-      if((check2).and.(174.lt.sqrt(wbmass2).and.sqrt(wbmass2).lt.176))
-     $     then
-         if(BWfactor*PDFfactor*fluxfactor*amp2tt_mad.ne.0.) then
-            write(*,*) amp2_mad/(BWfactor*PDFfactor*fluxfactor
-     $           *amp2tt_mad),sqrt(wbmass2)
-         endif
-      endif
+c$$$c     !: check that subtraction works well close to the t pole
+c$$$      if((check2).and.(174.lt.sqrt(wbmass2).and.sqrt(wbmass2).lt.176))
+c$$$     $     then
+c$$$         if(BWfactor*PDFfactor*fluxfactor*amp2tt_mad.ne.0.) then
+c$$$            write(*,*) amp2_mad/(BWfactor*PDFfactor*fluxfactor
+c$$$     $           *amp2tt_mad),sqrt(wbmass2)
+c$$$         endif
+c$$$      endif
       
 c     A negative real contribution generated conflict with realgr. Now
 c     it's also possible to run the program with negative weights (see
 c     input file).
+
       if(amp2.le.0d0) then
+         !:!:!
          if((abs(rflav_ME(5)).ne.abs(rflav_ME(1))).and.
 c     This if selects ONLY remnants that become negative. In this case,
 c     assign an arbitrary small value. See comment at the beginning of
 c     this file.
-     $        (rflav_ME(1)+rflav_ME(2).eq.0).and.(rflav_ME(1).ne.0)) then
+     $       (rflav_ME(1)+rflav_ME(2).eq.0).and.(rflav_ME(1).ne.0)) then
             amp2=1d-20
             goto 123
          endif
-
-c$$$cccccccccccccccccccccccccccc
-c$$$         wt_plus_int_ofull=amp2/amp2_mad
-c$$$         ptb=sqrt(kr_mad(1,5)**2+kr_mad(2,5)**2)
-c$$$         if(flg_nlotest) then
-c$$$         if(wt_plus_int_ofull.lt.-5d-1) then
-c$$$            write(65,*) sqrt(wbmass2),ptb
-c$$$         elseif(-5d-1.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.lt.-1d
-c$$$     $           -1) then
-c$$$            write(66,*) sqrt(wbmass2),ptb
-c$$$         elseif(-1d-1.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.lt.-1d
-c$$$     $           -2) then
-c$$$            write(67,*) sqrt(wbmass2),ptb
-c$$$         elseif(-1d-2.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.lt.-1d
-c$$$     $           -3) then
-c$$$            write(68,*) sqrt(wbmass2),ptb
-c$$$         elseif(-1d-3.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.lt.-1d
-c$$$     $           -4) then
-c$$$            write(69,*) sqrt(wbmass2),ptb
-c$$$         elseif(-1d-4.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.lt.-1d
-c$$$     $           -5) then
-c$$$            write(70,*) sqrt(wbmass2),ptb
-c$$$         elseif(-1d-5.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.lt.-1d
-c$$$     $           -6) then
-c$$$            write(71,*) sqrt(wbmass2),ptb
-c$$$         elseif(-1d-6.lt.wt_plus_int_ofull.and.wt_plus_int_ofull.le.0d0)
-c$$$     $           then
-c$$$            write(72,*) sqrt(wbmass2),ptb
-c$$$         endif
-c$$$         endif
-c$$$ccccccccccccccccccccccccccccc
+         !:!:!
       endif
 
-c     to avoid the exact wb peak in the Sudakov generation stage.
+c     To avoid the exact wb peak in the Sudakov generation stage.
 c     There is no need to use genrad also in sigremnants, since
 c     remnants are handled by the previous if statement.
       if(genrad) then
 c     170-180 is OK
-         if(dabs(sqrt(wbmass2)-topmass_pow)/topwidth_pow.lt.3) then
+         nwidthcutoff=powheginput('#nwidthcutoff')
+         if(nwidthcutoff.lt.0) nwidthcutoff=3.
+         if(dabs(sqrt(wbmass2)-topmass_pow)/topwidth_pow
+     $        .lt.nwidthcutoff) then
             amp2=1.d-20
          endif
       endif
 
+c     to use a theta cut
       if((powheginput('#withthetacut').eq.1).and.(amp2.lt.0.)) amp2=1d
      $     -20
 
  123  continue
       amp2=amp2/(st_alpha/2./pi)
 
-ccccccccccccccccccccc
       end
 
 

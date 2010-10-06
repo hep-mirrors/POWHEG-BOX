@@ -58,7 +58,7 @@ PYTHIA_OBJ=$(PYTHIA_VERSION).o
 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-	real.o pwhg_analysis.o bmunu2.o boost.o $(MADGRAPH) $(QCDLOOP)
+	real.o pwhg_analysis.o bmunu2.o boost.o $(MADGRAPH)
 
 ##########
 # to compile madgraph:
@@ -71,14 +71,10 @@ MADGRAPH= $(LIBSMADGRAPH) my_setpara.o switchmom.o \
 ################
 
 #############
-# !ER: PER ORA E' COMPILATO A PARTE....
 # to link QCDloops object:
 # libqcdloop.a and libff.a added above to the list of linked libraries
 # also VPATH contains directories relevant to link QCDloop  
-QCDLOOP= $(LIBSQCDLOOP)
 #############
-
-
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \
@@ -146,26 +142,12 @@ force_look :
 clean:
 	rm -f obj/*.o madgraph/dhelas3.2/*.o madgraph/dhelas3.2/*.a \
 	pwhg_main lhef_analysis \
-	main-HERWIG-lhef main-PYTHIA-lhef
+	main-HERWIG-lhef main-PYTHIA-lhef \
+	merge_t_tb
 
-#####################
+MERGE_t_tb=merge_t_tb.o newunit.o random.o cernroutines.o
 
-# USER_check=$(USER) sigsoftvirt_check_massive_integrals.o mcnlo-wt.o
-
-# PWHG_check=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
-# 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o \
-# 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
-#         pt2maxreg.o Bornzerodamp.o sigremnants.o random.o boostrot.o \
-# 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
-#         pdfcalls.o  sigreal.o sigcollremn.o \
-#         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
-# 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
-# 	sigcollsoft.o sigvirtual.o \
-# 	fastjetsisconewrap.o fastjetktwrap.o \
-# 	$(PDFPACK) $(USER_check) $(SYSOBJ)
-
-
-
-# pwhg_main_check:$(PWHG_check)
-# 	$(FF) $(patsubst %.o,obj/%.o,$(PWHG_check)) $(LIBS) $(LIBSFASTJET) $(LIBSMADGRAPH) $(LIBSQCDLOOP) -o $@
+#  target to merge t and tbar samples
+merge_t_tb: $(MERGE_t_tb)
+	$(FF) $(patsubst %.o,obj/%.o,$(MERGE_t_tb)) -o $@
 

@@ -1,3 +1,6 @@
+c     !: This should be as the sigreal.f file in the main directory. The only
+c     !: difference is the presence here of the genrad variable and the
+c     !: corresponding common block.
       subroutine btildereal(xrad,resreal,www)
       implicit none
       include 'nlegborn.h'
@@ -549,12 +552,13 @@ c     Added this 'if' to be sure that no division by zero occurs
       real * 8 pdf1(-6:6),pdf2(-6:6)
       real * 8 ptsq,pwhg_pt2
       logical computed(maxalr)
+      logical condition
       logical ini
       data ini/.true./
       save ini,equivto,equivcoef
       external pwhg_pt2
-      logical genrad !ER:
-      common/cgenrad/genrad !ER:
+      logical genrad !:
+      common/cgenrad/genrad !:
       if(ini) then
          do alr=1,flst_nalr
             equivto(alr)=-1
@@ -565,7 +569,7 @@ c     generate "nmomset" random real-phase space configurations
             call fillmomenta(nlegreal,nmomset,kn_masses,preal)
             do alr=1,flst_nalr
                do j=1,nmomset
-                  genrad=.true. !ER:
+                  genrad=.true. !:
                   call realgr(
      1                 flst_alr(1,alr),preal(0,1,j),res(j,alr))
                enddo
@@ -620,8 +624,18 @@ c check if we have a g -> Q Qbar splitting below threshold:
                endif
             endif
 c ----------------
-            if(equivto(alr).lt.0.or..not.computed(equivto(alr))) then
-               genrad=.true. !ER:
+c Gimnastic to avoid problem with non-lazy evaluation of logical
+c expressions in gfortran; replaces the line
+c            if(equivto(alr).lt.0.or..not.computed(equivto(alr))) then
+            if(equivto(alr).lt.0) then
+               condition=.true.
+            elseif(.not.computed(equivto(alr))) then
+               condition=.true.
+            else
+               condition=.false.
+            endif
+            if(condition) then
+               genrad=.true. !:
                call realgr(flst_alr(1,alr),kn_cmpreal,r0(alr))
                sumdijinv=0
                do k=1,flst_allreg(1,0,alr)
@@ -631,12 +645,14 @@ c ----------------
                r0(alr)=r0(alr)/kn_dijterm(em,nlegreal)/sumdijinv
 c If the emitter is in the final state, and if the emitted and emitter
 c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
-               if(em.gt.2.and.flst_alr(em,alr).eq.0.and.
-     #              flst_alr(nlegreal,alr).eq.0) then
-                  r0(alr)=r0(alr)*2
-     1                 *kn_cmpreal(0,em)**par_2gsupp/
-     2                 (kn_cmpreal(0,em)**par_2gsupp
-     3                 +kn_cmpreal(0,nlegreal)**par_2gsupp)
+               if(em.gt.2) then
+                  if(flst_alr(em,alr).eq.0.and.
+     1              flst_alr(nlegreal,alr).eq.0) then
+                     r0(alr)=r0(alr)*2
+     1                    *kn_cmpreal(0,em)**par_2gsupp/
+     2                    (kn_cmpreal(0,em)**par_2gsupp
+     3                    +kn_cmpreal(0,nlegreal)**par_2gsupp)
+                  endif
                endif
                r0(alr)=r0(alr)*flst_mult(alr)
 c supply Born zero damping factor, if required
@@ -704,8 +720,8 @@ c    csi^2 (1-y)   for FSR regions
       logical ini
       data ini/.true./
       save ini,equivto,equivcoef
-      logical genrad !ER:
-      common/cgenrad/genrad !ER:
+      logical genrad !:
+      common/cgenrad/genrad !:
       if(ini) then
          do alr=1,flst_nalr
             equivto(alr)=-1
@@ -716,7 +732,7 @@ c     generate "nmomset" random real-phase space configurations
             call fillmomenta(nlegreal,nmomset,kn_masses,preal)
             do alr=1,flst_nalr
                do j=1,nmomset
-                  genrad=.false. !ER:
+                  genrad=.false. !:
                   call realgr(
      1                 flst_alr(1,alr),preal(0,1,j),res(j,alr))
                enddo
@@ -754,7 +770,7 @@ c Only R_alpha (namely alr) with the current emitter:
 c Not equal to any previous one, compute explicitly.
 c First mark as being computed
                markused(alr)=1
-               genrad=.false. !ER:
+               genrad=.false. !:
                call realgr(flst_alr(1,alr),kn_preal,r0(alr))
 c Supply FKS factor to separate singular region:
                sumdijinv=0
@@ -767,12 +783,14 @@ c flst_allreg({1,2},...) are the two legs that identify the k'th region
                r0(alr)=r0(alr)/kn_dijterm(kn_emitter,nlegreal)/sumdijinv
 c If the emitter is in the final state, and if the emitted and emitter
 c are both gluons, supply a factor E_em/(E_em+E_rad) * 2
-               if(kn_emitter.gt.2.and.flst_alr(kn_emitter,alr).eq.0.and.
-     #            flst_alr(nlegreal,alr).eq.0) then
-                  r0(alr)=r0(alr)*2
-     1                 *kn_cmpreal(0,kn_emitter)**par_2gsupp/
-     2                 (kn_cmpreal(0,kn_emitter)**par_2gsupp
-     3                 +kn_cmpreal(0,nlegreal)**par_2gsupp)
+               if(kn_emitter.gt.2) then
+                  if(flst_alr(kn_emitter,alr).eq.0.and.
+     1                 flst_alr(nlegreal,alr).eq.0) then
+                     r0(alr)=r0(alr)*2
+     1                    *kn_cmpreal(0,kn_emitter)**par_2gsupp/
+     2                    (kn_cmpreal(0,kn_emitter)**par_2gsupp
+     3                    +kn_cmpreal(0,nlegreal)**par_2gsupp)
+                  endif
                endif
 c supply Born zero damping factor, if required
                if(flg_withdamp) then
@@ -917,6 +935,10 @@ c flux factor
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
       real * 8 amp2 
+      logical pwhg_isfinite
+      external pwhg_isfinite
       call setreal(p,rflav,amp2)
+c     check if amp2 is finite
+      if (.not.pwhg_isfinite(amp2)) amp2=0d0
       amp2 = amp2*st_alpha/(2*pi)
       end

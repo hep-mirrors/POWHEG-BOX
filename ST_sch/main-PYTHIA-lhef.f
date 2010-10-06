@@ -71,7 +71,7 @@ c      mstp(131)=0               !No Pile Up
 c      mstp(111)=0               !No hadronization
 
 c       mstp(64) =3 !use Lambda_MC for IS shower
-       mstp(64) =1 !use Lambda_MSbar (default)
+c       mstp(64) =1 !use Lambda_MSbar (default)
 
 c     number of events printed on the shell
       maxpr=2

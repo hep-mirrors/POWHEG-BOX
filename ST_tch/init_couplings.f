@@ -12,7 +12,7 @@ c$$$      include '../include/pwhg_par.h'
       integer aemrun
       real *8 powheginput
       external powheginput
-      real *8 alfaem,pwhg_alphas,totbr
+      real *8 alfaem,pwhg_alphas,rdummy,totbr
       external alfaem,pwhg_alphas
       integer i,j,idummy
       real *8 alphaem_inv
@@ -33,7 +33,7 @@ c     setting physical parameters
       write(*,*) 'POWHEG: loading-setting physical parameters'
 
 c     branching ratio (used only in LH event file)
-      call pickwdecay(-1000,idummy,idummy,idummy,totbr)
+      call pickwdecay(-1000,rdummy,idummy,rdummy,totbr)
       rad_branching=totbr
 
 c     top mass

@@ -1,11 +1,10 @@
-c     !ER: ttype DOVREBBE essere per ora a POSTO.
-c     !ER: pickwdecay dovrebbe essere OK.
-c     !ER: Reshuffling machinery AL MOMENTO NON VIENE CHIAMATA.
-c     !ER: Bisogna infatti rivedere put_on_mass_shell.
-
 c     !: Born.f should be very similar between DR and DS.
 c     !: Differences should be confined in the decay
 c     !: generation machinery.
+
+c     !: Reshuffling procedure not implemented for Wt, therefore program
+c     !: stops if this option is used.
+c     !: See comments in put_on_mass_shell.
 
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
@@ -22,7 +21,6 @@ c     !: generation machinery.
 
       integer bflav_loc(nlegs)
 
-
 ccccccccccccccccccccccccccccccccccccccc
 c     charge conjugation
 c     If ttype=-1, then bflav has been filled with tbar-production flavours.
@@ -32,7 +30,6 @@ c     Therefore, invert the sign of local flavours.
          bflav_loc(j)= ttype *bflav(j)
       enddo
 ccccccccccccccccccccccccccccccccccccccc
-
 
       call compborn(p,bflav_loc,borntmp,bbmunu)
       born=borntmp
@@ -50,12 +47,6 @@ c     leg is a gluon. Assign corresponding bmunu
                      bmunu(mu,nu,j)=bbmunu(mu,nu)
                   enddo
                enddo
-c$$$            write(*,*)'--------------------------------'
-c$$$            write(*,*)'leg: ',j
-c$$$            write(*,*) (bmunu(0,nu,j), nu=0,3)
-c$$$            write(*,*) (bmunu(1,nu,j), nu=0,3)
-c$$$            write(*,*) (bmunu(2,nu,j), nu=0,3)
-c$$$            write(*,*) (bmunu(3,nu,j), nu=0,3)
             endif
 
 c Colour factors for colour-correlated Born amplitudes;
@@ -88,7 +79,7 @@ c where k#i,j
       parameter (nleg=nlegborn)
       real * 8 p(0:3,nleg)
       integer bflav(nleg)
-      real * 8 amp2,born,bmunu(0:3,0:3)
+      real * 8 born,bmunu(0:3,0:3)
       integer i,j
 
 cccccccccccccccccccccccccccccccc    
@@ -222,61 +213,56 @@ c     the one in the MC@NLO paper
                call exit(1)
             endif
 
-c     the one obtained with FeynCalc
-            t=m2w-2*dotp(kbcm(0,1),kbcm(0,3))
-            u=m2w+m2t-s-t
-            mttmp=sqrt(m2t)
-            mwtmp=sqrt(m2w)
-            tmp=((2*(-2*mwtmp**6*s + mttmp**6*u - t**2*(s - t + u)*(s + t + u) - 
-     -       2*mwtmp**2*t*(s**2 + t**2 - 3*t*u - 2*u**2 - s*(t + 2*u)) - 
-     -       mttmp**4*(5*mwtmp**4 - 3*t**2 + (s + t)*u - mwtmp**2*(s - 3*t + 3*u)) + 
-     -       mwtmp**4*(2*s**2 + 2*s*(t + u) - t*(t + 8*u)) + 
-     -       mttmp**2*(mwtmp**4*(3*s + 6*t + 8*u) + mwtmp**2*(s**2 - 4*s*t + 5*t**2 - 5*s*u - 9*t*u - 4*u**2) + 
-     -          t*(-2*t*(s + 2*t) + 2*s*u + u**2))))/(mwtmp**2*s*(mttmp**2 - t)**2))
-            tmp=tmp*(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf)
+c$$$c     obtained with FeynCalc (1)
+c$$$            t=m2w-2*dotp(kbcm(0,1),kbcm(0,3))
+c$$$            u=m2w+m2t-s-t
+c$$$            mttmp=sqrt(m2t)
+c$$$            mwtmp=sqrt(m2w)
+c$$$            tmp=((2*(-2*mwtmp**6*s + mttmp**6*u - t**2*(s - t + u)*(s + t + u) - 
+c$$$     -       2*mwtmp**2*t*(s**2 + t**2 - 3*t*u - 2*u**2 - s*(t + 2*u)) - 
+c$$$     -       mttmp**4*(5*mwtmp**4 - 3*t**2 + (s + t)*u - mwtmp**2*(s - 3*t + 3*u)) + 
+c$$$     -       mwtmp**4*(2*s**2 + 2*s*(t + u) - t*(t + 8*u)) + 
+c$$$     -       mttmp**2*(mwtmp**4*(3*s + 6*t + 8*u) + mwtmp**2*(s**2 - 4*s*t + 5*t**2 - 5*s*u - 9*t*u - 4*u**2) + 
+c$$$     -          t*(-2*t*(s + 2*t) + 2*s*u + u**2))))/(mwtmp**2*s*(mttmp**2 - t)**2))
+c$$$            tmp=tmp*(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf)
+c$$$
+c$$$c            print*, 'bb',tmp/amp2_gb
 
-c            print*, 'bb',tmp/amp2_gb
+c$$$c     obtained with FeynCalc (2)
+c$$$            tmp2=((4*mttmp**2*mwtmp**4 + 8*mwtmp**6 - 4*mttmp**2*mwtmp**2*s - 8*mwtmp**4*s - 4*mttmp**4*t - 4*mttmp**2*mwtmp**2*t - 
+c$$$     -       8*mwtmp**4*t + 4*mttmp**2*s*t + 8*mwtmp**2*s*t + 4*mttmp**2*t**2 + 
+c$$$     -       2*mttmp**2*mwtmp**2*(s/2D0 + (-mwtmp**2 + t)/2D0) - 4*mwtmp**4*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
+c$$$     -       2*t**2*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
+c$$$     -       2*((mttmp**2*mwtmp**2 - 2*mwtmp**4 + t**2)*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
+c$$$     -          (mttmp**2 + 2*mwtmp**2)*(mwtmp**2 - t)*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0)) + 
+c$$$     -       2*mttmp**2*mwtmp**2*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 
+c$$$     -       4*mwtmp**4*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) - 
+c$$$     -       2*mttmp**2*t*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) - 
+c$$$     -       4*mwtmp**2*t*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 4*mttmp**2*mwtmp**2*u - 8*mwtmp**4*u + 
+c$$$     -       4*t**2*u)/(mttmp**2 - t)**2 + (2*mwtmp**4*s - 2*mwtmp**2*s**2 + 2*mttmp**2*s*(mwtmp**2 - t) + 
+c$$$     -       2*mwtmp**2*s*(mwtmp**2 - t) - 2*s**2*(mwtmp**2 - t) + mttmp**2*s*t + 4*mwtmp**2*s*t - s**2*t - 
+c$$$     -       4*mwtmp**2*s*(s/2D0 + (-mwtmp**2 + t)/2D0) - 3*mttmp**2*s*u - 4*mwtmp**2*s*u + 3*s**2*u - 
+c$$$     -       s*(2*mwtmp**4 - 2*mwtmp**2*s - (mttmp**2 - s)*(t + u)))/s**2 - 
+c$$$     -    (8*mttmp**2*mwtmp**2*s + 4*mwtmp**4*s - 4*mwtmp**2*s**2 - 2*mttmp**2*mwtmp**2*(mwtmp**2 - t) - 8*mttmp**2*mwtmp**2*t - 
+c$$$     -       8*mwtmp**4*t - 2*mttmp**2*s*t - 2*mwtmp**2*s*t + 2*s**2*t + 4*mwtmp**2*(mwtmp**2 - t)*t + 4*mttmp**2*t**2 + 
+c$$$     -       12*mwtmp**2*t**2 - 2*(mwtmp**2 - t)*t**2 - 4*t**3 - 12*mwtmp**4*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
+c$$$     -       2*mwtmp**2*t*(s/2D0 + (-mwtmp**2 + t)/2D0) + 4*t**2*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
+c$$$     -       4*mwtmp**2*s*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 
+c$$$     -       2*s*t*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 2*mttmp**2*mwtmp**2*(mwtmp**2 - u) - 
+c$$$     -       2*mttmp**2*t*(mwtmp**2 - u) + 8*mttmp**2*mwtmp**2*u + 8*mwtmp**4*u - 12*mwtmp**2*s*u - 
+c$$$     -       2*mttmp**2*(mwtmp**2 - t)*u + 4*mwtmp**2*(mwtmp**2 - t)*u - 4*mttmp**2*t*u - 4*mwtmp**2*t*u - 
+c$$$     -       2*(mwtmp**2 - t)*t*u + 4*mwtmp**2*(s/2D0 + (-mwtmp**2 + t)/2D0)*u + 
+c$$$     -       2*t*(s/2D0 + (-mwtmp**2 + t)/2D0)*u - 8*mwtmp**2*u**2 + 4*t*u**2 - 
+c$$$     -       4*mwtmp**4*(s/2D0 + (-mwtmp**2 + u)/2D0) + 2*mwtmp**2*t*(s/2D0 + (-mwtmp**2 + u)/2D0) + 
+c$$$     -       2*t**2*(s/2D0 + (-mwtmp**2 + u)/2D0) + 
+c$$$     -       2*(s*(2*mwtmp**2 - t)*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) - 
+c$$$     -          (2*mwtmp**4 - 3*mwtmp**2*t + t**2)*(s/2D0 + (-mwtmp**2 + u)/2D0) + 
+c$$$     -          (s/2D0 + (-mwtmp**2 + t)/2D0)*(2*mwtmp**4 + t*u - mwtmp**2*(4*s + t + 2*u))))/(s*(mttmp**2 - t)))/
+c$$$     -  mwtmp**2
+c$$$            tmp2=tmp2 *(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf)
+c$$$
+c$$$c      print*, '------',tmp/tmp2
 
-
-
-            tmp2=((4*mttmp**2*mwtmp**4 + 8*mwtmp**6 - 4*mttmp**2*mwtmp**2*s - 8*mwtmp**4*s - 4*mttmp**4*t - 4*mttmp**2*mwtmp**2*t - 
-     -       8*mwtmp**4*t + 4*mttmp**2*s*t + 8*mwtmp**2*s*t + 4*mttmp**2*t**2 + 
-     -       2*mttmp**2*mwtmp**2*(s/2D0 + (-mwtmp**2 + t)/2D0) - 4*mwtmp**4*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
-     -       2*t**2*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
-     -       2*((mttmp**2*mwtmp**2 - 2*mwtmp**4 + t**2)*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
-     -          (mttmp**2 + 2*mwtmp**2)*(mwtmp**2 - t)*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0)) + 
-     -       2*mttmp**2*mwtmp**2*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 
-     -       4*mwtmp**4*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) - 
-     -       2*mttmp**2*t*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) - 
-     -       4*mwtmp**2*t*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 4*mttmp**2*mwtmp**2*u - 8*mwtmp**4*u + 
-     -       4*t**2*u)/(mttmp**2 - t)**2 + (2*mwtmp**4*s - 2*mwtmp**2*s**2 + 2*mttmp**2*s*(mwtmp**2 - t) + 
-     -       2*mwtmp**2*s*(mwtmp**2 - t) - 2*s**2*(mwtmp**2 - t) + mttmp**2*s*t + 4*mwtmp**2*s*t - s**2*t - 
-     -       4*mwtmp**2*s*(s/2D0 + (-mwtmp**2 + t)/2D0) - 3*mttmp**2*s*u - 4*mwtmp**2*s*u + 3*s**2*u - 
-     -       s*(2*mwtmp**4 - 2*mwtmp**2*s - (mttmp**2 - s)*(t + u)))/s**2 - 
-     -    (8*mttmp**2*mwtmp**2*s + 4*mwtmp**4*s - 4*mwtmp**2*s**2 - 2*mttmp**2*mwtmp**2*(mwtmp**2 - t) - 8*mttmp**2*mwtmp**2*t - 
-     -       8*mwtmp**4*t - 2*mttmp**2*s*t - 2*mwtmp**2*s*t + 2*s**2*t + 4*mwtmp**2*(mwtmp**2 - t)*t + 4*mttmp**2*t**2 + 
-     -       12*mwtmp**2*t**2 - 2*(mwtmp**2 - t)*t**2 - 4*t**3 - 12*mwtmp**4*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
-     -       2*mwtmp**2*t*(s/2D0 + (-mwtmp**2 + t)/2D0) + 4*t**2*(s/2D0 + (-mwtmp**2 + t)/2D0) + 
-     -       4*mwtmp**2*s*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 
-     -       2*s*t*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) + 2*mttmp**2*mwtmp**2*(mwtmp**2 - u) - 
-     -       2*mttmp**2*t*(mwtmp**2 - u) + 8*mttmp**2*mwtmp**2*u + 8*mwtmp**4*u - 12*mwtmp**2*s*u - 
-     -       2*mttmp**2*(mwtmp**2 - t)*u + 4*mwtmp**2*(mwtmp**2 - t)*u - 4*mttmp**2*t*u - 4*mwtmp**2*t*u - 
-     -       2*(mwtmp**2 - t)*t*u + 4*mwtmp**2*(s/2D0 + (-mwtmp**2 + t)/2D0)*u + 
-     -       2*t*(s/2D0 + (-mwtmp**2 + t)/2D0)*u - 8*mwtmp**2*u**2 + 4*t*u**2 - 
-     -       4*mwtmp**4*(s/2D0 + (-mwtmp**2 + u)/2D0) + 2*mwtmp**2*t*(s/2D0 + (-mwtmp**2 + u)/2D0) + 
-     -       2*t**2*(s/2D0 + (-mwtmp**2 + u)/2D0) + 
-     -       2*(s*(2*mwtmp**2 - t)*(-mwtmp**2 + (mwtmp**2 - t)/2D0 + (mwtmp**2 - u)/2D0) - 
-     -          (2*mwtmp**4 - 3*mwtmp**2*t + t**2)*(s/2D0 + (-mwtmp**2 + u)/2D0) + 
-     -          (s/2D0 + (-mwtmp**2 + t)/2D0)*(2*mwtmp**4 + t*u - mwtmp**2*(4*s + t + 2*u))))/(s*(mttmp**2 - t)))/
-     -  mwtmp**2
-            tmp2=tmp2 *(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf)
-            
-
-
-c      print*, '------',tmp/tmp2
-
-
-            
          else
             write(*,*) 'Error in Born check'
             call exit(1)
@@ -575,9 +561,9 @@ c     For the exact meaning of tdecayflag and MC_mass, see below
 c     !: WARNING: Notice that tdecayflag=false
 c     HAS NOT BEEN FULLY TESTED in the BOX implementation
       tdecayflag=.true.
+c     !: WARNING: this should be set to 1 to perform reshuffling.
+c     !: In the current version, this option is not allowed.
       MC_mass=0
-c     !ER: attenzione, mettere a 1 per FS masses.
-c     PER ORA LA VOGLIO TENERE MASSLESS.
 cccccccccccccccccccccccccccccccccccccccccccccccc
 
       chflag=3                  ! wt-channel
@@ -892,7 +878,7 @@ c     color connenction in case of a top hadronic decay
      $           'tdecayflag=false HAS NOT BEEN FULLY TESTED IN THE BOX'
             write(*,*) '>>>>>>>>>><<<<<<<<<<'
          endif
-         return !ER: non c'era...
+         return !:
       endif   
 
 c     Now exchange the order of momenta (otherwise HW 
@@ -1105,10 +1091,6 @@ ccccccccccccccccccccccccccccccccc
       integer idup_loc(nlegreal)
       real *8 ptemp(0:3)
 c$$$      logical reorder
-
-      logical check_bME
-      parameter (check_bME=.true.)
-      real *8 s,t,u,ewcoupl
 
       logical verbose
       parameter (verbose=.false.)
@@ -2101,11 +2083,9 @@ c     i.e. (6-> e, 7->ve, 8->b).
 c     call check_kinematics(klab_dec,nlegreal+3)
       end
 
-
-c     !ER: dovrebbe essere ok, ma e' da testare bene
       subroutine pickwdecay(iw1,mdecw1,iw2,mdecw2,iw3,mdecw3,iw4,mdecw4,
      $     totbr)
-c     !: originally taken from POWHEG-hvq
+c     !: originally taken from POWHEG-hvq. Modified, but should be OK.
 c     Finds which decays to choose with correct probability, according
 c     to topdecaymode and wdecaymode. 
 c     It returns always particle ids of W+ decay and the primary W- decay.
@@ -2554,9 +2534,8 @@ c     Boost them back in original frame (all decay products along w velocity)
       end
 
 
-!ER: tutta da rivedere. Attenzione...
+c     !: routine checked only when used trivially (i.e. no reshuffling)
       subroutine put_on_mass_shell(tdecayflag,MC_mass,xklab,xklab_os)
-!ER: tutta da rivedere. Attenzione...
       implicit none
       include 'nlegborn.h'
       include '../include/LesHouches.h'
@@ -2586,7 +2565,7 @@ c     local
       integer ileg_dir
       real *8 betacm(3),betacm_inv(3),beta_cm_to_34(3),beta_34_to_cm(3),
      #dir(3)
-      real *8 kcm(0:3,nlegreal+3),m(nlegreal+3),m_s(nlegreal+3),
+      real *8 kcm(0:3,nlegreal+5),m(nlegreal+5),m_s(nlegreal+5),
      #ktmp(0:3),k34cm(0:3),kleg_34(0:3,3:4)
       real *8 ycminv,shat,kprime,xif,sol,Eprime,delta,gamma,kprime2,
      #m34
@@ -2643,8 +2622,8 @@ c     ve (primary W)
          return
       endif
 
-c     !ER:
-      print*, '!ER: Warning: put_on_mass_shell called with MCmass.ne.0'
+c     !:
+      print*, 'Warning: put_on_mass_shell called with MCmass.ne.0'
       print*, 'Not tested. Program STOPS'
       call exit(1)
 
@@ -2730,7 +2709,7 @@ c     ve (primary W)
 
 
 ccccccccccccccccccccccc
-c     !ER: da qui in poi NON HO PROPRIO CONTROLLATO
+c     !: da qui in poi NON HO PROPRIO CONTROLLATO
 ccccccccccccccccccccccc
 
 c     klab are the input momenta and, at the beginning, they are all massless,

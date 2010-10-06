@@ -1,4 +1,3 @@
-c     !ER: ttype ORA DOVREBBE essere a POSTO. Prima errato.
       subroutine gen_leshouches_reg
       implicit none
       include '../include/pwhg_math.h'

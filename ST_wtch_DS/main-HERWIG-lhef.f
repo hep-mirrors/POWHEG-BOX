@@ -22,10 +22,6 @@ c     MAXEV must be set before HWIGIN call.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C---INITIALISE OTHER COMMON BLOCKS
       CALL HWIGIN
-cccccccc
-c$$$      nrn(1)=12345
-c$$$      nrn(2)=54321
-cccccccc
 C---USER CAN RESET PARAMETERS AT
 C   THIS POINT, OTHERWISE DEFAULT
 C   VALUES IN HWIGIN WILL BE USED.
@@ -250,7 +246,7 @@ c$$$C-----------------------------------------------------------------------
       include '../include/LesHouches.h'
 c     check parameters
       logical verbose
-      parameter (verbose=.true.)
+      parameter (verbose=.false.)
 
       if (ierror.ne.0) then
          if(verbose) then
@@ -266,7 +262,8 @@ c$$$            call hwuepr         !all the event
          endif
          return
       endif
-      xwgtup=xwgtup*xsecup(1)
+
+      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

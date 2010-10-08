@@ -200,7 +200,8 @@ c     antitop event
             call lhefwritev(iun_merge)
          endif
       enddo
-      
+
+      write(iun_merge,'(a)') '</LesHouchesEvents>'
       write(*,*) '* Merging ended regularly'
       write(*,*) '  Merged sample has ',total_ev,' events'
 
@@ -213,7 +214,6 @@ c     close opened files
       close(iun_tb)
       rewind(iun_merge)
       close(iun_merge)
-
 
       end
 
@@ -260,6 +260,7 @@ c...reads event information from a les houches events file on unit nlf.
      &           mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      &           vtimup(i),spinup(i)
          enddo
+         call lhefreadpdfrw(nlf)
          goto 999
       else
          goto 1
@@ -313,6 +314,7 @@ c...writes event information to a les houches events file on unit nlf.
       implicit none
       integer nlf
       include '../include/LesHouches.h'
+      include '../include/pwhg_flg.h'
       integer i,j
       write(nlf,'(a)')'<event>'
       write(nlf,210) nup,idprup,xwgtup,scalup,aqedup,aqcdup
@@ -321,6 +323,7 @@ c...writes event information to a les houches events file on unit nlf.
      & mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      & vtimup(i),spinup(i)
  200  continue
+      if(flg_pdfreweight) call lhefwritepdfrw(nlf)
       write(nlf,'(a)')'</event>'      
  210  format(1p,2(1x,i6),4(1x,e12.5))
  220  format(1p,i8,5(1x,i5),5(1x,e16.9),1x,e12.5,1x,e10.3)
@@ -358,6 +361,38 @@ c...writes event information to a les houches events file on unit nlf.
       goto 1
       close(iunit)
  999  end
+
+
+
+      subroutine lhefreadpdfrw(nlf)
+      implicit none
+      include '../include/pwhg_flg.h'
+      integer nlf
+      integer id1,id2
+      real * 8 x1,x2,xf1,xf2,xmufact
+      common/cpdfrwinfo/id1,id2,x1,x2,xmufact,xf1,xf2
+      character *4 pdftag
+      read(nlf,*,err=999,end=999) pdftag,id1,id2,x1,x2,xmufact,xf1,xf2
+      if(pdftag.eq.'#pdf') then
+         flg_pdfreweight=.true.
+      else
+         flg_pdfreweight=.false.
+      endif
+      return
+ 999  write(*,*) 'Error in lhefreadpdfrw (merging)',pdftag
+      call exit(1)
+      end
+
+
+      subroutine lhefwritepdfrw(nlf)
+      implicit none
+      integer nlf
+      integer id1,id2
+      real * 8 x1,x2,xf1,xf2,xmufact
+      common/cpdfrwinfo/id1,id2,x1,x2,xmufact,xf1,xf2
+      write(nlf,111)'#pdf ',id1,id2,x1,x2,xmufact,xf1,xf2
+ 111  format(a,2(1x,i2),5(1x,d14.8))
+      end
 
 
 

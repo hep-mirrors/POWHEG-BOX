@@ -72,8 +72,7 @@ c     Used in the generation of radiation
       include 'include/pwhg_flst.h'
       include 'include/pwhg_kn.h'
       include 'include/pwhg_rad.h'
-      real * 8 q0,q2,tinycsi,tinyy
-      parameter (tinycsi=1d-5,tinyy=1d-6)
+      real * 8 q0,q2
 c Boost the underlying Born variables to their cm frame
       kn_emitter=flst_lightpart+rad_kinreg-2
       q0=2*kn_cmpborn(0,1)

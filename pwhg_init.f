@@ -18,7 +18,13 @@ c whether to output negative weights or not
       if(powheginput("#withnegweights").eq.1)flg_withnegweights=.true.
 c See if we have weighted events
       flg_weightedev=.false.
-      if(powheginput("#ptsupp").gt.0) flg_weightedev=.true.
+      if(powheginput("#bornsuppfact").gt.0) flg_weightedev=.true.
+      if(powheginput("#ptsupp").gt.0) then
+         write(*,*) ' ******** WARNING: ptsupp is deprecated'
+         write(*,*) ' ******** Replace it with bornsuppfact'
+         call flush
+         call exit(-1)
+      endif
 c     Set to true to remember and use identical values of the computed 
 c     amplitudes, for Born, real and virtual contributions
       flg_smartsig=.true.

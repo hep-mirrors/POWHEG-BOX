@@ -108,7 +108,7 @@ c     q qbar annihilation
       real * 8 fact,pt2,pt2supp,powheginput,pt
       save ini,pt2supp,pt
       if (ini) then
-         pt = powheginput("#ptsupp")         
+         pt = powheginput("#bornsuppfact")         
          ini = .false.
          pt2supp = pt**2
       endif
@@ -116,7 +116,7 @@ c     q qbar annihilation
          fact=1d0
       else         
          pt2=kn_pborn(1,3)**2+kn_pborn(2,3)**2+kn_masses(3)**2
-         fact=pt2/(pt2+pt2supp)         
+         fact=(pt2/(pt2+pt2supp))**3
       endif
       end
 

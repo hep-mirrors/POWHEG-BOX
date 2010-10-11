@@ -84,9 +84,9 @@ C -----------------------------
       CHARACTER*12 COLOURS
       COMMON/THE_COLOURS/COLOURS(7)
       DATA COLOURS/
-     $     'BLUE DOTS   ','RED DASH    ','GREEN       ',
-     $     'CYAN        ','MAGENTA     ','YELLOW      ',
-     $     'BLACK       '/
+     $     'BLACK DOTS  ','RED DASH    ','BLUE DOTDASH',
+     $     'GREEN DOTS  ','MAGENTA     ','YELLOW      ',
+     $     'CYAN        '/
 
 C - line_type for histograms
 C -----------------------------
@@ -1246,7 +1246,7 @@ C - Make the font DUPLEX and set intensity 5:
             IXX=IXX-1
          ENDDO
          THE_HEADER(1)='SET FONT DUPLEX'
-         THE_HEADER(2)='SET INTENSITY 3'
+         THE_HEADER(2)='SET INTENSITY 5'
          NHEADER_LINES=NHEADER_LINES+2
       ENDIF
       
@@ -1844,9 +1844,14 @@ C - If a tag was found then we reposition & recolour it but we keep the name
      $              'TITLE TEXT '//TRIM(STR_XPOS)//TRIM(STR_YPOS)
                A_FOOTERS(JXX+1,IXX) = 
      $              TRIM(A_FOOTERS(JXX+1,IXX))//' "'//TRIM(TMP_STRING1)
-               A_FOOTERS(JXX+1,IXX) =
-     $              TRIM(A_FOOTERS(JXX+1,IXX))//'" '//
-     $              THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               IF(THE_COLOUR(1:SCAN(THE_COLOUR," ")).NE.'BLACK') THEN
+                  A_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(A_FOOTERS(JXX+1,IXX))//'" '//
+     $                 THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               ELSE
+                  A_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(A_FOOTERS(JXX+1,IXX))//'"'
+               ENDIF
                A_FOOTERS(JXX+1,IXX) = 
      $              TRIM(A_FOOTERS(JXX+1,IXX))//' ( TAG ID 1'
             ENDIF
@@ -1868,9 +1873,14 @@ C - If a tag wasn't found then we invent one, position it and colour it:
      $              'TITLE TEXT '//TRIM(STR_XPOS)//TRIM(STR_YPOS)
                A_FOOTERS(JXX+1,IXX) = 
      $              TRIM(A_FOOTERS(JXX+1,IXX))//' "'//TRIM(A_FILE)
-               A_FOOTERS(JXX+1,IXX) =
-     $              TRIM(A_FOOTERS(JXX+1,IXX))//'" '//
-     $              THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               IF(THE_COLOUR(1:SCAN(THE_COLOUR," ")).NE.'BLACK') THEN
+                  A_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(A_FOOTERS(JXX+1,IXX))//'" '//
+     $                 THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               ELSE
+                  A_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(A_FOOTERS(JXX+1,IXX))//'"'
+               ENDIF
                A_FOOTERS(JXX+1,IXX) =
      $              TRIM(A_FOOTERS(JXX+1,IXX))//' ( TAG ID 1'
             ENDIF
@@ -1927,9 +1937,14 @@ C - If a tag was found then we reposition & recolour it but we keep the name:
      $              'TITLE TEXT '//TRIM(STR_XPOS)//TRIM(STR_YPOS)
                B_FOOTERS(JXX+1,IXX) = 
      $              TRIM(B_FOOTERS(JXX+1,IXX))//' "'//TRIM(TMP_STRING1)
-               B_FOOTERS(JXX+1,IXX) =
-     $              TRIM(B_FOOTERS(JXX+1,IXX))//'" '//
-     $              THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               IF(THE_COLOUR(1:SCAN(THE_COLOUR," ")).NE.'BLACK') THEN
+                  B_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(B_FOOTERS(JXX+1,IXX))//'" '//
+     $                 THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               ELSE
+                  B_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(B_FOOTERS(JXX+1,IXX))//'"'
+               ENDIF
                B_FOOTERS(JXX+1,IXX) = 
      $              TRIM(B_FOOTERS(JXX+1,IXX))//' ( TAG ID 1'
             ENDIF
@@ -1951,9 +1966,14 @@ C - If a tag wasn't found then we invent one, position it and colour it:
      $              'TITLE TEXT '//TRIM(STR_XPOS)//TRIM(STR_YPOS)
                B_FOOTERS(JXX+1,IXX) = 
      $              TRIM(B_FOOTERS(JXX+1,IXX))//' "'//TRIM(B_FILE)
-               B_FOOTERS(JXX+1,IXX) =
-     $              TRIM(B_FOOTERS(JXX+1,IXX))//'" '//
-     $              THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               IF(THE_COLOUR(1:SCAN(THE_COLOUR," ")).NE.'BLACK') THEN
+                  B_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(B_FOOTERS(JXX+1,IXX))//'" '//
+     $                 THE_COLOUR(1:SCAN(THE_COLOUR," "))
+               ELSE
+                  B_FOOTERS(JXX+1,IXX) =
+     $                 TRIM(B_FOOTERS(JXX+1,IXX))//'"'
+               ENDIF
                B_FOOTERS(JXX+1,IXX) =
      $              TRIM(B_FOOTERS(JXX+1,IXX))//' ( TAG ID 1'
             ENDIF

@@ -34,8 +34,8 @@ c store histogram lines
                iline=iline+1
                i=index(line,'HIST')
                if(i.ne.0) then
-                  do while(iline.lt.nint((xh-xl)/xbin))
-                     write(*,100) xl+(iline+0.5d0)*xbin,0E0,0E0
+                  do while(iline.le.nint((xh-xl)/xbin))
+                     write(*,100) xl+(iline-0.5d0)*xbin,0E0,0E0
                      iline=iline+1
                   enddo
                   call writeout(line)

@@ -24,8 +24,8 @@ file_b=$2
 rm -f temp_?
 grep TITLE $file_a  | grep -v "INT\|ENT\|OFL\|UFL\|LEFT\|SET\|BOTTOM" > temp_a
 grep TITLE $file_b  | grep -v "INT\|ENT\|OFL\|UFL\|LEFT\|SET\|BOTTOM" > temp_b
-number_a_titles=`sed -n '$ =' temp_a`
-number_b_titles=`sed -n '$ =' temp_b`
+number_a_titles=`gsed -n '$ =' temp_a`
+number_b_titles=`gsed -n '$ =' temp_b`
 file_a_titles=`cat temp_a`
 file_b_titles=`cat temp_b`
 file_a_counter=0
@@ -38,15 +38,15 @@ IFS=""
 
 for (( i=1 ; i<=$number_a_titles ; i++ ))
 do
-    ith_title=`sed -n "$i p" temp_a`
-    ith_name=`echo $ith_title | sed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
-    ith_name_no_spaces=`echo $ith_name | sed "s/\ //g"`
+    ith_title=`gsed -n "$i p" temp_a`
+    ith_name=`echo $ith_title | gsed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
+    ith_name_no_spaces=`echo $ith_name | gsed "s/\ //g"`
     found_title="false"
     for (( j=1 ; j<=$number_b_titles ; j++ ))
     do
-	jth_title=`sed -n "$j p" temp_b`
-	jth_name=`echo $jth_title | sed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
-	jth_name_no_spaces=`echo $jth_name | sed 's/\ //g'`
+	jth_title=`gsed -n "$j p" temp_b`
+	jth_name=`echo $jth_title | gsed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
+	jth_name_no_spaces=`echo $jth_name | gsed 's/\ //g'`
 	if [ "$ith_name_no_spaces" = "$jth_name_no_spaces" ]
 	then
 	    found_title="true"
@@ -67,15 +67,15 @@ echo " "
 
 for (( i=1 ; i<=$number_b_titles ; i++ ))
 do
-    ith_title=`sed -n "$i p" temp_b`
-    ith_name=`echo $ith_title | sed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
-    ith_name_no_spaces=`echo $ith_name | sed "s/\ //g"`
+    ith_title=`gsed -n "$i p" temp_b`
+    ith_name=`echo $ith_title | gsed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
+    ith_name_no_spaces=`echo $ith_name | gsed "s/\ //g"`
     found_title="false"
     for (( j=1 ; j<=$number_a_titles ; j++ ))
     do
-	jth_title=`sed -n "$j p" temp_a`
-	jth_name=`echo $jth_title | sed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
-	jth_name_no_spaces=`echo $jth_name | sed 's/\ //g'`
+	jth_title=`gsed -n "$j p" temp_a`
+	jth_name=`echo $jth_title | gsed "s/\(.*\)\"\(.*\)\"\(.*\)/\2/"`
+	jth_name_no_spaces=`echo $jth_name | gsed 's/\ //g'`
 	if [ "$ith_name_no_spaces" = "$jth_name_no_spaces" ]
 	then
 	    found_title="true"

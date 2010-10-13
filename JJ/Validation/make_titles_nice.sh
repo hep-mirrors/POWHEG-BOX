@@ -97,14 +97,14 @@ sed -i -e '/TITLE BOTTOM.*DH0121.* 2E0T,2/ a CASE " FGX  X   X   X     X   X "' 
 
 # New left titles (without cuts info):
 sed -i -e '/TITLE LEFT.*DH0121.*20.* / a \
-CASE      " G  FGX  X SG     S"' $1
-sed -i -e 's/TITLE LEFT.*DH0121.*20.* /TITLE LEFT \"dS\/dDH0121 /g' $1
+CASE      " G   FGX  X  SG     S"' $1
+sed -i -e 's/TITLE LEFT.*DH0121.*20.* /TITLE LEFT \"dS\/d|DH0121| /g' $1
 sed -i -e '/TITLE LEFT.*DH0121.*40.* / a \
-CASE      " G  FGX  X SG     S"' $1
-sed -i -e 's/TITLE LEFT.*DH0121.*40.* /TITLE LEFT \"dS\/dDH0121 /g' $1
+CASE      " G   FGX  X  SG     S"' $1
+sed -i -e 's/TITLE LEFT.*DH0121.*40.* /TITLE LEFT \"dS\/d|DH0121| /g' $1
 sed -i -e '/TITLE LEFT.*DH0121.*100.* / a \
-CASE      " G  FGX  X SG     S"' $1
-sed -i -e 's/TITLE LEFT.*DH0121.*100.* /TITLE LEFT \"dS\/dDH0121 /g' $1
+CASE      " G   FGX  X  SG     S"' $1
+sed -i -e 's/TITLE LEFT.*DH0121.*100.* /TITLE LEFT \"dS\/d|DH0121| /g' $1
 # Old left titles (with cuts info):
 # sed -i -e '/TITLE LEFT.*DH0121.* E0T,11 \& E.*20/ a \
 # CASE " G    FGX  X   X   X    X   X           SG     S"' $1
@@ -230,7 +230,7 @@ sed -i -e 's/TITLE LEFT.*(p0T,31.* (Mb/TITLE LEFT \"dS\/dp0T,31 (Mb/g' $1
 
 ######################################################################
 # Replace H0J31, p0T,J31 by H031, p0T,31
-sed -i -e 's/\"H0J31, p0T,J31\(.*\)E0T1\(.*\)/\"H031, p0T,31\1E0T,11 \& E0T,21 > 40 GeV/g' $1
+sed -i -e 's/\"H0J31, p0T,J31\(.*\)E0T1\(.*\)/\"H031, p0T,31\1E0T,11 \& E0T,21 > 40 GeV\"/g' $1
 sed -i -e 's/d(H0J31, p0T,J31\(.*\)E0T1\(.*\)/d(H031, p0T,31\1E0T,11 \& E0T,21 > 40 GeV) (Mb\/bin)\"/g' $1
 #TITLE TOP "H031, p0T,31>10, E0T11 & E0T,11 & E0T,21 > 40 GeV
 #     CASE "GX X   X   X      X  X    X   X"
@@ -621,3 +621,9 @@ CASE "  G G  GX X SG     S"' $1
     sed -i -e 's/TITLE LEFT.*d(H031)/TITLE LEFT \"1\/SdS\/dH031/' $1 
 fi
 
+
+######################################################################
+# Delete all DS/DDS left titles and replace with nicer chi!
+sed -i -e '/LEFT.*DS\/DDS.*CHI2/{n;d;}' $1
+sed -i -e '/LEFT.*DS\/DDS.*CHI2/ a CASE \"G\" \( CHI2' $1
+sed -i -e 's/\(.*\)DS\/DDS\(.*\)CHI2/\1C\2CHI2/' $1

@@ -332,7 +332,10 @@ c already filled in the Les Houches interface.
 c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
-c kinematics defined in the Les Houches interface
+c kinematics defined in the Les Houches interface.
+c Here we assume all particles to be outgoing, and
+c assign colour according to the corresponding colur amplitudes.
+c At the end, the colour of incoming partons are conjugated.
       implicit none
       include '../include/LesHouches.h'
       include 'nlegborn.h'
@@ -370,6 +373,9 @@ c find the quarks and gluons
                call exit(1)
             endif
          enddo
+c using istup we reverse the sign of incoming particle momenta,
+c so that the choice of colour can be made independently of which
+c particle is incoming.
          s=istup(iq)*istup(ia)*2*dotp(kn_cmpborn(0,iq),kn_cmpborn(0,ia))
          t=istup(ia)*istup(ig1)*2*
      1          dotp(kn_cmpborn(0,ia),kn_cmpborn(0,ig1))
@@ -397,7 +403,7 @@ c q q qb qb, or q Q qb Qb, plus permutations-crossing
                endif
             endif
          enddo
-         if(iq1.eq.iq2) then
+         if(idup(iq1).eq.idup(iq2)) then
 c     q q qb qb
             s=istup(iq1)*istup(iq2)*2*
      1          dotp(kn_cmpborn(0,iq1),kn_cmpborn(0,iq2))

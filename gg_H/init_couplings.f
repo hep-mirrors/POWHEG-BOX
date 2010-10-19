@@ -2,7 +2,9 @@
       implicit none
       include 'PhysPars.h'
       include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include '../include/pwhg_math.h'    
+      include 'nlegborn.h'      
+      include '../include/pwhg_kn.h'      
       real * 8 masswindow
       logical verbose
       parameter(verbose=.true.)
@@ -56,7 +58,8 @@ C     the default vale is 10
 c      ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)^2
       ph_Hmass2low=max(0d0,ph_Hmass-masswindow*ph_Hwidth)
       ph_Hmass2low= ph_Hmass2low**2
-      ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)**2
+c      ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)^2
+      ph_Hmass2high=min(kn_sbeams,(ph_Hmass+masswindow*ph_Hwidth)**2)
       ph_HmHw = ph_Hmass * ph_Hwidth
 
 

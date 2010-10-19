@@ -45,7 +45,7 @@ c     2*pi/S dM^2 dY delta(s- M^2)
 
       if (BW) then
          zlow=atan((Hmass2low  - Hmass2)/HmHw)
-         zhigh=atan((min(Hmass2high,kn_sbeams)  - Hmass2)/HmHw)
+         zhigh=atan((Hmass2high - Hmass2)/HmHw)
          z=zlow+(zhigh-zlow)*xborn(1)
          xjac=xjac*(zhigh-zlow)
          m2=HmHw*tan(z)+Hmass2

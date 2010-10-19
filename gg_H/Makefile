@@ -52,6 +52,7 @@ PYTHIA_OBJ=$(PYTHIA_VERSION).o
 %.o: %.cc
 	$(CC) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
+
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
         real.o pwhg_analysis.o btilde.o pt2maxreg.o LesHouchesreg.o 
 
@@ -110,13 +111,15 @@ main-PYTHIA: $(PYTHIA-ONTHEFLY)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA-ONTHEFLY)) -o $@ $(LIBSFASTJET) $(LIBS)
 
 # target to cleanup
-.PHONY: clean
 clean:
 	rm -f *~ obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef main-PYTHIA-lhef \
         main-HERWIG main-PYTHIA
 
-# target to sync the btilde.f modified version in process subdirectory
-btilde.f: ../btilde.f
-	@echo "WARNING: btilde.f file in the POWHEG-BOX directory changed!"
-	@echo "Changing btilde.f in current subdirectory accordingly ..."
-	sh make_btilde.sh  
+.PHONY: clean 
+
+# target to build the modified btilde local version (btilde_ggH)
+# in process subdirectory
+btilde.o: ../btilde.f $(INCLUDE)
+	ln -sf $(WDNAME)/nlegborn.h ../
+	sh make_btilde.sh
+	$(FF) -c -o obj/$@ btilde_ggH.f

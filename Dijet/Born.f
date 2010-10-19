@@ -403,7 +403,7 @@ c q q qb qb, or q Q qb Qb, plus permutations-crossing
                endif
             endif
          enddo
-         if(idup(iq1).eq.idup(iq2)) then
+         if(idup(iq1)*istup(iq1).eq.idup(iq2)*istup(iq2)) then
 c     q q qb qb
             s=istup(iq1)*istup(iq2)*2*
      1          dotp(kn_cmpborn(0,iq1),kn_cmpborn(0,iq2))
@@ -414,7 +414,7 @@ c     q q qb qb
      1           icolup(1,ia1),icolup(1,ia2),s,t,u)
          else
 c     q Q qb Qb
-            if(idup(iq1).ne.-idup(ia1)) then
+            if(istup(iq1)*idup(iq1).ne.-istup(ia1)*idup(ia1)) then
                itmp=ia1
                ia1=ia2
                ia2=itmp

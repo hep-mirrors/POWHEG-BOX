@@ -1,6 +1,5 @@
       subroutine init_couplings
       implicit none
-      include 'PhysPars.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_math.h'
       include 'nlegborn.h'

@@ -147,12 +147,12 @@ force_look :
 ######
 
 ###### to generate the sigreal.f modified version in process subdirectory
-sigreal.f: force_look
+sigreal.o: force_look
 	@echo "WARNING: For this process the common sigreal.f file cannot be used"
 	@echo "WARNING: Creating now a proper local copy of sigreal.f"
-	sh make_sigreal.sh &>/dev/null
+	sh make_sigreal.sh
 	@echo "WARNING: local copy of sigreal.f created in current subdirectory"
-
+	$(FF) -c -o obj/sigreal.o sigreal.f
 #####
 
 # target to cleanup

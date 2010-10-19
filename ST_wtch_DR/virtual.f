@@ -162,28 +162,28 @@ c     I want finite parts !
 c     Evaluation of EZ scalar integrals. These have been checked with CW ones
 c     (see old revision of this file).
 
-      as1f=real(qlI1(m2t,               musq,ep))
+      as1f=dreal(qlI1(m2t,               musq,ep))
 
-      bs1f=real(qlI2(s,0d0,0d0,         musq,ep))
-      bs2f=real(qlI2(m2t,0d0,m2t,       musq,ep))
-      bs3f=real(qlI2(u,0d0,m2t,         musq,ep))       
-      bs4f=real(qlI2(q2,0d0,m2t,        musq,ep))
-      bs5f=real(qlI2(t,0d0,m2t,         musq,ep))
+      bs1f=dreal(qlI2(s,0d0,0d0,         musq,ep))
+      bs2f=dreal(qlI2(m2t,0d0,m2t,       musq,ep))
+      bs3f=dreal(qlI2(u,0d0,m2t,         musq,ep))       
+      bs4f=dreal(qlI2(q2,0d0,m2t,        musq,ep))
+      bs5f=dreal(qlI2(t,0d0,m2t,         musq,ep))
 
-      cs1f=real(qlI3(s  ,0d0,0d0,0d0,0d0,0d0,      musq,ep))
-      cs2f=real(qlI3(u  ,m2t,0d0,0d0,m2t,0d0,      musq,ep))
-      cs3f=real(qlI3(t  ,m2t,0d0,0d0,m2t,0d0,      musq,ep))
-      cs4f=real(qlI3(s  ,q2 ,m2t,0d0,0d0,m2t,      musq,ep))
-      cs5f=real(qlI3(0d0,q2 ,u  ,0d0,0d0,m2t,      musq,ep))  
-      cs6f=real(qlI3(0d0,q2 ,t  ,0d0,0d0,m2t,      musq,ep))
-      cs7f=real(qlI3(m2t,0d0,t  ,0d0,m2t,m2t,      musq,ep))
-      cs8f=real(qlI3(u  ,0d0,q2 ,0d0,m2t,m2t,      musq,ep))
+      cs1f=dreal(qlI3(s  ,0d0,0d0,0d0,0d0,0d0,      musq,ep))
+      cs2f=dreal(qlI3(u  ,m2t,0d0,0d0,m2t,0d0,      musq,ep))
+      cs3f=dreal(qlI3(t  ,m2t,0d0,0d0,m2t,0d0,      musq,ep))
+      cs4f=dreal(qlI3(s  ,q2 ,m2t,0d0,0d0,m2t,      musq,ep))
+      cs5f=dreal(qlI3(0d0,q2 ,u  ,0d0,0d0,m2t,      musq,ep))  
+      cs6f=dreal(qlI3(0d0,q2 ,t  ,0d0,0d0,m2t,      musq,ep))
+      cs7f=dreal(qlI3(m2t,0d0,t  ,0d0,m2t,m2t,      musq,ep))
+      cs8f=dreal(qlI3(u  ,0d0,q2 ,0d0,m2t,m2t,      musq,ep))
 
-      ds1f=real(qlI4(0d0,0d0,m2t ,q2 ,s   ,u   ,0d0,0d0,0d0,m2t,
+      ds1f=dreal(qlI4(0d0,0d0,m2t ,q2 ,s   ,u   ,0d0,0d0,0d0,m2t,
      $     musq,ep))
-      ds2f=real(qlI4(0d0,0d0,m2t ,q2 ,s   ,t   ,0d0,0d0,0d0,m2t,
+      ds2f=dreal(qlI4(0d0,0d0,m2t ,q2 ,s   ,t   ,0d0,0d0,0d0,m2t,
      $     musq,ep))
-      ds3f=real(qlI4(0d0,m2t,0d0 ,q2 ,t   ,u   ,0d0,0d0,m2t,m2t,
+      ds3f=dreal(qlI4(0d0,m2t,0d0 ,q2 ,t   ,u   ,0d0,0d0,m2t,m2t,
      $     musq,ep))
 
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

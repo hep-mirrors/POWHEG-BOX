@@ -92,7 +92,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
 	Bornzerodamp.o sigremnants.o random.o boostrot.o \
 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
-        pdfcalls.o  sigreal.o sigcollremn.o \
+        pdfcalls.o sigreal.o sigcollremn.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
 	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
@@ -146,7 +146,14 @@ force_look :
 	true
 ######
 
+###### to generate the sigreal.f modified version in process subdirectory
+sigreal.f: force_look
+	@echo "WARNING: For this process the common sigreal.f file cannot be used"
+	@echo "WARNING: Creating now a proper local copy of sigreal.f"
+	sh make_sigreal.sh &>/dev/null
+	@echo "WARNING: local copy of sigreal.f created in current subdirectory"
 
+#####
 
 # target to cleanup
 .PHONY: clean

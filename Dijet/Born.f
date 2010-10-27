@@ -334,7 +334,7 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface.
 c Here we assume all particles to be outgoing, and
-c assign colour according to the corresponding colur amplitudes.
+c assign colour according to the corresponding colour amplitudes.
 c At the end, the colour of incoming partons are conjugated.
       implicit none
       include '../include/LesHouches.h'

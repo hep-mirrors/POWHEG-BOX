@@ -1024,6 +1024,8 @@ c     add_resonance or momenta_reshuffle.
 c     Everything already performed by twdecay_offshell
 c     and put_on_mass_shell
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     For Wt, I use the general reshuffling procedure.
+      call lhefinitemasses
       end
 
 
@@ -2221,9 +2223,9 @@ ccccccccccccccccccccccccccccccccccccccccc
 c     mass of decay products. For internal consistency, here one should use
 c     the masses assumed by the shower. Leptonic W decay products masses have to be
 c     assigned here. The 3 light quarks are assumed massless.
-         mass(11)=powheginput('tdec/emass')
-         mass(13)=powheginput('tdec/mumass')
-         mass(15)=powheginput('tdec/taumass')
+         mass(11)=powheginput('#tdec/emass')
+         mass(13)=powheginput('#tdec/mumass')
+         mass(15)=powheginput('#tdec/taumass')
          mass(12)=0
          mass(14)=0
          mass(16)=0

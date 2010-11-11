@@ -81,10 +81,10 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	sigborn.o gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o \
 	Bornzerodamp.o sigremnants.o random.o boostrot.o \
 	bra_ket_subroutines.o cernroutines.o init_phys.o powheginput.o \
-        pdfcalls.o  sigreal.o sigcollremn.o \
+        pdfcalls.o sigreal.o sigcollremn.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
-	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
+	sigsoftvirt.o sigcollsoft.o sigvirtual.o reshufflemoms.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 

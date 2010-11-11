@@ -64,9 +64,12 @@ wdecaymode 10000   ! decay mode: the 5 digits correspond to the following
                      ! 0 means close, 1 open
 
 tdec/elbranching 0.108  ! W electronic branching fraction
-tdec/emass 0.000511
-tdec/mumass 0.1056      
-tdec/taumass 1.777     
+
+lhfm/cmass 1.5
+lhfm/bmass 5.0
+lhfm/emass 0.000511
+lhfm/mumass 0.1056
+lhfm/taumass 1.777
 
 ! OPTIONAL PARAMETERS
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 

@@ -95,7 +95,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
         pdfcalls.o sigreal.o sigcollremn.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
-	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
+	sigsoftvirt.o sigcollsoft.o sigvirtual.o reshufflemoms.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 

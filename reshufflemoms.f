@@ -15,8 +15,38 @@ c default values for quark masses should be set here
       include 'include/pwhg_st.h'
       integer j,id
       real * 8  mq(5),ml(11:15)
-      data mq/0.2d0,0.2d0,0.5d0,1.5d0,4.75d0/
-      data ml/0.51d-3,0d0,0.10566d0,0d0,1.777d0/
+c$$$      data mq/0.2d0,0.2d0,0.5d0,1.5d0,4.75d0/
+c$$$      data ml/0.51d-3,0d0,0.10566d0,0d0,1.777d0/
+      real *8 powheginput
+      external powheginput
+      logical ini
+      data ini/.true./
+      save mq,ml,ini
+
+      if(ini) then
+c     quarks
+         mq(1)=powheginput('#lhfm/dmass')
+         if(mq(1).lt.0d0) mq(1)=0.2d0
+         mq(2)=powheginput('#lhfm/umass')
+         if(mq(2).lt.0d0) mq(2)=0.2d0
+         mq(3)=powheginput('#lhfm/smass')
+         if(mq(3).lt.0d0) mq(3)=0.5d0
+         mq(4)=powheginput('#lhfm/cmass')
+         if(mq(4).lt.0d0) mq(4)=1.5d0
+         mq(5)=powheginput('#lhfm/bmass')
+         if(mq(5).lt.0d0) mq(5)=4.75d0
+c     leptons
+         ml(12)=0d0
+         ml(14)=0d0
+         ml(11)=powheginput('#lhfm/emass')
+         if(ml(11).lt.0d0) ml(11)=0.51d-3
+         ml(13)=powheginput('#lhfm/mumass')
+         if(ml(13).lt.0d0) ml(13)=0.10566d0
+         ml(15)=powheginput('#lhfm/taumass')
+         if(ml(15).lt.0d0) ml(15)=1.777d0
+         ini=.false.
+      endif
+
       do j=3,nup
          if(istup(j).eq.1) then
             id=abs(idup(j))
@@ -39,10 +69,10 @@ c Else (i is not an ancestor of moth) iret=0;
       include 'include/LesHouches.h'
       integer i,moth,iret
       integer icurr
-      write(*,*) ' entering sonof'
+c      write(*,*) ' entering sonof'
       icurr=i
  11   continue
-      write(*,*) icurr,moth
+c      write(*,*) icurr,moth
       if(mothup(1,icurr).eq.moth) then
          if(icurr.eq.i) then
 c direct son
@@ -51,14 +81,14 @@ c direct son
 c indirect son
             iret=2
          endif
-         write(*,*) ' exiting sonof', iret
+c         write(*,*) ' exiting sonof', iret
          return
       else
          icurr=mothup(1,icurr)
          if(icurr.ne.0) goto 11
       endif
       iret=0
-      write(*,*) ' exiting sonof', iret
+c      write(*,*) ' exiting sonof', iret
       end
 
 c Looks for subset of final state particles (istup=1) that need to be
@@ -393,7 +423,7 @@ c only for direct sons
       enddo
       if(.not.ini) then
          tot=abs(total(1))+abs(total(2))+abs(total(3))+abs(total(4))
-         if(tot.gt.1d-7) then
+         if(tot.gt.1d-6) then
             write(*,*) ' lhfm_reboosts, mom. cons. violation:',tot
             write(*,*) ' lhfm_reboosts, mom. cons. violation:',total
          endif
@@ -502,7 +532,7 @@ c     beta.  Lorents convention: (t,x,y,z).
             enddo
          endif
       enddo
-      if(sum().gt.1d-7) then
+      if(sum().gt.1d-6) then
          write(*,*) ' total mom. cons.:',sum()
       endif
       do moth=3,nup
@@ -518,7 +548,7 @@ c     beta.  Lorents convention: (t,x,y,z).
                   enddo
                endif
             enddo
-            if(sum().gt.1d-7) then
+            if(sum().gt.1d-6) then
                write(*,*) 'res.',moth,' mom. cons.:',sum()
             endif
          endif

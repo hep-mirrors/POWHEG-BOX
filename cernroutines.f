@@ -1,7 +1,7 @@
-# 1 "dilog64.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "dilog64.F"
+c# 1 "dilog64.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "dilog64.F"
 *
 * $Id: dilog64.F,v 1.1.1.1 1996/04/01 15:02:05 mclareni Exp $
 *
@@ -10,7 +10,7 @@
 * Mathlib gen
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
+c# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
 
 
 
@@ -35,9 +35,9 @@
 
 
 
-# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
-# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
 
 
@@ -97,10 +97,10 @@
 
 
 
-# 10 "dilog64.F" 2
+c# 10 "dilog64.F" 2
 
       FUNCTION DDILOG(X)
-# 1 "/usr/local/home/video/cernlib/2005/include/gen/imp64.inc" 1
+c# 1 "/usr/local/home/video/cernlib/2005/include/gen/imp64.inc" 1
 *
 * $Id: imp64.inc,v 1.1.1.1 1996/04/01 15:02:59 mclareni Exp $
 *
@@ -120,7 +120,7 @@
 
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 
-# 13 "dilog64.F" 2
+c# 13 "dilog64.F" 2
 
 
 
@@ -391,10 +391,10 @@
       END
 
 
-# 1 "kerset.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "kerset.F"
+c# 1 "kerset.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "kerset.F"
 *
 * $Id: kerset.F,v 1.1.1.1 1996/02/15 17:48:35 mclareni Exp $
 *
@@ -403,12 +403,12 @@
 * Kernlib
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/kernnum/pilot.h" 1
-# 21 "/usr/local/home/video/cernlib/2005/include/kernnum/pilot.h"
+c# 1 "/usr/local/home/video/cernlib/2005/include/kernnum/pilot.h" 1
+c# 21 "/usr/local/home/video/cernlib/2005/include/kernnum/pilot.h"
 
-# 33 "/usr/local/home/video/cernlib/2005/include/kernnum/pilot.h"
+c# 33 "/usr/local/home/video/cernlib/2005/include/kernnum/pilot.h"
 
-# 10 "kerset.F" 2
+c# 10 "kerset.F" 2
           SUBROUTINE KERSET(ERCODE,LGFILE,LIMITM,LIMITR)
                     PARAMETER(KOUNTE  =  27)
           CHARACTER*6         ERCODE,   CODE(KOUNTE)
@@ -492,10 +492,10 @@
 1002      FORMAT(/' ***** CERN LIBRARY ERROR CONDITION ',A6)
           END
 
-# 1 "rm48.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "rm48.F"
+c# 1 "rm48.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "rm48.F"
 *
 * $Id: rm48.F,v 1.2 1996/12/12 16:32:06 cernlib Exp $
 *
@@ -507,7 +507,7 @@
 * Mathlib gen
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
+c# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
 
 
 
@@ -532,9 +532,9 @@
 
 
 
-# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
-# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
 
 
@@ -594,7 +594,7 @@
 
 
 
-# 13 "rm48.F" 2
+c# 13 "rm48.F" 2
       SUBROUTINE RM48(RVEC,LENV)
 C     Double-precision version of
 C Universal random number generator proposed by Marsaglia and Zaman
@@ -738,10 +738,10 @@ C           Entry to output current status
       END
 
 
-# 1 "abend.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "abend.F"
+c# 1 "abend.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "abend.F"
 *
 * $Id: abend.F,v 1.1.1.1 1996/02/15 17:50:37 mclareni Exp $
 *
@@ -750,14 +750,14 @@ C           Entry to output current status
 * Kernlib
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h" 1
-# 94 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h"
+c# 1 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h" 1
+c# 94 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h"
 
 
 
 
 
-# 10 "abend.F" 2
+c# 10 "abend.F" 2
 
 
 
@@ -771,10 +771,10 @@ C
 
       STOP  7
       END
-# 1 "lenocc.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "lenocc.F"
+c# 1 "lenocc.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "lenocc.F"
 *
 * $Id: lenocc.F,v 1.1.1.1 1996/02/15 17:49:49 mclareni Exp $
 *
@@ -783,14 +783,14 @@ C
 * Kernlib
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h" 1
-# 94 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h"
+c# 1 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h" 1
+c# 94 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h"
 
 
 
 
 
-# 10 "lenocc.F" 2
+c# 10 "lenocc.F" 2
       FUNCTION LENOCC (CHV)
 C
 C CERN PROGLIB# M507    LENOCC          .VERSION KERNFOR  4.21  890323
@@ -810,10 +810,10 @@ C-    Find last non-blank character in CHV
    99 LENOCC = JJ
       RETURN
       END
-# 1 "mtlset.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "mtlset.F"
+c# 1 "mtlset.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "mtlset.F"
 *
 * $Id: mtlset.F,v 1.1.1.1 1996/04/01 15:02:53 mclareni Exp $
 *
@@ -822,7 +822,7 @@ C-    Find last non-blank character in CHV
 * Mathlib gen
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
+c# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
 
 
 
@@ -847,9 +847,9 @@ C-    Find last non-blank character in CHV
 
 
 
-# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
-# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
 
 
@@ -909,7 +909,7 @@ C-    Find last non-blank character in CHV
 
 
 
-# 10 "mtlset.F" 2
+c# 10 "mtlset.F" 2
       SUBROUTINE MTLSET(ERC,NLG,MXM,MXR)
 
       PARAMETER (KTE = 132)
@@ -1056,7 +1056,7 @@ C     and modify KTE to the number of lines below
       DATA CODE(131),KNTM(131),KNTR(131) / 'V202.2', 255, 255 /
       DATA CODE(132),KNTM(132),KNTR(132) / 'V202.3', 255, 255 /
 
-# 175 "mtlset.F"
+c# 175 "mtlset.F"
 
       ILG=NLG
       L=0
@@ -1098,10 +1098,10 @@ C     and modify KTE to the number of lines below
   101 FORMAT(7X,'***** CERN N002 MTLSET ... ERROR NOO2.1: ',
      1'RUN TERMINATED BY LIBRARY ERROR CONDITION ',A6)
       END
-# 1 "mtlprt.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "mtlprt.F"
+c# 1 "mtlprt.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "mtlprt.F"
 *
 * $Id: mtlprt.F,v 1.1.1.1 1996/04/01 15:02:52 mclareni Exp $
 *
@@ -1110,7 +1110,7 @@ C     and modify KTE to the number of lines below
 * Mathlib gen
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
+c# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
 
 
 
@@ -1135,9 +1135,9 @@ C     and modify KTE to the number of lines below
 
 
 
-# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
-# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
 
 
@@ -1197,7 +1197,7 @@ C     and modify KTE to the number of lines below
 
 
 
-# 10 "mtlprt.F" 2
+c# 10 "mtlprt.F" 2
       SUBROUTINE MTLPRT(NAME,ERC,TEXT)
       CHARACTER*(*) NAME,ERC,TEXT
       LOGICAL LMF,LRF
@@ -1217,10 +1217,10 @@ C     and modify KTE to the number of lines below
       RETURN
 100   FORMAT(7X,'***** CERN ',A,1X,A,' ERROR ',A,': ',A)
       END
-# 1 "permu.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "permu.F"
+c# 1 "permu.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "permu.F"
 *
 * $Id: permu.F,v 1.1.1.1 1996/04/01 15:02:57 mclareni Exp $
 *
@@ -1229,7 +1229,7 @@ C     and modify KTE to the number of lines below
 * Mathlib gen
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
+c# 1 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h" 1
 
 
 
@@ -1254,9 +1254,9 @@ C     and modify KTE to the number of lines below
 
 
 
-# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 40 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
-# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
+c# 57 "/usr/local/home/video/cernlib/2005/include/gen/pilot.h"
 
 
 
@@ -1316,7 +1316,7 @@ C     and modify KTE to the number of lines below
 
 
 
-# 10 "permu.F" 2
+c# 10 "permu.F" 2
       SUBROUTINE PERMU(IA,N)
 C
       CHARACTER*(*) NAME
@@ -1408,10 +1408,10 @@ C
 
 
 
-# 1 "sortzv.F"
-# 1 "<built-in>"
-# 1 "<command line>"
-# 1 "sortzv.F"
+c# 1 "sortzv.F"
+c# 1 "<built-in>"
+c# 1 "<command line>"
+c# 1 "sortzv.F"
 *
 * $Id: sortzv.F,v 1.1.1.1 1996/02/15 17:49:50 mclareni Exp $
 *
@@ -1420,14 +1420,14 @@ C
 * Kernlib
 *
 *
-# 1 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h" 1
-# 94 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h"
+c# 1 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h" 1
+c# 94 "/usr/local/home/video/cernlib/2005/include/kerngen/pilot.h"
 
 
 
 
 
-# 10 "sortzv.F" 2
+c# 10 "sortzv.F" 2
       SUBROUTINE SORTZV (A,INDEX,N1,MODE,NWAY,NSORT)
 C
 C CERN PROGLIB# M101    SORTZV          .VERSION KERNFOR  3.15  820113

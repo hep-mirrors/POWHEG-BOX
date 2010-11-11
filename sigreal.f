@@ -908,7 +908,7 @@ c are not considered.
 c flux factor
       res=res/(8*p(0,1)*p(0,2))
       if(res.eq.0) then
-         write(*,*) 'realgr:', rflav
+c         write(*,*) 'realgr:', rflav
          continue
       endif
       end

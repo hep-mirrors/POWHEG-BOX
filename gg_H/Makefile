@@ -46,7 +46,7 @@ all: pwhg_main
 
 # target to build the modified btilde local version (btilde_ggH)
 # in process subdirectory
-btilde.o: ../btilde.f $(INCLUDE) btilde_ggH.f
+btilde.o: ../btilde.f $(INCLUDE) 
 	ln -sf $(WDNAME)/nlegborn.h ../
 	sh make_btilde.sh
 	$(FF) -c -o obj/$@ btilde_ggH.f

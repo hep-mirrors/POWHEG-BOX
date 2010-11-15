@@ -25,28 +25,43 @@
       logical ini
       data ini/.true./ 
       save ini
-      real *8 mtdep
+      integer mtdep
       common/cmtdep/mtdep
       real *8 powheginput
       external powheginput
+      logical initialized
+      common/cinitialized/initialized
       if(ini) then
-         mtdep=powheginput("#largemtlim")
+         mtdep=int(powheginput("#largemtlim"))
          if (mtdep.lt.0) then
             mtdep=0
          endif
          if(mtdep.eq.0) then
-            write(*,*) ' POWHEG: Exact top mass dependence in Born'
-            write(*,*) '         top mass -> inf for NLO contributions'
-         elseif(mtdep.eq.1) then
+            write(*,*)
             write(*,*) ' POWHEG: top mass -> inf for both Born'
-            write(*,*) '         and NLO contributions'
+            write(*,*) '         and NLO contributions.'
+            write(*,*) '         Results rescaled by a finite top-mass'
+            write(*,*) '         correction factor given by the ratio'
+            write(*,*) '         Born(mt=topmass) / Born(mt=inf).' 
+            write(*,*)
+         elseif(mtdep.eq.1) then
+            write(*,*)
+            write(*,*) ' POWHEG: top mass -> inf for both Born'
+            write(*,*) '         and NLO contributions.'
+            write(*,*)
+         elseif(mtdep.eq.2) then
+            write(*,*)
+            write(*,*) ' POWHEG: Exact top mass dependence in Born.'
+            write(*,*) '         top mass -> inf for NLO contributions.'
+            write(*,*)
          else   
             write(*,*) ' Error with mtdep flag'
             call exit(1)
          endif   
          ini=.false.
+         initialized=.true.
       endif
-      if(mtdep.eq.1) then   
+      if(mtdep.ne.2) then   
          large_mtlim=.true.
       else
          large_mtlim=.false.
@@ -57,10 +72,10 @@
       implicit none
       logical large_mtlim
       common/clarge_mtlim/large_mtlim
-      real *8 mtdep
+      integer mtdep
       common/cmtdep/mtdep
       large_mtlim=.true.
-      if (mtdep.ne.1) then
+      if (mtdep.eq.2) then
 c     Only re-evaluate the Born in the large mt-limit
 c     if they were not already evaluated previously
          call allborn
@@ -125,8 +140,8 @@ C     Spin-correlated Born amplitudes
                   endif
                   do mu=0,3
                      do nu=0,3
-                        bmunu(mu,nu,j)=amp2_inf*
-     $     ((p(mu,j)*p(nu,i)+p(nu,j)*p(mu,i))/kn_sborn-gtens(mu,nu)/2d0) 
+                        bmunu(mu,nu,j)=amp2_inf* ((p(mu,j)*p(nu,i)+p(nu
+     $                       ,j)*p(mu,i))/kn_sborn-gtens(mu,nu)/2d0) 
                      enddo
                   enddo
                endif
@@ -190,6 +205,49 @@ c     From eq.(2.2) of NPB359(91)283
       amp2=xnorm*tmp*st_alpha*st_alpha*ph_GF*2d0*s
 c     the multiplication for 2s is needed to remove the flux factor
        end
+
+      function finitemtcorr()
+      implicit none
+      include 'nlegborn.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_kn.h'
+      include 'PhysPars.h'
+      integer mtdep
+      common/cmtdep/mtdep
+      real * 8 finitemtcorr
+      complex * 16 zic,tmpc
+      parameter (zic=(0.d0,1.d0))
+      real * 8 tmp,tauq,etapl,etamn
+      logical initialized,ini
+      common/cinitialized/initialized
+      save ini
+      data ini/.true./
+      if ((mtdep.ne.0).or.(.not.initialized)) then
+         finitemtcorr=1d0
+         return
+      else
+c     From eq.(2.2) of NPB359(91)283
+         tauq=4*(ph_topmass/ph_Hmass)**2
+         if(tauq.gt.1.d0)then
+            tmp=tauq*(1+(1-tauq)*(asin(1/sqrt(tauq)))**2)
+            tmp=tmp**2
+         else
+            etapl=1+sqrt(1-tauq)
+            etamn=1-sqrt(1-tauq)
+            tmpc=tauq*(1-(1-tauq)*(log(etapl/etamn)-zic*pi)**2/4.d0)
+            tmp=tmpc*dconjg(tmpc)
+         endif
+c     divide by the result in large top mass limit
+         finitemtcorr=tmp*9d0/4d0
+         if (ini) then
+         write(*,*)
+         write(*,*) " POWHEG: finite top-mass correction "
+         write(*,*) " factor is :", finitemtcorr
+         write(*,*)
+         ini=.false.
+         endif
+      endif
+      end
 
       subroutine borncolour_lh
 c     Sets up the colour for the given flavour configuration already

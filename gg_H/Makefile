@@ -42,6 +42,15 @@ LIBS=$(LIBSLHAPDF)
 HERWIG_OBJ=$(HERWIG_VERSION).o
 PYTHIA_OBJ=$(PYTHIA_VERSION).o
 
+all: pwhg_main
+
+# target to build the modified btilde local version (btilde_ggH)
+# in process subdirectory
+btilde.o: ../btilde.f $(INCLUDE) btilde_ggH.f
+	ln -sf $(WDNAME)/nlegborn.h ../
+	sh make_btilde.sh
+	$(FF) -c -o obj/$@ btilde_ggH.f
+
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
 	$(FF) -c -o obj/$@ $<
@@ -117,9 +126,4 @@ clean:
 
 .PHONY: clean 
 
-# target to build the modified btilde local version (btilde_ggH)
-# in process subdirectory
-btilde.o: ../btilde.f $(INCLUDE)
-	ln -sf $(WDNAME)/nlegborn.h ../
-	sh make_btilde.sh
-	$(FF) -c -o obj/$@ btilde_ggH.f
+

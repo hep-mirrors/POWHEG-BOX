@@ -10,13 +10,13 @@
       if(kn_csi.eq.0d0) then
 c it is a Born event
 c first assign flavours and colour to the underlying Born process
-         call born_lh
          call momenta_lh(kn_pborn,nlegborn)
+         call born_lh
          scalup=sqrt(rad_ptsqmin)
       else
 c it is an event with radiation
-         call born_lh
          call momenta_lh(kn_preal,nlegreal)
+         call born_lh
          scalup=sqrt(rad_pt2max)
          nup=nlegreal
          istup(nup)=1

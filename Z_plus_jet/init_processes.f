@@ -4,12 +4,23 @@
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
       include '../include/pwhg_flg.h'
+      include '../include/LesHouches.h'
       integer i1,i2,i3,i4,i5,i6,k,ii(6)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5)),(i6,ii(6))
       logical debug
       parameter (debug=.false.)
       integer j
+      real * 8 powheginput
+      external powheginput
+c     vector boson id and decay
+      integer idvecbos,vdecaymode
+      common/cvecbos/idvecbos,vdecaymode
+c     lepton masses
+      real *8 lepmass(3),decmass
+      common/clepmass/lepmass,decmass
+      logical condition
+
 c     check nlegborn. This is only a sanity check while we are TESTING 
 c     the code and we change often from one process to the other
       if (nlegborn.ne.5) then
@@ -18,10 +29,72 @@ c     the code and we change often from one process to the other
          stop
       endif
 
-*********************************************************************
-c     index of the first LIGHT coloured parton in the final state
+
+
+c******************************************************
+c     Choose the process to be implemented
+c******************************************************
+c     ID of vector boson produced
+      idvecbos=powheginput('idvecbos')
+c     decay products of the vector boson
+      vdecaymode=powheginput('vdecaymode')
+
+      if (lepmass(1).ne.0.51099891d-3) then
+         write(*,*) 'block data lepmass not loaded. stop running' 
+         stop
+      endif
+
+      if ((vdecaymode.lt.11).or.(vdecaymode.gt.16)) then
+         write(*,*) 'ERROR: The decay mode you selected'
+     #  //' is not allowed (Up to now only leptonic decays)'
+         stop
+      endif
+            
+      if(idvecbos.eq.23) then
+         write(*,*) 
+         write(*,*) ' POWHEG:  Z+jet production and decay'
+         if (vdecaymode.eq.11) write(*,*) '         to e- e+ '
+         if (vdecaymode.eq.12) write(*,*) '         to ve ve~ '
+         if (vdecaymode.eq.13) write(*,*) '         to mu- mu+ '
+         if (vdecaymode.eq.14) write(*,*) '         to vmu vmu~ '
+         if (vdecaymode.eq.15) write(*,*) '         to tau- tau+ '
+         if (vdecaymode.eq.16) write(*,*) '         to vtau vtau~ '
+         write(*,*) 
+      else
+         write(*,*) 'ERROR: The ID of vector boson you selected'
+     #  //' is not admitted (23: Z)'
+         stop
+      endif
+
+c     change the LHUPI id of the process according to vector boson id
+c     and decay
+      lprup(1)=10000+vdecaymode ! 10000+idup of first decay product of the Z
+
+      if(lprup(1).eq.10011) then
+         decmass=lepmass(1)
+      elseif(lprup(1).eq.10012) then
+         decmass=0d0   
+      elseif(lprup(1).eq.10013) then
+         decmass=lepmass(2)
+      elseif(lprup(1).eq.10014) then
+         decmass=0d0   
+      elseif(lprup(1).eq.10015) then
+         decmass=lepmass(3)     
+      elseif(lprup(1).eq.10016) then
+         decmass=0d0   
+      else
+c     not yet implemented
+         write(*,*) 'non leptonic Z decays '//
+     #        'not yet implemented'
+         stop
+      endif
+
+c     index of the first coloured particle in the final state
+c     (all subsequent particles are coloured)
       flst_lightpart=5
-*********************************************************************
+c     Z decay products
+      i3=vdecaymode
+      i4=-i3
 
 *********************************************************************
 ***********            REAL SUBPROCESSES              ***************
@@ -129,3 +202,9 @@ c a quark and a gluon
  999  write(*,*) 'init_processes: increase maxprocborn'
       end
  
+
+      block data lepmass_data
+      real *8 lepmass(3),decmass
+      common/clepmass/lepmass,decmass
+      data lepmass /0.51099891d-3,0.1056583668d0,1.77684d0/
+      end

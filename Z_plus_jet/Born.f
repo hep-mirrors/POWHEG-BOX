@@ -632,6 +632,74 @@ c neutral particles
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
+c     lepton masses
+      real *8 lepmass(3),decmass
+      common/clepmass/lepmass,decmass
 c     Resonance Z -> e-(3) e+(4)
       call add_resonance(23,3,4)
+c     The following routine also performs the reshuffling of momenta if
+c     a massive decay is chosen
+      call momenta_reshuffle(3,4,5,decmass)
+      end
+
+c     i1<i2
+      subroutine momenta_reshuffle(ires,i1,i2,decmass)
+      implicit none
+      include '../include/LesHouches.h'
+      integer ires,i1,i2,j
+      real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
+      if (i1.ge.i2) then
+         write(*,*) 'wrong sequence in momenta_reshuffle'
+         stop
+      endif
+cccccccccccccccccccccccccccccc
+c construct boosts from/to vector boson rest frame 
+      do j=1,3
+         beta(j)=-pup(j,ires)/pup(4,ires)
+      enddo
+      modbeta=sqrt(beta(1)**2+beta(2)**2+beta(3)**2)
+      do j=1,3
+         beta(j)=beta(j)/modbeta
+         betainv(j)=-beta(j)
+      enddo
+cccccccccccccccccccccccccccccccccccccccc
+c first decay product 
+      ptemp(0)=pup(4,i1)
+      do j=1,3
+         ptemp(j)=pup(j,i1)
+      enddo
+      call mboost(1,beta,modbeta,ptemp,ptemp)
+      ptemp1(0)=0.5d0*pup(5,ires)
+      do j=1,3
+         ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)**2 -decmass**2)
+      enddo
+      call mboost(1,betainv,modbeta,ptemp1,ptemp)
+      do j=1,3
+         pup(j,i1)=ptemp(j)
+      enddo
+      pup(4,i1)=ptemp(0)
+c abs to avoid tiny negative values in case of neutrinos
+      pup(5,i1)=sqrt(abs(pup(4,i1)**2-pup(1,i1)**2
+     $     -pup(2,i1)**2-pup(3,i1)**2))
+      
+c second decay product 
+
+      ptemp(0)=pup(4,i2)
+      do j=1,3
+         ptemp(j)=pup(j,i2)
+      enddo
+      call mboost(1,beta,modbeta,ptemp,ptemp)
+      ptemp1(0)=0.5d0*pup(5,ires)
+      do j=1,3
+         ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)**2 -decmass**2)
+      enddo
+      call mboost(1,betainv,modbeta,ptemp1,ptemp)
+      do j=1,3
+         pup(j,i2)=ptemp(j)
+      enddo
+      pup(4,i2)=ptemp(0)
+c abs to avoid tiny negative values in case of neutrinos
+      pup(5,i2)=sqrt(abs(pup(4,i2)**2-pup(1,i2)**2
+     $     -pup(2,i2)**2-pup(3,i2)**2))
+cccccccccccccccccccccccccccccccccccccccc
       end

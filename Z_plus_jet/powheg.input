@@ -1,3 +1,7 @@
+! Z+jet production parameter
+idvecbos 23
+vdecaymode 11
+
 numevts 100000    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)

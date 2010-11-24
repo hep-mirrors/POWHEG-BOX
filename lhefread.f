@@ -30,7 +30,9 @@ c...reads event information from a les houches events file on unit nlf.
       character * 100 string
       include 'include/LesHouches.h'
       integer i,j
- 1    read(nlf,fmt='(a)',err=998,end=998) string
+ 1    continue
+c      string=' '
+      read(nlf,fmt='(a)',err=777,end=666) string
       if(string.eq.'</LesHouchesEvents>') then
          goto 998
       endif
@@ -48,7 +50,17 @@ c truncated event files. On EOF return with no event found
          goto 1
       endif
 c no event found:
- 998  nup=0      
+ 777   continue
+       print *,"Error in reading"
+       print *,string
+       stop
+ 666   continue
+       print *,"reached EOF"
+       print *,string
+       stop
+ 998  continue
+      print *,"read </LesHouchesEvents>"
+      nup=0      
  999  end
 
 

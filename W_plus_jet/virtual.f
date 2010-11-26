@@ -14,7 +14,7 @@ c     MCFM include
       include 'MCFM_include/qcdcouple.f'
       include 'MCFM_include/constants.f' 
       real * 8 p(0:3,nlegborn)
-      integer vflav(nlegborn)      
+      integer vflav(nlegborn)
       real * 8 virtual
       real * 8 pmcfm(mxpart,1:4),pold(0:3,nlegborn)
       real * 8 virt(-nf:nf, -nf:nf)

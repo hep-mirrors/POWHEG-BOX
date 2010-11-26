@@ -10,14 +10,14 @@
       real * 8 ps(0:3,nlegreal)
       integer j,mu
 cccccccccccccccccccc
-      logical debug,ini
-      data ini/.true./
-      save ini
-      parameter(debug=.false.)
-      real *8 kr_mad(0:3,nlegreal),amp2mad
-      integer ileg
-      real *8 tiny
-      parameter (tiny=1d-3)
+c$$$      logical debug,ini
+c$$$      data ini/.true./
+c$$$      save ini
+c$$$      parameter(debug=.true.)
+c$$$      real *8 kr_mad(0:3,nlegreal),amp2mad
+c$$$      integer ileg
+c$$$      real *8 tiny
+c$$$      parameter (tiny=1d-3)
 ccccccccccccccccccc
 c     if present, the gluon is assumed to be the last particle
       call real_ampsq_g_last(p,rflav,amp2)
@@ -40,37 +40,37 @@ c     last position
       endif
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-c compare with madgraph
-      if (debug) then
-         if(ini) then 
-c     setting madgraph parameters (needed for madgraph subroutines)
-            call set_madgraph_parameters
-            ini=.false.
-         endif
-c     set madgraph parameters that can change on an event-by-event basis
-      call mad_setparam
-
-      do ileg=1,nlegreal
-         do mu=0,3
-            kr_mad(mu,ileg)=p(mu,ileg)
-         enddo
-      enddo
-c     to avoid bugs in HELAS, restore exact masslessness of  incoming partons 
-      kr_mad(0,1)=dabs(kr_mad(3,1))
-      kr_mad(0,2)=dabs(kr_mad(3,2))
-      call compreal(kr_mad,rflav,amp2mad)
-
-      if  (abs(amp2mad/amp2 -1d0).gt.tiny) then 
-         print *,rflav,' MUST BE EQUAL =====> ', amp2mad, amp2,
-     $        ' RATIO: ', amp2mad/amp2, '\n P:',kr_mad
-        stop
-      endif
-
-      if  ((abs(amp2mad-amp2)/amp2mad).gt.tiny) then 
-         print *,rflav,' MUST BE 0 =====> ', abs(amp2mad-amp2)/amp2mad
-         stop
-      endif
-      endif
+c$$$c compare with madgraph
+c$$$      if (debug) then
+c$$$         if(ini) then 
+c$$$c     setting madgraph parameters (needed for madgraph subroutines)
+c$$$            call set_madgraph_parameters
+c$$$            ini=.false.
+c$$$         endif
+c$$$c     set madgraph parameters that can change on an event-by-event basis
+c$$$      call mad_setparam
+c$$$
+c$$$      do ileg=1,nlegreal
+c$$$         do mu=0,3
+c$$$            kr_mad(mu,ileg)=p(mu,ileg)
+c$$$         enddo
+c$$$      enddo
+c$$$c     to avoid bugs in HELAS, restore exact masslessness of  incoming partons 
+c$$$      kr_mad(0,1)=dabs(kr_mad(3,1))
+c$$$      kr_mad(0,2)=dabs(kr_mad(3,2))
+c$$$      call compreal(kr_mad,rflav,amp2mad)
+c$$$
+c$$$      if  (abs(amp2mad/amp2 -1d0).gt.tiny) then 
+c$$$         print *,rflav,' MUST BE EQUAL =====> ', amp2mad, amp2,
+c$$$     $        ' RATIO: ', amp2mad/amp2, '\n P:',kr_mad
+c$$$        stop
+c$$$      endif
+c$$$
+c$$$      if  ((abs(amp2mad-amp2)/amp2mad).gt.tiny) then 
+c$$$         print *,rflav,' MUST BE 0 =====> ', abs(amp2mad-amp2)/amp2mad
+c$$$         stop
+c$$$      endif
+c$$$      endif
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       
 c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq
@@ -1089,25 +1089,9 @@ c         call swap(ferm_type,1,2,6,ferm_type)
       elseif(idx.eq.5) then
 c     'real crossing': cross 2<->5, changing signs.
          call cross(pp,ferm_type,2,5,6,pp,ferm_type)
-c$$$         do mu=0,3
-c$$$            rtemp=pp(mu,2)
-c$$$            pp(mu,2)=-pp(mu,5)
-c$$$            pp(mu,5)=-rtemp
-c$$$         enddo
-c$$$         itemp=ferm_type(2)
-c$$$         ferm_type(2)=-ferm_type(5)
-c$$$         ferm_type(5)=-itemp
       elseif(idx.eq.6) then
 c     'real crossing': cross 2<->6, changing signs.
          call cross(pp,ferm_type,2,5,6,pp,ferm_type) 
-c$$$         do mu=0,3
-c$$$            rtemp=pp(mu,2)
-c$$$            pp(mu,2)=-pp(mu,6)
-c$$$            pp(mu,6)=-rtemp
-c$$$         enddo
-c$$$         itemp=ferm_type(2)
-c$$$         ferm_type(2)=-ferm_type(6)
-c$$$         ferm_type(6)=-itemp
       endif
 
 c Now the different flavour is in the 2nd position 
@@ -1117,7 +1101,7 @@ c      print *,ferm_type
 c      print *,rflav
       if(ferm_type(1).ne.ferm_type(2)) then
          if (ferm_type(5).eq.ferm_type(1)) then
-c            cross 1-5
+c           cross 1-5
             call cross(pp,ferm_type,1,5,6,pp,ferm_type)
          elseif (ferm_type(6).eq.ferm_type(1))  then
 c           cross 1-6
@@ -1211,6 +1195,8 @@ c     in the fundamental routine
          itemp=ferm_type(2)
          ferm_type(2)=-ferm_type(5)
          ferm_type(5)=-itemp
+      else
+         write(*,*) 'not defined action in cross_q_qp_to_al_vl_q_qpp'
       endif
       
 c     call to fundamental routine

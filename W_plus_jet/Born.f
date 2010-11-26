@@ -10,18 +10,18 @@
       real * 8 bmunu(0:3,0:3,nlegs),bbmunu(0:3,0:3),born,colcf
       integer j,k,mu,nu
 ccccccccccccccccccccccccccccc
-      logical debug
-      parameter(debug=.false.)
-      include '../include/pwhg_st.h'
-      include 'PhysPars.h'
-      include 'MCFM_include/scale.f'
-      include 'MCFM_include/qcdcouple.f'
-      
-      real * 8 pmcfm(12,1:4),bornmcfm
-      double precision msq0(-5:5,-5:5)
-      real *8 tiny
-      parameter (tiny=1d-3)
-      integer i
+c$$$      logical debug
+c$$$      parameter(debug=.true.)
+c$$$      include '../include/pwhg_st.h'
+c$$$      include 'PhysPars.h'
+c$$$      include 'MCFM_include/scale.f'
+c$$$      include 'MCFM_include/qcdcouple.f'
+c$$$      
+c$$$      real * 8 pmcfm(12,1:4),bornmcfm
+c$$$      double precision msq0(-5:5,-5:5)
+c$$$      real *8 tiny
+c$$$      parameter (tiny=1d-6)
+c$$$      integer i
 cccccccccccccccccccccccccccc
 c Colour factors for colour-correlated Born amplitudes;
 c Rule from 2.98 in FNO2007, leads to B_i j=B*(C_i+C_j-C_k)/2,
@@ -50,40 +50,40 @@ c where k#i,j
          endif
       enddo
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-c Compare Born with MCFM (needed to evaluate MCFM virtual)
-      if(debug) then
-      call virtual_initialize_MCFM
-      scale = sqrt(st_muren2)
-      musq=st_muren2            ! renormalization scale squared
-      as = st_alpha
-      call mom_to_MCFM(p,pmcfm)
-      call qqb_w_g(pmcfm,msq0)
-
-      bornMCFM=msq0(bflav(1),bflav(2))
-
-      i = bflav(1)
-      j = bflav(2)
-      k = bflav(5)
-      if (i.eq.0) i=abs(k)
-      if (j.eq.0) j=abs(k)
-      if(mod(abs(i),2).eq.0) then
-         bornMCFM=bornMCFM*ph_CKM(abs(i)/2,(abs(j)+1)/2) **2
-      elseif(mod(abs(i),2).eq.1) then   
-         bornMCFM=bornMCFM*ph_CKM(abs(j)/2,(abs(i)+1)/2) **2
-      endif
-
-      if  (abs(bornMCFM/born -1d0).gt.tiny) then 
-         print *,bflav,'BORN  MUST BE EQUAL =====> ', bornMCFM, born,
-     $        ' RATIO: ', bornMCFM/born
-         stop
-      endif
-      
-      if  ((abs(bornMCFM-born)/bornMCFM).gt.tiny) then 
-         print *,bflav,' B0RN MUST BE 0 =====> ', abs(bornMCFM-born)
-     $        /bornMCFM
-         stop
-      endif
-      endif
+c$$$c Compare Born with MCFM (needed to evaluate MCFM virtual)
+c$$$      if(debug) then
+c$$$      call virtual_initialize_MCFM
+c$$$      scale = sqrt(st_muren2)
+c$$$      musq=st_muren2            ! renormalization scale squared
+c$$$      as = st_alpha
+c$$$      call mom_to_MCFM(p,pmcfm)
+c$$$      call qqb_w_g(pmcfm,msq0)
+c$$$
+c$$$      bornMCFM=msq0(bflav(1),bflav(2))
+c$$$
+c$$$      i = bflav(1)
+c$$$      j = bflav(2)
+c$$$      k = bflav(5)
+c$$$      if (i.eq.0) i=abs(k)
+c$$$      if (j.eq.0) j=abs(k)
+c$$$      if(mod(abs(i),2).eq.0) then
+c$$$         bornMCFM=bornMCFM*ph_CKM(abs(i)/2,(abs(j)+1)/2) **2
+c$$$      elseif(mod(abs(i),2).eq.1) then   
+c$$$         bornMCFM=bornMCFM*ph_CKM(abs(j)/2,(abs(i)+1)/2) **2
+c$$$      endif
+c$$$
+c$$$      if  (abs(bornMCFM/born -1d0).gt.tiny) then 
+c$$$         print *,bflav,'BORN  MUST BE EQUAL =====> ', bornMCFM, born,
+c$$$     $        ' RATIO: ', bornMCFM/born
+c$$$         stop
+c$$$      endif
+c$$$      
+c$$$      if  ((abs(bornMCFM-born)/bornMCFM).gt.tiny) then 
+c$$$         print *,bflav,' B0RN MUST BE 0 =====> ', abs(bornMCFM-born)
+c$$$     $        /bornMCFM
+c$$$         stop
+c$$$      endif
+c$$$      endif
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       end
@@ -161,6 +161,7 @@ c     q aqp -> W+ g
 c     q g -> W+ qp
             call q_g_to_al_vl_qp(p,ferm_type,amp2,bmunu)
          else
+            write(*,*) 'Invalid bflav in compborn'
             amp2 = 0d0
          endif
       elseif(idvecbos.eq.-24) then
@@ -174,6 +175,7 @@ c     q aqp -> W- g
 c     q g -> W- qp
             call q_g_to_l_avl_qp(p,ferm_type,amp2,bmunu)
          else
+            write(*,*) 'Invalid bflav in compborn'
             amp2 = 0d0
          endif
 
@@ -206,35 +208,33 @@ c     q g -> W- qp
       end
 
 
-
 c this subroutine compute the Born amplitude for the process
-c q(p1) qp(p2) -> W(p3+p4) g(p5)   con W -> l(p3) vl(p4) 
-c NUMERICALLY, with the bra/ket formalism, not by squaring the analytic 
+c q(p1) qp(p2) -> W(p3+p4) g(p5)   con W -> l(p3) vl(p4)
+c NUMERICALLY, with the bra/ket formalism, not by squaring the analytic
 c amplitude
-c It gets the matrix p with all the momenta and gives   
-c the amplitude squared (amp2) averaged over initial 
-c polarization 
+c It gets the matrix p with all the momenta and gives
+c the amplitude squared (amp2) averaged over initial
+c polarization
 c
 c         q  --->----------->------ g
 c                     |
 c                     |            l
-c                     |           /  
+c                     |           /
 c         aqp ---<-----/\/\/\/\/\/
 c                           W    \
-c                                 \ vl 
+c                                 \ vl
 c     ferm_type = 1 fermion
 c     ferm_type = -1 antifermion
 
-      subroutine q_aqp_to_al_vl_g(pphy,fermion_type,
-     #     amp2,bmunu)
-   
+
+      subroutine q_aqp_to_al_vl_g(pphy,fermion_type,amp2,bmunu)
       implicit none
       integer nleg
       parameter (nleg=5)
       integer fermion_type(nleg)
       real * 8 pphy(0:3,nleg)
       real * 8 amp2,bmunu(0:3,0:3)
-       complex *16 unit_I
+      complex *16 unit_I
       parameter (unit_I=(0,1))
       real * 8 p1(0:3),p2(0:3),pp1(0:3),pp2(0:3),pp5(0:3)
       include '../include/pwhg_st.h'
@@ -250,7 +250,7 @@ c     ferm_type = -1 antifermion
       integer mu,nu,i,pol,pol1,pol2
       real * 8 p(0:3,nleg)
       integer ferm_type(nleg)
-      complex *16 prop34w 
+      complex *16 prop34w
 
       if ((fermion_type(3).ne.-1).and.(fermion_type(4).ne.1)) then
          write(*,*) 'ERROR: this subroutine deals only with W+ decay'
@@ -289,7 +289,7 @@ c     for fermions along fermionic current
       p34=dotp(p(0,3),p(0,4))
       
 c     W propagator
-      prop34w=1d0/dcmplx(2d0*p34-ph_Wmass2,ph_WmWw)      
+      prop34w=1d0/dcmplx(2d0*p34-ph_Wmass2,ph_WmWw)
 
 c     bra and ket are built with physical momenta, but a check on positivity
 c     of energy is needed when one uses this function to evaluate a
@@ -338,15 +338,15 @@ c     leptonic current
          endif
          Jlep_dot_Jquark_vec(pol)=0d0
          call bra_gamma_ket_gluon(psi2,psi1,-1,p2,p1,
-     #        p(0,5),epsg(0,pol),jqua)
+     $        p(0,5),epsg(0,pol),jqua)
 
          Jlep_dot_Jquark = ccdotp(jlep,jqua)*prop34w
-         Jlep_dot_Jquark_vec(pol) = 
-     #              Jlep_dot_Jquark_vec(pol) +
-     #              Jlep_dot_Jquark
+         Jlep_dot_Jquark_vec(pol) =
+     $              Jlep_dot_Jquark_vec(pol) +
+     $              Jlep_dot_Jquark
         
          amp2 = amp2 + Jlep_dot_Jquark *
-     #     DCONJG(Jlep_dot_Jquark)  
+     $     DCONJG(Jlep_dot_Jquark)  
       
       enddo     
       
@@ -357,9 +357,9 @@ c     leptonic current
          do pol2=1,2
 c     we don't conjugate epsg(mu,pol1) since it is real
             bmunu(mu,nu) = bmunu(mu,nu) +                  
-     #       Jlep_dot_Jquark_vec(pol1)
-     #           *DCONJG(Jlep_dot_Jquark_vec(pol2))
-     #           * epsg(mu,pol1) * epsg(nu,pol2)
+     $       Jlep_dot_Jquark_vec(pol1)
+     $           *DCONJG(Jlep_dot_Jquark_vec(pol2))
+     $           * epsg(mu,pol1) * epsg(nu,pol2)
          enddo
          enddo
       enddo

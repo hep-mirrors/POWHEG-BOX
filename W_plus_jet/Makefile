@@ -45,8 +45,8 @@ LIBS=$(LIBSLHAPDF)
 # Uncomment the following with the appropriate location of libstdc++.a for static link
 #STATIC= -L /usr/lib/gcc/x86_64-linux-gnu/4.4/ -lstdc++ -static
 
-#LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
-LIBS += $(LIBSMADGRAPH)
+LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
+#LIBS += $(LIBSMADGRAPH)
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
@@ -64,7 +64,7 @@ LIBS += $(LIBSMADGRAPH)
 #MADGRAPH+=functions.o setparam.o $(LIBSMADGRAPH) 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-		      real.o pwhg_analysis.o $(MADGRAPH) 
+		      real.o $(MADGRAPH) pwhg_analysis_CDF.o # pwhg_analysis.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \
@@ -75,8 +75,9 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
 	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
-	fastjetsisconewrap.o fastjetktwrap.o \
-	$(PDFPACK) $(USER) $(SYSOBJ)
+	$(PDFPACK) $(USER) $(SYSOBJ) \
+	fastjetCDFJetCluwrap.o
+
 
 pwhg_main:$(PWHG) 
 	$(FF) $(patsubst %.o,obj/%.o,$(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
@@ -106,10 +107,11 @@ main-HERWIG-lhef: $(HERWIG)
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
 	boostrot.o powheginput.o \
-        pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
-	fastjetsisconewrap.o fastjetktwrap.o  fastjetCDFMidPointwrap.o\
-	fastjetD0RunIIConewrap.o pwhg_analysis_driver.o \
-	random.o cernroutines.o opencount.o  $(SYSOBJ)
+        pwhg_bookhist.o lhefread.o newunit.o \
+	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
+	random.o cernroutines.o opencount.o $(SYSOBJ) \
+	pwhg_analysis_CDF.o fastjetCDFJetCluwrap.o
+
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
 

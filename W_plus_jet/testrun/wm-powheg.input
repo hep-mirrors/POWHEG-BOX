@@ -1,6 +1,6 @@
 ! W^- + jet production parameter
 idvecbos -24
-vdecaymode 15
+vdecaymode 11
 
 numevts 10    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)

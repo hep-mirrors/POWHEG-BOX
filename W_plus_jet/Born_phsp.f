@@ -150,21 +150,33 @@ c      endif
       logical ini
       data ini/.true./
       logical runningscales
-      parameter (runningscales=.false.)
+      parameter (runningscales=.true.)
       real * 8 pt2
       if (runningscales) then
+c$$$         if (ini) then
+c$$$            write(*,*) '****************************************'
+c$$$            write(*,*) '****************************************'
+c$$$            write(*,*) '**   mur=M_T^W  used for Bbar function   **'
+c$$$            write(*,*) '**   muf=M_T^W  used for Bbar function   **'
+c$$$            write(*,*) '****************************************'
+c$$$            write(*,*) '****************************************'
+c$$$            ini=.false.            
+c$$$         endif
+c$$$         pt2=(kn_pborn(1,3)+kn_pborn(1,4))**2 +
+c$$$     $       (kn_pborn(2,3)+kn_pborn(2,4))**2 + 
+c$$$     $        ph_Wmass**2
+c$$$         mur=sqrt(pt2)
+c$$$         muf=mur
          if (ini) then
             write(*,*) '****************************************'
             write(*,*) '****************************************'
-            write(*,*) '**   mur=M_T^W  used for Bbar function   **'
-            write(*,*) '**   muf=M_T^W  used for Bbar function   **'
+            write(*,*) '**   mur=pt_W  used for Bbar function   **'
+            write(*,*) '**   muf=pt_W  used for Bbar function   **'
             write(*,*) '****************************************'
             write(*,*) '****************************************'
             ini=.false.            
          endif
-         pt2=(kn_pborn(1,3)+kn_pborn(1,4))**2 +
-     $       (kn_pborn(2,3)+kn_pborn(2,4))**2 + 
-     $        ph_Wmass**2
+         pt2=kn_pborn(1,5)**2+kn_pborn(2,5)**2
          mur=sqrt(pt2)
          muf=mur
       else

@@ -180,7 +180,7 @@ c     in pjet matrix)
 c     CDF plots dsigma/dEt_j.
       CDF_Et_j  = 20d0
       CDF_eta_j = 2d0
-      CDF_dR_je = 0.000001 !!!!!0.52d0
+c$$$      CDF_dR_je = 0.52d0
       
 c     reject event unless all jets that pass the jet cuts
 c     are far from the charged lepton. Meanwhile,
@@ -191,11 +191,12 @@ c     also count the number of jets that pass the jet cuts.
          call getpseudorapidity(pjet(1,jj(j)),eta_j)
          if((Et_j.ge.CDF_Et_j).and.
      $        (abs(eta_j).le.CDF_eta_j)) then
-            if(rsep_azi_eta(plep,pjet(1,jj(j))).le.CDF_dR_je) then
-               goto 666         ! reject event
-            else
-               nregjet=nregjet+1
-            endif
+            nregjet=nregjet+1
+c$$$            if(rsep_azi_eta(plep,pjet(1,jj(j))).le.CDF_dR_je) then
+c$$$               goto 666         ! reject event
+c$$$            else
+c$$$               nregjet=nregjet+1
+c$$$            endif
          endif
       enddo
       
@@ -216,8 +217,6 @@ c$$$         print*, jj(1),jj(2),jj(3),jj(4)
          
 c     CDF plots sigma(>= n jet)
       CDF_Et_j  = 25d0
-c$$$  CDF_eta_j = 2d0
-c$$$  CDF_dR_je = 0.52d0
       if(ktjet(jj(diag)).ge.CDF_Et_j) then
          call pwhgfill(5,dble(diag),dsig/bsz(5))
       endif

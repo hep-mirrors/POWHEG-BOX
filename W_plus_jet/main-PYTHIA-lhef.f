@@ -219,10 +219,6 @@ c     check parameters
             write(*,*) 'Killed event'
             write(*,*) 'Scalup= ',scalup
             write(*,*) idup(1),idup(2),nup
-c$$$            if(scalup.gt.4.95d0) then
-c$$$               write(*,*) 'KILLED AN EVENT WITH scalup > (4.95*1.05)'
-c$$$            endif
-
 c$$$            call pylist(7)      !hepeup
 c$$$            call pylist(2)      !all the event
 c$$$            write(*,*) 'current error:   mstu(23),mstu(24) ',

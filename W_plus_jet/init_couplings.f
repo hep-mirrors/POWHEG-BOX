@@ -15,8 +15,10 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_Wmass  = 80.398d0     
       ph_Wwidth =  2.141d0
       
-      ph_alphaem = 1d0/128.89   ! alpha_em at Z pole
-      ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
+      ph_alphaem = 1d0/128.93d0
+      ph_sthw2 = 0.2312d0
+c      ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
+
 
 c     CKM from PDG 2010 (eq. 11.27)
       ph_CKM(1,1)=0.97428d0 

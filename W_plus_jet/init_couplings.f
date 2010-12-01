@@ -15,19 +15,19 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_Wmass  = 80.398d0     
       ph_Wwidth =  2.141d0
       
-      ph_alphaem = 1d0/132.3384323d0
+      ph_alphaem = 1d0/128.89   ! alpha_em at Z pole
       ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
 
-c     CAVEAT: 
-      ph_CKM(1,1)=0.975d0 
-      ph_CKM(1,2)=0.222d0 
-      ph_CKM(1,3)=1d-5
-      ph_CKM(2,1)=0.222d0 
-      ph_CKM(2,2)=0.975d0 
-      ph_CKM(2,3)=1d-5
-      ph_CKM(3,1)=1d-5
-      ph_CKM(3,2)=1d-5
-      ph_CKM(3,3)=1d0
+c     CKM from PDG 2010 (eq. 11.27)
+      ph_CKM(1,1)=0.97428d0 
+      ph_CKM(1,2)=0.2253d0 
+      ph_CKM(1,3)=0.00347d0
+      ph_CKM(2,1)=0.2252d0 
+      ph_CKM(2,2)=0.97345d0 
+      ph_CKM(2,3)=0.0410d0
+      ph_CKM(3,1)=0.00862d0
+      ph_CKM(3,2)=0.0403d0
+      ph_CKM(3,3)=0.999152d0
 
 
 c     number of light flavors

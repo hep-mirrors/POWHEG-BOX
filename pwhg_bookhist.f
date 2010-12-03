@@ -560,7 +560,7 @@ c      CALL TIME(CTIME)
       INI=1
       ENDIF
       IF(BOOK(N).NE.'YES') RETURN
-      WRITE(98,7) N,IDAY,IMON,IYEAR,CTIME(1:5)
+      WRITE(98,7) N,IDAY,IMON,IYEAR,CTIME(1:3)
       WRITE(98,*) TITLE(N)
       DO 1 J=1,NBIN(N)
       IF(HIST(N,J).EQ.0.) GO TO 1
@@ -615,7 +615,7 @@ c      CALL TIME(CTIME)
       WRITE(99,200)
   200 FORMAT('   HIST')
       WRITE(99,300) HINT(N),HAVG(N),HSIG(N),IENT(N),IUSCORE(N)
-     &   ,IOSCORE(N),USCORE(N),OSCORE(N),IDAY,IMON,IYEAR,CTIME(1:5)
+     &   ,IOSCORE(N),USCORE(N),OSCORE(N),IDAY,IMON,IYEAR,CTIME(1:3)
   300 FORMAT( /1x,                               
      &' BOX 6.25 0.9 SIZE 7.5 1.2'/,1X,
      &' SET WINDOW Y 0. TO 2.'/,1X,
@@ -672,7 +672,7 @@ c         CALL TIME(CTIME)
       WRITE(99,200)
   200 FORMAT('   PLOT')
       WRITE(99,300) HINT(N),HAVG(N),HSIG(N),IENT(N),IUSCORE(N)
-     &   ,IOSCORE(N),USCORE(N),OSCORE(N),IDAY,IMON,IYEAR,CTIME(1:5)
+     &   ,IOSCORE(N),USCORE(N),OSCORE(N),IDAY,IMON,IYEAR,CTIME(1:3)
   300 FORMAT( /1x,                               
      &' BOX 6.25 0.9 SIZE 7.5 1.2'/,1X,
      &' SET WINDOW Y 0. TO 2.'/,1X,
@@ -875,7 +875,7 @@ c      CALL TIME(CTIME)
       INI=1
       ENDIF
       IF(BOOK2(N).NE.'YES') RETURN
-      WRITE(98,7) N,IDAY,IMON,IYEAR,CTIME(1:5)
+      WRITE(98,7) N,IDAY,IMON,IYEAR,CTIME(1:3)
       WRITE(98,*) TITLE2(N)
       WRITE(98,10) ((XHIS2(N,I),YHIS2(N,J),HIST2(N,I,J),J=1,NBIN2(2,N))
      *                            ,I=1,NBIN2(1,N))
@@ -1015,8 +1015,9 @@ c      CALL IDATE(IMON,IDAY,IYEAR)
       iyear=itime(3)
 c      CALL TIME(CTIME)
       IFRAME=0
-      WRITE(99,71) IDAY,IMON,IYEAR,CTIME(1:5)
+      WRITE(99,71) IDAY,IMON,IYEAR,CTIME(1:3)
    71 FORMAT(4X,' ( ',I2,'/',I2,'/',I4,1X,A5,/)
+      WRITE(99,*) 'SET BAR Y SIZE=0.02 PERMANENT'
       INI=1         
       ENDIF
       IF(SCA.EQ.'REF') THEN
@@ -1029,7 +1030,7 @@ c      CALL TIME(CTIME)
       IF(IFRAME.GT.IFRMAX.OR.N.NE.NOLD.OR.M.NE.MOLD) THEN
       	IFRAME=1
         WRITE(99,202)   
-c        WRITE(99,1) IMON,IDAY,CTIME(1:5)
+c        WRITE(99,1) IMON,IDAY,CTIME(1:3)
 c  1     FORMAT(' (SET FONT SIMPLEX',/,
 c     +      ' TITLE 9.5 9 ANGLE -90 ','" MLM   ',I2,'-',I2,1X,A5,'"')
       ENDIF                                

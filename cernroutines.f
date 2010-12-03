@@ -1654,7 +1654,7 @@ c It works with g77, gfortran, ifort (intel compiler) up to -O3
       enddo
 c not found
       if(ncounters.eq.maxnum) then
-         write(*,*) ' too many counters requested'
+         write(*,*) 'ERROR: increasecnt too many counters requested'
          stop
       endif
       ncounters=ncounters+1

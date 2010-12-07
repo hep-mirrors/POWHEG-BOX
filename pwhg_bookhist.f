@@ -985,7 +985,7 @@ c$$$
 c$$$      ENDIF
 c$$$      END
             
-      SUBROUTINE PWHGMULTITOP(NH,NE,N,M,BTIT,LTIT,SCA)
+      SUBROUTINE PWHGMULTITOP(NH,NE,N,M,BTIT,LTIT,SCA,INI)
       implicit none
       include 'pwhg_book.h'
       CHARACTER CTIME*8,SCALE*3
@@ -996,7 +996,8 @@ c$$$      END
      #,xu,yu,fmn,fmx,xmx,x,fmin,fmax,fexp,xtit,ytit
       integer imon,iday,iyear,ini,iframe,nh,ne,n,m,ifrmax,nold,mold
      #,i,j,ns,ip,ibin,itime(3)
-      save imon,iday,iyear,ctime,ini
+      save imon,iday,iyear,ctime
+c,ini
       DATA PLOT/'SOLID','DASHES','DOTS','DOTDASH'/
 C  PLOT SIZE, CORNERS
       DATA WIDTH,HEIGHT/7.d0,8.d0/,XCORN,YCORN/2.d0,1.d0/
@@ -1005,7 +1006,7 @@ C  PLOT VERSUS TEXT FRACTION
 C  DEFAULT SIZES                                          
 c      DATA TIT0,LAB0,TIC0/-1.8d0,-1.8d0,0.06d0/
       DATA TIT0,LAB0,TIC0/1.8d0,1.8d0,0.06d0/
-      DATA INI/0/
+cccccccccccc      DATA INI/0/
       data ctime/'        '/
       IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)
@@ -1372,7 +1373,8 @@ c     histogram, as filled by pwhgaccumup.
       include 'pwhg_book.h'
       character * 50 title0,scale
       character * 3 tag
-      integer i
+      integer i,ini
+      ini=0
       do i=1,nmb
          call pwhggettag(i,tag)
          if(tag.eq.'YST') then
@@ -1380,7 +1382,8 @@ c     histogram, as filled by pwhgaccumup.
             call pwhgfinal(i+nmh4)
             call pwhggettitle(i,title0)
             call pwhggettitle(i+nmh4,scale)
-            call pwhgmultitop(i+nmh3,i+nmh4,2,3,title0,' ',scale(2:4))
+            call pwhgmultitop(i+nmh3,i+nmh4,2,3,title0,' ',scale(2:4)
+     $           ,ini)
          endif
       enddo
       end            

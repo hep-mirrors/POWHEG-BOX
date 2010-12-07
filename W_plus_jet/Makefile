@@ -14,12 +14,19 @@ OPT=-O2
 #DEBUG= -ggdb -pg
 #Do not uncomment this with gfortran
 #SYSOBJ=trapfpe.o
+# For ifort
+#F77=ifort -r8 -assume bscc -save -extend_source #-fpe0
+#CXX=icpc
+#CC=icc
+#OPT= -O3
+#LIBS = -limf
+#DEBUG= -check -debug -g
 endif
 
 FASTJET_CONFIG=fastjet-config
 
 CXXFLAGS += $(shell $(FASTJET_CONFIG) --cxxflags)
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins )  -L/usr/lib/gcc/x86_64-linux-gnu/4.4/  -lstdc++
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 
 PWD=$(shell pwd)
@@ -37,7 +44,7 @@ INCLUDE =$(shell echo ../include/*.h *.h)
 
 LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
-LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --prefix)//lib -lLHAPDF 
+LIBSLHAPDF=-L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF 
 LIBS=$(LIBSLHAPDF)
 # In order to use mlmpdf uncomment the following and comment previous lines
 # PDFPACK=mlmpdfif.o hvqpdfpho.o

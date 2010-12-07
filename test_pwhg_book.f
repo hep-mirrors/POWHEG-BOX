@@ -2,7 +2,7 @@
       real * 8 x,random
       integer j
       call pwhginihist
-      call pwhgbookup(2,'test',1d0,0d0,1d0)
+      call pwhgbookup(2,'test','LIN',1d-2,0d0,1d0)
       do j=1,10000
          x=random()
          call pwhgfill(2,x,x+100)

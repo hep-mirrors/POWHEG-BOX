@@ -1155,12 +1155,12 @@ c      WRITE(99,'(3X,F10.9,2(2X,E15.4))')
 203   RETURN     
       entry pwhgresetmultitop
       iframe=0
-      END                     
+      END                      
 
       SUBROUTINE PWHGNEWPLOT
       WRITE(99,202) 
 202   FORMAT('   NEW PLOT',/,/)
-      CALL PWHGMULTITOP(iDUM,iDUM,iDUM,iDUM,' ',' ','REF')
+      CALL PWHGMULTITOP(iDUM,iDUM,iDUM,iDUM,' ',' ','REF',0)
       END
 
 

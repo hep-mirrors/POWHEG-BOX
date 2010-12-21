@@ -13,9 +13,10 @@
       parameter (un=1d0)
 c pdfb: born pdf's, pdfs: pdfs with scaled x->x/z
       real * 8 pdfb1(-6:6),pdfb2(-6:6),pdfs1(-6:6),pdfs2(-6:6),
-     #         pdfs1sng,pdfs2sng
+     1         pdfs1sng,pdfs2sng
       real * 8 z,omzpgg,omzpqq,ppqq,omzpqg,ppqg,omzpgq,ppgq,
-     #         sb,tot,plfrc,plfr0,z1,z2,xjac1,xjac2,rm1,rm2,res1,res2
+     1         sb,tot,plfrc,plfr0,z1,z2,xjac1,xjac2,rm1,rm2,res1,res2,
+     2         x,xjac
       integer j,jb,fl1,fl2
       logical pwhg_isfinite
       external pwhg_isfinite
@@ -37,10 +38,17 @@ c log coeff., from 2.102, with partonic s=sb/z
 c same, with soft limit s
       plfr0(z)=1/(1-z)*log(sb/st_mufact2)+2*log(1-z)/(1-z)
 c End Statement Functions
-      z1=1-par_isrtinycsi-(1-kn_xb1-par_isrtinycsi)*xrad
-      xjac1=(1-kn_xb1)
-      z2=1-par_isrtinycsi-(1-kn_xb2-par_isrtinycsi)*xrad
-      xjac2=(1-kn_xb2)
+      if(flg_collremnsamp) then
+         xjac=630*(1-xrad)**4*xrad**4
+         x=xrad**5*(70*xrad**4-315*xrad**3+540*xrad**2-420*xrad+126)
+      else
+         xjac=1
+         x=xrad
+      endif
+      z1=1-par_isrtinycsi-(1-kn_xb1-par_isrtinycsi)*x
+      xjac1=(1-kn_xb1)*xjac
+      z2=1-par_isrtinycsi-(1-kn_xb2-par_isrtinycsi)*x
+      xjac2=(1-kn_xb2)*xjac
 
       sb=kn_sborn
 c See 7.224 and 7.225 of FNO2007
@@ -60,7 +68,7 @@ c get pdfs at underlying born x/z value values
 c Compute the singlet
       pdfs1sng=0
       pdfs2sng=0
-      do j=1,5
+      do j=1,st_nlight
          pdfs1sng=pdfs1sng+pdfs1(j)+pdfs1(-j)
          pdfs2sng=pdfs2sng+pdfs2(j)+pdfs2(-j)
       enddo

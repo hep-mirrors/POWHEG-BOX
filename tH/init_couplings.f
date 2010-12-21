@@ -6,6 +6,7 @@
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
       include '../include/pwhg_kn.h'
+      include 'doublyresonant.h'
       real * 8 masswindow
       real * 8 powheginput
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -16,6 +17,17 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 	ph_mT = 172.d0
         ph_Twidth = powheginput("#topwidth")
         if(ph_Twidth.lt.0) ph_Twidth=1.32d0
+
+c diagram subtraction, diagram removal, none?
+        ds_flag=.false.
+        dr_flag=.false.
+        if(powheginput("#DS").eq.1) ds_flag=.true.
+        if(powheginput("#DR").eq.1) dr_flag=.true.
+        if(ds_flag.and.dr_flag) then
+           write(*,*) 'Both Diagram subtraction and Diagram removal'
+           write(*,*) 'specified in powheg.input. Pick either or none'
+           call exit(-1)
+        endif
 	
 	ph_tanb = 30.d0
 	ph_GF = 1.16637d-5
@@ -94,6 +106,7 @@ c      ph_Hmass2low=0d0
 c      ph_Hmass2high=kn_sbeams/4
     
       ph_unit_e = sqrt(4*pi*ph_alphaem)
+
       end
 
 

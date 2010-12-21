@@ -46,7 +46,7 @@ c		write(*,*) , 'gb:  ' , ii(1) , ' ' , ii(2) , ' ' , ii(5)
 
 c g g
       elseif ( (ii(1).eq.0).and.(ii(2).eq.0).and.(ii(5).eq.-5) ) then
-c         call ggproc(pphy,amp2,rflav(3))
+         call ggproc(pphy,amp2,rflav(3))
       		
 c		write(*,*) , 'gg:  ' , ii(1) , ' ' , ii(2) , ' ' , ii(5)   
 c b q (q#b,b~)
@@ -134,7 +134,7 @@ c      include 'couplings.h'
       A=ph_A
       B=ph_B
 
-      ghmq=sqrt(gf/sqrt(2d0)*(a**2+b**2))
+      ghmq=sqrt(gf*sqrt(2d0)*(a**2+b**2))
 
       alphas=st_alpha
      
@@ -334,7 +334,8 @@ c      include 'couplings.h'
       real * 8 p12,p13,p14,p15,p23,p24,p25,p34,p35,p45,ss,dentop,
      1     dentop2,dentopx,dentop2x,dentopxtimesdentop
       real * 8 Mtop, Mch,mt,mh, Mtop2, Mch2, A, B, alphas, GF
-      real * 8 amp2dr
+      real * 8 amp2dr,subtr
+      real * 8 ppp(0:3,5)
       real * 8 dotp
       complex * 16 ccdotp
       integer mu,i
@@ -343,6 +344,10 @@ c      include 'couplings.h'
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'
       include 'coupl.inc'      
+      include 'doublyresonant.h'   
+
+      logical nearresonance
+   
       Mch = ph_mCH
       Mtop = ph_mT
       Mch2 = Mch**2
@@ -375,8 +380,8 @@ c    define all the possible scalar products, even if they are not independent
       p35=dotp(p3,p5)
       p45=dotp(p4,p5)
       
-      ghmq=sqrt(gf/sqrt(2d0)*(a**2+b**2))
-      ss=p35+Mch2
+      ghmq=sqrt(gf*sqrt(2d0)*(a**2+b**2))
+      ss=2*p35+Mch2
       dentop2=(ss-Mtop2)**2+ph_Twidth**2*Mtop2
       dentop=dentop2/(ss-Mtop2)
       dentopx=dentop/2
@@ -469,7 +474,7 @@ CCCcc  should be lt, if not, was for test, and forgot to change back!!!
      -                 2*(p15*(Mtop2 + p34)*(p14 + 2*p45) + p45*(-(p14*p35) + p13*p45)))))*Pi**2)/(p12**2*p15*p24*p25*(Mch2 + Mtop2 + 2*p34))))/
      -  (Sqrt(2d0)*(-1 + NC**2)**2) 
 
-      if(rflav3.eq.-1037) then 
+      if(rflav3.eq.-1037.and..not.dr_flag) then 
          amp2 = (GF*((-16*alphas**2*(A**2 + B**2)*CF*(-1 + NC**2)*(Mtop2*p14 - p12*(Mtop2 + p24))*Pi**2)/(p15*p24**2) - 
      -      (32*alphas**2*(A**2 + B**2)*CF*(-1 + NC**2)*(-((-Mch2 + Mtop2)*p14) - 2*p13*(Mtop2 + p34))*Pi**2)/(p15*(Mch2 + Mtop2 + 2*p34)**2) + 
      -      (32*alphas**2*(A**2 + B**2)*CF*(-1 + NC**2)*(-(Mtop2*p13) - 2*p12*(Mtop2 + p34) + p14*(Mtop2 + 2*p34))*Pi**2)/(p15*p24*(Mch2 + Mtop2 + 2*p34)) + 
@@ -600,10 +605,46 @@ CCCcc  should be lt, if not, was for test, and forgot to change back!!!
      -            (-((-Mch2 + Mtop2)*p14*p15) - p13*(p15*(Mtop2 + p34) + p14*p35) + p13**2*p45)*Pi**2)/(p12**2*(Mch2 + Mtop2 + 2*p34)*dentop))))/
      -  (Sqrt(2d0)*(-1 + NC**2)**2)
          amp2=amp2-amp2dr
+         if(ds_flag) then
+            call madgraphordergg(pphy,ppp)
+            call madgraphcouplings
+            call  SMATRIXGG(ppp,subtr)
+            if(nearresonance(pphy)) write(*,*) 'subtr/amp2',subtr/amp2
+            amp2=amp2-subtr
+         endif
       else
          amp2=amp2dr
       endif
       
+      end
+
+
+      subroutine madgraphordergg(pphy,ppp)
+      implicit none
+      include 'nlegborn.h'
+      real * 8 pphy(0:3,nlegreal),ppp(0:3,nlegreal)
+      integer mu
+      do mu=0,3
+         ppp(mu,1)=pphy(mu,1)
+         ppp(mu,2)=pphy(mu,2)
+         ppp(mu,3)=pphy(mu,5)
+         ppp(mu,4)=pphy(mu,3)
+         ppp(mu,5)=pphy(mu,4)
+      enddo
+      end
+      
+      subroutine madgraphorderqq(pphy,ppp)
+      implicit none
+      include 'nlegborn.h'
+      real * 8 pphy(0:3,nlegreal),ppp(0:3,nlegreal)
+      integer mu
+      do mu=0,3
+         ppp(mu,1)=pphy(mu,1)
+         ppp(mu,2)=pphy(mu,2)
+         ppp(mu,3)=pphy(mu,3)
+         ppp(mu,4)=pphy(mu,5)
+         ppp(mu,5)=pphy(mu,4)
+      enddo
       end
       
 c-------------------------------------------------------------------------------c      
@@ -759,7 +800,8 @@ c-------------------------------------------------------------------------------
       real * 8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
       real * 8 p12,p13,p14,p15,p23,p24,p25,p34,p35,p45,ss,dentop,dentop2
       real * 8 Mtop, Mch,mt,mh, Mtop2, Mch2, A, B, alphas, GF
-      real * 8 amp2dr
+      real * 8 amp2dr,subtr
+      real * 8 ppp(0:3,5)
       real * 8 dotp
       complex * 16 ccdotp
       integer mu,i
@@ -768,6 +810,10 @@ c-------------------------------------------------------------------------------
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'
       include 'coupl.inc'      
+      include 'doublyresonant.h'  
+
+      logical nearresonance
+    
       Mch = ph_mCH
       Mtop = ph_mT
       Mch2 = Mch**2
@@ -803,8 +849,8 @@ c    define all the possible scalar products, even if they are not independent
       p45=dotp(p4,p5)
       
       
-      ghmq=sqrt(gf/sqrt(2d0)*(a**2+b**2))
-      ss=p35+Mch2
+      ghmq=sqrt(gf*sqrt(2d0)*(a**2+b**2))
+      ss=2*p35+Mch2
       dentop2=(ss-Mtop2)**2+ph_Twidth**2*Mtop2
       dentop=dentop2/(ss-Mtop2)
 
@@ -813,7 +859,7 @@ CCCCcccc changed for testing, shoud be lt, if not, I fogot to change it back
      -    ((-Mch2 + Mtop2)*p14*p25 + 2*p13*p25*(Mtop2 + p34) + p15*((-Mch2 + Mtop2)*p24 + 2*p23*(Mtop2 + p34)))*
      -    Pi**2)/(NC*p12**2*(Mch2 + Mtop2 + 2*p34)**2)   
 
-      if(rflav3.eq.-1037) then
+      if(rflav3.eq.-1037.and..not.dr_flag) then
       
          amp2 =  (16*sqrt(2d0)*alphas**2*(A**2 + B**2)*CF*GF*
      -    (((-Mch2 + Mtop2)*p14*p25 + 2*p13*p25*(Mtop2 + p34) + 
@@ -825,6 +871,13 @@ CCCCcccc changed for testing, shoud be lt, if not, I fogot to change it back
      -           p13*(p25*(Mtop2 + p34) + p24*p35 - 2*p23*p45)))/
      -       ((Mch2 + Mtop2 + 2*p34)*dentop))*Pi**2)/(NC*p12**2)
          amp2=amp2-amp2dr
+         if(ds_flag) then
+            call madgraphorderqq(pphy,ppp)
+            call madgraphcouplings
+            call  SMATRIXQQ(ppp,subtr)
+            if(nearresonance(pphy)) write(*,*) 'subtr/amp2',subtr/amp2
+            amp2=amp2-subtr
+         endif         
       else
          amp2=amp2dr
       endif
@@ -842,6 +895,7 @@ c-------------------------------------------------------------------------------
       integer rflav3
       real * 8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
 c      include 'couplings.h'
+      real * 8 ppp(0:3,5)
       real * 8 p12,p13,p14,p15,p23,p24,p25,p34,p35,p45,ss,dentop,dentop2
       real * 8 Mtop, Mch,mt,mh, Mtop2, Mch2, A, B, alphas, GF
       real * 8 amp2dr
@@ -853,6 +907,9 @@ c      include 'couplings.h'
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'
       include 'coupl.inc'      
+      include 'doublyresonant.h'   
+      real * 8 subtr
+      logical nearresonance
       Mch = ph_mCH
       Mtop = ph_mT
       Mch2 = Mch**2
@@ -886,8 +943,8 @@ c    define all the possible scalar products, even if they are not independent
       p45=dotp(p4,p5)
       
       
-      ghmq=sqrt(gf/sqrt(2d0)*(a**2+b**2))
-      ss=p35+Mch2
+      ghmq=sqrt(gf*sqrt(2d0)*(a**2+b**2))
+      ss=2*p35+Mch2
       dentop2=(ss-Mtop2)**2+ph_Twidth**2*Mtop2
       dentop=dentop2/(ss-Mtop2)
 
@@ -925,6 +982,14 @@ CCCC should be lt
      -              p23*(p15*(3*Mtop2 + 2*p34) - 2*p14*p35 + 2*p13*p45))*Pi**2)/(p12*(Mch2 - Mtop2 - 2*p13)*p25*(Mch2 +Mtop2 + 2*p34)))))/(Sqrt(2d0)*NC**2)
       
          amp2=amp2-amp2dr
+         if(ds_flag) then
+            call madgraphorderqq(pphy,ppp)
+            call madgraphcouplings
+            call  SMATRIXQQ(ppp,subtr)
+            if(nearresonance(pphy)) write(*,*) 'subtr/amp2',
+     1           subtr/amp2
+            amp2=amp2-subtr
+         endif         
       else
          amp2 = amp2dr
       endif
@@ -933,3 +998,23 @@ CCCC should be lt
 
 
 
+      function nearresonance(p)
+      implicit none
+      include 'PhysPars.h'
+      logical nearresonance
+      real * 8 p(0:3,5),tmp
+      integer mu
+      tmp=0
+      do mu=1,3
+         tmp=tmp-(p(mu,3)+p(mu,5))**2
+      enddo
+      tmp=tmp+(p(0,3)+p(0,5))**2
+      
+      if(abs(tmp-ph_mT**2).lt.ph_Twidth*2*ph_mt) then
+         nearresonance=.true.
+      else
+         nearresonance=.false.
+      endif
+      end
+
+      

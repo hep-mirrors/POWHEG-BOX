@@ -169,7 +169,8 @@ c negligible
          rad_etot=sqrt(rad_etotbtl**2+rad_etotrm**2)
          
 c        
-         call storegrids(xgrid,ymax,xgridrm,ymaxrm,ifold,ifoldrm,ncall2)
+         call storegrids(xgrid,ymax,xgridrm,ymaxrm,ifold,ifoldrm,
+     1        ncall2,itmx2)
 c Output NLO histograms
          if (powheginput('#testplots').eq.1d0) then
             if(rnd_cwhichseed.eq.'none') then
@@ -297,7 +298,7 @@ c     print statistics
 
 
       subroutine storegrids(xgrid,ymax,xgridrm,ymaxrm,
-     #                ifold,ifoldrm,ncall2)
+     #                ifold,ifoldrm,ncall2,itmx2)
       implicit none
       include 'nlegborn.h'
       include 'include/pwhg_flst.h'
@@ -309,7 +310,7 @@ c     print statistics
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       integer nbins
       parameter (nbins=50)
-      integer ifold(ndiminteg),ifoldrm(ndiminteg),ncall2
+      integer ifold(ndiminteg),ifoldrm(ndiminteg),ncall2,itmx2
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
@@ -329,7 +330,7 @@ c     print statistics
       write(iun) ((ymaxrm(j,k),k=1,ndiminteg),j=1,nbins)
       write(iun) (ifold(k),k=1,ndiminteg)
       write(iun) (ifoldrm(k),k=1,ndiminteg)
-      write(iun) ncall2
+      write(iun) ncall2*itmx2
       write(iun) kn_sbeams, pdf_ih1, pdf_ih2, pdf_ndns1, pdf_ndns2
       write(iun)
      1     rad_totbtl,rad_etotbtl,
@@ -370,7 +371,7 @@ c
       character * 4 chseed
       real * 8 shx
       integer ih1x, ih2x, ndns1x, ndns2x
-      integer j,k,iun,jfile,nfiles,ncall2
+      integer j,k,iun,jfile,nfiles,ncall2,itmx2
       logical lpresent,manyfiles,filefound
       real * 8 powheginput
       external powheginput
@@ -436,6 +437,11 @@ c random seeds
          read(iun,iostat=ios) (iifoldrm(k),k=1,ndiminteg)
          if(ios.ne.0) goto 998
          read(iun,iostat=ios) ncall2
+         if(powheginput("#ncallfrominput").eq.1) then
+            ncall2=powheginput("ncall2")
+            itmx2=powheginput("itmx2")
+            ncall2=ncall2*itmx2
+         endif
          if(ios.ne.0) goto 998
          read(iun,iostat=ios) shx, ih1x, ih2x, ndns1x, ndns2x
          if(ios.ne.0) goto 998

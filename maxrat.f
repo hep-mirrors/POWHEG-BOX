@@ -518,9 +518,11 @@ c
       include 'include/pwhg_flst.h'
       include 'include/pwhg_flg.h'
       integer mcalls,icalls
-      real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
-     1     ,xmmm(0:50,ndiminteg),xint,sigbtl,errbtl
-      integer ifold(ndiminteg),ncall1,ncall2,
+      integer ndimbornint
+      parameter (ndimbornint=ndiminteg-3)
+      real * 8 xgrid(0:50,ndimbornint),ymax(50,ndimbornint)
+     1     ,xmmm(0:50,ndimbornint),xint,sigbtl,errbtl
+      integer ifold(ndimbornint),ncall1,ncall2,
      1     itmx1,itmx2,imode,j,k,iun
       character * 20 pwgprefix
       integer lprefix
@@ -529,7 +531,7 @@ c
       data ini/.true./
       logical negflag
       common /cbbarra/negflag
-      real * 8 xx(ndiminteg)      
+      real * 8 xx(ndimbornint)      
       real * 8 btilde,powheginput
       external btilde,powheginput
       save xgrid,ymax,xmmm,ini
@@ -549,7 +551,7 @@ c
      1       ' Initializing grids for the generation of the underlying',
      1       ' Born configurations according to the Born cross section'
 c set up the grids
-         do j=1,ndiminteg
+         do j=1,ndimbornint
             do k=0,50
                xgrid(k,j)=0
                xmmm(k,j)=0
@@ -568,19 +570,19 @@ c set up the grids
 c This is not really needed; the accumulated totals
 c will not be used;
          call resettotals
-         call mint(btilde,ndiminteg,ncall1,itmx1,ifold,imode,iun,
+         call mint(btilde,ndimbornint,ncall1,itmx1,ifold,imode,iun,
      1        xgrid,xint,ymax,sigbtl,errbtl)
          close(iun)
          imode=1
          ncall2=powheginput('ncall2')
          itmx2=powheginput('itmx2')
-         call mint(btilde,ndiminteg,ncall2,itmx2,ifold,imode,iun,
+         call mint(btilde,ndimbornint,ncall2,itmx2,ifold,imode,iun,
      1        xgrid,xint,ymax,sigbtl,errbtl)
-         call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,0,
+         call gen(btilde,ndimbornint,xgrid,ymax,xmmm,ifold,0,
      1        mcalls,icalls,xx)
          ini=.false.
       endif
-      call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,1,
+      call gen(btilde,ndimbornint,xgrid,ymax,xmmm,ifold,1,
      #    mcalls,icalls,xx)
       negflag=savenegflag
       flg_nlotest=savenlotest

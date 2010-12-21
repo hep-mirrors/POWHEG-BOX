@@ -2,6 +2,7 @@
       implicit none
       include 'nlegborn.h'
       include '../include/pwhg_flst.h'
+      include '../include/pwhg_flg.h'
       include '../include/pwhg_kn.h'
       include '../include/pwhg_st.h'
       include '../include/pwhg_par.h'
@@ -17,6 +18,8 @@
       par_isrtinyy = 1d-8
       par_fsrtinycsi = 1d-8
       par_fsrtinyy = 1d-8
+c flag to do importance sampling in x variable in collinear remnants
+      flg_collremnsamp=.true.      
 c     number of light flavors
       qmass=powheginput("qmass")
       if(qmass.lt.3) then         

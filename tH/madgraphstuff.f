@@ -4,8 +4,12 @@
       include '../include/pwhg_math.h'
       include '../include/pwhg_st.h'
       include 'coupl.inc'
+      real * 8 pol(2)
+      common/to_polarization/ pol
       real * 8 Zero
       parameter (Zero=0d0)
+      pol(1)=1
+      pol(2)=1
 c
 c QCD coupling
 c
@@ -16,8 +20,8 @@ c tmass, twidth
       tmass = ph_mT
 
       twidth = ph_Twidth
-      bmass  = ph_mb
-
+c      bmass  = ph_mb
+      bmass=0
       end
 
       

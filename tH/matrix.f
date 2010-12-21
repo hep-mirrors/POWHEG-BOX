@@ -58,7 +58,7 @@ C
       DATA NTRY,IDUM /0,-1/
       DATA xtry, xrej, ngood /0,0,0/
       DATA warned, isum_hel/.false.,0/
-      DATA multi_channel/.true./
+      DATA multi_channel/.false./
       SAVE yfrac, igood, jhel
       DATA NGRAPHS /    3/          
       DATA jamp2(0) /   2/          
@@ -306,7 +306,7 @@ C
       DATA NTRY,IDUM /0,-1/
       DATA xtry, xrej, ngood /0,0,0/
       DATA warned, isum_hel/.false.,0/
-      DATA multi_channel/.true./
+      DATA multi_channel/.false./
       SAVE yfrac, igood, jhel
       DATA NGRAPHS /    3/          
       DATA jamp2(0) /   2/          

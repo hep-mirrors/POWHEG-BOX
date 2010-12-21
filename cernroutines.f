@@ -1614,15 +1614,18 @@ c **********  THIS IS NOT A CERN ROUTINE!!  ***************
       logical function pwhg_isfinite(x)
       implicit none
       real * 8 x
-c this to avoid generating an fptrap signal if on
-      if(x.ne.0) then
 c According to ieee standards, a NaN is the only real not
 c satisfying x.eq.x.
-c We assume here that 1/(+-Infinity)=0 (better be so!).
-c It works with g77, gfortran, ifort (intel compiler) up to -O3
-         if ((.not.(x.eq.x)).or.(1/x.eq.0)) then
+      if (.not.(x.eq.x)) then
+         pwhg_isfinite = .false.
+         call increasecnt('NaN exception')
+         return
+      endif
+c Put constraint to avoid denormals
+      if(x.gt.1.or.x.lt.-1) then
+         if (1/x.eq.0) then
             pwhg_isfinite = .false.
-            call increasecnt('NaN exception')
+            call increasecnt('Inf exception')
             return
          endif
       endif

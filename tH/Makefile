@@ -77,7 +77,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
         pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
 	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
-	fastjetsisconewrap.o fastjetktwrap.o genericphasespace.o \
+	fastjetsisconewrap.o fastjetktwrap.o genericphasespace.o matrix.o madgraphstuff.o\
 	$(PDFPACK) $(USER) $(SYSOBJ) 
 
 MADGRAPH=fastjetsisconewrap.o fastjetktwrap.o cbsb_hsbcb.o cbu_hsbd.o \

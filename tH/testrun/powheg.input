@@ -10,6 +10,11 @@ ndns2 108         ! pdf set for hadron 2 (mlm numbering)
 ebeam1 7000d0     ! energy of beam 1
 ebeam2 7000d0     ! energy of beam 2
 
+masshiggsch 100   ! Mass of charged higgs
+topwidth 0.0001
+
+DS 1
+
 ! To be set only if using LHA pdfs
 ! 19150 cteq4m
 ! 19170 cteq4l
@@ -40,7 +45,7 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
 bornonly   0      ! (default 0) if 1 do Born only
-smartsig   0      ! (default 1) remember equal amplitudes (0 do not remember)
+#smartsig   0      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
 #withdamp    1      ! (default 0, do not use) use Born-zero damping factor
 #ptsqmin    0.8    ! (default 0.8 GeV) minimum pt for generation of radiation

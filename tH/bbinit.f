@@ -80,8 +80,7 @@
             open(unit=iun,file=pwgprefix(1:lprefix)//'rmngrid.top',
      #        status='unknown')
             imode=0
-c            call mint(sigremnant,ndiminteg,ncall1,itmx1,ifoldrm,imode,
-            call mint(sigremnant,ndiminteg,500000,3,ifoldrm,imode,
+            call mint(sigremnant,ndiminteg,ncall1,itmx1,ifoldrm,imode,
      #         iun,xgridrm,xintrm,ymaxrm,sigrm,errrm)
             close(iun)
          endif
@@ -132,8 +131,7 @@ c Now compute the remnant contributions
      #                ' and/or regular remnants'
             flg_nlotest=.true.
             imode=1
-c            call mint(sigremnant,ndiminteg,ncall2,itmx2,ifoldrm,imode,
-            call mint(sigremnant,ndiminteg,1000000,5,ifoldrm,imode,
+            call mint(sigremnant,ndiminteg,ncall2,itmx2,ifoldrm,imode,
      #         iun,xgridrm,xintrm,ymaxrm,sigrm,errrm)
 c add finalized remnant contributions in histograms
             call pwhgaddout

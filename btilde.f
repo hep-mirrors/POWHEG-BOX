@@ -149,12 +149,18 @@ c     flavour of the event
 
       subroutine adduptotals(results,n)
       implicit none
+      include 'nlegborn.h'
       integer n
       real * 8 results(n)
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
+      real * 8 totj(maxprocborn),totabsj(maxprocborn),
+     1     totposj(maxprocborn),totnegj(maxprocborn),
+     2     etotj(maxprocborn),etotabsj(maxprocborn),
+     3     etotposj(maxprocborn),etotnegj(maxprocborn)
       integer nentries
       common/cadduptotals/tot,totabs,totpos,totneg,etot,etotabs,
-     1     etotpos,etotneg,nentries
+     1     etotpos,etotneg,totj,totabsj,totposj,totnegj,
+     1         etotj,etotabsj,etotposj,etotnegj,nentries
       real * 8 dtot,dtotabs,dtotpos,dtotneg
       integer j
       nentries=nentries+1
@@ -179,14 +185,40 @@ c     flavour of the event
       etotabs=etotabs+dtotabs**2
       etotpos=etotpos+dtotpos**2
       etotneg=etotneg+dtotneg**2
+c j contributions
+      do j=1,n
+         dtot=results(j)
+         dtotabs=abs(results(j))
+         if(results(j).gt.0) then
+            dtotpos=results(j)
+         else
+            dtotneg=-results(j)
+         endif
+         totj(j)=totj(j)+dtot
+         totabsj(j)=totabsj(j)+dtotabs
+         totposj(j)=totposj(j)+dtotpos
+         totnegj(j)=totnegj(j)+dtotneg     
+         etotj(j)=etotj(j)+dtot**2
+         etotabsj(j)=etotabsj(j)+dtotabs**2
+         etotposj(j)=etotposj(j)+dtotpos**2
+         etotnegj(j)=etotnegj(j)+dtotneg**2
+      enddo
       end
 
       subroutine resettotals
       implicit none
+      include 'nlegborn.h'
+      include 'include/pwhg_flst.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
+      real * 8 totj(maxprocborn),totabsj(maxprocborn),
+     1     totposj(maxprocborn),totnegj(maxprocborn),
+     2     etotj(maxprocborn),etotabsj(maxprocborn),
+     3     etotposj(maxprocborn),etotnegj(maxprocborn)
       integer nentries
       common/cadduptotals/tot,totabs,totpos,totneg,etot,etotabs,
-     1     etotpos,etotneg,nentries
+     1     etotpos,etotneg,totj,totabsj,totposj,totnegj,
+     1         etotj,etotabsj,etotposj,etotnegj,nentries
+      integer j
       nentries=0
       tot=0
       etot=0
@@ -196,6 +228,16 @@ c     flavour of the event
       etotpos=0
       totneg=0
       etotneg=0
+      do j=1,flst_nborn
+         totj(j)=0
+         etotj(j)=0
+         totabsj(j)=0
+         etotabsj(j)=0
+         totposj(j)=0
+         etotposj(j)=0
+         totnegj(j)=0
+         etotnegj(j)=0
+      enddo
       end
 
       subroutine finaltotals
@@ -204,9 +246,26 @@ c     flavour of the event
       include 'include/pwhg_flst.h'
       include 'include/pwhg_rad.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
-      integer nentries,n
+      real * 8 totj(maxprocborn),totabsj(maxprocborn),
+     1     totposj(maxprocborn),totnegj(maxprocborn),
+     2     etotj(maxprocborn),etotabsj(maxprocborn),
+     3     etotposj(maxprocborn),etotnegj(maxprocborn)
+      integer nentries
       common/cadduptotals/tot,totabs,totpos,totneg,etot,etotabs,
-     1     etotpos,etotneg,nentries
+     1     etotpos,etotneg,totj,totabsj,totposj,totnegj,
+     1         etotj,etotabsj,etotposj,etotnegj,nentries
+      integer n,j,k
+      character * 40 format
+      real * 8 tmp_totbtlj,tmp_etotbtlj,tmp_totabsbtlj,
+     1     tmp_etotabsbtlj,tmp_totposbtlj,tmp_etotposbtlj,
+     2     tmp_totnegbtlj,tmp_etotnegbtlj
+      real * 8 tmp
+      integer iun
+      character * 20 pwgprefix
+      integer lprefix
+      common/cpwgprefix/pwgprefix,lprefix
+      real * 8 powheginput
+      external powheginput
       n=nentries
       rad_totbtl=tot/n
       rad_etotbtl=sqrt((etot/n-(tot/n)**2)/n)
@@ -220,5 +279,30 @@ c     flavour of the event
       write(*,*) 'abs:',rad_totabsbtl,'+-',rad_etotabsbtl
       write(*,*) 'pos:',rad_totposbtl,'+-',rad_etotposbtl
       write(*,*) 'neg:',rad_totnegbtl,'+-',rad_etotnegbtl
+c
+      if(powheginput('#ubsigmadetails').eq.1) then
+         call newunit(iun)
+         open(iun,file=pwgprefix(1:lprefix)//'ubsigma.dat')
+         format='(      (i2,1x),4(a,1x,d10.4,a,d7.1))'
+         write(format(2:4),'(i3)')nlegborn
+         tmp=0
+         do j=1,flst_nborn
+            tmp_totbtlj=totj(j)/n
+            tmp_etotbtlj=sqrt((etotj(j)/n-(totj(j)/n)**2)/n)
+            tmp_totabsbtlj=totabsj(j)/n
+            tmp_etotabsbtlj=sqrt((etotabsj(j)/n-(totabsj(j)/n)**2)/n)
+            tmp_totposbtlj=totpos/n
+            tmp_etotposbtlj=sqrt((etotposj(j)/n-(totposj(j)/n)**2)/n)
+            tmp_totnegbtlj=totneg/n
+            tmp_etotnegbtlj=sqrt((etotnegj(j)/n-(totnegj(j)/n)**2)/n)
+            write(iun,format) (flst_born(k,j),k=1,nlegborn),
+     1           'tot:',tmp_totbtlj,' +- ',tmp_etotbtlj,
+     2           '; abs:',tmp_totabsbtlj,' +- ',tmp_etotabsbtlj,
+     3           '; pos:',tmp_totposbtlj,' +- ',tmp_etotposbtlj,
+     4           '; neg:',tmp_totnegbtlj,' +- ',tmp_etotnegbtlj
+            tmp=tmp+tmp_totbtlj
+         enddo
+         write(iun,*) tmp
+      endif
       end
 

@@ -30,7 +30,9 @@ c
 c this is set to true in processes where the FSR jacobian
 c can become singular (massless recoil particle)
       flg_jacsing=.false.
-
+c flag to use importance sampling in the x variable in
+c collinear remnant generation. Needed for charm at LHC
+      flg_collremnsamp=.false.
 c End initialization of common block defaults.
       pdf_ih1=powheginput('ih1')
       pdf_ih2=powheginput('ih2')

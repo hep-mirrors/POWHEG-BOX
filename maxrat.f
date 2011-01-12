@@ -19,6 +19,7 @@
       real * 8 powheginput,random
       external powheginput,random      
       call zerohistnorms
+      loaded=.false.
       nubound=powheginput('nubound')
       rad_nynorms=powheginput('#iymax')
       if(rad_nynorms.lt.0) rad_nynorms=1
@@ -582,6 +583,7 @@ c will not be used;
      1        mcalls,icalls,xx)
          ini=.false.
       endif
+C - N.B. if -fno-automatic isn't used the ifold array may need reset to 1 here.
       call gen(btilde,ndimbornint,xgrid,ymax,xmmm,ifold,1,
      #    mcalls,icalls,xx)
       negflag=savenegflag

@@ -71,7 +71,7 @@ LIBSMADGRAPH=madgraph/DHELAS/libdhelas3.2.a
 #MADGRAPH+=functions.o setparam.o $(LIBSMADGRAPH) 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-		      real.o $(MADGRAPH) pwhg_analysis_CDF.o # pwhg_analysis.o
+		      real.o $(MADGRAPH) pwhg_analysis_ATLAS.o #pwhg_analysis_CDF.o # pwhg_analysis.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	LesHouchesreg.o gen_Born_phsp.o find_regions.o test_Sudakov.o pt2maxreg.o \
@@ -83,7 +83,8 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o LesHouches.o \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o \
 	sigsoftvirt.o sigcollsoft.o sigvirtual.o \
 	$(PDFPACK) $(USER) $(SYSOBJ) \
-	fastjetCDFJetCluwrap.o
+	fastjetfortran.o
+#	fastjetCDFJetCluwrap.o
 
 
 pwhg_main:$(PWHG) 
@@ -117,7 +118,8 @@ PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
         pwhg_bookhist.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o pwhg_analysis_driver.o \
 	random.o cernroutines.o opencount.o $(SYSOBJ) \
-	pwhg_analysis_CDF.o fastjetCDFJetCluwrap.o
+	pwhg_analysis_ATLAS.o fastjetfortran.o
+#	pwhg_analysis_CDF.o fastjetCDFJetCluwrap.o
 
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)

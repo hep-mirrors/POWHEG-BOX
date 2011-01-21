@@ -61,7 +61,7 @@ c   decay products of the vector boson
             stop
          endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single W+ production and decay ' 
+         write(*,*) ' POWHEG: W+ plus jet production and decay ' 
          if (vdecaymode.eq.-11) write(*,*) '         to e+ ve '
          if (vdecaymode.eq.-13) write(*,*) '         to mu+ vmu'
          if (vdecaymode.eq.-15) write(*,*) '         to tau+ vtau'
@@ -74,7 +74,7 @@ c   decay products of the vector boson
             stop
          endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single W- production and decay '
+         write(*,*) ' POWHEG: W- plus jet production and decay '
          if (vdecaymode.eq.11) write(*,*) '         to e- ve~ '
          if (vdecaymode.eq.13) write(*,*) '         to mu- vmu~'
          if (vdecaymode.eq.15) write(*,*) '         to tau- vtau~'

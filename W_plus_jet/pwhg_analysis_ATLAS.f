@@ -88,42 +88,41 @@ c     binsize
       data ini/.true./
       save ini
 
-c     vector boson id and decay
-      integer idvecbos,vdecaymode
-      common/cvecbos/idvecbos,vdecaymode
+      real * 8 powheginput
+      external powheginput
       character *10 channel
       integer idlep,idnu
-      save channel 
+      save channel,idlep,idnu 
 
       if(ini) then
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C FIRST SELECT THE CHANNEL
-         if(abs(vdecaymode).eq.11) channel='electron'
-         if(abs(vdecaymode).eq.13) channel='muon'
+         if(abs(powheginput('vdecaymode')).eq.11) channel='electron'
+         if(abs(powheginput('vdecaymode')).eq.13) channel='muon'
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      if(channel.eq.'electron') then
-         idlep=11
-         idnu=12
-      elseif(channel.eq.'muon') then 
-         idlep=13
-         idnu=14
-      else
-         stop "error:invalid channel"
-      endif
-      
-      write(*,*) '**************************************************'
-      write(*,*) '**************************************************'
-      write(*,*) '         ATLAS ANALYSIS CUTS arXiv:1012.5382      '
-      if(channel.eq.'electron') then
-         write(*,*) '             W -> e v_e  channel                  '
-      elseif(channel.eq.'muon') then
-         write(*,*) '             W -> mu v_mu  channel                '
-      else
-         stop "channel not allowed in ATLAS analysis"
-      endif
-      write(*,*) '**************************************************'
-      write(*,*) '**************************************************'
-      ini =.false.
+         if(channel.eq.'electron') then
+            idlep=11
+            idnu=12
+         elseif(channel.eq.'muon') then 
+            idlep=13
+            idnu=14
+         else
+            print *, "error:invalid channel ",idlep," ",idnu
+            call exit(1)
+         endif
+         write(*,*) '**************************************************'
+         write(*,*) '**************************************************'
+         write(*,*) '         ATLAS ANALYSIS CUTS arXiv:1012.5382      '
+         if(channel.eq.'electron') then
+            write(*,*) '             W -> e v_e  channel               '
+         elseif(channel.eq.'muon') then
+            write(*,*) '             W -> mu v_mu  channel             '
+         else
+            stop "channel not allowed in ATLAS analysis"
+         endif
+         write(*,*) '**************************************************'
+         write(*,*) '**************************************************'
+         ini =.false.
       endif
 
 c     find lepton and neutrino from W (needed for the ATLAS analysis)
@@ -237,16 +236,16 @@ c     are far from the charged lepton. Meanwhile,
 c     also count the number of jets that pass the jet cuts.
       nregjet=0
       do j=1,njets
-         Et_j=ktjet(jj(j))
+         Et_j=ktjet(j)
          call getpseudorapidity(pjet(1,jj(j)),eta_j)
          if((Et_j.ge.ATLAS_Et_j).and.
      $        (abs(eta_j).le.ATLAS_eta_j)) then
             nregjet=nregjet+1
-            if(rsep_azi_eta(plep,pjet(1,jj(j))).le.ATLAS_dR_je) then
-               goto 666         ! reject event
-            else
-               nregjet=nregjet+1
-            endif
+c$$$            if(rsep_azi_eta(plep,pjet(1,jj(j))).le.ATLAS_dR_je) then
+c$$$               goto 666         ! reject event
+c$$$            else
+c$$$               nregjet=nregjet+1
+c$$$            endif
          endif
       enddo
       
@@ -258,7 +257,7 @@ c     this happens if no jets pass the (Et,eta) cut
       else
          diag=4
       endif
-      call pwhgfill(diag,ktjet(jj(diag)),dsig/bsz(diag))
+      call pwhgfill(diag,ktjet(diag),dsig/bsz(diag))
       
 c$$$         print*, diag
 c$$$         print*, ktjet(1),ktjet(2),ktjet(3),ktjet(4)
@@ -266,7 +265,7 @@ c$$$         print*, jj(1),jj(2),jj(3),jj(4)
 
          
 c     ATLAS plots sigma(>= n jet)
-      if(ktjet(jj(diag)).ge.ATLAS_Et_j) then
+      if(ktjet(diag).ge.ATLAS_Et_j) then
          call pwhgfill(5,dble(diag),dsig/bsz(5))
       endif
       

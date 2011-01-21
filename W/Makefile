@@ -111,6 +111,6 @@ clean:
 
 MERGE_wp_wm=merge_wp_wm.o newunit.o random.o cernroutines.o
 
-#  target to merge t and tbar samples
+#  target to merge wp and wm samples
 merge_wp_wm: $(MERGE_wp_wm)
 	$(FF) $(patsubst %.o,obj/%.o,$(MERGE_wp_wm)) -o $@

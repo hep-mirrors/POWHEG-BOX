@@ -15,8 +15,8 @@
 C     Maximum pt as in the ISR case, since we adopted ISR
 C     parametrization for phase space of regular contributions.
          if(debug) then
-            if ((sqrt(kn_cmpreal(1,4)**2+kn_cmpreal(2,4)**2)/pt2max_regular 
-     $           - 1d0).gt.1d-8) then
+            if((dabs((kn_cmpreal(1,4)**2+kn_cmpreal(2,4)**2)/
+     $           pt2max_regular)- 1d0).gt.1d-8) then
                write(*,*) 'ERROR: wrong pt2max_regular'
                call exit(1)
             endif

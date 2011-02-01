@@ -84,7 +84,7 @@ c     binsize
       character *20 process
       real * 8 deltaphi,rsep_azi_eta
       external deltaphi,rsep_azi_eta
-
+      real * 8    pt,modp
 c     find electron and neutrino from W (needed for the CDF analysis)
       nlep=0
       nvl=0
@@ -187,7 +187,15 @@ c     are far from the charged lepton. Meanwhile,
 c     also count the number of jets that pass the jet cuts.
       nregjet=0
       do j=1,njets
-         Et_j=ktjet(jj(j))
+c     This loop means: first the hardest, then the 2nd hardest, ...
+c     Remember than jj(1) gives the position of the hardest jet in the
+c     list pjet(mu,njets), jj(2) the position of the 2nd hardest jet 
+c     in pjet(mu,njets) and so on. Therefore the momentum of the
+c     3rd hardest jet (ordering decided by find_hardest_jet) is obtained
+c     as pjet(mu,jj(3)).
+c     ktjet(3) is the value of the ordering parameter ('ET' or 'PT')
+c     of the 3rd hardest jet (NO NEED TO USE jj !!!!!!)
+         Et_j=ktjet(j)
          call getpseudorapidity(pjet(1,jj(j)),eta_j)
          if((Et_j.ge.CDF_Et_j).and.
      $        (abs(eta_j).le.CDF_eta_j)) then
@@ -199,7 +207,7 @@ c$$$               nregjet=nregjet+1
 c$$$            endif
          endif
       enddo
-      
+
       if(nregjet.eq.0) then
 c     this happens if no jets pass the (Et,eta) cut
          goto 666               ! reject event
@@ -208,13 +216,9 @@ c     this happens if no jets pass the (Et,eta) cut
       else
          diag=4
       endif
-      call pwhgfill(diag,ktjet(jj(diag)),dsig/bsz(diag))
-      
-c$$$         print*, diag
-c$$$         print*, ktjet(1),ktjet(2),ktjet(3),ktjet(4)
-c$$$         print*, jj(1),jj(2),jj(3),jj(4)
 
-         
+      call pwhgfill(diag,ktjet(diag),dsig/bsz(diag))
+      
 c     CDF plots sigma(>= n jet)
       CDF_Et_j  = 25d0
       if(ktjet(jj(diag)).ge.CDF_Et_j) then

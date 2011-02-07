@@ -1397,7 +1397,7 @@ c p(i,1) is the i-th component of vector p1...
       end
 ccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      subroutine cross_q_qp_to_l_avl_q_q(pphy,rflav,idx1,idx2,amp2)
+      subroutine cross_q_qp_to_l_avl_q_q(pphy,rflav,idx,amp2)
    
       implicit none
 c the 5 4-momentum vectors
@@ -1405,7 +1405,7 @@ c p(i,1) is the i-th component of vector p1...
       integer nleg
       parameter (nleg=6)
       integer rflav(nleg)
-      integer i,mu,idx1,idx2
+      integer i,mu,idx
       real * 8 pphy(0:3,nleg)
       real * 8 pp(0:3,nleg)
       real * 8 amp2
@@ -1430,7 +1430,7 @@ c p(i,1) is the i-th component of vector p1...
       enddo
             
 
-      call cross_q_qp_to_al_vl_q_q(pphy,flav,idx1,idx2,amp2)
+      call cross_q_qp_to_al_vl_q_q(pphy,flav,idx,amp2)
 
       end
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

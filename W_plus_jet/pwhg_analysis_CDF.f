@@ -211,19 +211,23 @@ c$$$            endif
       if(nregjet.eq.0) then
 c     this happens if no jets pass the (Et,eta) cut
          goto 666               ! reject event
-      elseif((nregjet.ge.1).and.(nregjet.le.4)) then
-         diag=nregjet
-      else
-         diag=4
       endif
-
-      call pwhgfill(diag,ktjet(diag),dsig/bsz(diag))
       
+      do ijet=1,4
+         if(nregjet.ge.ijet) then
+c     CDF plots pt n-th jet(>= n jet)
+            call pwhgfill(ijet,ktjet(ijet),dsig/bsz(ijet))
+            CDF_Et_j  = 25d0
+            if(ktjet(ijet).ge.CDF_Et_j) then
 c     CDF plots sigma(>= n jet)
-      CDF_Et_j  = 25d0
-      if(ktjet(jj(diag)).ge.CDF_Et_j) then
-         call pwhgfill(5,dble(diag),dsig/bsz(5))
-      endif
+               call pwhgfill(5,dble(ijet),dsig/bsz(5))
+            endif
+         endif
+      enddo
+
+
+      do 
+
       
  666  continue
       end
@@ -239,7 +243,6 @@ c     arrays to reconstruct jets
       integer maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
       real *8 ptrack(4,maxtrack)
-      integer jetvec(maxtrack)
       integer ihep,ntracks,jpart,jjet,mu
       real * 8 found
       real *8 r,ptmin,f
@@ -249,7 +252,6 @@ c     set up arrays for jet finding
          do mu=1,4
             ptrack(mu,jpart)=0d0
          enddo
-         jetvec(jpart)=0
       enddo      
       do jjet=1,maxjet
          do mu=1,4
@@ -291,7 +293,7 @@ c     CDF jetclu
          f     = 0.75d0
          ptmin = 0.1d0
          call fastjetCDFJetClu(ptrack,ntracks,R,ptmin,f,
-     $        pjet,njets,jetvec)
+     $        pjet,njets)
       else
          write(*,*) 'JET ANALYSIS TO USE UNKNOWN:',process
          call exit(1)

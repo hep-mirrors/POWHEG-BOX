@@ -252,23 +252,17 @@ c$$$            endif
       if(nregjet.eq.0) then
 c     this happens if no jets pass the (Et,eta) cut
          goto 666               ! reject event
-      elseif((nregjet.ge.1).and.(nregjet.le.4)) then
-         diag=nregjet
-      else
-         diag=4
       endif
-      call pwhgfill(diag,ktjet(diag),dsig/bsz(diag))
-      
-c$$$         print*, diag
-c$$$         print*, ktjet(1),ktjet(2),ktjet(3),ktjet(4)
-c$$$         print*, jj(1),jj(2),jj(3),jj(4)
 
-         
+      do ijet=1,4
+         if(nregjet.ge.ijet) then
+c     ATLAS plots pt n-th jet(>= n jet)
+            call pwhgfill(ijet,ktjet(ijet),dsig/bsz(ijet))
 c     ATLAS plots sigma(>= n jet)
-      if(ktjet(diag).ge.ATLAS_Et_j) then
-         call pwhgfill(5,dble(diag),dsig/bsz(5))
-      endif
-      
+            call pwhgfill(5,dble(ijet),dsig/bsz(5))
+         endif
+      enddo
+        
  666  continue
       end
 
@@ -333,7 +327,7 @@ c     ATLAS anti-KT
 *******************************************
          R     = 0.4d0
          ptmin = 20d0
-         call fastjetppgenkt(ptrack,ntracks,R,-1.0,ptmin,
+         call fastjetppgenkt(ptrack,ntracks,R,-1d0,ptmin,
      $        pjet,njets,jetvec)
       else
          write(*,*) 'JET ANALYSIS TO USE UNKNOWN:',process

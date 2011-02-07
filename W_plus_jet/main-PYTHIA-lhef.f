@@ -85,7 +85,7 @@ c     Convert from PYJETS event record to HEPEVT event record
          call pyhepc(1)
          nevhep=temp
 C     Print out the event record
-         IF (IEV.le.0) THEN 
+         IF (IEV.le.1) THEN 
 c     list the event
 c            CALL PYLIST(7)      ! print the HEPEUP common block
 c            CALL PYLIST(5)      ! print the HEPEVT common block
@@ -160,3 +160,14 @@ c pythia routine to abort event
 
 
 
+      subroutine pdfset
+      implicit none
+      end
+      
+      subroutine structm
+      implicit none
+      end
+      
+      subroutine structp
+      implicit none
+      end

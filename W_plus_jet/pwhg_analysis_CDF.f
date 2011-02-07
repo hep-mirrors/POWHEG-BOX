@@ -72,7 +72,7 @@ c arrays to reconstruct jets
       real *8 CDF_Et_e,CDF_eta_e,CDF_Et_v,CDF_Mt_W,
      $     CDF_Et_j,CDF_eta_j,CDF_dR_je
       integer foundhardjets,jj(maxjet),nregjet
-      integer diag
+      integer ijet
 
 
       character *6 WHCPRG
@@ -225,10 +225,6 @@ c     CDF plots sigma(>= n jet)
          endif
       enddo
 
-
-      do 
-
-      
  666  continue
       end
 

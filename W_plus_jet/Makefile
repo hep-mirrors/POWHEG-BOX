@@ -6,7 +6,7 @@ ifeq ($(shell uname),Linux)
 ## Use -O2
 F77= gfortran -Wall -fno-automatic #-ffpe-trap=invalid,zero,overflow,underflow 
 #-fbounds-check
-OPT=-O3
+OPT=-O2
 # For g77 comment the above and uncomment below
 #F77= g77 -Wall -fno-automatic  -ffortran-bounds-check
 #OPT=-O3
@@ -19,8 +19,9 @@ OPT=-O3
 #CXX=icpc
 #CC=icc
 #OPT= -fast
-#LIBS = -limf
-#DEBUG= -check -debug -g
+#LIBS = -limf 
+#DEBUG= -check  -debug -g
+#INTERFACES= -gen-interfaces -warn interfaces 
 endif
 
 FASTJET_CONFIG=fastjet-config
@@ -36,7 +37,7 @@ WDNAME=$(shell basename $(PWD))
 VPATH= ./:../:obj/: 
 #VPATH+=madgraph/:madgraph/real/
 
-FF=$(F77) $(OPT) $(DEBUG)
+FF=$(F77) $(OPT) $(DEBUG) $(INTERFACES)
 
 INCLUDE =$(shell echo ../include/*.h *.h)
 #INCLUDE =$(shell echo ../include/*.h *.h madgraph/*.inc)
@@ -121,7 +122,7 @@ PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o  $(ANALYSIS)  $(FASTJET_WRAP) \
 	random.o cernroutines.o opencount.o $(SYSOBJ) 
 
 main-PYTHIA-lhef: $(PYTHIA)
-	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) $(LIBS)
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBSFASTJET) 
 
 clean:
 	rm -f obj/*.o madgraph/DHELAS/*.o madgraph/DHELAS/*.a \

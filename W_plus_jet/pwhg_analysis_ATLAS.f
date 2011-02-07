@@ -71,7 +71,7 @@ c arrays to reconstruct jets
       real *8 ATLAS_Et_e,ATLAS_eta_e,ATLAS_Et_v,ATLAS_Mt_W,
      $     ATLAS_Et_j,ATLAS_eta_j,ATLAS_dR_je
       integer foundhardjets,jj(maxjet),nregjet
-      integer diag
+      integer ijet
 
 
       character *6 WHCPRG
@@ -280,7 +280,7 @@ c     arrays to reconstruct jets
       integer jetvec(maxtrack)
       integer ihep,ntracks,jpart,jjet,mu
       real * 8 found
-      real *8 r,ptmin,f
+      real *8 r,ptmin
 
 c     set up arrays for jet finding
       do jpart=1,maxtrack

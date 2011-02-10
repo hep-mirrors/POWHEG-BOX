@@ -1,11 +1,11 @@
       subroutine gen_leshouches_reg
       implicit none
-      include '../include/pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_rad.h'
-      include '../include/LesHouches.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/LesHouches.h'
       integer ireg
       nup=nlegreal
 

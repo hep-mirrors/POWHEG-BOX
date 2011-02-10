@@ -2,9 +2,9 @@
       implicit none
       real * 8 pt2max_regular
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
 
 c      write(*,*) ' dummy function; replace with your own'
 c      call exit(1)

@@ -152,6 +152,7 @@ c Set up radiation kinematics
       if(tmax.eq.0) then
 c Generate a Born like event
          kn_csi=0
+         rad_kinreg=0
          return
       else         
          rad_kinreg=kinreg

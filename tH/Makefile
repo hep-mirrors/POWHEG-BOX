@@ -41,7 +41,7 @@ WDNAME=$(shell basename $(PWD))
 
 VPATH= ./:../:obj/
 
-FF=$(F77) $(OPT) $(DEBUG) -I../
+FF=$(F77) $(OPT) $(DEBUG) -I./ -I../
 
 
 INCLUDE =$(shell echo ../include/*.h *.h)
@@ -53,10 +53,7 @@ PDFPACK=mlmpdfif.o hvqpdfpho.o
 
 %.o: %.f $(INCLUDE)
 	ln -sf $(WDNAME)/nlegborn.h ../
-	mv ../include/pwhg_rad.h ../include/pwhg_rad.h-tmp
-	ln -s ../$(WDNAME)/pwhg_rad.h ../include/
 	$(FF) -c -o obj/$@ $<
-	mv -f ../include/pwhg_rad.h-tmp ../include/pwhg_rad.h
 
 %.o: %.c
 	$(CC) $(DEBUG) -c -o obj/$@ $^ 

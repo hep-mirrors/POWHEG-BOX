@@ -1,8 +1,8 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -12,7 +12,7 @@
 ccccccccccccccccccccccccccccc
 c$$$      logical debug
 c$$$      parameter(debug=.true.)
-c$$$      include '../include/pwhg_st.h'
+c$$$      include 'pwhg_st.h'
 c$$$      include 'PhysPars.h'
 c$$$      include 'MCFM_include/scale.f'
 c$$$      include 'MCFM_include/qcdcouple.f'
@@ -94,9 +94,9 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -237,8 +237,8 @@ c     ferm_type = -1 antifermion
       complex *16 unit_I
       parameter (unit_I=(0,1))
       real * 8 p1(0:3),p2(0:3),pp1(0:3),pp2(0:3),pp5(0:3)
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp
@@ -588,9 +588,9 @@ c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
 c colours of incoming quarks, antiquarks
       integer icolqi(2),icolai(2),icolgi(2),
      #        icolqf(2),icolaf(2),icolgf(2)
@@ -663,7 +663,7 @@ c     a massive decay is chosen
 c     i1<i2
       subroutine momenta_reshuffle(ires,i1,i2,decmass)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer ires,i1,i2,j
       real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
       if (i1.ge.i2) then

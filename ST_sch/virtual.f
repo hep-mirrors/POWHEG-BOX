@@ -5,8 +5,8 @@ c     The as/(2pi) factor is attached at a later point
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -29,7 +29,7 @@ ccccccccccccccccccccc
 ccccccccccccccccccccc
 
 ccccccccccccccc
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer i_fb
 c     To pass the already subtracted virtuals to sigsoftvirt
       real *8 fksfinite(1000)
@@ -121,7 +121,7 @@ c     the presence of (mu^2/s) in front of the result.
       subroutine virt_finite(s,t,u,m2,fvirt_udx,fvirt_dxu,mur2)
       implicit none
       real *8 s,t,u,m2,fvirt_udx,fvirt_dxu,mur2
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
 
       real *8 lambda,q2,prop
@@ -251,13 +251,13 @@ c     add part not proportional to born
 c$$$      subroutine coefs(s12,mtsq,cv0,cv,c1)
 c$$$      implicit none
 c$$$!:      include 'constants.f'
-c$$$      include '../include/pwhg_math.h'
+c$$$      include 'pwhg_math.h'
 c$$$!:      include 'epinv.f'
 c$$$
 c$$$!:      include 'epinv2.f'
 c$$$
 c$$$!:      include 'scale.f'
-c$$$      include '../include/pwhg_st.h'
+c$$$      include 'pwhg_st.h'
 c$$$
 c$$$!:      include 'scheme.f'
 c$$$
@@ -361,7 +361,7 @@ c$$$c     sign of x and y to get the right sign for epsilon                *
 c$$$************************************************************************
 c$$$      implicit none
 c$$$!:      include 'constants.f'
-c$$$      include '../include/pwhg_math.h'
+c$$$      include 'pwhg_math.h'
 c$$$      double precision x,y,htheta
 c$$$C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
 c$$$      htheta(x)=0.5+0.5*sign(1d0,x)

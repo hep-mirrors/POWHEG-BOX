@@ -7,9 +7,9 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
-      include '../include/pwhg_math.h' 
+      include 'pwhg_math.h' 
       integer numplots
       real * 8 binsize(100)
       common/pwhghistcommon/binsize,numplots
@@ -256,9 +256,9 @@ c     total cross section sanity check
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h' 
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h' 
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
 c     other common blocks
       integer numplots
       real * 8 binsize(100)
@@ -1052,7 +1052,7 @@ c     !: protect for small p(0)-p(3) values
 
       function azi(p)
       implicit none
-      include '../include/pwhg_math.h'  
+      include 'pwhg_math.h'  
       real * 8 azi,p(0:3)
       azi = atan(p(2)/p(1))
       if (p(1).lt.0d0) then

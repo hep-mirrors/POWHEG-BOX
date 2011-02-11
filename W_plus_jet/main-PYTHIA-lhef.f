@@ -1,7 +1,7 @@
       program main_pythia
       implicit none
-      include '../include/LesHouches.h'
-      include '../include/hepevt.h'
+      include 'LesHouches.h'
+      include 'hepevt.h'
 
       real * 8 parp,pari
       integer mstp,msti
@@ -147,8 +147,8 @@ c pythia routine to abort event
 
       subroutine pyanal
       implicit none
-      include '../include/LesHouches.h'
-      include '../include/hepevt.h'
+      include 'LesHouches.h'
+      include 'hepevt.h'
       real * 8 powheginput
       external powheginput
       nevhep=nevhep+1

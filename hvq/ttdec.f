@@ -9,7 +9,7 @@ c pickwdecays(iwp1,mdecwp1,iwp2,mdecwp2,iwm1,mdecwm1,iwm2,mdecwm2)
 c that returns the pdg codes and masses of the decay products of the w+
 c and w-.
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
 c Momenta in our (p1,p2,p3,E) and Madvent (E,p1,p2,p3) convention
       real * 8 pp(4,9),pps(4,9),ppss(4,9),pme(0:3,9)
 c Madevent parameters
@@ -499,8 +499,8 @@ c compute the correction factor to the luminosity,
 c due to the rescaling of the initial momenta when
 c the top and anti-top invariant masses are off the pole mass
       implicit none
-      include '../include/LesHouches.h'
-      include '../include/pwhg_pdf.h'
+      include 'LesHouches.h'
+      include 'pwhg_pdf.h'
       real * 8 pdfcorr,corfac
       real * 8 mufc2,x(2),xc(2),r
       real * 8 fx(-6:6)

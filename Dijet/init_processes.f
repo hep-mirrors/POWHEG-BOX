@@ -1,17 +1,17 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_flg.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_par.h'
-      include '../include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_st.h'
+      include 'pwhg_par.h'
+      include 'pwhg_rad.h'
       integer i1,i2,i3,i4,i5,k,ii(nlegreal)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
       logical debug
-      parameter (debug=.true.)
+      parameter (debug=.false.)
       integer j,tmpfl(5)
       logical condition,newcond
       logical flavequiv

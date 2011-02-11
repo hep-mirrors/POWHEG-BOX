@@ -1,7 +1,7 @@
       PROGRAM HWIGPR
 C---COMMON BLOCKS ARE INCLUDED AS FILE HERWIG65.INC
       INCLUDE '../HERWIG65.INC'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer n
       real *8 powheginput
       external powheginput
@@ -131,7 +131,7 @@ c      close(iun)
       end
 
       subroutine UPEVNT
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       real *8 powheginput
       external powheginput
       integer hdecaymode
@@ -164,7 +164,7 @@ c      close(iun)
 
       subroutine hwanal
       INCLUDE '../HERWIG65.INC'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer hdecaymode
       real *8 powheginput
       external powheginput

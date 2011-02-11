@@ -1,9 +1,9 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
       real * 8 amp2
@@ -201,8 +201,8 @@ c      complex * 16 jHdecay(0:3)
       logical Higgsdecay
       common/cHiggsdecay/Higgsdecay
       include 'PhysPars.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
 CCCCCCCCCCCCCCC   local physical parameters     CCCCCCCCCCCCCCCCCC
       real * 8 unit_e,gs_sq
       real * 8 cthw,sthw,mW2,mZ2,mH2

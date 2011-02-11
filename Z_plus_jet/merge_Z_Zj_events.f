@@ -8,7 +8,7 @@
       character * 100 string,line
       character * 4 stringa
       character * 10 str_final
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       real * 8 XsecZj,XsecZ,ptcut,pt,Xsec_comb,Xsectot,ratio_Xsecs
       integer nev_Zj1,nev_Zj2,nev_Zj3,nev_Zj
       integer nev_Z1,nev_Z2,nev_Z3,nev_Z
@@ -32,7 +32,7 @@ c      logical write_mode
       common /cmass_lepton/mass_lepton      
       character * 2 prog
       logical make_plots
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       logical end_of_file
 
       ptl = 10d0
@@ -471,7 +471,7 @@ c            write(*,107) ymin*scale,ymax*scale
 
       subroutine countevents(iun,numev)
       implicit none
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       integer iun,numev
       character * 8 string
       numev=0
@@ -493,7 +493,7 @@ c...reads event information from a les houches events file on unit nlf.
       implicit none
       integer nlf
       character * 100 string
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,j
  1    read(nlf,fmt='(a)',err=998,end=998) string
       if(string.eq.'</LesHouchesEvents>') then
@@ -521,7 +521,7 @@ c...writes event information to a les houches events file on unit nlf.
       subroutine lhefwritev(nlf)
       implicit none
       integer nlf
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,j
       write(nlf,'(a)')'<event>'
       write(nlf,210) nup,idprup,xwgtup,scalup,aqedup,aqcdup
@@ -544,7 +544,7 @@ c...reads initialization information from a les houches events file on unit nlf.
       integer nlf
       character * 100 string
       integer ipr
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
  1    read(nlf,fmt='(a)',err=998,end=998) string
       if(string(1:5).eq.'<init') then
          read(nlf,*) idbmup(1),idbmup(2),ebmup(1),ebmup(2),
@@ -570,7 +570,7 @@ c...writes initialization information to a les houches events file on unit nlf.
       real * 8 version
       common/pwghvq/version
       integer ipr,iran,n1ran,n2ran
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       write(nlf,'(a)') '<init>'
       write(nlf,110) idbmup(1),idbmup(2),ebmup(1),ebmup(2),
      &pdfgup(1),pdfgup(2),pdfsup(1),pdfsup(2),idwtup,nprup
@@ -591,7 +591,7 @@ c...writes initialization information to a les houches events file on unit nlf.
       integer iun
       real * 8 xsec
       character * 100 string,line
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,lun
  1    read(unit=iun,fmt='(a)') string
       lun = 1
@@ -619,7 +619,7 @@ c...reads event information from a les houches events file on unit nlf.
       implicit none
       real * 8 ptZ
       integer i
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       do i=1,nup
          if (idup(i).eq.23) then
 c     it the Z boson
@@ -652,7 +652,7 @@ c     it the Z boson
       subroutine pre_analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
+      include 'hepevt.h'
 c arrays to reconstruct jets
       integer maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
@@ -968,8 +968,8 @@ c      end
 
       subroutine lhuptohepevt
       implicit none
-      include '../include/hepevt.h'
-      include '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'LesHouches.h'
       integer ihep,mu      
       nhep=nup
       do ihep=1,nhep
@@ -1168,7 +1168,7 @@ c     i1<i2
       implicit none
       integer ires,i1,i2
       real * 8 decmass
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer j,ii,i,mu
       real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta
 c construct boosts to vector boson rest frame 
@@ -1220,7 +1220,7 @@ c     preserve final-state decay product mass
 c     i1<i2
       subroutine momenta_reshuffle_old(ires,i1,i2,decmass)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer ires,i1,i2,j,ii,i
       real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
       if (i1.ge.i2) then

@@ -1,7 +1,7 @@
       program main_pythia
       implicit none
-      include '../include/LesHouches.h'
-      include '../include/hepevt.h'
+      include 'LesHouches.h'
+      include 'hepevt.h'
 c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
 c     &     JMOHEP,JDAHEP
 c      double precision phep,vhep
@@ -151,7 +151,7 @@ c pythia routine to abort event
 
 c      subroutine pyabeg
 c      implicit none
-c      include 'include/hepevt.h'
+c      include 'hepevt.h'
 c      nevhep=0
 c      call abegin
 c      end
@@ -187,8 +187,8 @@ c      end
 
       subroutine pyanal
       implicit none
-      include '../include/LesHouches.h'
-      include '../include/hepevt.h'
+      include 'LesHouches.h'
+      include 'hepevt.h'
 c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
 c     &     JMOHEP,JDAHEP
 c      double precision phep,vhep

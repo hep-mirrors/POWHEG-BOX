@@ -10,8 +10,8 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
-      include '../include/pwhg_math.h' 
+      include  'LesHouches.h'
+      include 'pwhg_math.h' 
       integer diag,icut
       character * 10 cut
 
@@ -192,9 +192,9 @@ c-----total cross section
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h' 
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h' 
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
 c     other common blocks
       integer numplots
       real * 8 binsize(400)

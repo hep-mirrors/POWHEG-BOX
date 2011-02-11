@@ -7,7 +7,7 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
       integer diag
       real * 8 binsize(100)
@@ -137,9 +137,9 @@ c  pwhgfill  :  fills the histograms with data
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h'
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h'
+      include  'LesHouches.h'
       real *8 ptvb,yvb
       real *8 ptep,ptem,yep,yem
       real * 8 mvb,pvb(0:3),tmp
@@ -446,7 +446,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       subroutine get_ang_coeffs(p1,p2,a,lcos,genphi)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_kn.h'
       real *8 p1(0:3),p2(0:3),res(0:3)
       real *8 a(0:7)
       real *8 theta,lcos,genphi
@@ -496,9 +496,9 @@ c      endif
 
       subroutine calCSVariables(p1,p2,res,swap)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_kn.h'
       real *8 p1(0:3),p2(0:3),res(0:3)
       logical swap
       real *8 Pbeam(0:3),Ptarget(0:3),Q(0:3)

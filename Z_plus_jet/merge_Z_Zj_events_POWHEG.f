@@ -1,6 +1,6 @@
       subroutine SMC_initialize
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
       WHCPRG='POWHEG'      
@@ -16,7 +16,7 @@ c     set conventinally lprup(1) to 666
       implicit none
       integer iun
       logical end_of_file
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       end_of_file = .false.
       call lhefreadev(iun)
       if(nup.eq.0) then

@@ -1,9 +1,9 @@
       subroutine born_phsp(xborn)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
 
       real * 8 xborn(ndiminteg-3)
@@ -203,7 +203,7 @@ c      call checkmass(2,kn_pborn(0,3))
       implicit none
       include 'PhysPars.h'
       include 'nlegborn.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_kn.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./

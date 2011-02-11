@@ -59,7 +59,7 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       real * 8 dsig
       real * 8 pi
       parameter(pi = 3.141592653589793D0)
-      include '../include/hepevt.h'
+      include 'hepevt.h'
 c arrays to reconstruct jets
       integer maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
@@ -232,7 +232,7 @@ c     CDF plots sigma(>= n jet)
       subroutine buildjets(njets,pjet,process)
 c     arrays to reconstruct jets
       implicit none
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       integer njets
       real * 8 pjet(4,*)
       character * 20 process

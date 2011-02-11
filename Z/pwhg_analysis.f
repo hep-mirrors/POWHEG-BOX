@@ -7,7 +7,7 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
       integer diag
       real * 8 binsize(100)
@@ -51,9 +51,9 @@ c  pwhgfill  :  fills the histograms with data
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
       real *8 p_lminus(0:3),p_lplus(0:3),pcm(0:3),p_ll(0:3)
       real *8 pt_lplus,pt_lminus,eta_lplus,eta_lminus,
      $delphi,mt_v,mv,ptv,yv

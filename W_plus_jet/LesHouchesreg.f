@@ -1,12 +1,12 @@
       subroutine gen_leshouches_reg
       implicit none
-      include '../include/pwhg_st.h'
+      include 'pwhg_st.h'
       include 'nlegborn.h'
       include 'PhysPars.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_rad.h'
-      include '../include/LesHouches.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'LesHouches.h'
       integer ireg,fl
       nup=nlegreal
       do ireg=1,nup
@@ -70,7 +70,7 @@ c               /           \     ve(4)
 c          qb(2)            qbpp(6)
 c
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer iq,iqb,iqp,iqbpp
       if(idup(1).gt.0) then
          iq=1

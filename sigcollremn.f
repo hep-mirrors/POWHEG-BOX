@@ -1,13 +1,13 @@
       subroutine btildecoll(xrad,rescoll,www)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_br.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_par.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_br.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_par.h'
       real * 8 xrad,rescoll(flst_nborn),www
       real * 8 un
       parameter (un=1d0)

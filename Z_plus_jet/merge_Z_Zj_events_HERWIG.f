@@ -1,7 +1,7 @@
       subroutine SMC_initialize
 C---COMMON BLOCKS ARE INCLUDED AS FILE HERWIG65.INC
       include '../HERWIG65.INC'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer n
       logical uevent 
       parameter (uevent=.false.)
@@ -43,7 +43,7 @@ C---INITIALISE ELEMENTARY PROCESS
 
       subroutine SMC_hadronize(iun,end_of_file)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer iun
       logical end_of_file
       end_of_file = .false.

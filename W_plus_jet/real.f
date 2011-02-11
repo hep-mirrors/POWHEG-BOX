@@ -1,9 +1,9 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal),rflavs(nlegreal)
       real * 8 amp2
@@ -87,7 +87,7 @@ c     q qp~ -> e+ ve g g
       subroutine real_ampsq_g_last(p,realflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 p(0:3,nlegreal)
       integer realflav(nlegreal)
       real * 8 amp2
@@ -301,8 +301,8 @@ c     p(i,1) is the i-th component of vector p1...
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       real * 8 p1(0:3),p2(0:3)
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp
@@ -617,8 +617,8 @@ c     p(i,1) is the i-th component of vector p1...
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       real * 8 p1(0:3),p2(0:3),p5(0:3),p6(0:3)       
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp
@@ -898,8 +898,8 @@ c     p(i,1) is the i-th component of vector p1...
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       real * 8 p1(0:3),p2(0:3),p5(0:3),p6(0:3)       
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp

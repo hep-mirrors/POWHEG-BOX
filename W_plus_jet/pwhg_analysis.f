@@ -268,8 +268,8 @@ c     loop on ptW cut
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
-      include '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'LesHouches.h'
 c arrays to reconstruct jets
       integer maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
@@ -818,7 +818,7 @@ c     end of loop on ptW cuts
       subroutine build_jets(njets,pjet)
 c     arrays to reconstruct jets
       implicit none
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       integer njets
       real * 8 pjet(4,*)
       integer maxtrack,maxjet

@@ -1,6 +1,6 @@
       subroutine SMC_initialize
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
 c     pythia common blocks
       real * 8 parp,pari
       integer mstp,msti
@@ -71,7 +71,7 @@ ccccccccccccccccccccccccccccccccccccccccccccc
 
       subroutine SMC_hadronize(iun,end_of_file)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer iun
       logical end_of_file
 
@@ -139,7 +139,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccc
       subroutine UPEVNT
 c     !ER: cambiato
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer iunit
       common/ciunit/iunit
       real * 8 mass_lepton
@@ -179,7 +179,7 @@ c pythia routine to abort event
 
       subroutine pyanal
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
 
       real * 8 ptZ_had,ptj1
       common/cptZ/ptZ_had,ptj1

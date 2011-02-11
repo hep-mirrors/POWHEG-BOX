@@ -6,8 +6,8 @@ c     Use MCFM subroutines
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
 c     MCFM include
       include 'MCFM_include/scale.f'
@@ -170,8 +170,8 @@ c      as = 0.118d0
       subroutine mom_to_MCFM(cmpborn,pmcfm)
       implicit none
       include 'nlegborn.h'
-c      include '../include/pwhg_flst.h'
-c      include '../include/pwhg_kn.h'
+c      include 'pwhg_flst.h'
+c      include 'pwhg_kn.h'
       include 'MCFM_include/constants.f'
       real * 8 cmpborn(0:3,5)
       real * 8 pmcfm(mxpart,1:4)

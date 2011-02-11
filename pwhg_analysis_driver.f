@@ -4,9 +4,9 @@
       integer ikin
       integer jpart,mu
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/hepevt.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'hepevt.h'
       real * 8 powheginput
       
       if (powheginput('#testplots').ne.1d0) return

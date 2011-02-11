@@ -1,9 +1,9 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/LesHouches.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
 
       integer ipl,imn,i1,i2,i3

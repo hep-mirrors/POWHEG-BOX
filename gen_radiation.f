@@ -1,12 +1,12 @@
       subroutine pwhgevent
       implicit none
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/LesHouches.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'LesHouches.h'
       integer iret,iun
       real * 8 suppfact
       real * 8 random,powheginput
@@ -103,11 +103,11 @@ c rad_type=3 for regular contributions
 
       subroutine gen_radiation
       implicit none
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       real * 8 t,csi,y,azi,sig
       real * 8 tmax
       common/ctmax/tmax
@@ -176,11 +176,11 @@ c Generate a Born like event
       function pwhg_pt2()
       implicit none
       real * 8 pwhg_pt2
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       if(rad_kinreg.eq.1) then
          pwhg_pt2=(kn_sreal/4)*(1-kn_y**2)*kn_csi**2
       else
@@ -193,12 +193,12 @@ c Generate a Born like event
       function pwhg_upperb_rad()
       implicit none
       real * 8 pwhg_upperb_rad
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_st.h'
       real * 8 x,y,csi
       csi=kn_csi
       x=1-csi
@@ -240,10 +240,10 @@ c Returns  xlr - log(Delta^{(tilde{V})}) , see eq. D14, D15 in ZZ paper
 c We use it to find its zero in pt2.
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_math.h'
       real * 8 pt2solve,pt2
 c i set by dzero: 1 for first call, 2 for subsequent calls, 3 for last call
 c before a normal exit; not used here
@@ -318,12 +318,12 @@ c
 c  common/cptmin/ptminsq: minimum pt^2 accepted
 c 
       implicit none
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_st.h'
       real * 8 t
       real * 8 x,y,x1b,x2b
       real * 8 xlr,q2,xlam2c,kt2max,unorm
@@ -482,12 +482,12 @@ c Generates final state hard radiation kinematics according to
 c Notes/upperbounding-fsr.pdf
 c 
       implicit none
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_st.h'
       real * 8 t
       real * 8 csi,y
       real * 8 xlr,q2,xlam2c,kt2max,unorm
@@ -630,9 +630,9 @@ c that some pdf vanish (typically heavy flavour pdf's)
       subroutine add_azimuth
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
       integer ileg
       real * 8 azi,sazi,cazi
       real * 8 dir(3)

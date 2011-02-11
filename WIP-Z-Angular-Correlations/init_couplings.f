@@ -1,8 +1,8 @@
       subroutine init_couplings
       implicit none
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       real * 8 masswindow_low,masswindow_high
       logical verbose
       parameter(verbose=.true.)

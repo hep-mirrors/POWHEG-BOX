@@ -1,8 +1,8 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -43,7 +43,7 @@ c     q q -> H q q
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -127,9 +127,9 @@ c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
 
 C We deal here with the CKM matrix elements for VBF Higgs boson production
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
 c colours of incoming quarks, antiquarks
 c      integer icolqi(2),icolai(2),icolgi(2),
 c     #        icolqf(2),icolaf(2),icolgf(2)
@@ -555,8 +555,8 @@ c
       real * 8 pphy(0:3,nf)
       real * 8 ren_scale,interf
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       real * 8 ampborn2,interf1,interf2,q2_up,q2_down,dotp,r,lr
       real * 8 cvirt
       parameter (cvirt = pi**2/3 - 7)

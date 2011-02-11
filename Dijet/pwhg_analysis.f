@@ -7,9 +7,9 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       integer diag
       real * 8 binsize(700)
       common/pwhghistcommon/binsize
@@ -438,8 +438,8 @@ C - CDF study, alpha doesn't discriminate much between anything.
      $                     pT_rel_J1,pT_rel_J2,jet_algo)
 c     arrays to reconstruct jets
       implicit none
-      include   '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
+      include   'hepevt.h'
+      include 'pwhg_math.h' 
       integer   maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
       real * 8 binsize(700)
@@ -762,9 +762,9 @@ C - Copying the momenta of the hardest jets
       subroutine analysis(dsig0)
       implicit none
       real * 8 dsig0,dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
       integer ihep
       logical ini
       data ini/.true./

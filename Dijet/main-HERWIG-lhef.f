@@ -1,7 +1,7 @@
       PROGRAM HWIGPR
 C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
       INCLUDE '../HERWIG65.INC'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer n
       logical uevent 
       parameter (uevent=.false.)
@@ -89,7 +89,7 @@ c      close(iun)
 
       INCLUDE '../HERWIG65.INC'
 
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
 
       LOGICAL MASSIVE_FS_PARTONS,DEBUGGING
       INTEGER IXX,JXX,NFS
@@ -334,7 +334,7 @@ C - Show debugging output
 
       subroutine hwanal
       INCLUDE '../HERWIG65.INC'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       if (ierror.ne.0) then
          return
       endif

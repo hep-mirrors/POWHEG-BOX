@@ -7,9 +7,9 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       integer diag
       real * 8 binsize(700)
       common/pwhghistcommon/binsize
@@ -82,9 +82,9 @@ c transverse direction
       subroutine analysis(dsig0)
       implicit none
       real * 8 dsig0,dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
       logical ini
       data ini/.true./
       save ini
@@ -223,7 +223,7 @@ c transverse direction
 
       subroutine decvariables(pdec0,ppart0,edec,cthdec,phidec)
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       real * 8 pdec0(4),ppart0(4),edec,cthdec,phidec
       real * 8 pdec(0:3),ppart(0:3)
       real * 8 vec(3),beta,pt
@@ -275,7 +275,7 @@ c     arrays to reconstruct jets
       integer mjets
       real * 8  kt(mjets),eta(mjets),rap(mjets),phi(mjets),pjet(4,mjets)
       integer ibtag(mjets)
-      include   '../include/hepevt.h'
+      include   'hepevt.h'
       integer   maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=20)
       real * 8  ptrack(4,maxtrack),pj(4,maxjet)
@@ -371,7 +371,7 @@ C --------------------------------------------------------------------- C
       logical function bson(j)
       implicit none
       integer J
-      include   '../include/hepevt.h'
+      include   'hepevt.h'
       integer jcurr
       logical bhadr
       jcurr=j
@@ -417,7 +417,7 @@ c is a bottomed barion
       logical function sonoftop(j,jtop)
       implicit none
       integer j,jtop
-      include   '../include/hepevt.h'
+      include   'hepevt.h'
       integer jcurr
       logical bhadr
       jcurr=j

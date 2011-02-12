@@ -1,11 +1,7 @@
       program leshouchesanal
       implicit none
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       integer j,nev
-      character * 6 WHCPRG
-      common/cWHCPRG/WHCPRG
-c     let the analysis subroutine know that it is run by this program
-      WHCPRG='LHE   '
       call opencount(nev)
       call upinit
       call init_hist 
@@ -41,8 +37,8 @@ c     let the analysis subroutine know that it is run by this program
 
       subroutine lhuptohepevt(n)
       implicit none
-      include 'hepevt.h'
-      include 'LesHouches.h'
+      include 'include/hepevt.h'
+      include 'include/LesHouches.h'
       integer ihep,mu,n
       
       nhep=nup

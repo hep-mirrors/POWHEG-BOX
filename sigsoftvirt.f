@@ -1,13 +1,13 @@
       subroutine btildevirt(resvirt)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_br.h'
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
-      include 'pwhg_flg.h'
-      include 'pwhg_par.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_br.h'
+      include 'include/pwhg_math.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       real * 8 resvirt(flst_nborn)
       real * 8 c(-6:6),gamma(-6:6),gammap(-6:6)
       integer j,jb,fl1,fl2,fl,leg,legi,legj

@@ -1,10 +1,10 @@
       subroutine init_couplings
       implicit none
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
       real * 8 masswindow,qmass
       real * 8 powheginput
       external powheginput

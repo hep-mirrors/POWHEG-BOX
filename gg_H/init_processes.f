@@ -1,10 +1,10 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_flg.h'
-      include 'LesHouches.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_flg.h'
+      include '../include/LesHouches.h'
       integer i1,i2,i3,i4,k,ii(4)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4))

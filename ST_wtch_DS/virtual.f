@@ -5,8 +5,8 @@ c     The as/(2pi) factor is attached at a later point
       subroutine setvirtual(p,vflav,res_virtual)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)

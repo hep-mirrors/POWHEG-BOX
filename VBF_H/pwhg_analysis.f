@@ -164,8 +164,8 @@ c  pwhgfill  :  fills the histograms with data
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include 'hepevt.h'
-      include 'pwhg_math.h'      
+      include '../include/hepevt.h'
+      include '../include/pwhg_math.h'      
 c arrays to reconstruct jets
       integer maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
@@ -742,7 +742,7 @@ c      end
 
       function azi(p)
       implicit none
-      include 'pwhg_math.h'  
+      include '../include/pwhg_math.h'  
       real * 8 azi,p(0:3)
       azi = atan(p(2)/p(1))
       if (p(1).lt.0d0) then
@@ -758,7 +758,7 @@ c     calculate the separation in the lego plot between the two momenta
 c     p1 and p2
       function rsepn(p1,p2)
       implicit none
-      include 'pwhg_math.h'  
+      include '../include/pwhg_math.h'  
       real * 8 rsepn,p1(0:3),p2(0:3)
       real * 8 y1,phi1,y2,phi2
       real * 8 delphi
@@ -873,7 +873,7 @@ c     build an identifier for Higgs production in WW and ZZ fusion
 
 c      subroutine topout
 c      implicit none
-c      include 'hepevt.h'
+c      include '../include/hepevt.h'
 c      character * 50 title
 c      integer i
 c      integer maxnumplot

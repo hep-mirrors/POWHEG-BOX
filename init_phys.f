@@ -1,14 +1,14 @@
       subroutine init_phys
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_pdf.h'
-      include 'pwhg_st.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_dbg.h'
-      include 'pwhg_flg.h'
-      include 'pwhg_par.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_dbg.h'
+      include 'include/pwhg_flg.h'
+      include 'include/pwhg_par.h'
       character * 5 scheme
       character * 3 whichpdfpk
       real * 8 powheginput

@@ -1,10 +1,10 @@
       subroutine sigvirtual(virt_arr)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_br.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_br.h'
+      include 'include/pwhg_flg.h'
       real * 8 virt_arr(maxprocborn)
       integer equivto(maxprocborn)
       real * 8 equivcoef(maxprocborn)

@@ -1,11 +1,11 @@
       implicit none
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_st.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rnd.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rnd.h'
       integer j,iun,nev
       real * 8 weight
       real * 8 powheginput
@@ -13,8 +13,6 @@
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
       integer ios
-      character * 6 WHCPRG
-      common/cWHCPRG/WHCPRG
       nev=powheginput('numevts')
       call newunit(iun)
 c The following allows to perform multiple runs with
@@ -58,7 +56,6 @@ c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
       else
          rnd_cwhichseed='none'
       endif
-      if (powheginput('#testplots').eq.1d0) WHCPRG='NLO   '
       call pwhginit
       if(nev.gt.0) then
          if(rnd_cwhichseed.ne.'none') then
@@ -75,11 +72,7 @@ c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
          call exit(0)
       endif
       call lhefwritehdr(iun)
-      if (powheginput('#testplots').eq.1d0) then
-         call init_hist 
-c     let the analysis subroutine know that it is run by this program
-         WHCPRG='LHE   '
-      endif
+      if (powheginput('#testplots').eq.1d0) call init_hist 
       do j=1,nev
          call pwhgevent
 c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)

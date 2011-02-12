@@ -40,9 +40,9 @@ c Once the regions are all found, the internal flavour numbers are replaced
 c by the original flavour numbers (routine unmapflavour)
 c
       implicit none
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flg.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
      2    nflmap
@@ -80,9 +80,9 @@ c now do the same with Born terms; nflmap should not change;
 c Replace internal flavour numbers with real ones
 c in all relevant flavour arrays
       implicit none
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flg.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       call unmaparr(flst_nreal,nlegreal,flst_real)
       call unmaparr(flst_nalr,nlegreal,flst_alr)
       call unmaparr(flst_nregular,nlegreal,flst_regular)
@@ -94,7 +94,7 @@ c in all relevant flavour arrays
       implicit none
       integer n,nlegs,arr(nlegs,n)
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
      2    nflmap
@@ -110,9 +110,9 @@ c in all relevant flavour arrays
 
       function getrealflav(fl)
       implicit none
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flg.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer getrealflav,fl
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
@@ -140,9 +140,9 @@ c to the antiparticle of something in the list, replace it with minus
 c the corresponding intfl.
       implicit none
       integer flav,tag
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flg.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer fllist(nlegreal*maxprocreal),
      1    taglist(nlegreal*maxprocreal),intfl(nlegreal*maxprocreal),
      2    nflmap
@@ -209,7 +209,7 @@ c                                         configuration bflav admits
 c                                         a non-vanishing Born amplitude.
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer nleg,rflav(nleg),nregions,iregions(2,maxregions)
       logical ireg(2)
       logical validBorn
@@ -347,7 +347,7 @@ c false otherwise.
       integer n, aflav(n),bflav(n)
 c we need the parameter nlegreal
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer j,k,itmp,ib(nlegreal)
       call intassign(n,bflav,ib)
       do j=1,n
@@ -378,7 +378,7 @@ c in the list of Born processes. Equivalence means that it can be
 c made identical with a permutation of final state particles.
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer n, bflav(n)
       logical validBorn
       integer j,k,kb,itmp,ib(nlegborn)
@@ -477,10 +477,10 @@ c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t
 
       subroutine genflavreglist
       implicit none
-      include 'pwhg_flg.h'
-      include 'pwhg_st.h'
+      include 'include/pwhg_flg.h'
+      include 'include/pwhg_st.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer nregions,iregions(2,maxregions)
       integer iflregl,k,l,ipart,j,itmp,nreg,iret,tmpfl
       logical equalintlists
@@ -795,7 +795,7 @@ c     debug information
       implicit none
       include 'nlegborn.h'
       character * 200 string,stringb
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer j,k,l,iun,lstring,lstringb
       call newunit(iun)
       open(unit=iun,file='FlavRegList',status='unknown')
@@ -907,7 +907,7 @@ c reorder
       function valid_emitter(j)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       logical valid_emitter
       integer j,alr
       integer validarr(0:nlegborn)

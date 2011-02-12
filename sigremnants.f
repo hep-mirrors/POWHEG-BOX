@@ -6,11 +6,11 @@ c damping
       function sigremnant(xx,ww,ifirst)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_flg.h'
-      include 'pwhg_math.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_flg.h'
+      include 'include/pwhg_math.h'
       real * 8 sigremnant,xx(ndiminteg),ww
       integer ifirst
       real * 8 xrad(3)
@@ -93,10 +93,10 @@ c     No need to generate phase space; it is already available
 c contributions from real graphs that do not have a singular region
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_flg.h'
       real * 8 xjac,sig,r0(maxprocreal)
       integer lreg,lregpr,iret
       integer nmomset
@@ -160,7 +160,7 @@ c ----------------
       subroutine compare_vecs_reg(nmomset,lreg,res,lregpr,cprop,iret)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
       integer nmomset,lreg,lregpr,iret,j,k
@@ -187,8 +187,8 @@ c ----------------
       subroutine sigreal_damp_rem(xjac,sig,r1)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       real * 8 xjac,sig
       real * 8 r0(maxalr),r1(maxalr)
       integer alr

@@ -1,10 +1,10 @@
       subroutine bbinit
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_flg.h'
-      include 'pwhg_rnd.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_flg.h'
+      include 'include/pwhg_rnd.h'
+      include 'include/pwhg_rad.h'
       integer iret1,iret2,iun
       real * 8 sigbtl,errbtl,sigrm,errrm,
      #         xint,xintrm
@@ -257,7 +257,7 @@ c     print statistics
       subroutine gen_btilde(mcalls,icalls)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       integer mcalls,icalls
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
@@ -278,7 +278,7 @@ c     print statistics
       subroutine gen_sigremnant
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
      #        ,xmmm(0:50,ndiminteg),xmmmrm(0:50,ndiminteg)
@@ -301,11 +301,11 @@ c     print statistics
      #                ifold,ifoldrm,ncall2,itmx2)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_pdf.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_rnd.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_rnd.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       integer nbins
@@ -348,11 +348,11 @@ c     print statistics
      #           ifold,ifoldrm)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_pdf.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_rnd.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_rnd.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       real * 8 xxgrid(0:50,ndiminteg),xymax(50,ndiminteg)
@@ -534,10 +534,10 @@ c random seeds
       subroutine storexgrid(xgrid,xint,xgridrm,xintrm)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_pdf.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),xgridrm(0:50,ndiminteg),
      1     xint,xintrm
       integer nbins
@@ -558,10 +558,10 @@ c random seeds
       subroutine loadxgrid(iret,xgrid,xint,xgridrm,xintrm)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_pdf.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),xgridrm(0:50,ndiminteg),
      1     xint,xintrm
       integer iret

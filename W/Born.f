@@ -1,8 +1,8 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include '../include/pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -39,7 +39,7 @@ c     q q'-> e+ ve~
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include '../include/pwhg_flst.h'
 c -*- Fortran -*-
 c      character *2 flav(-5:5)
       real * 8 charge(-5:5)
@@ -59,7 +59,7 @@ c     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
      #      -0.33333333333333333333d0, !   -1d0/3
      #       0.66666666666666666667d0, !   2d0/3 
      #      -0.33333333333333333333d0/ !   -1d0/3
-c      include 'QuarkFlavs.h'
+c      include '../include/QuarkFlavs.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -159,8 +159,8 @@ c p(i,1) is the i-th component of vector p1...
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       real * 8 p1(0:3),p2(0:3)
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp
@@ -297,9 +297,9 @@ c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include '../include/pwhg_flst.h'
 c     neutral particles
       icolup(1,3)=0
       icolup(2,3)=0
@@ -344,7 +344,7 @@ c     a massive decay is chosen
 c     i1<i2
       subroutine momenta_reshuffle(ires,i1,i2,decmass)
       implicit none
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
       integer ires,i1,i2,j
       real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
       if (i1.ge.i2) then

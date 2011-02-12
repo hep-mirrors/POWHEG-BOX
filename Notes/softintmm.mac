@@ -1,0 +1,10 @@
+      a:k2+g2-2*kg;
+      x0:-(kg-g2)/a;
+      b:a*x0^2+2*(kg-g2)*x0+g2;
+      c:sqrt(b/(4*a));
+      alph:sqrt(b)/2;
+      zp:(1+sqrt(1-b))/(2*alph);
+      zm:(1-sqrt(1-b))/(2*alph);
+      z0:(sqrt(x0^2+4*c^2)-x0)/c/2;
+      z1:(sqrt((1-x0)^2+4*c^2)+(1-x0))/c/2;
+      norm:-1/(alph^2*sqrt(a)*2*(zp^2-zm^2));

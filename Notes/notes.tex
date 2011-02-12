@@ -1,0 +1,1390 @@
+\documentclass[paper]{JHEP3}
+\usepackage{amssymb,enumerate}
+\usepackage{amsmath}
+\usepackage{bbm}
+
+\bibliographystyle{JHEP}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newcommand{\tmtexttt}[1]{{\ttfamily{#1}}}
+\newenvironment{enumeratenumeric}{\begin{enumerate}[ 1.] }{\end{enumerate}}
+\newcommand\sss{\mathchoice%
+{\displaystyle}%
+{\scriptstyle}%
+{\scriptscriptstyle}%
+{\scriptscriptstyle}%
+}
+\newcommand\PSn{\Phi_{n}}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+
+
+
+\newcommand\Lum{{\cal L}}
+\newcommand\matR{{\cal R}}
+\newcommand\Kinnpo{{\bf \Phi}_{n+1}}
+\newcommand\Kinn{{\bf \Phi}_n}
+\newcommand\PSnpo{\Phi_{n+1}}
+\newcommand\as{\alpha_{\sss\rm S}}
+\newcommand\asotpi{\frac{\as}{2\pi}}
+\def\lq{\left[} 
+\def\rq{\right]} 
+\def\rg{\right\}} 
+\def\lg{\left\{} 
+\def\({\left(} 
+\def\){\right)} 
+
+\def\beq{\begin{equation}}
+\def\beqn{\begin{eqnarray}}
+\def\eeq{\end{equation}}
+\def\eeqn{\end{eqnarray}}
+
+\newcommand\POWHEG{{\tt POWHEG}}
+\newcommand\POWHEGBOX{{\tt POWHEG-BOX}}
+
+%%%%%%%%%% End TeXmacs macros
+
+\title{\POWHEGBOX{} user notes }
+\vfill
+\author{Simone Alioli \\
+Dipartimento di Fisica, Universit\`a di Milano Bicocca,\\
+Milan, Italy\\
+E-mail: \email{Simone.Alioli@mib.infn.it}}
+\author{Paolo Nason \\
+INFN, Sezione di Milano Bicocca, Italy\\
+E-mail: \email{Paolo.Nason@mib.infn.it}}
+\author{Carlo Oleari \\
+Dipartimento di Fisica, Universit\`a di Milano Bicocca\\
+Milan, Italy\\
+E-mail: \email{Carlo.Oleari@mib.infn.it}}
+\author{Emanuele Re \\
+Dipartimento di Fisica, Universit\`a di Milano Bicocca,\\
+Milan, Italy\\
+E-mail: \email{Emanuele.Re@mib.infn.it}}
+
+
+\vskip -0.5truecm
+
+\keywords{POWHEG, SMC, NLO}
+
+\abstract{This note documents the \POWHEGBOX{}, a
+fortran framework for generating
+\POWHEG{} implementations, given the Born, Virtual and Real cross
+section for a NLO process.
+}
+\preprint{Bicocca-FT-08-04 \\
+%\today
+}
+
+\begin{document}
+
+
+\section{Soft Integrals}
+In this note we document the calculation of the soft contribution in an FKS
+subtraction framework. We want to extract the soft contribution from the
+integral
+\begin{equation}
+  \int d \Kinnpo \Lum \,\matR = \int  d \Kinn \Lum\,\matR^s + {\rm remnants}
+\end{equation}
+For this purpose, $\matR$ can be given in the soft approximation
+\begin{equation}
+  \matR = 4 \pi \as \mu^{2 \epsilon}  \left[ \sum_{i \neq j}
+  \mathcal{B}_{i 
+  j} \frac{k_i \cdot k_j}{(k_i \cdot l) (k_j \cdot l)} - \mathcal{B} \sum_i
+  \frac{k_i^2}{(k_i \cdot l)^2} C_i \right],
+\end{equation}
+where $\mathcal{B}_{i j}$ is the colour correlated Born cross section, $C_i$ is
+the Casimir invariant for the $i^{\rm th}$ leg, and $\mathcal{B}$ is the
+Born cross section (all quantities as defined in FNO2006, eq.~(2.97), and
+normalized according to eq.~(2.98)).
+
+
+
+\subsection{Soft phase space}
+
+The phase space in the soft limit always factorizes as
+\begin{equation}
+  d \Kinnpo = d \Kinn\, \frac{d^{d - 1} l}{2 l^0 (2 \pi)^{d - 1}} .
+\end{equation}
+We write now
+\begin{equation}
+  d^{d - 1} l = d l_1 \, d l_2 \, d^{d - 3} l_{\perp} = d l_1\, d l_2\, d
+  l_{\perp} l_{\perp}^{- 2 \epsilon} \, \Omega^{1 - 2 \epsilon}, \label{eq:dl1}
+\end{equation}
+where we have used $d = 4 - 2 \epsilon$, and $\Omega^n$ is the solid angle in
+$n$ dimensions. From
+\begin{equation}
+  \Omega^n = \frac{n \pi^{n / 2}}{\Gamma (1 + n / 2)} = \frac{\pi^{n / 2} 2^n
+  \Gamma \left( \frac{n + 1}{2} \right)}{\sqrt{\pi} \Gamma (n)}
+ \quad \Longrightarrow \quad \Omega^{1 - 2 \epsilon} = 2 \frac{(4 \pi)^{-
+  \epsilon} 
+  \Gamma \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)} .
+\end{equation}
+Turning eq.~(\ref{eq:dl1}) into polar coordinates we get
+\begin{equation}
+  \frac{d^{d - 1} l}{2 l_0 (2 \pi)^{d - 1}} = \frac{\pi^{\epsilon} \Gamma
+  \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)}  \frac{1}{(2 \pi)^3}
+  \,l_0^{1 - 2 \epsilon} (\sin \theta \,\sin \phi)^{- 2 \epsilon} \,d l_0\, d
+  \cos \theta \,d \phi. 
+\end{equation}
+Observe that $l_{\perp}$ is positive. Having defined
+\begin{equation}
+  l_1 = l_0\cos \theta, \qquad l_2 = l_0\sin \theta \cos \phi,\qquad
+  l_{\perp} = l_0 \sin \theta \sin  \phi,
+\end{equation}
+this means that $0 < \phi < \pi$, and that only even quantities can be
+integrated in this way. In other words, $l_{\perp}$ should not be confused
+with $l_3$ ($l_3$ is no longer available at this stage). Inserting
+\begin{equation}
+  l_0 = \xi \frac{\sqrt{s}}{2},
+\end{equation}
+this becomes
+\begin{equation}
+  \frac{d^{d - 1} l}{2 l_0 (2 \pi)^{d - 1}} = \left[ \frac{(4
+  \pi)^{\epsilon} \Gamma \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)}
+  \right] s^{- \epsilon}  \frac{1}{(2 \pi)^3}  \, \frac{s}{4}\,
+ \xi^{1 - 2 \epsilon} (\sin \theta \, \sin
+  \phi)^{- 2 \epsilon} d \xi \, d \cos \theta\, d \phi .
+\end{equation}
+This is multiplied by $\xi^{- 2} [\xi^2 \matR]$, with $[\xi^2 \matR]$ having a
+finite limit as $\xi \rightarrow 0$. The $\xi$ integration is performed by
+separating first
+\begin{equation}
+  \xi^{- 1 - 2 \epsilon} = - \frac{\xi_c^{- 2 \epsilon}}{2 \epsilon} \delta
+  (\xi) + \left( \frac{1}{\xi} \right)_{\xi_c} - 2 \epsilon \left( \frac{\log
+  \xi}{\xi} \right)_{\xi_c},
+\end{equation}
+where the $\delta$ term yields the soft contribution. We thus define
+\begin{eqnarray}
+  \matR^s & = & - \frac{1}{2 \epsilon} \left[ \frac{(4 \pi)^{\epsilon} \Gamma
+  \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)} \right] s^{- \epsilon}
+  \xi_c^{- 2 \epsilon} \frac{1}{(2 \pi)^3} \int d \cos \theta \,d \phi\, (\sin
+  \theta \sin \phi)^{- 2 \epsilon}  \nonumber\\
+  &  &  \frac{s \xi^2}{4} \,4 \pi \as \mu^{2 \epsilon} \left[
+  \sum_{i \neq 
+  j} \mathcal{B}_{i j} \frac{k_i \cdot k_j}{(k_i \cdot l) (k_j \cdot l)} -
+  \mathcal{B} \sum_i \frac{k_i^2}{(k_i \cdot l)^2} C_i \right], 
+\end{eqnarray}
+or, collecting the normalization factor of (2.93) of FNR2006
+\[ \mathcal{N} = \frac{(4 \pi)^{\epsilon} }{\Gamma (1 - \epsilon)} \left(
+   \frac{\mu^2}{Q^2} \right)^{\epsilon}, \]
+we get
+\begin{eqnarray}
+  \matR^s & = & \mathcal{N}  \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right]
+  \left( 
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \frac{\alpha}{2 \pi} \int d \cos \theta\, \frac{d \phi}{\pi}\,
+  (\sin \theta \sin \phi)^{- 2 \epsilon}  \nonumber\\
+  &  & \frac{s \xi^2 }{4} \left[ \sum_{i \neq j} \mathcal{B}_{i j}
+  \frac{k_i 
+  \cdot k_j}{(k_i \cdot l) (k_j \cdot l)} - \mathcal{B} \sum_i
+  \frac{k_i^2}{(k_i \cdot l)^2} C_i \right]. 
+\end{eqnarray}
+
+
+\subsection{Two massless particles}
+
+We begin with an iconal factor for massless particles with momenta $k_1$ and
+$k_2$, $k_1^2 = k_2^2 = 0$
+\begin{equation}
+  \matR^s_{12} = \mathcal{N}  \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right]
+  \left( 
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \frac{\as}{2 \pi} \int d \cos \theta \, \frac{d \phi}{\pi} (\sin
+  \theta \sin 
+  \phi)^{- 2 \epsilon} \,\frac{s \xi^2 }{4} \frac{k_1 \cdot k_2}{k_1
+  \cdot l \ k_2 \cdot l}  \mathcal{B}_{12} 
+\end{equation}
+and we define $R^s_{12}$ as
+\beq
+\matR^s_{12} = \mathcal{N} \, \frac{\as}{2 \pi} \,R^s_{12}\,\mathcal{B}_{12}. 
+\eeq
+We first expand
+\begin{equation}
+  \frac{k_1 \cdot k_2}{k_1 \cdot l\ k_2 \cdot l} = \frac{k_1 \cdot k_2}{k_1
+  \cdot l\ (k_1 + k_2) \cdot l} + \frac{k_1 \cdot k_2}{k_2 \cdot l\ (k_1 + k_2)
+  \cdot l}\,,
+\end{equation}
+and define, for $k^2 = 0$ and $m^2 > 0$,
+\begin{equation}
+  I (k, m) = \int d \cos \theta \,\frac{d \phi}{\pi}\, (\sin \theta \sin
+  \phi)^{- 
+  2 \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k \cdot m}{k \cdot l\ m \cdot l}
+  \right],
+\end{equation}
+ so that
+\begin{equation}
+  I (k_1, k_1 + k_2) + I (k_2, k_1 + k_2) = \int d \cos \theta \, \frac{d
+  \phi}{\pi}\, (\sin \theta \sin \phi)^{- 2 \epsilon}  \left[ \frac{s \xi^2}{4}
+  \frac{k_1 \cdot k_2}{k_1 \cdot l\ k_2 \cdot l} \right] 
+\end{equation}
+is the integral we have to perform.\\
+We can separate $I (k, m)$ into a divergent, a finite and an $\epsilon$-dependent part
+\begin{equation}
+  I (k, m) = \frac{1}{\epsilon} I_d (k, m) + I_0 (k, m) + \epsilon
+  I_{\epsilon} (k, m) .
+\end{equation}
+To perform the calculation, we separate out the collinear component
+\begin{equation}
+  \frac{k \cdot m}{k \cdot l\ m \cdot l} = \left[ \frac{k \cdot m}{k \cdot l\ m
+  \cdot l} - \frac{n \cdot k}{k \cdot l\ n \cdot l} \right] + \frac{n \cdot
+  k}{k \cdot l\ n \cdot l}\,,
+\end{equation}
+where the term in square bracket has no collinear singularities. Assuming $n$
+along the time direction, we have
+\begin{equation}
+  \frac{s \xi^2}{4}  \frac{n \cdot k}{k \cdot l\ n \cdot l} = \frac{1}{1 -
+  \cos \theta},
+\end{equation}
+and
+\begin{equation}
+  \int d \cos \theta \,\frac{d \phi}{\pi} \, (\sin \theta \sin \phi)^{- 2
+  \epsilon} \frac{1}{1 - \cos \theta} = -\frac{ 1}{\epsilon},
+\end{equation}
+so that
+\begin{equation}
+  I_d (k, m) = - 1 \, .
+\end{equation}
+The remaining integral has no collinear singularities. We find
+\begin{equation}
+  \int d \cos \theta\, \frac{d \phi}{\pi} \,(\sin \theta \sin \phi)^{- 2
+  \epsilon} 
+  \frac{s \xi^2}{4} \left[ \frac{k \cdot m}{k_{} \cdot l\ m \cdot l} -
+  \frac{k^0}{k \cdot l\ l^0} \right] = I_0 (k, m) + \epsilon I_{\varepsilon}
+  (k, m),
+\end{equation}
+and, defining $\hat{k} = k / k^0$, and $\hat{m} = m / m^0$, we have
+\begin{eqnarray}
+  I_d (k, m) & = & - 1, \\
+  I_0 (k, m) & = & \log \frac{( \hat{k} \cdot \hat{m})^2}{\hat{m}^2}, \\\nonumber
+  I_{\epsilon} (k, m) & = & - 2 \left[ \frac{1}{4} \log^2  \frac{1 - \beta}{1
+  + \beta} + \log \frac{\hat{k} \cdot \hat{m}}{1 + \beta} \log \frac{\hat{k} \cdot
+  \hat{m}}{1 - \beta} + \tmop{Li}_2 \left( 1 - \frac{\hat{k} \cdot \hat{m}}{1 + \beta}
+  \right) + \tmop{Li}_2 \left( 1 - \frac{\hat{k} \cdot \hat{m}}{1 - \beta} \right)
+  \right], \\
+\end{eqnarray}
+with $\beta = \sqrt{1 - \hat{m}^2}$.  We have 
+\begin{equation}
+  \int d \cos \theta \, \frac{d \phi}{\pi}\, (\sin \theta \sin \phi)^{- 2
+  \epsilon} 
+  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l\ k_2 \cdot l}
+  \right] = I (k_1, k_1 + k_2) + I (k_2, k_1 + k_2)
+\end{equation}
+and we get
+\begin{eqnarray}
+  R^s_{12}  & = & \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right] \left(
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \int d \cos \theta \, \frac{d \phi}{\pi}\, (\sin \theta \sin
+  \phi)^{- 2
+  \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l\ k_2
+  \cdot l} \right] \nonumber\\
+  & = & \left[ 1 + \epsilon \log \frac{Q^2}{s \xi_c^2} + \left( \frac{1}{2}
+  \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6} \right) \epsilon^2 \right]
+  \left( \frac{- 1}{2 \epsilon} \right) \big[ I (k_1, k_1 + k_2) + I (k_2,
+  k_1 + k_2) \big] \nonumber\\
+  & = & \frac{A}{\epsilon^2} + \frac{B}{\epsilon} + C 
+\end{eqnarray}
+with
+\begin{eqnarray}
+  A & = & 1 \\
+  B & = & \log \frac{Q^2}{s \xi_c^2} - \frac{1}{2} \big[ I_0 (k_1, k_1 + k_2)
+  + I_0 (k_2, k_1 + k_2) \big] \\
+  C & = & \left[ \frac{1}{2} \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6}
+  \right] - \frac{1}{2} \big[ I_0 (k_1, k_1 + k_2) + I_0 (k_2, k_1 + k_2)
+  \big] \log \frac{Q^2}{s \xi_c^2} + \nonumber\\
+  &  & - \frac{1}{2} \big[ I_{\epsilon} (k_1, k_1 + k_2) + I_{\epsilon}
+  (k_2, k_1 + k_2) \big] . 
+\end{eqnarray}
+
+
+\subsection{One massive and one massless particles}
+In case $k_1$ is massless and $k_2$ is not, we get instead
+\begin{eqnarray}
+  R^s_{12} & = & \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right] \left(
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{- 2
+  \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l\ k_2
+  \cdot l} \right] \nonumber\\
+  & = & \left[ 1 + \epsilon \log \frac{Q^2}{s \xi_c^2} + \left( \frac{1}{2}
+  \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6} \right) \epsilon^2 \right]
+  \left( \frac{- 1}{2 \epsilon} \right) I (k_1, k_2) \nonumber\\
+  & = & \frac{A}{\epsilon^2} + \frac{B}{\epsilon} + C 
+\end{eqnarray}
+\begin{eqnarray}
+  A & = & \frac{1}{2} \\
+  B & = & \frac{1}{2} \log \frac{Q^2}{s \xi_c^2} - \frac{1}{2} I_0 (k_1, k_2)
+  \\
+  C & = & \frac{1}{2} \left[\frac{1}{2} \log^2 \frac{Q^2}{s \xi_c^2} -
+  \frac{\pi^2}{6} 
+  \right] - \frac{1}{2} I_0 (k_1, k_2) \log \frac{Q^2}{s \xi_c^2} -
+  \frac{1}{2} I_{\epsilon} (k_1, k_2) . 
+\end{eqnarray}
+
+
+\subsection{Two massive  particles}
+In case both $k_1$ and $k_2$ are massive, we instead define
+\begin{eqnarray}
+  I (k_1, k_2) &=& I_0 (k_1, k_2) + \epsilon \, I_{\varepsilon} (k_1, k_2),
+\\
+  I_0 (k_1, k_2) &=& \int d \cos \theta \frac{d \phi}{\pi}  \left[ \frac{s
+  \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l \ k_2 \cdot l} \right] 
+\\
+  I_{\epsilon} (k_1, k_2) &=& - 2 \int d \cos \theta \frac{d \phi}{\pi} \log
+  [\sin \theta \sin \phi] \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1
+  \cdot l \ k_2 \cdot l} \right] \,,
+\end{eqnarray}
+and we get (neglecting now $\epsilon^2$ terms)
+\begin{eqnarray}
+  R^s_{12} & = & \left( \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left(
+  -\frac{1}{2 \epsilon} \right) \int d \cos \theta \frac{d \phi}{\pi} (\sin
+  \theta \sin \phi)^{- 2 \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot
+  k_2}{k_1 \cdot l\ k_2 \cdot l} \right] \nonumber\\
+  & = & \left[ 1 + \epsilon \log \frac{Q^2}{s \xi_c^2} \right]
+  \(-\frac{1}{2\epsilon}\) I(k_1, k_2) = \frac{B}{\epsilon} + C 
+\end{eqnarray}
+with
+\begin{eqnarray}
+  B & = & - \frac{1}{2} I_0 (k_1, k_2) \\
+  C & = & - \frac{1}{2} I_0 (k_1, k_2) \log \frac{Q^2}{s \xi_c^2} -
+  \frac{1}{2} I_{\epsilon} (k_1, k_2)\,, 
+\end{eqnarray}
+and
+\begin{equation}
+  I_0 (k_1, k_2) = \frac{1}{\beta} \log \frac{1 + \beta}{1 - \beta}\,, 
+\qquad\qquad \beta = \sqrt{1 - \frac{k_1^2\, k_2^2}{(k_1 \cdot k_2)^2}}\,.
+\end{equation}
+The expression for $I_{\epsilon}$ is better given as a fortran function in
+this case.
+
+************************************  mettere la formula dal fortran  ***
+
+In the particular case $k_1 = k_2 = p$ we have
+\beqn
+  I_0 &=& 2\\
+  I_{\epsilon} &=& \frac{2}{\beta} \log \frac{1 + \beta}{1 - \beta}\,, 
+\qquad\qquad \beta =  \frac{| \vec{p} |}{p^0}\, .
+\eeqn
+
+\section{Introduction}
+
+The code can be found in
+\\
+\begin{center}
+ \tmtexttt{http://moby.mib.infn.it/\~{}nason/POWHEG}.
+\end{center}
+~\\
+
+\section{User supplied routines}
+
+ \POWHEGBOX{} is a general program for the implementation of a user
+ supplied NLO calculation in the  \POWHEG{} framework.
+ The user must supply the following ingredients of his/her NLO
+ calculation:
+\begin{itemize}
+\item
+ A list of the flavour structure of the Born process
+\item
+ The Born phase space
+\item
+ The Born cross section, together with the color correlated and spin
+ correlated Born amplitude. These are common ingredients to all NLO
+ calculations performed with a subtraction
+ method.
+\item The finite part of the interference between
+ the virtual correction and the Born amplitude.
+\item
+The list of all the flavour structures of the Real process.
+\item The real matrix
+ elements squared for all relevant partonic processes.
+\end{itemize}
+Here we detail the operations that the user should perform to
+implement a new process:
+\begin{enumerate}[\bf 1)]
+\item
+ Fix the parameter \tmtexttt{nlegborn} in the \tmtexttt{pwhg\_flst.h}
+ header file in the \tmtexttt{include} subdirectory. It must be set equal to the total
+ (i.e.~incoming plus outgoing) number of legs of the Born process.
+ For example, in case of vector boson plus jet production \mbox{ 
+$ p p \to (Z \to e^+ e^-) + j $}, one has to set
+
+  \tmtexttt{parameter (nlegborn=5)}.
+
+ Eventually, increase to an appropriate value
+ the maximum number of independent Born and real processes. The parameters 
+ \tmtexttt{maxprocborn} and \tmtexttt{maxprocreal} in the \tmtexttt{pwhg\_flst.h}
+ header file in the \tmtexttt{include} directory
+ must be greater than or equal to the number of
+ independent flavour structures for the Born and real processes.
+
+\item
+ A subroutine \tmtexttt{init\_processes} with no arguments, should be set
+ up by the user to perform various initialization tasks:
+ \begin{itemize}
+ \item
+ The integer variables \tmtexttt{flst\_nborn} and \tmtexttt{flst\_nreal}
+ should be set to the number of born and real flavour processes.
+\begin{description}
+\item{\bf Notice:} all variables with the prefix \tmtexttt{flst\_} are
+ made available by including the \tmtexttt{pwhg\_flst.h} header.
+\end{description} 
+\item
+ Arrays \tmtexttt{flst\_born}
+ and \tmtexttt{flst\_real} should be filled with the flavour structure
+ of the Born and real processes. They are defined as follows: 
+\begin{description}
+\item
+ \tmtexttt{flst\_born(k=1...nlegborn,j=1...flst\_nborn)} : flavour of the
+ $k$-th leg of the $j$-th Born graph
+\item 
+ \tmtexttt{flst\_real(k=1...nlegreal,j=1...flst\_nreal)} : flavour of the
+ $k$-th leg of
+ the $j$-th real graph.
+\end{description}
+ It is required that legs in the Born and real processes
+ have to be ordered as follows:
+\begin{itemize}
+\item leg 1: incoming parton with positive rapidity
+\item  leg 2: incoming parton with negative rapidity
+\item from leg 3 onward: final state particles, in the order:
+\begin{enumerate}
+\item Colorless particles first,
+\item massive coloured particles,
+\item  massless coloured particles.
+\end{enumerate}
+ The flavour of colorless and massive colored particles should
+ be the same for all real and Born subprocesses. This is the case for most QCD NLO calculation.
+\end{itemize}
+
+ The flavour is taken
+ incoming for the two incoming particles and outgoing for the outgoing
+ particles.  The flavour index is assigned according to PDG conventions,
+ except for gluons, where 0 is used instead of 21.  As an example, for \mbox{$p p
+ \to (Z\to e^+e^-)+ 2 j$}, the string \tmtexttt{[1,0,11,-11,1,0]} labels the process \mbox{$d g \to e^- e^+ d
+ g$}. \begin{description} \item
+{\bf Notice :}  only one ordering of final state flavour can appear for a
+ given final state.
+\end{description} Thus, in our example, either \tmtexttt{[1,0,11,-11,1,0]}
+or \tmtexttt{[1,0,11,-11,0,1]} may appear, but not both.
+\item The variable
+\tmtexttt{flst\_lightpart}, to be initialized by the user in
+the \tmtexttt{init\_processes} subroutine,
+labels the leg at which the first \emph{massless}
+coloured particle in the final state may occur, in the aforementioned ordering 
+scheme.
+\end{itemize}
+
+\item At this point the user must take care to initialize all the relevant physical
+quantities for the process at hand. This task is performed within
+the 
+
+\tmtexttt{init\_couplings}\\
+ subroutine. The user must assign here the  physical parameters required
+by his/her calculation, and export them whith appropriate, user defined
+common blocks. There is, however, an important exception: the \POWHEGBOX{}
+needs to handle the renromalization and factorization scales, and to set
+the strong coupling itself, based upon the PDF set one uses.
+Therefore:
+\begin{itemize}
+\item The user should fix in this routine the variable \tmtexttt{st\_nlight} to the
+      number of light flavours.
+      \begin{description}
+      \item{\bf Notice:} all variables with the prefix \tmtexttt{st\_} are made
+      available by including the \tmtexttt{pwhg\_st.h} header.
+      \end{description}
+\item The user should use as strong coupling constant in his/her
+code the variable \tmtexttt{st\_alpha}
+
+\item In order to set the renormalization and factorization scales, the
+user should set up a soubroutine named
+\tmtexttt{set\_fac\_ren\_scales(mur,muf)},
+that returns the values of the two scales.
+Here one can adopt the choice he/she likes for the two scales, even on a
+event-by-event basis, since a call to \tmtexttt{set\_fac\_ren\_scales} is performed 
+for each event.\\
+\end{itemize}
+We stress that
+the \POWHEG{} method requires these scales to be
+fixed to the transverse momentum of radiation during the generation of
+radiation, while more freedom is left during the integration
+stage that evaluates the inclusive cross sections and sets the grids for the generation
+of the underlying Born. It is in this last case that
+\tmtexttt{set\_fac\_ren\_scales} is called.
+
+\item 
+The next mandatory operations fulfill the definition of the Born process:
+\begin{itemize}
+\item
+First the user has to define the
+
+\tmtexttt{Born\_phsp (xborn)} \\ routine, to generate the Born phase space. Its input
+is a \tmtexttt{xborn(1...ndim)} array of random numbers in the unit hypercube
+with dimension \tmtexttt{ndim=(nlegborn-2)*3-4+2-1}, that parametrizes the 
+\tmtexttt{ndim}-body phase space up to an overall azimuthal rotation with
+respect to the beam. This is performed later by the program itself.
+ The \tmtexttt{Born\_phsp}
+subroutine must set the Born kinematics and evaluate
+the Born jacobian \tmtexttt{kn\_jacborn} for subsequent integrations.
+It is important to supply either the Born momenta in the
+laboratory frame \tmtexttt{kn\_pborn(0:3,1...nlegborn)}, either those in the
+partonic center-of-mass frame \tmtexttt{kn\_cmpborn(0:3,1...nlegborn)},
+togheter with parton momentum fractions with respect to beam momenta
+(\tmtexttt{kn\_xb1} and \tmtexttt{kn\_xb2}).
+\begin{description} \item{\bf Notice:} all variables with the prefix \tmtexttt{kn\_} are made
+      available by including the \tmtexttt{pwhg\_kn.h} header.
+\end{description}
+\item
+ Furthermore, the user must take care to set, once and for  all, the values
+ of \\ 
+\tmtexttt{kn\_masses(1...nlegborn)} to the masses of the incoming and
+outgoing particles at the Born level.  At this stage, the mass of the extra parton present in
+real contributions \tmtexttt{kn\_masses(nlegreal)} could be assigned too.
+The others relevant kinematics variable that must be fixed by this subroutine
+are \tmtexttt{kn\_sborn} and \tmtexttt{kn\_born\_pt2}, that correspond to the
+the Born Mandelstam $s$ and to the transverse momentum squared, respectively.
+\end{itemize}
+
+\item 
+Then the subroutine 
+
+\tmtexttt{setborn(p,bflav,born,bornjk,bmunu)},\\
+that
+computes the Born contributions, 
+is needed. Its inputs are :
+\begin{itemize}
+\item[-] the momenta \tmtexttt{p(0:3,1...nlegborn)} 
+\item[-] the flavour string \tmtexttt{bflav(1...nlegborn)}
+\end{itemize}
+Given these inputs, this subroutine is asked to return 
+\begin{itemize}
+\item the Born squared amplitude \tmtexttt{born}, summed on final and averaged on initial
+  particles colours and spins, divided by the appropriate flux
+  factor\footnote{Notice that this is the only place were the user is asked to provide
+    the flux factor togheter with the result. For real and virtual process,
+    only squared matrix elements will be needed}.
+  This corresponds to $\mathcal{B}$ in the notation of ref.~\cite{Frixione:2007vw}.
+\item the Born color-correlated squared amplitudes
+  \tmtexttt{bornjk(1...nlegborn,1...nlegborn)}, defined as in eq.~(2.97) of
+  \cite{Frixione:2007vw}. These are simply the Born squared amplitudes with colour operators
+  exposed $\mathcal{B}_{jk}$, defined in eq.(2.97) of ref.~\cite{Frixione:2007vw}. 
+  The following relation holds
+  \begin{equation}
+  \sum_{j,\ j\ne k} \mathcal{B}_{j k} = C_{k} \mathcal{B} \,,
+\end{equation}
+where $C_{k}$ corresponds to $C_A$ if the leg $k$ is a gluon and to $C_F$ if  a quark or an antiquark.
+  Notice that the
+  $j$ and $k$ indexes run over all incoming and outgoing
+  Born legs, with the requirement $j \ne k$ for massless
+  coloured partons.
+\item the Born helicity-correlated squared amplitudes \tmtexttt{bmunu(0:3,0:3,j=1...nlegborn)}, defined as the squared amplitudes with
+  Lorentz index exposed $\mathcal{B}_{\mu \nu}$, for each external gluon $j$
+  with polarization vector $\epsilon^{\nu}$ (to be contracted with its complex
+  conjugate with polarization vector $\epsilon^{*\mu}$) in the Born process.
+   One thus has
+  \begin{equation}
+    \mathcal{B} = \sum_{\mu \nu} \mathcal{B}_{\mu \nu}\,.
+  \end{equation}
+  
+\end{itemize}
+
+A call to \tmtexttt{setborn} is done for each possible Born flavour combination and
+the corresponding \tmtexttt{flst\_nborn} results are saved via the \tmtexttt{br\_bornsqamps} common block 
+in the \tmtexttt{pwhg\_br.h} header file.
+\begin{description} \item{\bf Notice:} 
+ all results with the prefix \tmtexttt{br\_} can then be made
+      available by including the \tmtexttt{pwhg\_br.h} header.
+\end{description}
+
+\item 
+In addiction one is asked to fill the Les Houches interface
+for the Born processes.
+ \POWHEGBOX{} takes care of filling the
+kinematics and the flavour-dependendent part, while the colour-dependent
+part is left to the user. This task is accomplished by the 
+
+\tmtexttt{borncolour\_lh} \\subroutine,
+ that sets up the colour for the given flavour configuration.
+This is necessary since in case there are several colour structure, one
+ should pick up one with a probability proportional to
+the value of the corresponding cross section, for the
+ kinematics and flavour structure chosen. These are available simply
+ including the \tmtexttt{pwhg\_kn.h} and \tmtexttt{pwhg\_flst.h} headers.
+
+Eventually, if one wants to
+ specify a resonance whose mass must be preserved by subsequent showering, he can
+ modify the 
+
+ \tmtexttt{resonances\_lh} \\subroutine. To this extent, we provide the
+ \tmtexttt{add\_resonance(idpdg,i1,i2)} subroutine, that specifyies the
+ resonance to be the particle with \tmtexttt{idpdg} PDG code, that decays into
+  legs \tmtexttt{i1} and \tmtexttt{i2}. \\
+
+\item
+ The next step is the definition of the finite part of virtual contribution
+ by the
+
+ \tmtexttt{sigvirt(virt(1...flst\_nborn))} \\
+ subroutine.  It has no input,
+ since all relevant quantities are passed throught external common blocks. The
+ precise values to return in the array \tmtexttt{virt(1...flst\_nborn)}
+ are defined in eq.(2.92) and eq.(2.99) of ref.~\cite{Frixione:2007vw}.
+ These correspond to the usual finite remnant deriving from the virtual divergent
+ contribution, after the pole subtraction, up to a common factor
+ $\frac{\alpha_{\rm s}}{2\pi}$ times
+  \begin{equation}\label{eq:virtnorm}
+{\cal N}=
+\frac{(4\pi)^\epsilon}{\Gamma(1-\epsilon)}
+\left(\frac{\mu^2}{Q^2}\right)^\epsilon \,,
+\end{equation}  
+defined as in eq.(2.93) of ref.~\cite{Frixione:2007vw}, that is factorized out.
+Since \POWHEGBOX{} assumes that the pole subtraction is performed within
+these assumptions, the user is asked to supply a finite virtual contribution
+that correctly accounts for this $\frac{\alpha_{\rm s}}{2\pi} \cal{N}$
+factor. Moreover, being the virtual flux factor the same as the Born one, the
+user is asked to provide results that do not already  include it.\\
+***************************************************************\\
+DISCUSSIONE SU VIRTUALI VALUTATI IN MANIERA FURBA\\
+ \tmtexttt{setvirtual}  vs. \tmtexttt{setvirtual\_fast}\\
+***************************************************************\\
+\item
+At this point one has only to supply the subroutine
+\tmtexttt{real\_ampsq(p,rflav,amp2)}, that computes
+real emissions squared amplitudes.
+ Its inputs are :
+\begin{itemize}
+\item the momenta \tmtexttt{p(0:3,1...nlegreal)} 
+\item the flavour string \tmtexttt{rflav(1...nlegreal)}
+\end{itemize}
+
+Given these inputs, this subroutine is asked to return spin and colour summed
+and averaged real squared amplitudes \tmtexttt{amp2}, again without the flux
+factor, which is calculated and added later by the program itself.
+
+\item
+The only thing that remains to do now is to define the appropriate analysis
+routine for the process at hand.
+Full freedom is left to the user with respect this choice. 
+We provide an example
+analysis routine in the file \tmtexttt{pwhg\_outfun.f} that relies 
+on the standard common
+blocks of ref.~\cite{Altarelli:1989wu} and a driver
+ \tmtexttt{pwhg\_outfundriver.f} to interface between these and \POWHEGBOX{}
+ common-blocks.
+
+\end{enumerate}
+
+\section{Combinatorics and singular regions}
+\label{sec:comb}  
+ 
+Given these inputs \POWHEGBOX{} will take care to evaluate the
+combinatorics between Born and real processes and to find the singular
+regions. We give here a description of how this procedure works, but we
+remind the user that those routines are process independent and they
+should not be modified.
+The relevant routines for evaluate the combinatorics are  \tmtexttt{genflavreglist},
+ \tmtexttt{find\_regions}, \tmtexttt{reorder\_regions} and other minor
+ ancillary routines. 
+ The driving routine \tmtexttt{genflavreglist} must be
+ called, after the number of Born \tmtexttt{flst\_nborn} and real
+ \tmtexttt{flst\_nreal} processes is defined  and the relevant arrays
+ \tmtexttt{flst\_born(nlegborn,flst\_nborn)},
+ \tmtexttt{flst\_real(nlegreal,flst\_nreal)} are filled with the flavour
+ structure of the Born and real processes by the \tmtexttt{init\_processes}
+ subroutine, as explained above. \\      
+
+ 
+ A call to \tmtexttt{genflavreglist}  has the the following effects : 
+  
+ \begin{itemize}
+ \item
+ It evaluates the number of
+ possible singular regions:
+
+ \tmtexttt{rad\_nkinreg=1+(nlegborn-flst\_lightpart+1)}.
+  This variable is then exported via the \tmtexttt{pwg\_radiation} common-block
+  included in the \tmtexttt{pwhg\_rad.h} header file.
+\begin{description} \item{\bf Notice:} all variables with the
+  \tmtexttt{rad\_} prefix can the be made available by
+  including the \tmtexttt{pwhg\_rad.h} header file.
+\end{description}
+
+ \item  The array \tmtexttt{flst\_alr(1...nlegreal,1...flst\_nalr)}  is
+    filled with the flavour structures of all the singular regions
+    $\alpha_r$ (the ``alr'' in the name stands for $\alpha_r$), as
+    defined in ref.~\cite{Frixione:2007vw}. These are computed in the following way:
+    
+    \begin{itemize}
+      \item To each gluon in the final state, one associates an ISR region.
+        
+      \item To each quark in the final state, if it is equal to a quark in
+      the initial state one associates an ISR region, defined by the incoming
+      and outgoing quark.
+      
+    \item To each quark-gluon (or antiquark-gluon) pair in the final state
+      one associates a FSR region.
+      
+    \item To each quark-antiquark pair of the same flavour in the final
+      state we associate a FSR region.
+    \end{itemize}
+
+
+    In all cases, one checks that the underlying Born corresponding to the
+    given region is actually present (up to a permutation of final state
+    particles) in the list of Born processes. If the underlying Born is not
+    present, the corresponding region is discarded.
+
+    If a real graph has no region at all (i.e., it is
+    \emph{regular}), the counter
+    \tmtexttt{flst\_nregular}  is increased, and the flavour content
+    of the real contribution is assigned to the array
+    \tmtexttt{flst\_regular(1...nlegreal,flst\_nregular)} . The
+    contribution of regular graphs will be generated independently from the
+    rest.
+
+    \item
+    We then reorder the flavours in a region in the following way:
+
+    \begin{itemize}
+      \item In a ISR region, the radiated parton is moved to the last position
+      in the flavour list (i.e. to the  \tmtexttt{nlegreal} 
+      position).
+
+      \item In a FSR region, the two particles involved are moved to the end
+      of the list, making sure that the particle that can give soft
+      singularities is moved to the last position, and if we have a
+       $q \bar{q}$ pair, the $q$ is moved to
+      the last position.
+    \end{itemize}
+
+    \item
+    After the reordering, we assign to the
+     \tmtexttt{flst\_emitter(j=1...flst\_nalr)} array the value
+
+     \begin{itemize}
+      \item 0 if the   $j$-th region is an ISR
+      region with an emitted gluon,
+
+      \item 1(2) if it is an ISR region collinear to 1(2), and the emitted
+      parton is not a gluon,
+
+      \item the value  \tmtexttt{nlegreal-1} for all other (FSR)
+      cases.
+      \end{itemize}
+
+    This definition corresponds to the emitting particles, except in the
+    first case, where the value 0 is used to mean 1 and 2 at the same time.
+
+    \item As a consequence of the reordering, some regions may turn out to be
+    identical. We thus go through the list of regions and lump together
+    identical region. The value of  \tmtexttt{flst\_nalr}  is reduced
+    to account for this lumping procedure, and the array
+     \tmtexttt{flst\_mult(1...flst\_nalr)}   is filled with the
+    multiplicity of each region. The array \tmtexttt{flst\_emitter}  
+    is updated accordingly.
+
+    \item The underlying Born graph flavour associated to each region is
+    computed, and stored in the array
+      \tmtexttt{flst\_uborn(1...nlegborn,1...flst\_nalr)}  .
+
+    \item At this stage we run through the list, and look for the underlying
+    Born flavour structure in the list of Born graphs given in
+     \tmtexttt{flst\_born(1...nlegborn,1...flst\_nborn)}. We may find
+    the underlying Born structure in this list, in which case we set the
+    pointer  \tmtexttt{flst\_alr2born(j)}   (where
+     \tmtexttt{j}   is the index of the region we are considering) to
+    the index   \tmtexttt{k}   such that
+     \tmtexttt{flst\_born(1...nlegborn,k)}   is equal to
+      \tmtexttt{flst\_uborn(1...nlegborn,j)}.
+  
+     It may happen,
+    however, that we find a flavour structure that is equivalent only up to
+    the permutation of some final state coloured partons. Also in this case
+    we set the  \tmtexttt{flst\_alr2born(j)}   index as before, but we
+    also perform a permutation of final state particles upon the arrays
+     \tmtexttt{flst\_alr(1...nlegreal,j)},
+      \tmtexttt{flst\_uborn(1...nlegborn,j)}, and
+     \tmtexttt{flst\_emitter(j)} if the permutation changes the
+    position of the  \tmtexttt{nlegborn}   element of the list too. At
+    the end of this procedure,  \tmtexttt{flst\_emitter}   may end up
+    being different from  \tmtexttt{nlegborn}  . This fact can take
+    place if the Born graphs have more than one coloured massless parton in
+    the final state, as, for example, in dijet production.
+
+  \item At this stage, an array of arrays of pointers
+    
+      \tmtexttt{flst\_born2alr(0...flst\_nalr,1...flst\_nborn)}  
+    
+    is setup, that associated to each Born flavour structure, a list of the
+    regions that share this same underlying Born. The integer
+      \tmtexttt{flst\_born2alr(0,k)}   stores the number of
+    regions that have   \tmtexttt{flst\_born(1...nlegborn,k)}   as
+    underlying Born, and  \\ 
+    \tmtexttt{flst\_born2alr(1...flst\_born(1...nlegborn,k),k)}  
+    are the indexes in the region list.
+
+    \item As a final step, for each region in the list, we also need a list
+    of all the singular regions associated to that flavour structures. This
+    is needed, because the contribution of each region is given by the real
+    amplitude, projected by means of weight factors $S_i$, $S_{ij}$.
+    These in turn have the structure described in section 2.4.1 of ref.\cite{Frixione:2007vw}. In
+    order to compute them, we need a list of all singular regions associated
+    to the given real graph flavour structure. We thus setup the array
+
+     \tmtexttt{flst\_allreg(1:2,0...maxregions,1...flst\_nalr)},  
+
+    the first two elements corresponding to the emitter and emitted parton,
+    the integer  \tmtexttt{flst\_allreg(1,0,j)=m}   is the number of
+    singular regions associated to the flavour structure of the
+     $j$-th   region, and
+     \tmtexttt{flst\_allreg(1:2,1...m,j)}   is the list of singular
+    regions associated to the  $j$-th   region.
+\end{itemize}
+ This completely resolvs the combinatorics and sets all the variables needed.\\
+
+
+
+
+\section{Input parameters}
+
+\POWHEGBOX{} provides an independent facility to set the input parameters for
+the run. All parameters are stored in a file, named \tmtexttt{powheg.input}.
+The format of the file is as follows:
+\begin{enumeratenumeric}
+  \item Lines are no more than 100 characters long.
+  
+  \item Empty (blank) lines are ignored
+  
+  \item If a \tmtexttt{\#} or a \tmtexttt{!} appears at any point in a line,
+  the part of the line starting from the \tmtexttt{\#} or \tmtexttt{!} symbol
+  up to its end is blanked.
+  
+  \item An entry has the format:\\
+  \tmtexttt{name \ \ value}\\
+  usually followed by a \tmtexttt{!} and a comment to clarify the meaning of
+  the variable. The \tmtexttt{name} keyword has no more than 20
+  characters, and \tmtexttt{value} is an integer or floating point number.
+  
+  \item A maximum of 100 keywords are allowed.
+\end{enumeratenumeric}
+If the file \tmtexttt{powheg.input} is not present, the program asks the user
+to enter a prefix, and then looks for the file
+\tmtexttt{<prefix>-powheg.input}. In this case, all the files created by
+\POWHEGBOX{} in the current run will carry the prefix \tmtexttt{<prefix>-}
+instead of
+\tmtexttt{pwg}.\\
+The input parameters are read by the (\tmtexttt{real * 8}) function
+\tmtexttt{powheginput(string)}, in file \tmtexttt{powheginput.f}. \ The
+statement\\
+\\
+\tmtexttt{ \ \ \ \ \ rvalue=powheginput('myparm')}\\
+\\
+returns the value of token \tmtexttt{myparm} stored in
+\tmtexttt{powheg.input}. If the token is not found in the input file, a
+message is printed, and the program is stopped.  The file is read only once,
+on the first invocation of the function \tmtexttt{powheginput}, and
+token-value pairs are stored in internal arrays, so that subsequent calls to
+\tmtexttt{powheginput} are relatively fast.
+The statement\\
+\\
+\tmtexttt{ \ \ \ \ \ rvalue=powheginput('\#myparm')}\\
+\\
+also returns the value of the token \tmtexttt{myparm}. However, in case the
+token \tmtexttt{myparm} is not present, the program does not stop, and
+returns the value~$- 10^6$.  The file \tmtexttt{powheginput.f} is a
+standalone code, and can be linked to any program. In this way, an SMC that
+is reading an event file may get parameters of the \POWHEGBOX{} run, if it needs
+too.
+\\
+We document here a typical input file \tmtexttt{powheg.input}:\\
+
+
+***************************************************************\\
+LISTA NON EASUSTIVA: CONTROLLARE CHE TUTTI I PARAMETRI COMPAIANO QUI E
+FISSARE NUOVI VALORI DEFAULT\\
+1 ACCESO\\
+0 SPENTO\\
+***************************************************************\\
+
+\tmtexttt{
+  numevts 500000   ! number of events to be generated\\
+  ih1 1 ! hadron 1 type (1: proton; -1: antiproton)\\
+  ih2 1 ! hadron 2 type (1: proton; -1: antiproton)\\
+  lhans1 10050 ! pdf set (LHAGLUE number) for hadron 1\\
+  lhans2 10050 ! pdf set (LHAGLUE number) for hadron 2}
+\\~\\
+The first entry is self-explanatory. The integers \tmtexttt{ih1,ih2} and
+\tmtexttt{lhans1,lhans2} characterize instead the hadron type and PDF used in
+\POWHEGBOX{}.  The numbering scheme is that of LHAGLUE interface,
+leaving the possibility of re-evaluate pdf's on the fly (using number
+corresponding to .LHpdf file) or to interpolate from a previously calculated
+grid (number corresponding to .LHgrid file), as explained in ref.
+\cite{Whalley:2005nh}. In the example above, 10050 corresponds to the central
+value of the \tmtexttt{CTEQ6M} set in this latter case.  The hadron type in
+\tmtexttt{ih1,ih2} can be 1 or a proton and -1 for an antiproton. Had the
+user chosen the MLM pdf package, the entries \tmtexttt{lhans1,lhans2}
+should be replaced with \tmtexttt{ndns1,ndns2} and their corresponding
+values.
+\\~\\
+\tmtexttt{ebeam1 7000 ! energy of beam 1 in GeV\\
+  ebeam2 7000 ! energy of beam 2 in Gev}\\
+\\~\\
+We assume that beam 1 and 2 move along the third axis in the positive
+and negative direction respectively.\\
+\\~\\
+\tmtexttt{muref 120   ! reference scale in GeV\\
+  facscfact 1 ! factorization scale factor: mufact=muref*facscfact\\
+  renscfact 1 ! renormalization scale factor: muren=muref*renscfact\\
+  bbscalevar 1! use variable re. and fct. scales\\
+  qmass 172 ! mass of heavy quark in GeV}\\~
+\\
+Factorization and renormalization scale factors appearing here enters the
+computation of the inclusive cross section (i.e. the $\bar{B}$ function
+\cite{Nason:2004rx,Frixione:2007vw,Alioli:2008tz}), and can be varied by a
+factor of order 1 in both directions to study scale dependence.
+\\
+The reference scale is process dependent.  One can then choose to perform the
+NLO calculation keeping this scale fixed or changing it depending on Born
+kinematics.
+\\
+The following parameters control the operation of the \POWHEGBOX{} program:\\
+\\
+\tmtexttt{! Parameters to allow-disallow use of stored data\\
+  use-old-grid 1\\
+  use-old-ubound 1}\\
+\\
+The meaning of these tokens requires a little knowledge of the operation of
+\POWHEGBOX{}. Before the program starts generating events, the integral
+of the inclusive cross section is computed, and a grid is set up for the
+generation of Born-like configurations. Similarly, in the generation of hard
+radiation a grid is computed to get an upper bounding function to the
+radiation probability. The generation of the grids is time consuming, but the
+time spent in this way is negligible in a normal run with hundreds of
+thousands of events being generated. On the other hand, sometimes it is
+useful (for example, when debugging an analysis program) to skip the
+generation stage.  For this purpose, the grid for the generation of Born-like
+kinematics is stored in the file
+\tmtexttt{pwggrid.dat}.\\
+If \tmtexttt{use-old-grid} is set equal to 0, and \tmtexttt{pwggrid.dat}
+exists and is consistent, it is loaded, and the old grid and old value of the
+cross section are used. Otherwise, a new grid is generated. Observe that the
+program does check the file for consistency with the current run, but the
+check is not exhaustive. The user should make sure that a
+consistent grid is used.\\
+The token \tmtexttt{use-old-ubound} has the same role as
+\tmtexttt{use-old-grid}, but it applies to the upper bounding array that is
+used in the generation of radiation.
+\\
+The following parameters are used to control the grids generation\\
+\\
+\tmtexttt{! Parameters that control the grid for Born variables generation\\
+  ncall1 10000 ! number of calls for initializing the integration grid\\
+  itmx1 5  ! number of iterations for initializing the integration grid\\
+  ncall2 100000 ! number of calls for computing integral \\
+  itmx2 5  ! number of iterations for computing integral \\
+  foldx 1  ! number of folds on x integration\\
+  foldy 1  ! number of folds on y integration\\
+  foldphi 1  ! number of folds on phi integration\\
+  ! Parameters that control the generation of radiation\\
+  nubound 100000 ! number of calls to setup upper bounds for radiation\\
+  iymax 1  !<=100, number of intervals in y grid to compute upper bounds\\
+  icsimax 1  !<=100, number of intervals in csi grid\\
+  xupbound 1 ! increase upper bound for radiation generation by given factor}\\
+\\
+The values of some of the tokens may be changed in the following cases:
+\begin{itemize}
+  \item If the integration results have large errors, one may try to increase
+  \tmtexttt{ncall1}, \tmtexttt{itmx1}, \tmtexttt{ncall2}, \tmtexttt{itmx2}.
+  
+  \item If the fraction of negative weights is large, one may increase
+  \tmtexttt{foldx}, \tmtexttt{foldy}, \tmtexttt{foldphi}.
+  Allowed values are 1, 2, 5, 10, 25, 50. The speed of the program is
+  inversely proportional to the product of these numbers, so that a
+  reasonable compromise should be found.
+  
+  \item If there are too many upper bound violations in the generation of
+  radiation (see Section \ref{sec:cntstat}),
+  one may increase \tmtexttt{nubound}, and/or \tmtexttt{xupbound}.
+  
+  
+  \item If the efficiency in the generation of radiation is too small, one may
+  try to increase \tmtexttt{iymax} ,\tmtexttt{ixmax}.
+
+ 
+
+\end{itemize}
+In order to check whether any of these conditions occurs,
+the user should inspect
+the file \tmtexttt{pwgcounters.dat} at the end of the run, as illustrated in
+sec.~\ref{sec:cntstat}.
+\\
+
+Examples of \tmtexttt{powheg.input} files are given.
+In all examples, the choice of the parameters that controls the grid
+generation is such that a reasonably small fraction of negative weights is generated, so they
+can be run as they are. We remind the reader that these negative weights are
+only due to our choice of generating $\tilde{B}$ instead of $\bar B$.
+They indeed correspond to phase
+space points where NLO corrections are bigger than LO contributions. 
+Had we performed the integration over the full radiation phase space these negative weights would have
+disappeared completely. 
+\\
+
+\section{Optional parameters}
+
+In addiction to mandatory parameters presented above, \POWHEGBOX{} also accepts
+other parameters. 
+The user should not take care if they are not
+present since in that case default values are used. Who is not interested
+ in modifying them can also safely skip this section.
+It follows a list of these parameters
+with corresponding default values:\\
+\begin{itemize}
+\item[-] \tmtexttt{ptsqmin} \qquad Default to $0.8$ GeV. This is the minimum transverse momentum
+  squared of the emissions. Under this value radiation is not resolved and the
+  corresponding Born event is taken. Notice that this does not affects
+  eventual not singular real contributions, which are allowed to radiated up
+  to zero transverse momentum\footnote{The caveat here is on the definition of the
+  renormalization and factorization scales of these contributions. A $p_T-$
+  dependent running coupling may indeed prevent the possibility for the transverse momentum to reach
+  very low values.}.
+
+\item[-] \tmtexttt{charmthr2,bottomthr2} \qquad Default to $3$ and $25$
+  respectively. These are the charm and bottom mass threshold squared assumed
+  during the generation of radiation.
+
+ \item[-] \tmtexttt{charmthrpdf2,bottomthrpdf2} \qquad Default to $2.25$ and $25$
+  respectively. As above, during evaluation of pdf.
+
+\end{itemize}
+
+
+The running of $\as$ is evaluated at two loop order, correctly matching,
+at flavour thresholds, different definitions that depends on the number of
+flavours that can be considered light at the renormalization scale.  
+The $\Lambda_{QCD}$ value is consistently read from the pdf's table used.
+\\
+
+
+Only for debugging purposes or for testing the correct
+behaviour of the program  we added other three parameters that may also be useful for
+developers. 
+The user is asked not to employ them, since their invocation is time consuming
+and/or may cause some conflicts with other settings.\\
+\\
+\tmtexttt{
+hfact    -1       ! dumping factor for high pt radiation F factor \\
+testsuda  0       ! (default 1) test sudakov shape \\
+smartsig  0       ! (default 0) remember equal squared amplitudes \\
+withdamp  0       ! (default 1, do not use) use born zero damping factor \\
+testplots  1      ! (default 0) if 1 outputs NLO and PWHG alone distributions \\
+radregion 1      ! (default all) test radiation regions separately
+}
+
+\section{Counters and statistics}\label{sec:cntstat}
+
+Several results relevant to the interpretation of the output of the run are
+written to the file \tmtexttt{pwgstat.dat} and  \tmtexttt{pwgcounters.dat}.
+ The fraction of negative weights,
+the total cross section, the number of upper bound failures in the generation
+of the inclusive cross section, and the generation efficiency, together with
+failures and efficiency in the generation of hard radiation, are printed there.
+These numbers are sufficient to take action in case of problems.
+
+A call to the subroutine \tmtexttt{printcnt} causes a printout of all
+\POWHEGBOX{} counters in \tmtexttt{pwgcounters.dat} file.
+These are quite self-explanatory and we will not make here any further comment
+about them.
+
+\section{Random number generator}
+\POWHEGBOX{} uses the \tmtexttt{RM48} random number generator,
+documented in the CERNLIB
+writeups. This generator has default initialization. If a user wishes to start
+the program with different seeds, he should add the lines\\
+\\
+\tmtexttt{! Random number generator initializing parameters\\
+iseed  12345   ! RM48 initializing seed ( iseed > 0 )\\
+n1     12      ! RM48 n1 ( n1 >= 0 )\\
+n2     3       ! RM48 n2 ( n2 >= 0 )\\
+}\\
+to the input card.
+This results in a  call to the {\tt rm48in(iseed,n1,n2)} subroutine
+that seeds the generator with the integer {\tt iseed}, and skip the first
+{\tt n1+n2*10**8} numbers, as documented in the CERNLIB manual.
+This can be useful if one wants to resume a previous run.
+In that case, one has simply to use as initializing values 
+those reported at the end of the generated LHEF event file. 
+ If instead one just wants to change the seed only, he can comment or skip
+the \tmtexttt{n1} and \tmtexttt{n2} lines in the input card.
+
+We remind the reader that a change in random number generator initialization
+affects the \POWHEGBOX{} random number sequence, both in the generation of events
+and in NLO computation or upper bound searching, when corresponding grids are
+not present. If the program is interfaced to a SMC, the user should also
+take care to initialize the seeds of the latter.
+
+
+
+\section{Installation}
+
+The programs come as a tarred-gzipped file \tmtexttt{POWHEG-BOX.tar.gz} .
+It can be installed with the following commands\\
+\\
+\tmtexttt{\$ tar -zxf POWHEG-BOX.tar.gz\\
+  \$ cd \POWHEGBOX{}\\
+  \$ make <target>}\\
+\\
+where the choice of the target depends upon the way one wants to interface
+the program with a Shower Monte Carlo implementation.  In order to correctly
+compile and run the program the user is asked to have the LHAPDF library
+installed on his system and to take care to insert its correct path in the
+\tmtexttt{Makefile}. We remind that in case of linking against "dynamic"
+shared library the correct LHAPDF library path should also be added to the
+\$LD\_LIBRARY\_PATH environmental variable, otherwise run time errors may
+occur. 
+ 
+Furthermore, the default analysis routine that comes with the package relies on jet
+algorithms implemented according to the \tmtexttt{FASTJET}
+library~\cite{Cacciari:2005hq}.  It is up to the user to correctly install
+it and to modify the \tmtexttt{Makefile} accordingly. 
+We provide two \tmtexttt{c++} to \tmtexttt{fortran} wrappers
+ to safely call the \tmtexttt{SISCONE} and $k_T$ jet algorithms,
+implemented in \tmtexttt{FASTJET}, from a \tmtexttt{fortran} environment.
+
+
+The \tmtexttt{Makefile} is set up to use the compiler \tmtexttt{g77}
+on Linux platforms. If one wishes to use \tmtexttt{gfortran}, one should
+change the appropriate lines in the \tmtexttt{Makefile}.  Notice that some
+versions of \tmtexttt{gfortran} may not support the \tmtexttt{idate} and
+\tmtexttt{time} intrinsics. These are used in the \tmtexttt{pnbook.f} file,
+that in turn is used in the examples. Thus, one may also need to comment out
+the calls to \tmtexttt{idate} and \tmtexttt{time} in order to run the
+examples with \tmtexttt{gfortran}.
+\\
+
+\section{Modes of operation}
+The program generates hard events that can
+then be fed into an SMC program 
+for subsequent showering. \POWHEGBOX{} saves the hard event information
+according to the conventions of the Les Houches Interface for User Processes (LHIUP from now on)
+\cite{Boos:2001cv}. The SMC should also
+comply with these conventions (as is the case for PYTHIA and HERWIG) in
+order to be used in conjunction with \POWHEGBOX{}.
+
+The program can be run in three ways.
+\begin{itemize}
+\item
+\POWHEGBOX{} generates hard events, and store them in a file.
+An SMC reads the file and showers it.
+\item
+\POWHEGBOX{} is linked directly to the SMC.
+In this case the events are generated and immediately showered,
+without intermediate storage.
+\item
+\POWHEGBOX{} is run as a standalone program, and the produced hard
+events are analyzed without showering. The output yields in this case
+NLO distribution with (N)LL resummation of soft gluon effects.
+\end{itemize}
+
+\subsection{Storing the user events}\label{sec:lhef}
+The easiest way to interface \POWHEGBOX{} to an SMC is to simply store the hard
+events in a file (which we call the {\em event file}), 
+and in a subsequent run read the events and process them with
+the SMC. The format of the event file supported by \POWHEGBOX{} is the ``Standard
+format for Les Houches event files'', documented in ref.~{\cite{Alwall:2006yp}}.
+The program for the generation of the Les Houches
+Event Files (LHEF from now on) can be built with the command\\
+\\
+\tmtexttt{\$ make pwhg\_main}\\
+\\
+The event file is named \tmtexttt{pwglhef.lhe} (the user is given the
+possibility to change the file name, as documented in the next section). An
+example program that reads the event file, showers it with HERWIG and
+analyzes it can be built as follows\\
+\\
+\tmtexttt{\$ make main-HERWIG-lhef}.\\
+\\
+A similar program, named
+{\tt main-PYTHIA-lhef} is provided for {\tt PYTHIA}.
+The user should take care of installing the HERWIG or PYTHIA program in the \POWHEGBOX{} directory.
+In the case of HERWIG, the appropriate include files should also be present.
+As can be evinced from the Makefile, the fortran
+files relevant for these examples
+are \tmtexttt{main-HERWIG-lhef.f}, \tmtexttt{herwig6510.f}
+(\tmtexttt{main-PYTHIA-lhef.f}, \tmtexttt{pythia6416.f} for PYTHIA), 
+\tmtexttt{pnbook.f} and \\ \tmtexttt{analize-H.f}.
+The file \tmtexttt{analize-H.f} is an analysis example that one can
+take as a starting point for more complex analysis.
+The routines in it are adequate for
+both HERWIG and PYTHIA since they rely on the standard common
+blocks of ref.~\cite{Altarelli:1989wu}. It
+uses \tmtexttt{pnbook.f}, the histogramming package of M.L.~Mangano with minor modifications, and it
+produces topdrawer output in the file {\tt pwgoutput.top}. 
+As already told, it relies on jet algorithms implemented in the
+\tmtexttt{FASTJET} package, namely the \tmtexttt{SISCONE} and
+$k_T$ ones. Implementing them both may result in a considerable
+amount of running time, especially if multiple interactions and/or underlying event
+are switched on. 
+If the user would like to use other analysis routines, or to use other jet
+finding packages he can simply
+modify the \tmtexttt{analize-H.f} file or rewrite its own.  
+
+\subsection{Interfacing \POWHEGBOX{} with a shower Monte Carlo program}
+
+One should create a main program
+that initializes the
+SMC to make it ready to accept a user process,
+and provide the following routines\\
+\\
+\tmtexttt{ \ \ \ \ \ subroutine UPINIT\\
+\ \ \ \ \ call pwhginit\\
+\ \ \ \ \ end\\
+\\
+\ \ \ \ \ subroutine UPEVNT\\
+\ \ \ \ \ call pwhgevnt\\
+\ \ \ \ \ end}\\
+\\
+that are the only link to the \POWHEGBOX{} program. The main program should
+call the appropriate subroutines to run the SMC. If the SMC is compliant with
+the LHIUP, it will call the routines  \tmtexttt{UPINIT} and \tmtexttt{UPEVNT}
+in order to initialize, and to generate the hard events.
+The routine \tmtexttt {pwhginit} performs the initialization of \POWHEGBOX{},
+setting up all the grids that are necessary for the efficient generation
+of the events, and it also initializes the process common block of the LHIUP.
+Each call to \tmtexttt {pwhgevnt} results in 
+the generation of one event, and its storage
+in the LHIUP event common block.
+
+When using HERWIG, one must remove the dummy subroutines \tmtexttt{UPINIT} and
+\tmtexttt{UPEVNT} that are present in the HERWIG source file.
+
+We provide two examples, that can be built with the commands\\
+\\
+\tmtexttt{\$ make main-HERWIG}\\
+\\
+and\\
+\\
+\tmtexttt{\$ make main-PYTHIA}\\
+\\
+The analysis routines are the same one as those
+described in section~\ref{sec:lhef}.
+\subsection{\POWHEGBOX{} as a standalone program}
+In this case, the main program should have the structure\\
+\\
+\tmtexttt{ \ \ \ \ \ program MAIN\\
+\ \ \ \ \ call pwhginit\\
+\ \ \ \ \ do j=1,NEVENTS\\
+\ \ \ \ \ \phantom{aaa} call pwhgevnt\\
+c call some analysis routines here\\
+\ \ \ \ \ \phantom{aaa}  ...\\
+\ \ \ \ \ enddo\\
+c Print out results\\
+\ \ \ \ \ ...\\
+\ \ \ \ \ end}\\
+\\
+We provide an example, that can be built with the commands\\
+\\
+\tmtexttt{\$ make main-POWHEG\_alone}\\
+\\
+The analysis routines are the same as before, since we also provide a routine 
+ (\tmtexttt{lhuptohepevt}) that performs the conversion between LHIUP and the standard common
+blocks of ref.~\cite{Altarelli:1989wu}.
+
+
+
+
+
+%\bibliography{paper}
+
+\begin{thebibliography}{10}
+
+\bibitem{Nason:2004rx}
+  P.~Nason,
+  ``A new method for combining NLO QCD with shower Monte Carlo algorithms,''
+  JHEP {\bf 0411} (2004) 040
+  [arXiv:hep-ph/0409146].
+  %%CITATION = JHEPA,0411,040;%%
+
+%\cite{Frixione:2007vw}
+\bibitem{Frixione:2007vw}
+  S.~Frixione, P.~Nason and C.~Oleari,
+``Matching NLO QCD computations with Parton Shower simulations: the POWHEG
+method,''
+  JHEP {\bf 0711} (2007) 070
+  [arXiv:0709.2092 [hep-ph]].
+  %%CITATION = JHEPA,0711,070;%%
+
+
+%\cite{Alioli:2008tz}
+\bibitem{Alioli:2008tz}
+  S.~Alioli, P.~Nason, C.~Oleari and E.~Re,
+  %``NLO Higgs boson production via gluon fusion matched with shower in
+  %POWHEG,''
+  arXiv:0812.0578 [hep-ph].
+  %%CITATION = ARXIV:0812.0578;%%
+
+\bibitem{mcfm}
+  % citazione nostro lavoro
+  http://mcfm.fnal.gov/
+
+%\cite{Frixione:2007nu}
+\bibitem{Frixione:2007nu}
+  S.~Frixione, P.~Nason and G.~Ridolfi,
+  ``The POWHEG-hvq manual version 1.0,''
+  arXiv:0707.3081 [hep-ph].
+  %%CITATION = ARXIV:0707.3081;%%
+
+\bibitem{Cacciari:2005hq}
+M.~Cacciari and G.~P. Salam, {\it {Dispelling the $N^3$ myth for the $k_T$
+  jet-finder}},  {\em Phys. Lett.} {\bf B641} (2006) 57--61,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0512210}{{\tt hep-ph/0512210}}].
+
+
+
+
+%\cite{Boos:2001cv}
+\bibitem{Boos:2001cv}
+  E.~Boos {\it et al.},
+  ``Generic user process interface for event generators,''
+  arXiv:hep-ph/0109068.
+  %%CITATION = HEP-PH/0109068;%%
+
+%\cite{Alwall:2006yp}
+\bibitem{Alwall:2006yp}
+  J.~Alwall {\it et al.},
+  ``A standard format for Les Houches event files,''
+  Comput.\ Phys.\ Commun.\  {\bf 176} (2007) 300
+  [arXiv:hep-ph/0609017].
+  %%CITATION = CPHCB,176,300;%%
+
+
+%\cite{Altarelli:1989wu}
+\bibitem{Altarelli:1989wu} T. Sj\"ostrand et~al., in
+  ``Z physics at LEP1: Event generators and software,'',  eds.
+  G.~Altarelli, R.~Kleiss and C.~Verzegnassi, Vol 3, pg. 327.
+  %%CITATION = CERN-89-08-V-3;%%
+
+
+%\cite{Whalley:2005nh}
+\bibitem{Whalley:2005nh}
+  M.~R.~Whalley, D.~Bourilkov and R.~C.~Group,
+  ``The Les Houches accord PDFs (LHAPDF) and LHAGLUE,''
+  arXiv:hep-ph/0508110.
+  %%CITATION = HEP-PH/0508110;%%
+
+
+\bibitem{Alioli:2008gx}
+  S.~Alioli, P.~Nason, C.~Oleari and E.~Re,
+  %``NLO vector-boson production matched with shower in POWHEG,''
+  JHEP {\bf 0807}, 060 (2008)
+  [arXiv:0805.4802 [hep-ph]].
+  %%CITATION = JHEPA,0807,060;%%
+
+
+
+\end{thebibliography}
+
+\end{document}
+
+
+
+
+

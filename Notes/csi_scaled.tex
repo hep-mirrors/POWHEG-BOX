@@ -1,0 +1,86 @@
+\documentclass{letter}
+\usepackage{amsmath}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\bignone}{}
+\newcommand{\tmmathbf}[1]{\ensuremath{\boldsymbol{#1}}}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+%%%%%%%%%% End TeXmacs macros
+
+\begin{document}
+
+\title{Rescaling of the csi variable}\author{}\maketitle
+
+We deal with an integral of the form
+\begin{equation}
+  I = \int_{- 1}^1 d y \int_0^{X (y)} d \xi \frac{1}{(1 - y)_+}  \left(
+  \frac{1}{\xi} \right)_{\xi_c} f (\xi, y) .
+\end{equation}
+First of all, we demonstrate the identity
+\begin{equation}
+  \[ \[ \int_0^X d \xi \left( \frac{1}{\xi} \right)_{\xi_c} \bignone F (\xi) =
+        \int_{0^{}}^1 d \tilde{\xi}  \left[ \left( \frac{1}{\tilde{\xi}}
+        \right)_+ + \log \frac{X}{\xi_c} \bignone \delta ( \tilde{\xi})
+        \right] F (\xi) \] \]
+\end{equation}
+with $\xi = X \tilde{\xi}$. If $F (0) = 0$ we simply have
+\begin{equation}
+  \int_0^X d \xi \left( \frac{1}{\xi} \right)_{\xi_c} \bignone F (\xi) =
+  \int_{0^{}}^1 d \tilde{\xi}  \left( \frac{1}{\tilde{\xi}} \right)_+ F (\xi)
+\end{equation}
+For $F (\xi) = 1$ we have
+\begin{equation}
+  \int_0^X d \xi \bignone  \left( \frac{1}{\xi} \right)_{\xi_c} =
+  \int_{\xi_c}^X \frac{d \xi}{\xi} = \bignone \log \frac{X}{\xi_c} =
+  \int_{0^{}}^1 d \tilde{\xi}  \left[ \left( \frac{1}{\tilde{\xi}} \right)_+ +
+  \log \frac{X}{\xi_c} \bignone \delta ( \tilde{\xi}) \right],
+\end{equation}
+which is obvious.
+
+We now work out the integral. We follow only the $1 / (1 - y)$ term for
+simplicity
+\begin{eqnarray}
+  I = \int_{- 1^{}}^1 d y \int_0^1 d \tilde{\xi}  \frac{1}{(1 - y)_+}  \left[
+  \left( \frac{1}{\tilde{\xi}} \right)_+ + \log \frac{X (y)}{\xi_c} \bignone
+  \delta ( \tilde{\xi}) \right] f (\xi, y) &  &  \nonumber\\
+  = \int_{- 1}^1 d y \int_0^1 d \tilde{\xi}  \frac{1}{1 - y}  \left[ \frac{f (
+  \tilde{\xi} X (y), y) - f (0, y)}{\tilde{\xi}} - \frac{f ( \tilde{\xi} X
+  (1), 1) - f (0, 1)}{\tilde{\xi}} \left]  \right. \right. &  &  \nonumber\\
+  + \int_{- 1}^1 d y \frac{1}{1 - y} \left[ \log \frac{X (y)}{\xi_c} f (0, y)
+  - \log \frac{X (1)}{\xi_c} f (0, 1) \right], &  & 
+\end{eqnarray}
+which is our needed formula.
+
+The real contribution to $\tilde{B}$ is obtained as
+\begin{eqnarray}
+  \bar{B}_{\tmop{real}} & = & \int d \tmmathbf{\Phi}_n \int_0^{2 \pi} d \phi
+  \int_{- 1}^1 d y \int_0^{X (y)} d \xi J_{\tmop{rad}} (\xi, y, \phi) R
+  \nonumber\\
+  & = & \int d \tmmathbf{\Phi}_n \int_0^{2 \pi} d \phi \int_{- 1}^1 d y
+  \int_0^{X (y)} d \xi \frac{1}{(1 - y)_+}  \left( \frac{1}{\xi}
+  \right)_{\xi_c}  \frac{J_{\tmop{rad}} (\xi, y, \phi)}{\xi} (1 - y) \xi^2 R
+  \nonumber\\
+  & = & \int d \tmmathbf{\Phi}_n \int_0^{2 \pi} d \phi \int_{- 1}^1 d y
+  \left[ \int_0^1 d \tilde{\xi}  \frac{1}{(1 - y)_+}  \left(
+  \frac{1}{\tilde{\xi}} \right)_+  \frac{J_{\tmop{rad}} (\xi, y, \phi)}{\xi}
+  (1 - y) \xi^2 R \right. \nonumber\\
+  &  & \left. + \log \frac{X (y)}{\xi_c} \lim_{\xi \rightarrow 0} \left(
+  \frac{J_{\tmop{rad}} (\xi, y, \phi)}{\xi} (1 - y) \xi^2 R \right) \right], 
+\end{eqnarray}
+where we should not forget that $\xi = \tilde{\xi} X (y)$ is also a function
+of $y$. Defining
+\begin{equation}
+  f (\xi, y) = \frac{J_{\tmop{rad}} (\xi, y, \phi)}{\xi} (1 - y) \xi^2 R,
+\end{equation}
+we get
+\begin{eqnarray}
+  \bar{B}_{\tmop{real}} & = & \int d \tmmathbf{\Phi}_n \int_0^{2 \pi} d \phi
+  \int_{- 1}^1 \frac{d y}{1 - y} \left\{ \int_0^1 d \tilde{\xi}  \left[
+  \frac{f ( \tilde{\xi} X (y), y) - f (0, y)}{\tilde{\xi}} - \frac{f (
+  \tilde{\xi} X (1), 1) - f (0, 1)}{\tilde{\xi}} \left]  \right. \right.
+  \right. \nonumber\\
+  &  & \left. + \left[ \log \frac{X (y)}{\xi_c} f (0, y) - \log \frac{X
+  (1)}{\xi_c} f (0, 1) \right] \right\} . 
+\end{eqnarray}
+
+\end{document}

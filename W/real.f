@@ -1,9 +1,9 @@
       subroutine setreal(p,fermion_flav,amp2)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
 c -*- Fortran -*-
 c      character *2 flav(-5:5)
       real * 8 charge(-5:5)
@@ -23,7 +23,7 @@ c     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
      #      -0.33333333333333333333d0, !   -1d0/3
      #       0.66666666666666666667d0, !   2d0/3 
      #      -0.33333333333333333333d0/ !   -1d0/3
-c      include 'QuarkFlavs.h'
+c      include '../include/QuarkFlavs.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegreal)
@@ -150,8 +150,8 @@ c     fermion_charge = +2/3, -1/3, -2/3, +1/3
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       real * 8 p1(0:3),p2(0:3),pp1(0:3),pp2(0:3),pp5(0:3)
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp

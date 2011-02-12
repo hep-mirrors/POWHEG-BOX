@@ -1,6 +1,6 @@
       program main_pythia
       implicit none
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
       real * 8 parp,pari
       integer mstp,msti
       common/pypars/mstp(200),parp(200),msti(200),pari(200)
@@ -161,8 +161,8 @@ c pythia routine to abort event
 
       subroutine pyanal
       implicit none
-      include 'LesHouches.h'
-      include 'hepevt.h'
+      include '../include/LesHouches.h'
+      include '../include/hepevt.h'
 c      integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
 c     &     JMOHEP,JDAHEP
 c      double precision phep,vhep

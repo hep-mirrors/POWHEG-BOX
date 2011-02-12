@@ -28,12 +28,9 @@ WDNAME=$(shell basename $(PWD))
 
 VPATH= ./:../:obj/
 
-INCLUDE0=$(PWD)
-INCLUDE1=$(PWD)/include
-INCLUDE2=$(shell dirname $(PWD))/include
-FF=$(F77) $(OPT) $(DEBUG) -I $(INCLUDE0) -I $(INCLUDE1) -I $(INCLUDE2)
+FF=$(F77) $(OPT) $(DEBUG)
 
-INCLUDE =$(shell echo  *.h ./include/*.h ../include/*.h)
+INCLUDE =$(shell echo ../include/*.h *.h)
 
 #PDFPACK=mlmpdfif.o hvqpdfpho.o
 LHAPDF_CONFIG=lhapdf-config
@@ -45,6 +42,7 @@ LIBS=$(LIBSLHAPDF)
 #STATIC=-static
 
 %.o: %.f $(INCLUDE)
+	ln -sf $(WDNAME)/nlegborn.h ../
 	$(FF) -c -o obj/$@ $<
 
 %.o: %.c
@@ -123,7 +121,7 @@ lhef_analysis-antikt:$(LHEFANAL1)
 
 
 # target to read event file, shower them with HERWIG, + generic analysis
-HERWIG=main-HERWIG-lhef.o herwig.o \
+HERWIG=main-HERWIG-lhef.o herwig6510.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o \
@@ -135,7 +133,7 @@ main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA-lhef.o pythia.o \
+PYTHIA=main-PYTHIA-lhef.o pythia-6.4.21.o \
 	boostrot.o powheginput.o \
         pwhg_bookhist.o pwhg_analysis.o lhefread.o newunit.o \
 	fastjetsisconewrap.o fastjetktwrap.o \

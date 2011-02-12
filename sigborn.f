@@ -1,10 +1,10 @@
       subroutine btildeborn(res)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_br.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_br.h'
+      include 'include/pwhg_flg.h'
       real * 8 pdf1(-6:6),pdf2(-6:6)
       real * 8 res(flst_nborn),tot
       integer j
@@ -26,10 +26,10 @@ c         res(j)=kn_jacborn/(2*kn_sborn)/flst_nborn
       implicit none
       real * 8 born
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_br.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_br.h'
+      include 'include/pwhg_rad.h'
       real * 8 pdf1(-6:6),pdf2(-6:6),bornjk(nlegborn,nlegborn),
      #         bmunu(0:3,0:3,nlegborn)
       call pdfcall(1,kn_xb1,pdf1)
@@ -45,10 +45,10 @@ c         res(j)=kn_jacborn/(2*kn_sborn)/flst_nborn
       subroutine allborn
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_br.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_br.h'
+      include 'include/pwhg_flg.h'
       integer equivto(maxprocborn)
       real * 8 equivcoef(maxprocborn)
       integer nmomset
@@ -117,7 +117,7 @@ c         res(j)=kn_jacborn/(2*kn_sborn)/flst_nborn
      1     ibornpr,cprop,iret)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
       integer nmomset,iborn,ibornpr,iret,jborn,k,jleg,kleg,mu,nu
@@ -176,10 +176,10 @@ c some of these are zero, be careful
       subroutine setborn0(p,bflav,born,bornjk,bmunu)
 c provide the flux factor to the user Born routine
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs)

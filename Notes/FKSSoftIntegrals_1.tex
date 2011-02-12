@@ -1,0 +1,280 @@
+\documentclass{letter}
+\usepackage{amsmath}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\section}[1]{\medskip\bigskip
+
+\noindent\textbf{\LARGE #1}}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+%%%%%%%%%% End TeXmacs macros
+
+\begin{document}
+
+\title{Soft Integrals}\author{}\maketitle
+
+In this note we document the calculation of the soft contribution in an FKS
+subtraction framework. We want to extract the soft contribution from the
+integral
+\begin{equation}
+  \int d \Phi^{n + 1} R = \int d \Phi^n R^s + \tmop{remnants}
+\end{equation}
+For this purpose, $R$ can be given in the soft approximation
+\begin{equation}
+  R = 4 \pi \alpha_s \mu^{2 \epsilon}  \left[ \sum_{i \neq j} \mathcal{B}_{i
+  j} \frac{k_i \cdot k_j}{(k_i \cdot l) (k_j \cdot l)} - \mathcal{B} \sum_i
+  \frac{k_i^2}{(k_i \cdot l)^2} C_i \right],
+\end{equation}
+where $\mathcal{B}_{i j}$ is the colour correlated Born cross section,$C_i$ is
+the casimir invariant for the $i^{\tmop{th}}$ leg, and $\mathcal{B}$ is the
+Born cross section (all quantities as defined in FNO2006, eq. (2.97), and
+normalized according to eq. (2.98)).
+
+
+
+\section{Soft phase space}
+
+The phase space in the soft limit always factorizes as
+\begin{equation}
+  d \Phi^{n + 1} = d \Phi^n \frac{d^{d - 1} l}{2 l^0 (2 \pi)^{d - 1}} .
+\end{equation}
+We write now
+\begin{equation}
+  d^{d - 1} l = d l_1 d l_2 d^{d - 3} l_{\perp} = d l_1 d l_2 d l_{\perp}
+  l_{\perp}^{- 2 \epsilon} \Omega^{1 - 2 \epsilon}, \label{eq:dl1}
+\end{equation}
+where we have used $d = 4 - 2 \epsilon$, and $\Omega^n$ is the solid angle in
+$n$ dimension. From
+\begin{equation}
+  \Omega^n = \frac{n \pi^{n / 2}}{\Gamma (1 + n / 2)} = \frac{\pi^{n / 2} 2^n
+  \Gamma \left( \frac{n + 1}{2} \right)}{\sqrt{\pi} \Gamma (n)}
+  \Longrightarrow \Omega^{1 - 2 \epsilon} = 2 \frac{(4 \pi)^{- \epsilon}
+  \Gamma \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)} .
+\end{equation}
+Turning eq. (\ref{eq:dl1}) into polar coordinates we get
+\begin{equation}
+  \frac{d^{d - 1} l}{2 l^0 (2 \pi)^{d - 1}} = \frac{\pi^{\epsilon} \Gamma
+  \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)}  \frac{1}{(2 \pi)^3}
+  l^{1 - 2 \epsilon} d l d \cos \theta d \phi (\sin \theta \sin \phi)^{- 2
+  \epsilon} .
+\end{equation}
+Observe that $l_{\perp}$ is positive. Having defined
+\begin{equation}
+  l_1 = \cos \theta, l_2 = \sin \theta \cos \phi, l_{\perp} = \sin \theta \sin
+  \phi,
+\end{equation}
+this means that $0 < \phi < \pi$, and that only even quantities can be
+integrated in this way. In other words, $l_{\perp}$ should not be confused
+with $l_3$ ($l_3$ is no longer available at this stage). Inserting
+\begin{equation}
+  l = \xi \frac{\sqrt{s}}{2},
+\end{equation}
+this becomes
+\begin{equation}
+  \frac{d^{d - 1} l}{2 l^0 (2 \pi)^{d - 1}} = \left[ \frac{(4 \pi)^{\epsilon}
+  \Gamma \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)} \right] s^{-
+  \epsilon}  \frac{1}{(2 \pi)^3}  \frac{s}{4} \xi^{1 - 2 \epsilon} d \xi d
+  \cos \theta d \phi (\sin \theta \sin \phi)^{- 2 \epsilon} .
+\end{equation}
+This is to be multiplied by $\xi^{- 2} [\xi^2 R]$, with $[\xi^2 R]$ having a
+finite limit as $\xi \rightarrow 0$. The $\xi$ integration is performed by
+separating first
+\begin{equation}
+  \xi^{- 1 - 2 \epsilon} = - \frac{\xi_c^{- 2 \epsilon}}{2 \epsilon} \delta
+  (\xi) + \left( \frac{1}{\xi} \right)_{\xi_c} - 2 \epsilon \left( \frac{\log
+  \xi}{\xi} \right)_{\xi_c},
+\end{equation}
+where the $\delta$ term yields the soft contribution. We thus define
+\begin{eqnarray}
+  R^s & = & - \frac{1}{2 \epsilon} \left[ \frac{(4 \pi)^{\epsilon} \Gamma
+  \left( 1 - \epsilon \right)}{\Gamma (1 - 2 \epsilon)} \right] s^{- \epsilon}
+  \xi_c^{- 2 \epsilon} \frac{1}{(2 \pi)^3} \int d \cos \theta d \phi (\sin
+  \theta \sin \phi)^{- 2 \epsilon} \times \nonumber\\
+  &  & \frac{s \xi^2}{4} 4 \pi \alpha_s \mu^{2 \epsilon} \left[ \sum_{i \neq
+  j} \mathcal{B}_{i j} \frac{k_i \cdot k_j}{(k_i \cdot l) (k_j \cdot l)} -
+  \mathcal{B} \sum_i \frac{k_i^2}{(k_i \cdot l)^2} C_i \right], 
+\end{eqnarray}
+or, collecting the normalization factor of (2.93) of FNR2006
+\[ \mathcal{N} = \frac{(4 \pi)^{\epsilon} }{\Gamma (1 - \epsilon)} \left(
+   \frac{\mu^2}{Q^2} \right)^{\epsilon}, \]
+we get
+\begin{eqnarray}
+  R^s & = & \mathcal{N}  \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right] \left(
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \frac{\alpha}{2 \pi} \int d \cos \theta d \phi (\sin \theta \sin
+  \phi)^{- 2 \epsilon} \times \nonumber\\
+  &  & \frac{s \xi^2 }{4} \left[ \sum_{i \neq j} \mathcal{B}_{i j} \frac{k_i
+  \cdot k_j}{(k_i \cdot l) (k_j \cdot l)} - \mathcal{B} \sum_i
+  \frac{k_i^2}{(k_i \cdot l)^2} C_i \right], 
+\end{eqnarray}
+
+\section{Two masselss particles}
+
+We begin with an iconal factor for massless particles with momenta $k_1$ and
+$k_2$, $k_1^2 = k_2^2 = 0$,
+\begin{equation}
+  R^s_{12} = \mathcal{N}  \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right] \left(
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \frac{\alpha}{2 \pi} \int d \cos \theta d \phi (\sin \theta \sin
+  \phi)^{- 2 \epsilon} \times \frac{s \xi^2 }{4} \frac{k_1 \cdot k_2}{k_1
+  \cdot l k_2 \cdot l}  \mathcal{B}_{12} .
+\end{equation}
+We first expand
+\begin{equation}
+  \frac{k_1 \cdot k_2}{k_1 \cdot l k_2 \cdot l} = \frac{k_1 \cdot k_2}{k_1
+  \cdot l (k_1 + k_2) \cdot l} + \frac{k_1 \cdot k_2}{k_2 \cdot l (k_1 + k_2)
+  \cdot l} .
+\end{equation}
+and define. for $k^2 = 0$ and $m^2 > 0$,
+\begin{equation}
+  I (k, m) = \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{-
+  2 \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k \cdot m}{k \cdot l m \cdot l}
+  \right],
+\end{equation}
+so that
+\begin{equation}
+  I (k_1, k_1 + k_2) + I (k_2, k_1 + k_2) = \int d \cos \theta \frac{d
+  \phi}{\pi} (\sin \theta \sin \phi)^{- 2 \epsilon}  \left[ \frac{s \xi^2}{4}
+  \frac{k_1 \cdot k_2}{k_1 \cdot l k_2 \cdot l} \right] .
+\end{equation}
+We have:
+\begin{equation}
+  I (k, m) = \frac{1}{\epsilon} I_d (k, m) + I_0 (k, m) + \epsilon
+  I_{\epsilon} (k, m) .
+\end{equation}
+We separate out the collinear component
+\begin{equation}
+  \frac{k \cdot m}{k \cdot l m \cdot l} = \left[ \frac{k \cdot m}{k \cdot l m
+  \cdot l} - \frac{n \cdot k}{k \cdot l n \cdot l} \right] + \frac{n \cdot
+  k}{k \cdot l n \cdot l},
+\end{equation}
+where the term in square bracket has no collinear singularities. Assuming $n$
+along the time direction, we have:
+\begin{equation}
+  \frac{s \xi^2}{4}  \frac{n \cdot k}{k \cdot l n \cdot l} = \frac{1}{1 - \cos
+  \theta},
+\end{equation}
+and
+\begin{equation}
+  \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{- 2 \epsilon}
+  \frac{1}{1 - \cos \theta} = \frac{- 1}{\epsilon},
+\end{equation}
+so
+\begin{equation}
+  I_d (k, m) = - 1 .
+\end{equation}
+The remaining integral has no collinear singularities. We find
+\begin{equation}
+  \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{- 2 \epsilon}
+  \frac{s \xi^2}{4} \left[ \frac{k \cdot m}{k_{} \cdot l m \cdot l} -
+  \frac{k^0}{k \cdot l l^0} \right] = I_0 (k, m) + \epsilon I_{\varepsilon}
+  (k, m),
+\end{equation}
+and, defining $\hat{k} = k / k^0$, and $\hat{m} = m / m^0$, we have
+\begin{eqnarray}
+  I_d (k, m) & = & - 1, \\
+  I_0 (k, m) & = & \log \frac{( \hat{k} \cdot \hat{m})^2}{\hat{m}^2}, \\
+  I_{\epsilon} (k, m) & = & - 2 \left[ \frac{1}{4} \log^2  \frac{1 - \beta}{1
+  + \beta} + \log \frac{\hat{k} \cdot m}{1 + \beta} \log \frac{\hat{k} \cdot
+  m}{1 - \beta} + \tmop{Li}_2 \left( 1 - \frac{\hat{k} \cdot m}{1 + \beta}
+  \right) + \tmop{Li}_2 \left( 1 - \frac{\hat{k} \cdot m}{1 - \beta} \right)
+  \right], 
+\end{eqnarray}
+with $\beta = \sqrt{1 - m^2}$. We have
+\begin{equation}
+  \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{- 2 \epsilon}
+  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l k_2 \cdot l}
+  \right] = I (k_1, k_1 + k_2) + I (k_2, k_1 + k_2)
+\end{equation}
+So:
+\begin{eqnarray}
+  R^s_{12}  & = & \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right] \left(
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{- 2
+  \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l k_2
+  \cdot l} \right] \nonumber\\
+  & = & \left[ 1 + \epsilon \log \frac{Q^2}{s \xi_c^2} + \left( \frac{1}{2}
+  \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6} \right) \epsilon^2 \right]
+  \left( \frac{- 1}{2 \epsilon} \right) \left[ I (k_1, k_1 + k_2) + I (k_2,
+  k_1 + k_2) \right] \nonumber\\
+  & = & \frac{A}{\epsilon^2} + \frac{B}{\epsilon} + C 
+\end{eqnarray}
+with
+\begin{eqnarray}
+  A & = & 1 \\
+  B & = & \log \frac{Q^2}{s \xi_c^2} - \frac{1}{2} \left[ I_0 (k_1, k_1 + k_2)
+  + I_0 (k_2, k_1 + k_2) \right] \\
+  C & = & \left[ \frac{1}{2} \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6}
+  \right] - \frac{1}{2} \left[ I_0 (k_1, k_1 + k_2) + I_0 (k_2, k_1 + k_2)
+  \right] \log \frac{Q^2}{s \xi_c^2} + \nonumber\\
+  &  & - \frac{1}{2} \left[ I_{\epsilon} (k_1, k_1 + k_2) + I_{\epsilon}
+  (k_2, k_1 + k_2) \right] . 
+\end{eqnarray}
+In case $k_1$ is massless and $k_2$ is not, we get instead
+\begin{eqnarray}
+  R^s_{12} & = & \left[ 1 - \frac{\pi^2}{6} \epsilon^2 \right] \left(
+  \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left( \frac{- 1}{2 \epsilon}
+  \right) \int d \cos \theta \frac{d \phi}{\pi} (\sin \theta \sin \phi)^{- 2
+  \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l k_2
+  \cdot l} \right] \nonumber\\
+  & = & \left[ 1 + \epsilon \log \frac{Q^2}{s \xi_c^2} + \left( \frac{1}{2}
+  \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6} \right) \epsilon^2 \right]
+  \left( \frac{- 1}{2 \epsilon} \right) I (k_1, k_2) \nonumber\\
+  & = & \frac{A}{\epsilon^2} + \frac{B}{\epsilon} + C 
+\end{eqnarray}
+\begin{eqnarray}
+  A & = & \frac{1}{2} \\
+  B & = & \frac{1}{2} \log \frac{Q^2}{s \xi_c^2} - \frac{1}{2} I_0 (k_1, k_2)
+  \\
+  C & = & \frac{1}{2} \left[ \log^2 \frac{Q^2}{s \xi_c^2} - \frac{\pi^2}{6}
+  \right] - \frac{1}{2} I_0 (k_1, k_2) \log \frac{Q^2}{s \xi_c^2} -
+  \frac{1}{2} I_{\epsilon} (k_1, k_2) . 
+\end{eqnarray}
+
+In case both $k_1$ and $k_2$ are massive, we instead define
+\begin{equation}
+  I (k_1, k_2) = I_0 (k_1, k_2) + \epsilon I_{\varepsilon} (k_1, k_2),
+\end{equation}
+\begin{equation}
+  I_0 (k_1, k_2) = \int d \cos \theta \frac{d \phi}{\pi}  \left[ \frac{s
+  \xi^2}{4} \frac{k_1 \cdot k_2}{k_1 \cdot l k_2 \cdot l} \right] 
+\end{equation}
+\begin{equation}
+  I_{\epsilon} (k_1, k_2) = - 2 \int d \cos \theta \frac{d \phi}{\pi} \log
+  [\sin \theta \sin \phi] \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot k_2}{k_1
+  \cdot l k_2 \cdot l} \right] .
+\end{equation}
+and get (neglecting now $\epsilon^2$ terms)
+\begin{eqnarray}
+  R^s_{12} & = & \left( \frac{Q^2}{s \xi_c^2} \right)^{\epsilon} \left(
+  \frac{- 1}{2 \epsilon} \right) \int d \cos \theta \frac{d \phi}{\pi} (\sin
+  \theta \sin \phi)^{- 2 \epsilon}  \left[ \frac{s \xi^2}{4} \frac{k_1 \cdot
+  k_2}{k_1 \cdot l k_2 \cdot l} \right] \nonumber\\
+  & = & \left[ 1 + \epsilon \log \frac{Q^2}{s \xi_c^2} \right] \frac{- I
+  (k_1, k_2)}{2 \epsilon} = \frac{B}{\epsilon} + C 
+\end{eqnarray}
+with
+
+\begin{eqnarray}
+  B & = & - \frac{1}{2} I_0 (k_1, k_2) \\
+  C & = & - \frac{1}{2} I_0 (k_1, k_2) \log \frac{Q^2}{s \xi_c^2} -
+  \frac{1}{2} I_{\epsilon} (k_1, k_2), 
+\end{eqnarray}
+
+and
+\begin{equation}
+  I_0 (k_1, k_2) = \frac{1}{\beta} \log \frac{1 + \beta}{1 - \beta}, \beta =
+  \sqrt{1 - \frac{k_1^2 k_2^2}{(k_1 \cdot k_2)^2}},
+\end{equation}
+The expression for $I_{\epsilon}$ is better given as a fortran function in
+this case.
+
+In the particular case $k_1 = k_2 = p$ we have
+\begin{equation}
+  I_0 = 2
+\end{equation}
+\begin{equation}
+  I_{\epsilon} = \frac{2}{\beta} \log \frac{1 + \beta}{1 - \beta}, \beta =
+  \frac{| \vec{p} |}{p^0} .
+\end{equation}
+
+\end{document}

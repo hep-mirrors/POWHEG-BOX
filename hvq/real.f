@@ -1,10 +1,10 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
-      include 'pwhg_kn.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_kn.h'
       real * 8 p(0:3,nlegreal),amp2
       integer rflav(nlegreal)
       character * 2 prc

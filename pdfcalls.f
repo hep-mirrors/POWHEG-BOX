@@ -2,8 +2,8 @@
       implicit none
       integer ih
       real * 8 x,pdf(-6:6)
-      include 'pwhg_st.h'
-      include 'pwhg_pdf.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_pdf.h'
       if(ih.eq.1) then
          call genericpdf0(pdf_ndns1,pdf_ih1,st_mufact2,x,pdf)
       elseif(ih.eq.2) then

@@ -5,8 +5,8 @@ c     The as/(2pi) factor is attached at a later point
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       real * 8 p(0:3,nlegborn)
       integer vflav(nlegborn)      
       real * 8 virtual,dummyjk(nlegborn,nlegborn)

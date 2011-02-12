@@ -1,7 +1,7 @@
       PROGRAM HWIGPR
 C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
       INCLUDE 'HERWIG65.INC'
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
 c     local
       integer n
 c     external
@@ -252,7 +252,7 @@ c$$$C-----------------------------------------------------------------------
 
       subroutine hwanal
       INCLUDE 'HERWIG65.INC'
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
 c     check parameters
       logical verbose
       parameter (verbose=.false.)

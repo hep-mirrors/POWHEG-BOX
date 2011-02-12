@@ -1,12 +1,12 @@
       subroutine init_couplings
       implicit none
       include 'PhysPars.h'
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-c$$$      include 'pwhg_par.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_rad.h'
+c$$$      include '../include/pwhg_par.h'
       logical verbose
       parameter(verbose=.true.)
       integer aemrun
@@ -213,7 +213,7 @@ c mu_mass and m_tau, and the evolution equation above m_tau, comnsidering the b 
 c This function is taken from the MC@NLO and modified by SA&ER
 c-------------------------------------------------------------------------
       implicit none
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       include 'PhysPars.h'
       integer npoints,ideg
       parameter (npoints=3,ideg=3)
@@ -260,7 +260,7 @@ c logs of sqrt(q2) at m_e=0.000511,m_mu=0.1056,m_tau=1.777
 c     setting of MADGRAPH inputs
       subroutine set_madgraph_parameters
       include 'PhysPars.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       include 'coupl.inc'
 
 cccccccccccccccccccccccccccccccc    

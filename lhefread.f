@@ -5,7 +5,7 @@ c...reads initialization information from a les houches events file on unit nlf.
       integer nlf
       character * 100 string
       integer ipr
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
  1    read(nlf,fmt='(a)',err=998,end=998) string
       if(string(1:5).eq.'<init') then
          read(nlf,*) idbmup(1),idbmup(2),ebmup(1),ebmup(2),
@@ -28,7 +28,7 @@ c...reads event information from a les houches events file on unit nlf.
       implicit none
       integer nlf
       character * 100 string
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       integer i,j
  1    continue
 c      string=' '
@@ -66,13 +66,13 @@ c no event found:
 
       subroutine lhefreadextra(nlf)
       implicit none
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_st.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_flg.h'
       character * 100 string
       integer nlf
  1    continue

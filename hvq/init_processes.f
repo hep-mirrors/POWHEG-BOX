@@ -1,12 +1,12 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_flg.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_st.h'
-      include 'pwhg_par.h'
-      include 'LesHouches.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_flg.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_par.h'
+      include '../include/LesHouches.h'
       logical debug
       parameter (debug=.false.)
       integer i,ihvq
@@ -92,9 +92,9 @@ c     (all subsequent particles are coloured)
       subroutine init_top_dec(nhvq)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'      
-      include 'LesHouches.h'      
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_rad.h'      
+      include '../include/LesHouches.h'      
       integer nhvq
       integer itdec
       integer iwp1,iwp2,iwm1,iwm2

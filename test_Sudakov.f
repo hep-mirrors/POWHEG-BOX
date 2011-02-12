@@ -8,12 +8,12 @@ c It then computes the probability of radiation above a given pt cut.
 c This is related to the no-emission probability (1-m the above).
 c the two results are compared.
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_par.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_par.h'
       integer ncalls1,ncalls2,nbins
       parameter (ncalls1=20000,ncalls2=2000,nbins=40)
       real * 8 hist1(nbins),hist2(nbins),histsq1(nbins),av1,avsq1,err1

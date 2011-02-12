@@ -1,7 +1,7 @@
       subroutine setscalesbtilde
       implicit none
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
+      include 'include/pwhg_math.h'
+      include 'include/pwhg_st.h'
       real * 8 pwhg_alphas
       external pwhg_alphas
       real * 8 muf,mur
@@ -14,11 +14,11 @@
       subroutine set_rad_scales(ptsq)
       implicit none
       real * 8 ptsq
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_st.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_rad.h'
       real * 8 pwhg_alphas
       integer nf
       external pwhg_alphas
@@ -74,11 +74,11 @@ c     mufact (50 is an arbitrary choice).
 
       subroutine init_rad_lambda
       implicit none
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
+      include 'include/pwhg_math.h'
+      include 'include/pwhg_st.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
       real * 8 b0,mu0sq,as,pwhg_alphas
       external pwhg_alphas
       b0=(33-2*5)/(12*pi)
@@ -113,8 +113,8 @@ c
       function pwhg_alphas(q2,xlam,inf)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
       real * 8 pwhg_alphas,q2,xlam
       integer inf
       real * 8 pi

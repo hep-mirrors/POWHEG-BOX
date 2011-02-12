@@ -1,10 +1,10 @@
       function btilde(xx,www0,ifirst)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_flg.h'
-      include 'pwhg_math.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_flg.h'
+      include 'include/pwhg_math.h'
 c     independent variables for real graph: number of final state
 c     legs times 3, take away 4 for 4-momentum conservation, add 2
 c     for x_1 and x_2, and take away an overall azimuth
@@ -208,7 +208,7 @@ c j contributions
       subroutine resettotals
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
+      include 'include/pwhg_flst.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
       real * 8 totj(maxprocborn),totabsj(maxprocborn),
      1     totposj(maxprocborn),totnegj(maxprocborn),
@@ -243,8 +243,8 @@ c j contributions
       subroutine finaltotals
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
       real * 8 totj(maxprocborn),totabsj(maxprocborn),
      1     totposj(maxprocborn),totnegj(maxprocborn),

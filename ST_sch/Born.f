@@ -16,7 +16,7 @@ cccccccccccccccccccccccccccccccccccccc
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       include 'PhysPars.h'
 ccccccccccccccccc
       integer three_ch(-6:6)
@@ -67,8 +67,8 @@ ccccccccccccccccccccccccccccccccccccccc
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_math.h'
-      include 'pwhg_flst.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_flst.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -157,7 +157,7 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
       implicit none
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
       include 'PhysPars.h'
       integer three_ch(-6:6)
       data three_ch /-2,1,-2,1,-2,1,0,-1,2,-1,2,-1,2/
@@ -232,7 +232,7 @@ c     that the overall azimuthal rotation has been already
 c     performed (add_azimuth called in pwhgevent). 
       implicit none
       include 'nlegborn.h'
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
       include 'PhysPars.h'
       integer tdecaymode
       integer mu,ileg
@@ -599,10 +599,10 @@ c     MASSLESS event in pup, add the t decay products, filling
 c     klab_dec. Decay products are MASSLESS.
       implicit none
       include 'nlegborn.h'
-      include 'LesHouches.h'
-      include 'pwhg_math.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_st.h'
+      include '../include/LesHouches.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_st.h'
       include 'PhysPars.h'
       include 'coupl.inc'
       real *8 klab_dec(0:3,nlegreal+3)
@@ -1811,7 +1811,7 @@ c     Boost them back in original frame (all decay products along top velocity)
       subroutine put_on_mass_shell(tdecayflag,MC_mass,xklab,xklab_os)
       implicit none
       include 'nlegborn.h'
-      include 'LesHouches.h'
+      include '../include/LesHouches.h'
       include 'PhysPars.h'
 c     masses
       real *8 mcmass(0:6)
@@ -2488,7 +2488,7 @@ c     it returns in vec the full 4 momentum in the boosted frame
 c     (i.e. the momentum that has en_prime when boosted back in the original frame).
 c     vec azimuth wrt beta direction is cast randomly.
       implicit none
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       real *8 vec(0:3),en,norm,en_prime,beta(3)
 c     local
       real *8 phi,beta_mod,gamma_b,ctheta,vec_tmp(0:3)

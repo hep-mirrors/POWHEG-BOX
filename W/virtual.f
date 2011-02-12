@@ -5,8 +5,8 @@ c     The as/(2pi) factor is attached at a later point
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       real * 8 p(0:3,nlegborn)
       integer vflav(nlegborn)
       real * 8 virtual
@@ -36,7 +36,7 @@ c$$$
 c$$$      subroutine setvirtual_fast(virt_arr)
 c$$$      implicit none
 c$$$      include 'nlegborn.h'
-c$$$      include 'pwhg_flst.h'
+c$$$      include '../include/pwhg_flst.h'
 c$$$      real * 8 virt_arr(flst_nborn)
 c$$$
 c$$$      write(*,*) 'Error: setvirtual_fast is not implemented yet'

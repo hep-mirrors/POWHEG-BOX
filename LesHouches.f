@@ -1,11 +1,11 @@
       subroutine gen_leshouches
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'LesHouches.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/LesHouches.h'
       integer alr,em,rad,flem,flrad,coluborn(2)
       if(kn_csi.eq.0d0) then
 c it is a Born event
@@ -61,15 +61,15 @@ c conjugate their colours in the output, to make them outgoing.
          idup(em)=flem
          idup(rad)=flrad
       endif
-c add resonances, perform decays, put particles on shell, etc.(or nothing!)
-      call finalize_lh
+c     add resonances
+      call resonances_lh
       end
 
 
 c     i1<i2
       subroutine add_resonance(idpdg,i1,i2)
       implicit none
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       real * 8 iduptmp(maxnup),istuptmp(maxnup),mothuptmp(2,maxnup),
      #     icoluptmp(2,maxnup),puptmp(5,maxnup),vtimuptmp(maxnup),
      #     spinuptmp(maxnup)
@@ -141,7 +141,7 @@ c     change mothers of decaying particles
       integer n
       real * 8 p(0:3,n)
       integer k,mu
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       do k=1,n
          do mu=1,3
             pup(mu,k)=p(mu,k)
@@ -154,14 +154,14 @@ c     change mothers of decaying particles
 
       subroutine born_lh
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'LesHouches.h'
-c      include 'PhysPars.h'
-      include 'pwhg_st.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/LesHouches.h'
+c      include 'include/PhysPars.h'
+      include 'include/pwhg_st.h'
       integer k,fl
       nup=nlegborn
 c id of the event
@@ -198,7 +198,7 @@ c gluons are numbered 21 in pdg
       subroutine getnewcolor(newcolor)
       implicit none
       integer newcolor
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       integer j,k
       newcolor=511
  1    continue
@@ -294,7 +294,7 @@ c over the two possible colour connections.
 
 
       subroutine displeshouches
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       integer mark(200),icol(200),j,k,ilist,icur
       write(*,*) 'incoming beams:', idbmup(1), idbmup(2)
       write(*,*) 'number of partons in subprocess',nup
@@ -378,11 +378,11 @@ c first conjugate incoming colors
       real * 8 x1,x2,xf1,xf2,xmufact
       real * 8 pdf(-6:6)
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_st.h'
-      include 'LesHouches.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/LesHouches.h'
       if(rad_type.eq.1) then
 c Btilde event: pass x1 and x2, id1, id2 etc. of the current underlying Born
          id1=flst_born(1,rad_ubornidx)

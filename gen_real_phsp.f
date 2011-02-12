@@ -24,13 +24,13 @@ c gen_real_phsp_isr: mapping for the initial state radiation
       implicit none
       real * 8 xrad(3),jac_over_csi,
      #        jac_over_csi_coll,jac_over_csi_soft
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_par.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_par.h'
+      include 'include/pwhg_flg.h'
       real * 8 q0,q2,xjac
 c find rad_kinreg as function of kn_emitter
       rad_kinreg=kn_emitter+2-flst_lightpart
@@ -67,11 +67,11 @@ c     Same as gen_real_phsp_fsr_rad, but for given kn_csitilde
 c     instead of kn_csi.
 c     Used in the generation of radiation
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
       real * 8 q0,q2
 c Boost the underlying Born variables to their cm frame
       kn_emitter=flst_lightpart+rad_kinreg-2
@@ -91,11 +91,11 @@ c kn_jacreal so that kn_jacreal d kn_csi d kn_y d kn_azi times
 c the underlying Born jacobian is the phase space volume
       subroutine gen_real_phsp_fsr_rad
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
       real * 8 vec(3),q0,beta
       integer i
       data vec/0d0,0d0,1d0/
@@ -137,7 +137,7 @@ c jac         : jacobian factor on phirad
       subroutine barradmap(n,j,q0,barredk,csi,y,phi,xk,jac)
       implicit none
 c parameters
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       integer n,j
       real * 8 q0,barredk(0:3,n),csi,y,phi,xk(0:3,n+1),jac
 C Local variables
@@ -209,12 +209,12 @@ c ISR:
       implicit none
       real * 8 xrad(3),
      #    jac_over_csi,jac_over_csi_p,jac_over_csi_m,jac_over_csi_s
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_par.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_par.h'
       real * 8 xjac
       rad_kinreg=1
       kn_csitilde=(3-2*xrad(1))*xrad(1)**2
@@ -241,8 +241,8 @@ c      call checkmomzero(nlegreal,kn_preal)
 
       subroutine compcsimax
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       real * 8 y,xb1,xb2
       xb1=kn_xb1
       xb2=kn_xb2
@@ -259,10 +259,10 @@ c     Same as gen_real_phsp_isr_rad, but for given kn_csitilde
 c     instead of kn_csi.
       subroutine gen_real_phsp_isr_rad0
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       call compcsimax
       kn_csi=kn_csitilde*kn_csimax
       call gen_real_phsp_isr_rad
@@ -270,10 +270,10 @@ c     instead of kn_csi.
 
       subroutine gen_real_phsp_isr_rad
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       real * 8 y,xb1,xb2,x1,x2,betal,betat,vecl(3),vect(3),
      #         cth,sth,cph,sph,csi,pt2
       integer i,mu
@@ -352,8 +352,8 @@ c      call printtot(nlegreal,kn_preal(0,1))
       subroutine compcmkin
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       real * 8 vecl(3),betal
       data vecl/0d0,0d0,1d0/
       save vecl
@@ -364,9 +364,9 @@ c      call printtot(nlegreal,kn_preal(0,1))
       subroutine compdij
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_par.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_par.h'
       integer j,k
       real * 8 y
       real * 8 crossp,dotp
@@ -397,9 +397,9 @@ c     4        (kn_cmpreal(3,k)+kn_cmpreal(3,j))**2))**par_dijexp
       subroutine compdijsoft
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_par.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_par.h'
       integer k
       real * 8 y
       real * 8 crossp,dotp
@@ -439,8 +439,8 @@ c     4        (kn_cmpreal(3,k)+kn_cmpreal(3,j))**2))**par_dijexp
       subroutine setsoftvecfsr
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       integer em,j
       real * 8 y,norm,dir(3)
       em=kn_emitter
@@ -465,8 +465,8 @@ c Rotate kn_softvec around dir of an amount azi
       subroutine setsoftvecisr
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
       real * 8 y
       y=kn_y
       kn_softvec(0)=1

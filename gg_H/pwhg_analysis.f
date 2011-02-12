@@ -7,7 +7,7 @@ c     pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  'LesHouches.h'
+      include  '../include/LesHouches.h'
       include '../pwhg_book.h'
       include 'PhysPars.h'
       integer diag
@@ -103,8 +103,8 @@ c     we need to tell to this analysis file which program is running it
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include 'hepevt.h'
-      include 'pwhg_math.h' 
+      include '../include/hepevt.h'
+      include '../include/pwhg_math.h' 
       include 'PhysPars.h'
       real*8 m1,pt1,y1,delphi
       real*8 e1,px1,py1,pz1,p1

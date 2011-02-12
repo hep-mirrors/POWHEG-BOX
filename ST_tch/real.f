@@ -1,8 +1,8 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_st.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_math.h'
       include 'PhysPars.h'
 c     to use madgraph
       include 'coupl.inc'

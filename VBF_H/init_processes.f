@@ -1,8 +1,8 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
       logical debug
       parameter (debug=.false.)
       integer j,i,ii,jj,k

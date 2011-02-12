@@ -1,11 +1,11 @@
       subroutine do_maxrat(mcalls,icalls)
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_rnd.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_rnd.h'
       integer mcalls,icalls
       character * 20 pwgprefix
       integer lprefix
@@ -203,11 +203,11 @@ c      call maxratident
 
       subroutine inc_norms
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
       real * 8 ptsq,born,sig,xnorm
       real * 8 histnorms(nlegborn-1,maxprocborn,100)
       real * 8 efficiencies(nlegborn-1,maxprocborn)
@@ -221,9 +221,9 @@ c      call maxratident
 ccccccccccccccccccccccccccccccccc
       logical verbose
       parameter (verbose=.false.)
-      include 'pwhg_st.h'
-      include 'pwhg_pdf.h'
-      include 'pwhg_br.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_pdf.h'
+      include 'include/pwhg_br.h'
       real * 8 pdf1(-6:6),pdf2(-6:6)
 cccccccccccccccccccccccccccccccc
       ptsq=pwhg_pt2()
@@ -329,11 +329,11 @@ c
 
       subroutine printevent
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
       real * 8 pwhg_pt2
       external pwhg_pt2
       integer j,k,alr,mu
@@ -366,8 +366,8 @@ c      write(*,*) ' cosine decay angle', kn_cthdec
       subroutine printhistnorms
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
       real * 8 ptsq,born,sig,xnorm
       real * 8 histnorms(nlegborn-1,maxprocborn,100)
       real * 8 efficiencies(nlegborn-1,maxprocborn)
@@ -413,8 +413,8 @@ c      enddo
       subroutine zerohistnorms
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
       real * 8 ptsq,born,sig,xnorm
       real * 8 histnorms(nlegborn-1,maxprocborn,100)
       real * 8 efficiencies(nlegborn-1,maxprocborn)
@@ -437,11 +437,11 @@ c maxrat
       implicit none
       logical refuse_pdf
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_st.h'
-      include 'pwhg_pdf.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_pdf.h'
       real * 8 pdf(-6:6),sn,suppfc,x
       integer k,j,fl
       suppfc(x)=(1-x)*x
@@ -487,11 +487,11 @@ c in FKS, for final state radiation, pdf always cancel in real/born
 
       subroutine uboundfct(fct,csi,y)
       implicit none
-      include 'pwhg_math.h'
+      include 'include/pwhg_math.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_rad.h'
       real * 8 fct,csi,y
       real * 8 unorm
       integer iy,icsi
@@ -516,8 +516,8 @@ c
       subroutine gen_born(mcalls,icalls)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_flg.h'
       integer mcalls,icalls
       integer ndimbornint
       parameter (ndimbornint=ndiminteg-3)

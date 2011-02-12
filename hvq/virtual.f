@@ -6,11 +6,11 @@ c
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_math.h'
-      include 'pwhg_st.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_br.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_math.h'
+      include '../include/pwhg_st.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_br.h'
       character * 2 prc
       common/process/prc
       integer nl

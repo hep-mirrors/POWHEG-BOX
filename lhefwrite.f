@@ -3,14 +3,14 @@ c...writes initialization information to a les houches events file on unit nlf.
       subroutine lhefwritehdr(nlf)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_flg.h'
       integer nlf
       real * 8 version
       common/pwghvq/version
       integer ipr,iran,n1ran,n2ran
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       write(nlf,'(a)') '<LesHouchesEvents version="1.0">'
       write(nlf,'(a)') '<!--'
       write(nlf,'(a,f3.1)') 'file generated with POWHEG-BOX version ',
@@ -45,8 +45,8 @@ c...writes event information to a les houches events file on unit nlf.
       subroutine lhefwritev(nlf)
       implicit none
       integer nlf
-      include 'LesHouches.h'
-      include 'pwhg_flg.h'
+      include 'include/LesHouches.h'
+      include 'include/pwhg_flg.h'
       integer i,j
       write(nlf,'(a)')'<event>'
       write(nlf,210) nup,idprup,xwgtup,scalup,aqedup,aqcdup
@@ -76,13 +76,13 @@ c     save last random number
 
       subroutine lhefwritextra(nlf)
       implicit none
-      include 'LesHouches.h'
+      include 'include/LesHouches.h'
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-      include 'pwhg_st.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_flg.h'
+      include 'include/pwhg_flst.h'
+      include 'include/pwhg_rad.h'
+      include 'include/pwhg_st.h'
+      include 'include/pwhg_kn.h'
+      include 'include/pwhg_flg.h'
       integer nlf
       integer iran,n1ran,n2ran
       write(nlf,'(a)') '# Start extra-info-previous-event'

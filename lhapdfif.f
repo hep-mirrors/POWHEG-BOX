@@ -129,7 +129,7 @@ c Interface to lhapdf package.
       integer j
       real * 8 tmp
       call genericpdfset(ndns)
-      call evolvePDF(x,sqrt(xmu2),fx)
+      call pftopdg(x,sqrt(xmu2),fx)
 c pftopdg returns density times x
       do j=-6,6
          fx(j)=fx(j)/x

@@ -1,12 +1,12 @@
       subroutine gen_leshouches_reg
       implicit none
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       include '../nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_rad.h'
-      include 'LesHouches.h'
-      include 'pwhg_st.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_rad.h'
+      include '../include/LesHouches.h'
+      include '../include/pwhg_st.h'
       include 'PhysPars.h'
       integer ileg,fl,tmp
       integer tcol,col2

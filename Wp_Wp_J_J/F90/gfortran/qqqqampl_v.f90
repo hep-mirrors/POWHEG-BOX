@@ -299,15 +299,15 @@ contains
            &write(*,*) 'Switch to Multiple Precision if lnprec > -3, abs_rel_err > 2d-1, |V| > 1000|B|, found NaN, or infinite'  
       
 !       call redo_ampl_in_qp(pin,muu,i1,i2,i3,i4,css,tree_qp,res_qp)
-!      call redo_ampl_in_mp(pin,muu,i1,i2,i3,i4,css,tree_mp,res_mp)
+      call redo_ampl_in_mp(pin,muu,i1,i2,i3,i4,css,tree_mp,res_mp)
 
 
 !      if ((recomputed_in_qp / 1000)*1000 == recomputed_in_qp) &
 !           &write(*,*) 'Amplitudes done in HP',recomputed_in_qp
 
       recomputed_in_qp = recomputed_in_qp+1 
-!      res= res_mp
-      res= 0d0
+      res= res_mp
+!      res= 0d0
 
    endif
 

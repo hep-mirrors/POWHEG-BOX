@@ -154,7 +154,10 @@ take out of it the tables of the results for each distribution.
 
 
 Settings used for the published paper:
+
 Step 1:
+
+one process
 ncall1 1000000
 itmx1  2
 

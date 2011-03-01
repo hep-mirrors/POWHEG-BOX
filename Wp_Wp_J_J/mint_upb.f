@@ -40,7 +40,7 @@ c upper bounding envelope in MINT
       save /storeubc/
       data active/.false./
       active=.true.
-      if(filetag.eq.'btildeub') then
+      if(filetag.eq.'btildeupb') then
          btildeflag=.true.
       else
          btildeflag=.false.

@@ -109,9 +109,9 @@ c upper bounding envelope in MINT
       character *(*) filetag
       integer ndim,cells(ndiminteg),iret
       real * 8 f,f0
-      integer, dimension(:,:), allocatable :: allcells
-      real, dimension(:), allocatable :: allf
-      real, dimension(:), allocatable :: allf0
+      integer, dimension(:,:), allocatable, save :: allcells
+      real, dimension(:), allocatable, save :: allf
+      real, dimension(:), allocatable, save :: allf0
       integer nlines,j
       integer status,index
       data status/0/

@@ -1,11 +1,11 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_pdf.h'
-      include '../include/LesHouches.h'
-      include '../include/pwhg_flg.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'LesHouches.h'
+      include 'pwhg_flg.h'
       integer i1,i2,i3,i4,i5,k,ii(nlegreal)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
@@ -18,7 +18,7 @@
       real * 8 powheginput
       external powheginput
 c     vector boson id and decay
-      integer idvecbos,vdecaymode
+      integer idvecbos,vdecaymode,tmp
       common/cvecbos/idvecbos,vdecaymode
 c     lepton masses
       real *8 lepmass(3),decmass
@@ -30,20 +30,26 @@ c******************************************************
 c    ID of vector boson produced
       idvecbos=powheginput('idvecbos')
 c   decay products of the vector boson
-      vdecaymode=powheginput('vdecaymode')
-
+      tmp=powheginput('vdecaymode')
+ 
       if (lepmass(1).ne.0.51099891d-3) then
          write(*,*) 'block data lepmass not loaded. stop running' 
          stop
       endif
       
       if(idvecbos.eq.24) then
-         if ((vdecaymode.ne.-11).and.(vdecaymode.ne.-13)
-     $        .and.(vdecaymode.ne.-15)) then
+         select case(tmp)
+         case (1)
+            vdecaymode=-11
+         case (2)
+            vdecaymode=-13
+         case (3)
+            vdecaymode=-15
+         case default
             write(*,*) 'ERROR: The decay mode you selected' /
      $           /' is not allowed '
             stop
-         endif
+         end select  
          write(*,*) 
          write(*,*) ' POWHEG: Single W+ production and decay ' 
          if (vdecaymode.eq.-11) write(*,*) '         to e+ ve '
@@ -51,12 +57,18 @@ c   decay products of the vector boson
          if (vdecaymode.eq.-15) write(*,*) '         to tau+ vtau'
          write(*,*) 
       elseif(idvecbos.eq.-24) then
-         if ((vdecaymode.ne.11).and.(vdecaymode.ne.13)
-     $        .and.(vdecaymode.ne.15)) then
+         select case(tmp)
+         case (1)
+            vdecaymode= 11
+         case (2)
+            vdecaymode= 13
+         case (3)
+            vdecaymode= 15
+         case default
             write(*,*) 'ERROR: The decay mode you selected' /
      $           /' is not allowed '
             stop
-         endif
+         end select
          write(*,*) 
          write(*,*) ' POWHEG: Single W- production and decay '
          if (vdecaymode.eq.11) write(*,*) '         to e- ve~ '

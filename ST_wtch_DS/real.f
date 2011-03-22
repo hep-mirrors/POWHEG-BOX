@@ -23,9 +23,9 @@ c     !: '!:!:!' to see the corresponding code.
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
       include 'PhysPars.h'
       logical genrad
       common/cgenrad/genrad
@@ -263,7 +263,7 @@ c     to be the output kr_resh
       implicit none
       include 'nlegborn.h'
       include 'PhysPars.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_kn.h'
       real *8 x1,x2,s
       integer nleg
       parameter (nleg=nlegreal)

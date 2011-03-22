@@ -1,3 +1,5 @@
+c -*-Fortran-*-
+
       integer maxpup
       parameter(maxpup=100)
       integer idbmup,pdfgup,pdfsup,idwtup,nprup,lprup
@@ -13,3 +15,4 @@
      &              idup(maxnup),istup(maxnup),mothup(2,maxnup),
      &              icolup(2,maxnup),pup(5,maxnup),vtimup(maxnup),
      &              spinup(maxnup)
+      save /hepeup/

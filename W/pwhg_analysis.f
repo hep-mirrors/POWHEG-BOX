@@ -7,14 +7,12 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
       integer diag
       real * 8 binsize(100)
       common/pwhghistcommon/binsize
-      character * 6 WHCPRG
-      common/cWHCPRG/WHCPRG
-            
+
       call pwhginihist
 
 c     total cross section sanity check
@@ -70,12 +68,13 @@ c     total cross section sanity check
       end 
 
       
+     
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
       real *8 p_neutrino(0:3),p_lepton(0:3),pcm(0:3),p_ll(0:3)
       real *8 pt_lepton,pt_neutrino,eta_lepton,eta_neutrino,
      $     delphi,mt_v,mv,ptv,yv
@@ -105,8 +104,10 @@ c     we need to tell to this analysis file which program is running it
       if (ini) then
          write (*,*)
          write (*,*) '********************************************'
-         if(WHCPRG.eq.'NLO   ') then
+         if(whcprg.eq.'NLO') then
             write (*,*) '           NLO ANALYSIS CALLED        '
+         elseif(WHCPRG.eq.'LHE   ') then
+            write (*,*) '           LHE ANALYSIS CALLED        '
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS CALLED     '
          elseif(WHCPRG.eq.'PYTHIA') then
@@ -136,7 +137,6 @@ c     we need to tell to this analysis file which program is running it
             write(*,*) '**************************************'
             call exit(1)
          endif
-          write (*,*) '********************************************'
          write (*,*)
          ini=.false.
       endif
@@ -150,7 +150,7 @@ c     we need to tell to this analysis file which program is running it
       enddo
       
 
-      if(WHCPRG.eq.'NLO   ') then
+      if(whcprg.eq.'NLO    '.or.whcprg.eq.'LHE   ') then
 c     find W decay products by trivial analisys
          do ihep=1,nhep
             if(isthep(ihep).eq.1) then
@@ -340,6 +340,5 @@ c     pt(W)
       endif
       
       end
-
 
 

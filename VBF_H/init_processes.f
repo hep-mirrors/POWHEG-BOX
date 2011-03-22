@@ -1,8 +1,9 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'LesHouches.h'
       logical debug
       parameter (debug=.false.)
       integer j,i,ii,jj,k
@@ -13,18 +14,6 @@
       character *3 flav(-5:5)
       data (flav(i),i=-5,5) 
      #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
-c      data (charge(i),i=-5,5) 
-c     #     / 0.33333333333333333333d0, !   1d0/3
-c     #      -0.66666666666666666667d0, !  -2d0/3
-c     #       0.33333333333333333333d0, !   1d0/3 
-c     #      -0.66666666666666666667d0, !   -2d0/3
-c     #       0.33333333333333333333d0, !   1d0/3 
-c     #       0d0,                      !   0d0   
-c     #      -0.33333333333333333333d0, !   -1d0/3
-c     #       0.66666666666666666667d0, !   2d0/3   
-c     #      -0.33333333333333333333d0, !   -1d0/3
-c     #       0.66666666666666666667d0, !   2d0/3 
-c     #      -0.33333333333333333333d0/ !   -1d0/3
       integer max_flav
       logical emit_Wp_upper,emit_Wm_upper,emit_Wp_lower,emit_Wm_lower
       integer flst_nreal_WW, flst_nborn_WW
@@ -36,7 +25,21 @@ c     #      -0.33333333333333333333d0/ !   -1d0/3
       logical flavequiv
       external flavequiv
       logical tag,newtag
-      
+      integer hdecaymode
+      real * 8 powheginput
+      external powheginput
+
+
+c     decay products of the Higgs boson
+      hdecaymode=powheginput('#hdecaymode')
+      if (hdecaymode.lt.0) then
+c     default: no Higgs boson decay
+         hdecaymode=-1
+      endif
+c     change the LHUPI id of the process according to vector boson id
+c     and decay
+      lprup(1)=10000+hdecaymode ! 10000+idup of Higgs decay product of the W
+
       tag = .true.
       newtag = .true.
 

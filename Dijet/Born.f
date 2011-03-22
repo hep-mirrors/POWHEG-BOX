@@ -1,10 +1,9 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_kn.h'
-      include 'PhysPars.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_kn.h'
 
       integer nlegs
       parameter (nlegs=nlegborn)
@@ -13,8 +12,6 @@
       real * 8 bmunu(0:3,0:3,nlegs),born
       real *8 borntmp
       integer mu,nu,j,k
-c To test against original Emanuele's program
-c      real * 8 bornx,bornjkx(nlegs,nlegs),bmunux(0:3,0:3,nlegs)
 
       integer ileg,ioleg
 C     define a real *8 value for nc in order
@@ -212,18 +209,6 @@ c find opposite leg
             enddo
          endif
       enddo
-c Tested OK against original Emanuele's program
-c      call setborn_ema(p,bflav,bornx,bornjkx,bmunux)
-c      if(abs(bornx/born-1).gt.1d-6) then
-c         write(*,*) ' Born: ',bflav,bornx/born
-c      endif
-c      do j=1,nlegborn
-c         do k=1,nlegborn
-c            if(j.ne.k.and.abs(bornjkx(j,k)/bornjk(j,k)-1).gt.1d-6) then
-c               write(*,*) ' Born: ',bflav,bornjkx(j,k)/bornjk(j,k)
-c            endif
-c         enddo
-c      enddo
       end
 
 
@@ -337,10 +322,10 @@ c Here we assume all particles to be outgoing, and
 c assign colour according to the corresponding colour amplitudes.
 c At the end, the colour of incoming partons are conjugated.
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       integer iq,ia,iq1,iq2,ia1,ia2,ig1,ig2,j,itmp
       real * 8 s,t,u
       real * 8 dotp
@@ -558,19 +543,12 @@ c q qbar g g
       end
 
 
-      subroutine resonances_lh
+      subroutine finalize_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
-c     Before that, call the routine that generates the decay.
-c     Notice that the current subroutine is called at the end
-c     of gen_leshouches (or gen_leshouches_reg). This means
-c     that the overall azimuthal rotation has been already
-c     performed (add_azimuth called in pwhgevent). 
       implicit none
 
-c     TO BE COMPLETED
-      
-c      write(*,*) "resonances_lh TO BE COMPLETED (not needed ??) " 
-c      call exit(1)
+c     The general reshuffling procedure.
+      call lhefinitemasses
 
       end

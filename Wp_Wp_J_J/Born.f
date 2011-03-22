@@ -1,10 +1,10 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       use consts_MCFM; use dpinitialization 
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       include 'PhysPars.h'
       integer nlegs,nf
       parameter (nlegs=nlegborn)
@@ -31,10 +31,10 @@ C      enddo
       subroutine compborn(pin,bflav,born,bmunu,bornjk)
       use consts_MCFM; use dpinitialization; use define_ampl  
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_st.h' ! for alphas 
+      include 'pwhg_flst.h'
+      include 'pwhg_st.h' ! for alphas 
       include 'PhysPars.h'
       integer nlegs,nf
       parameter (nlegs=nlegborn)
@@ -320,10 +320,10 @@ c     should pick one with a probability proportional to
 c     the value of the corresponding cross section, for the
 c     kinematics defined in the Les Houches interface
       implicit none 
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       
       integer iq1,iq2,iq3,iq4,i
       integer idpar(8)
@@ -501,7 +501,7 @@ C     need to pick one of the two above possibilities based on |M|^2 at LC
 
       end
 
-      subroutine resonances_lh
+      subroutine finalize_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
@@ -527,7 +527,7 @@ C      call momenta_reshuffle(3,4,5,decmass)
 c     i1<i2
       subroutine momenta_reshuffle(ires,i1,i2,decmass)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer ires,i1,i2,j
       real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
       if (i1.ge.i2) then

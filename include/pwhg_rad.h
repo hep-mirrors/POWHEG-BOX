@@ -95,5 +95,4 @@ c     integers
      5     rad_iupperfsr,rad_iupperisr,
 c     logical
      6     rad_kinreg_on
-      
-      
+      save /pwhg_rad/

@@ -1,6 +1,5 @@
 #/bin/sh
-cat ../btilde.f | sed -e "s/include '/include '..\//g;
-s/         call allborn/c set the mt dependency in Born cross section\n\
+cat ../btilde.f | sed -e "s/         call allborn/c set the mt dependency in Born cross section\n\
          call setbornmassdep\n\
 c evaluate Born cross section with the chosen top mass\n\
          call allborn/;

@@ -5,3 +5,4 @@ c -*- Fortran -*-
      #  br_bornjk(nlegborn,nlegborn,maxprocborn)
       common/pwhg_br/br_born,br_bmunu,br_bornjk
 
+      save /pwhg_br/

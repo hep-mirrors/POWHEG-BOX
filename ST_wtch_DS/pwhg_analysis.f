@@ -10,8 +10,8 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
-      include '../include/pwhg_math.h' 
+      include  'LesHouches.h'
+      include 'pwhg_math.h' 
       integer diag,icut
       character * 10 cut
 
@@ -192,9 +192,9 @@ c-----total cross section
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h' 
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h' 
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
 c     other common blocks
       integer numplots
       real * 8 binsize(400)
@@ -252,7 +252,7 @@ c     we need to tell to this analysis file which program is running it
 
       if (ini) then
          write(*,*) '*****************************'
-         if(WHCPRG.eq.'NLO   ') then
+         if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
             write(*,*) '            NLO analysis '
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS'
@@ -272,7 +272,7 @@ c     decide t or tbar process
          wcode=-24  *ttype
       endif
 
-      if(WHCPRG.eq.'NLO   ') then
+      if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
 c     find t, W and extra parton, if present
          nt=0
          nw=0

@@ -1,10 +1,10 @@
       subroutine bbinit
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_rnd.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_rnd.h'
+      include 'pwhg_rad.h'
       integer iret1,iret2,iun
       real * 8 sigbtl,errbtl,sigrm,errrm,
      #         xint,xintrm
@@ -16,8 +16,6 @@
       integer ifold(ndiminteg),ifoldrm(ndiminteg)
       common/cgengrids/xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm
-      logical negflag
-      common /cbbarra/negflag
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
@@ -56,11 +54,15 @@
      2     ifold,ifoldrm)
       if(iret1.ne.0) call loadxgrid(iret2,xgrid,xint,xgridrm,xintrm)
       if(iret2.ne.0) then
-         negflag=.false.
          write(*,*)
          write(*,*)' POWHEG: initialization'
          write(*,*)' Computing the integral of the absolute value'
+         if(flg_weightedev) then
+         write(*,*)' of the cross section times the suppression' 
+         write(*,*)' factor to set up the adaptive grid'
+         else
          write(*,*)' of the cross section to set up the adaptive grid'
+         endif
          call newunit(iun)
          open(unit=iun,file=pwgprefix(1:lprefix)//'btlgrid.top',
      #        status='unknown')
@@ -72,9 +74,11 @@
          close(iun)
          if((flg_withreg.or.flg_withdamp).and..not.flg_bornonly) then
             write(*,*) ' Computing the integral of the'//
-     #           ' remnant cross section' 
+     #           ' remnant cross section'
+            if(flg_weightedev) then
+               write(*,*) 'times the suppression factor'
+            endif
             write(*,*) ' to set up the adaptive grid'
-            negflag=.false.
             flg_nlotest=.false.
             call newunit(iun)
             open(unit=iun,file=pwgprefix(1:lprefix)//'rmngrid.top',
@@ -101,7 +105,6 @@ c set  up the folding here, if required
          ifold(ndiminteg-2) = powheginput("foldcsi")
          ifold(ndiminteg-1) = powheginput("foldy")
          ifold(ndiminteg)   = powheginput("foldphi")
-         negflag=.false.
          if(flg_withnegweights) then
             write(*,*)' POWHEG: Computing pos.+|neg.| '
      1           //' weight contribution to inclusive cross section' 
@@ -182,21 +185,27 @@ c Output NLO histograms
             call pwhgtopout
             close(99)
          endif
-
+         
          if(flg_withreg.or.flg_withdamp) then
             write(iunstat,*) ' Remnant cross section in pb',
      1           rad_totrm,'+-',rad_etotrm
          endif
          
-         write(iunstat,*)' total (btilde+remnants) cross section in pb',
-     1        rad_tot,'+-',rad_etot
-         
+         if (flg_weightedev) then
+            write(iunstat,*) 
+     1 ' total (btilde+remnants) cross section times '
+            write(iunstat,*) ' suppression factor in pb',
+     1        rad_tot,'+-',rad_etot         
+         else
+            write(iunstat,*) 
+     1 ' total (btilde+remnants) cross section in pb',
+     2     rad_tot,'+-',rad_etot
+         endif
          write(iunstat,*) ' negative weight fraction:',
      1        rad_totnegbtl/(2*rad_totnegbtl+rad_tot)
       else
          write(*,*)
-     #     ' stored grids successfully loaded'
-         negflag=.false.
+     1     ' stored grids successfully loaded'
          write(*,*) 'btilde pos.   weights:', rad_totposbtl,' +-',
      1        rad_etotposbtl
          write(*,*) 'btilde |neg.| weights:', rad_totnegbtl,' +-',
@@ -210,17 +219,19 @@ c Output NLO histograms
      1        rad_totrm,'+-',rad_etotrm
       endif
 
-      write(*,*) ' total (btilde+remnants) cross section in pb',
+      if (flg_weightedev) then
+         write(*,*) ' total (btilde+remnants) cross section times '
+         write(*,*) ' suppression factor in pb',
+     1        rad_tot,'+-',rad_etot         
+      else
+         write(*,*) ' total (btilde+remnants) cross section in pb',
      1     rad_tot,'+-',rad_etot
-
+      endif
       write(*,*) ' negative weight fraction:',
      1     rad_totnegbtl/(2*rad_totnegbtl+rad_tot)
-
-
       close(iunstat)
       call flush
 c initialize gen; the array xmmm is set up at this stage.
-      negflag=.false.
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,0,
      #    mcalls,icalls,xx)
 c compute normalization of upper bounding function for radiation
@@ -257,7 +268,7 @@ c     print statistics
       subroutine gen_btilde(mcalls,icalls)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer mcalls,icalls
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
@@ -265,12 +276,9 @@ c     print statistics
       integer ifold(ndiminteg),ifoldrm(ndiminteg)
       common/cgengrids/xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm
-      logical negflag
-      common /cbbarra/negflag
       real * 8 xx(ndiminteg)      
       real * 8 btilde
       external btilde
-      negflag=.false.
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,1,
      #    mcalls,icalls,xx)
       end
@@ -278,20 +286,17 @@ c     print statistics
       subroutine gen_sigremnant
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
      #        ,xmmm(0:50,ndiminteg),xmmmrm(0:50,ndiminteg)
       integer ifold(ndiminteg),ifoldrm(ndiminteg)
       common/cgengrids/xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
      #                ifold,ifoldrm
-      logical negflag
-      common /cbbarra/negflag
       real * 8 xx(ndiminteg)
       integer mcalls,icalls
       real * 8 sigremnant
       external sigremnant
-      negflag=.false.
       call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,1,
      #    mcalls,icalls,xx)
       end
@@ -301,11 +306,11 @@ c     print statistics
      #                ifold,ifoldrm,ncall2,itmx2)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_rnd.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_rnd.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       integer nbins
@@ -348,11 +353,11 @@ c     print statistics
      #           ifold,ifoldrm)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_rnd.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_rnd.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       real * 8 xxgrid(0:50,ndiminteg),xymax(50,ndiminteg)
@@ -534,10 +539,10 @@ c random seeds
       subroutine storexgrid(xgrid,xint,xgridrm,xintrm)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),xgridrm(0:50,ndiminteg),
      1     xint,xintrm
       integer nbins
@@ -558,10 +563,10 @@ c random seeds
       subroutine loadxgrid(iret,xgrid,xint,xgridrm,xintrm)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),xgridrm(0:50,ndiminteg),
      1     xint,xintrm
       integer iret

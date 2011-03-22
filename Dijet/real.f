@@ -1,9 +1,8 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
-      include 'PhysPars.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
 
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
@@ -138,8 +137,8 @@ C ----------------------------------------------------------------- C
       IMPLICIT NONE
 C -   *************
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 FD_INVARIANT,FD_NONINVARIANT,FD_DENOM
       REAL*8 DOTP
@@ -252,8 +251,8 @@ C ----------------------------------------------------------------- C
       IMPLICIT NONE
 C -   *************
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 DOTP
       EXTERNAL DOTP
@@ -369,8 +368,8 @@ C ----------------------------------------------------------------- C
       IMPLICIT NONE
 C -   *************
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 DOTP
       EXTERNAL DOTP
@@ -450,8 +449,8 @@ C ----------------------------------------------------------------- C
       IMPLICIT NONE
 C -   *************
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       REAL*8 P1(0:3,nlegreal),AVG,SYM
       REAL*8 DOTP
       EXTERNAL DOTP

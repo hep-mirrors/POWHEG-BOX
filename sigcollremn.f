@@ -45,9 +45,11 @@ c End Statement Functions
          xjac=1
          x=xrad
       endif
-      z1=1-par_isrtinycsi-(1-kn_xb1-par_isrtinycsi)*x
+c      z1=1-par_isrtinycsi-(1-kn_xb1-par_isrtinycsi)*x
+      z1=1-(1-kn_xb1)*par_isrtinycsi-(1-kn_xb1)*(1-par_isrtinycsi)*x
       xjac1=(1-kn_xb1)*xjac
-      z2=1-par_isrtinycsi-(1-kn_xb2-par_isrtinycsi)*x
+c      z2=1-par_isrtinycsi-(1-kn_xb2-par_isrtinycsi)*x
+      z2=1-(1-kn_xb2)*par_isrtinycsi-(1-kn_xb2)*(1-par_isrtinycsi)*x
       xjac2=(1-kn_xb2)*xjac
 
       sb=kn_sborn

@@ -5,8 +5,8 @@ c     The as/(2pi) factor is attached at a later point
       subroutine setvirtual(p,vflav,res_virtual)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -304,10 +304,10 @@ c$$$      virtual_ep0=-gs**4*gw_loc**2*(mu2/mt**2)**ep*
      -            CA*(4*mt**6 + mt**4*(3*s + 4*t1) + 
      -               2*q2*(4*q2**2 - 6*q2*s + 3*s**2 - 4*q2*t1 + 
      -                  2*s*t1 + 2*t1**2) + 
-     -               2*mt**2*(-6*q2**2 + (s + t1)**2 + q2*(3*s + 2*t1))))
+     -              2*mt**2*(-6*q2**2 + (s + t1)**2 + q2*(3*s + 2*t1))))
      -          )/(2.*Pi**2*q2*t1) + 
      -       (CF*CS6f*NC*(mt**2 - q2 + t1)*
-     -          (CA*(mt**4 - 2*mt**2*q2 + 2*q2*(2*q2 - 2*s - t1))*t1**2 + 
+     -         (CA*(mt**4 - 2*mt**2*q2 + 2*q2*(2*q2 - 2*s - t1))*t1**2 + 
      -            2*CF*(2*mt**6*(2*s + t1) + 
      -               mt**4*(4*q2*s + t1*(2*s + t1)) + 
      -               2*q2*t1*
@@ -336,7 +336,7 @@ c$$$      virtual_ep0=-gs**4*gw_loc**2*(mu2/mt**2)**ep*
      -                  q2**3*(6*s + 19*t1)) + 
      -               mt**6*(2*q2*(s - t1)*t1**2 + 5*t1**3*(s + t1) + 
      -                  2*q2**3*(2*s + 5*t1) - q2**2*t1*(17*s + 19*t1)))
-     -            ))/(Pi**2*q2*t1**3*(mt**2 + t1)*(mt**2 - q2 + t1)**2) - 
+     -           ))/(Pi**2*q2*t1**3*(mt**2 + t1)*(mt**2 - q2 + t1)**2) - 
      -       (2*BS1f*CF*NC*(-(CA*q2*s*
      -               (mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))*
      -               ((-q2 + s)*t1 + mt**2*(2*s + t1))) + 
@@ -356,7 +356,7 @@ c$$$      virtual_ep0=-gs**4*gw_loc**2*(mu2/mt**2)**ep*
      -                  2*q2*s*(s**2 - 6*s*t1 - t1**2) - 
      -                  q2**2*(7*s**2 + 14*s*t1 + 8*t1**2) + 
      -                  s**2*(s**2 + 14*s*t1 + 18*t1**2)))))/
-     -        (Pi**2*q2*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*t1) + 
+     -       (Pi**2*q2*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*t1) + 
      -       (CF*CS4f*NC*(CA*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))*
      -             (mt**10 - 2*q2*(q2 - s)**3*(2*q2 - s - 2*t1) - 
      -               mt**8*(5*q2 + s - 2*t1) + 
@@ -396,7 +396,7 @@ c$$$      virtual_ep0=-gs**4*gw_loc**2*(mu2/mt**2)**ep*
      -                  s**4*(2*s**2 + 4*s*t1 + t1**2) + 
      -                  q2**4*(78*s**2 + 68*s*t1 + 15*t1**2) - 
      -                  q2*s**3*(19*s**2 + 48*s*t1 + 42*t1**2)))))/
-     -        (2.*Pi**2*q2*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*
+     -       (2.*Pi**2*q2*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*
      -          t1) + (BS2f*CF*NC*
      -          (CA*mt**2*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))*
      -             (mt**2 + t1)*(mt**2 - q2 + t1)*
@@ -563,7 +563,7 @@ c$$$      virtual_ep0=-gs**4*gw_loc**2*(mu2/mt**2)**ep*
      -                     229*s**4*t1**3 + 30*s**3*t1**4 + 
      -                     86*s**2*t1**5 + 40*s*t1**6 + 2*t1**7)))))/
      -        (Pi**2*q2*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*
-     -          t1**3*(mt**2 + t1)*(mt**2 - q2 + t1)*(mt**2 - q2 + s + t1))
+     -       t1**3*(mt**2 + t1)*(mt**2 - q2 + t1)*(mt**2 - q2 + s + t1))
      -         + (2*BS4f*CF*NC*
      -          (CA*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))*t1*
      -             (mt**2 - q2 + t1)*
@@ -687,7 +687,7 @@ c$$$      virtual_ep0=-gs**4*gw_loc**2*(mu2/mt**2)**ep*
      -                   (6*s**7 + 96*s**6*t1 + 254*s**5*t1**2 + 
      -                     315*s**4*t1**3 + 254*s**3*t1**4 + 
      -                     148*s**2*t1**5 + 62*s*t1**6 + 9*t1**7)))))/
-     -        (Pi**2*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*t1**2*
+     -       (Pi**2*s*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))**2*t1**2*
      -          (mt**2 - q2 + t1)**2*(s + t1)**2) - 
      -       (CF*NC*(-3*(-4*CA*(mt**4 + (q2 - s)**2 - 2*mt**2*(q2 + s))*
      -                t1*(mt**2 + t1)*(mt**2 - q2 + t1)*

@@ -1,7 +1,7 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -85,9 +85,9 @@ c     if they were not already evaluated previously
       subroutine compborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_st.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -167,8 +167,8 @@ c     (iborn=2). We assume that only the top quark is flowing in the
 c     loop
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       real * 8 s,v2,tiny,tmp,xnorm,tauq,etapl,etamn
       complex * 16 zic,tmpc
@@ -209,8 +209,8 @@ c     the multiplication for 2s is needed to remove the flux factor
       function finitemtcorr()
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
       include 'PhysPars.h'
       integer mtdep
       common/cmtdep/mtdep
@@ -255,9 +255,9 @@ c     filled in the Les Houches interface.  In case there are several
 c     colour structure, one should pick one with a probability
 c     proportional to the value of the corresponding cross section, for
 c     the kinematics defined in the Les Houches interface
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
 c colours of incoming gluons
       integer icolgi(2)
       data icolgi/ 502, 501 /
@@ -273,10 +273,13 @@ c neutral particles
 
       end
 
-      subroutine resonances_lh
+      subroutine finalize_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
+c     Since the Higgs decay is always handled by the SMC
+c     no resonance is present here. Higgs boson is a final state
+c     particle. 
 c      call add_resonance(25,3,4)
       end
 

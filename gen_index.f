@@ -1,9 +1,9 @@
       subroutine gen_uborn_idx
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       integer j,alr,em
       do j=1,rad_nkinreg
          rad_kinreg_on(j)=.false.
@@ -25,9 +25,9 @@
       subroutine gen_real_idx
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       call pick_random(rad_alr_nlist,rad_real_arr,rad_realidx)
       rad_realalr=rad_alr_list(rad_realidx)
       end
@@ -56,9 +56,9 @@
       subroutine gen_remnant(iret)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       integer iret
       real * 8 dum1,dum2,dum3,dum4
       real * 8 random

@@ -1,18 +1,19 @@
       subroutine init_phys
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_dbg.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_par.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_st.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_dbg.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_par.h'
+      include 'pwhg_physpar.h'
       character * 5 scheme
       character * 3 whichpdfpk
       real * 8 powheginput
-      integer iorder,iret,iun
+      integer iorder,iret,iun,j
       external whichpdfpk,powheginput
 c Initialization of default values for common block
 c variables. These may be overridden by the user program
@@ -69,6 +70,14 @@ c End initialization of common block defaults.
 c generation cut: see Gen_born_phsp.f
       kn_ktmin=powheginput("#bornktmin")
       if(kn_ktmin.lt.0) kn_ktmin=0
+
+c masses for light fermions, used in momentum reshuffling
+      do j=1,6
+         physpar_mq(j)=0
+      enddo
+      do j=1,3
+         physpar_ml(j)=0
+      enddo
 
 c thresholds 
       rad_ptsqmin=powheginput('#ptsqmin')

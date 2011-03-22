@@ -6,3 +6,4 @@ c -*- Fortran -*-
      # st_lambda5MSB, st_facfact,st_renfact,
 c integer
      # st_nlight
+      save /pwhg_st/

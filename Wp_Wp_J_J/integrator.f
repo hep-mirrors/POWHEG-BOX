@@ -367,7 +367,7 @@ c     the returned coordinate vector of the generated point
       integer ndim,imode
       integer nintervals,ndimmax
       include 'nlegborn.h'
-      include 'include/pwhg_flg.h'
+      include 'pwhg_flg.h'
       include 'pwhg_flg-add.h'
       parameter (nintervals=50,ndimmax=ndiminteg)
       real * 8 fun,xgrid(0:nintervals,ndim),

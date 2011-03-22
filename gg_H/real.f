@@ -1,10 +1,10 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       integer nlegs
       parameter (nlegs=nlegreal)
       real * 8 p(0:3,nlegs)
@@ -49,11 +49,11 @@ c Real matrix element times normalizations and averages.
 c IMPORTANT the flux factor 1/2s is intentionally missing
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_br.h'
+      include 'pwhg_st.h'
+      include 'pwhg_br.h'
       real * 8 s,v2,t,u,tmp,xnorm
       parameter (v2=0.70710678118654757d0)
       real* 8 amp2
@@ -89,10 +89,10 @@ c Real matrix element times normalizations and averages.
 c     IMPORTANT the flux factor 1/2s is missing
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_st.h'
       real * 8 s,v2,t,u,tmp,xnorm
       parameter (v2=0.70710678118654757d0)
       real* 8 amp2
@@ -123,10 +123,10 @@ c Real matrix element times normalizations and averages.
 c IMPORTANT the flux factor 1/2s is missing
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       real * 8 s,v2,t,u,tmp,xnorm
       parameter (v2=0.70710678118654757d0)
       real* 8 amp2
@@ -156,10 +156,10 @@ c Real matrix element times normalizations and averages.
 c IMPORTANT the flux factor 1/2s is missing
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       include 'PhysPars.h' 
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       real * 8 s,v2,t,u,tmp,xnorm
       parameter (v2=0.70710678118654757d0)
       real* 8 amp2

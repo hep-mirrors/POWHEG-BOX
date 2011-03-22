@@ -25,3 +25,4 @@ c -*-Fortran-*-
 c integers
      #   kn_emitter
 
+      save /pwhg_kn/

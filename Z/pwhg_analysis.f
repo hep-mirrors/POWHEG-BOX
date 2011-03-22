@@ -7,7 +7,7 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
       integer diag
       real * 8 binsize(100)
@@ -15,6 +15,7 @@ c  pwhgfill  :  fills the histograms with data
 
       call pwhginihist
 
+c     total cross section sanity check
       diag=1
       binsize(diag) = 1d0
       call pwhgbookup(diag,'total','LOG',binsize(diag),0d0,3d0)
@@ -51,9 +52,9 @@ c  pwhgfill  :  fills the histograms with data
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
       real *8 p_lminus(0:3),p_lplus(0:3),pcm(0:3),p_ll(0:3)
       real *8 pt_lplus,pt_lminus,eta_lplus,eta_lminus,
      $delphi,mt_v,mv,ptv,yv
@@ -79,9 +80,12 @@ c     we need to tell to this analysis file which program is running it
 
 
       if (ini) then
-         write(*,*) '*****************************'
-         if(WHCPRG.eq.'NLO   ') then
+         write (*,*)
+         write (*,*) '********************************************'
+         if(whcprg.eq.'NLO') then
             write(*,*) '       NLO analysis'
+         elseif(WHCPRG.eq.'LHE   ') then
+            write(*,*) '       LHE analysis'
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS            '
             write(*,*) 'not implemented analysis'
@@ -93,11 +97,12 @@ c     we need to tell to this analysis file which program is running it
          endif
          write(*,*) '*****************************'
          vdecaytemp=lprup(1)-10000 ! Z decay product, with positive id
-         if(vdecaytemp.eq.11.or.vdecaytemp.eq.13) then
+         if(vdecaytemp.eq.11.or.vdecaytemp.eq.13
+     $        .or.vdecaytemp.eq.15) then
             continue
          else
             write(*,*) '**************************************'
-            write(*,*) ' template analysis works only for e and mu'
+            write(*,*) ' template analysis works only for e, mu and tau'
             write(*,*) '                 STOP     '
             write(*,*) '**************************************'
             call exit(1)
@@ -112,7 +117,7 @@ c     we need to tell to this analysis file which program is running it
       enddo
 
 
-      if(WHCPRG.eq.'NLO   ') then
+      if((WHCPRG.eq.'NLO   ').or.(WHCPRG.eq.'LHE   ')) then
 c     find Z decay products
          do ihep=1,nhep
             if(isthep(ihep).eq.1) then

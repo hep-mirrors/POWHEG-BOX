@@ -28,9 +28,9 @@ c     and it's thought as factorized in front of the real counterterms too.
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       integer nleg
       parameter (nleg=nlegborn)
       real * 8 p(0:3,nleg)

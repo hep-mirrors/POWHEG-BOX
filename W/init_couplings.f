@@ -1,37 +1,62 @@
       subroutine init_couplings
       implicit none
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
-      real * 8 masswindow
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'nlegborn.h'
+      include 'pwhg_kn.h'
+      real * 8 masswindow_low,masswindow_high
+      real * 8powheginput
+      external powheginput
       logical verbose
       parameter(verbose=.true.)
       integer i,j
+
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      ph_Zmass  = 91.1876d0     
-      ph_Zwidth =  2.4952d0
-      ph_Wmass  = 80.398d0     
-      ph_Wwidth =  2.141d0
+      ph_Wmass = powheginput("#Wmass")
+      if (ph_Wmass.le.0d0) ph_Wmass  = 80.398d0     
+      ph_Wwidth = powheginput("#Wwidth")
+      if (ph_Wwidth.le.0d0) ph_Wwidth =  2.141d0
 
-      ph_alphaem = 1d0/137.035999679d0
-      ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
+      ph_alphaem = powheginput("#alphaem")
+      if (ph_alphaem.le.0d0) ph_alphaem = 1d0/137.035999679d0
+      ph_Zmass = powheginput("#Zmass")
+      if (ph_Zmass.le.0d0) ph_Zmass  = 91.1876d0     
+      ph_Zwidth = powheginput("#Zwidth")
+      if (ph_Zwidth.le.0d0) ph_Zwidth =  2.4952d0
+      ph_sthw2 = powheginput("#sthw2")
+      if (ph_sthw2.le.0d0) ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
 
 c     CAVEAT: 
-      ph_CKM(1,1)=0.975d0 
-      ph_CKM(1,2)=0.222d0 
-      ph_CKM(1,3)=1d-10
-      ph_CKM(2,1)=0.222d0 
-      ph_CKM(2,2)=0.975d0 
-      ph_CKM(2,3)=1d-10
-      ph_CKM(3,1)=1d-10
-      ph_CKM(3,2)=1d-10
-      ph_CKM(3,3)=1d0
+      ph_CKM(1,1) = powheginput("#CKM_Vud")
+      if (ph_CKM(1,1).le.0d0) ph_CKM(1,1)=0.975d0 
+      ph_CKM(1,2) = powheginput("#CKM_Vus")
+      if (ph_CKM(1,2).le.0d0) ph_CKM(1,2)=0.222d0 
+      ph_CKM(1,3) = powheginput("#CKM_Vub")
+      if (ph_CKM(1,3).le.0d0) ph_CKM(1,3)=1d-10
+      ph_CKM(2,1) = powheginput("#CKM_Vcd")
+      if (ph_CKM(2,1).le.0d0) ph_CKM(2,1)=0.222d0 
+      ph_CKM(2,2) = powheginput("#CKM_Vcs")
+      if (ph_CKM(2,2).le.0d0)  ph_CKM(2,2)=0.975d0 
+      ph_CKM(2,3) = powheginput("#CKM_Vcb")
+      if (ph_CKM(2,3).le.0d0) ph_CKM(2,3)=1d-10
+      ph_CKM(3,1) = powheginput("#CKM_Vtd")
+      if (ph_CKM(3,1).le.0d0) ph_CKM(3,1)=1d-10
+      ph_CKM(3,2) = powheginput("#CKM_Vts")
+      if (ph_CKM(3,2).le.0d0) ph_CKM(3,2)=1d-10
+      ph_CKM(3,3) = powheginput("#CKM_Vtb")
+      if (ph_CKM(3,3).le.0d0) ph_CKM(3,3)=1d0
 
 c     number of light flavors
       st_nlight = 5
 
+c     mass window
+      masswindow_low = powheginput("#masswindow_low")
+      if (masswindow_low.le.0d0) masswindow_low=10d0
+      masswindow_high = powheginput("#masswindow_high")
+      if (masswindow_high.le.0d0) masswindow_high=10d0
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   DEPENDENT QUANTITIES       
@@ -41,22 +66,13 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_Zmass2 = ph_Zmass**2
       ph_Wmass2 = ph_Wmass**2
 
-c     set mass windows around Z-mass peak in unit of ph_Zwidth
-c     It is used in the generation of the Born phase space
-CAVEAT : masswindow should be a parameter passed by the user
-      masswindow = 30
-      ph_Zmass2low=(ph_Zmass-masswindow*ph_Zwidth)**2
-      ph_Zmass2high=(ph_Zmass+masswindow*ph_Zwidth)**2
-      ph_ZmZw = ph_Zmass * ph_Zwidth
-
 c     set mass window around W-mass peak in unit of ph_Wwidth
 c     It is used in the generation of the Born phase space
-CAVEAT : masswindow should be a parameter passed by the user
-      masswindow = 30
-      ph_Wmass2low=(ph_Wmass-masswindow*ph_Wwidth)**2
-      ph_Wmass2high=(ph_Wmass+masswindow*ph_Wwidth)**2
+      ph_Wmass2low=max(0d0,ph_Wmass-masswindow_low*ph_Wwidth)
+      ph_Wmass2low=ph_Wmass2low**2
+      ph_Wmass2high=ph_Wmass+masswindow_high*ph_Wwidth
+      ph_Wmass2high=min(kn_sbeams,ph_Wmass2high**2)
       ph_WmWw = ph_Wmass * ph_Wwidth
-
       ph_unit_e = sqrt(4*pi*ph_alphaem)
 
       if(verbose) then

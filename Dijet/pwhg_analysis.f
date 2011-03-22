@@ -1,16 +1,15 @@
-c  The next subroutines, open some histograms and prepare them 
-c      to receive data 
-c  You can substitute these  with your favourite ones
-c  init   :  opens the histograms
-c  topout :  closes them
-c  pwhgfill  :  fills the histograms with data
+C - The next subroutines, open some histograms and prepare them 
+C - to receive data. You may substitute these with your own:
+C - init    : opens the histograms
+C - topout  : closes them
+C - pwhgfill: fills the histograms with data.
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include 'LesHouches.h'
       include '../pwhg_book.h'
-      include '../include/pwhg_math.h'
-      integer diag
+      include 'pwhg_math.h'
+      integer  diag
       real * 8 binsize(700)
       common/pwhghistcommon/binsize
       character * 10 cut
@@ -195,7 +194,7 @@ C - Dijet invariant mass computed from the two jets with the largest pT.
 C - Both jets must have pT>40 GeV.
 C - |y_max| is defined as max(|y_1|,|y_2|) where y_1 and y_2 are the
 C - rapidities of the two largest pT jets from which m_JJ is computed.
-C - Data are for sqrt(S)=1.96 TeV. I am not totally sure about the jet
+C - Data are for sqrt(S)=1.96 TeV. We are not totally sure about the jet
 C - algorithm but the D0 run II cone plugin seems most likely (the paper
 C - says it is a seeded midpoint cone algorithm). 
 C - N.B. Also the jet algorithm overlap parameter is not given nor is
@@ -204,10 +203,8 @@ C - at any iteration they have pt < Et_min_ratio * min_jet_Et. For these
 C - we will use the values mentioned in the D0RunIICone plugin in fastjet
 C - i.e. 0.5 for the overlap and 6 GeV for min_jet_Et (the plugin advises
 C - that D0 used 8 GeV for early run II analysis and 6 GeV for later ones
-C - hence as the analysis is 2010 we opt for 6 GeV). We iterate that these
-C - values are not given in the D0 paper or Durham reaction database.
-C - N.B. There are also some missing ET cuts used in the analysis to
-C - remove cosmics, these MISSING ET CUTS ARE NEGLECTED IN THE FOLLOWING!!!
+C - hence as the analysis is 2010 we opt for 6 GeV). These values were not
+C - found in the D0 paper or Durham reaction database.
       diag=50
 C -     |y_max|<0.4 (51)
       diag=diag+1
@@ -280,16 +277,16 @@ C --------------------------------- C
 C - Dijet azimuthal decorrelation - C
 C --------------------------------- C
 
-C - Dijet azimuthal decorrelation binning & cuts to coincide with
+C - Dijet azimuthal decorrelation binning & cuts following
 C - hep-ex/0409040, Figure. 1 (D0).
 C - http://hepdata.cedar.ac.uk/View/5992206
 C - Delta phi = |phi_J1-phi_J2| where J1 and J2 are the two
 C - jets of highest transverse momentum. The dijet definition uses
-C - and 'iterativeC seed based cone algorithm including midpoints'
+C - and 'iterative seed based cone algorithm including midpoints'
 C - cone algorithm with Rcone=0.7 [and f=0.5?] and the E-scheme for
 C - recombination of particles into jets. The same paper is cited in
 C - regard to the jet algorithm as in the dijet invariant mass analysis
-C - so we will assume it is what is in fastjet's DORunIICone plugin.
+C - so we assume it is what is in fastjet's DORunIICone plugin.
 C - However, since this is an 'earlier' run II analysis we will assume
 C - 6 GeV for min_jet_Et (instead of 8 GeV - see note above).
 C - N.B. p_T^max = pT of hardest jet (pT,J1)
@@ -420,16 +417,10 @@ C - http://hepdata.cedar.ac.uk/View/2952106
 
 C - Pseudorapidity of the third hardest jet (98)
 C - Cuts: |eta_1|<0.7, |eta_2|<0.7, |phi_1-phi_2|>2.79
-C - E_T1 > 110 GeV, E_T3 > 10GeV. In an ideal world I
-C - would also know better what exactly was the R=0.7
-C - cone algorithm they used.
+C - E_T1 > 110 GeV, E_T3 > 10GeV. 
       diag=diag+1
       binsize(diag) = 0.2d0
       call pwhgbookup(diag,'H0J31','LOG',binsize(diag),-4d0,4d0)
-C - N.B. If plotting the 'alpha' variable used in this study
-C - one must impose an additional cut 1.1 < DeltaR_23 < pi.
-C - I didn't plot alpha because looking at the results of the 
-C - CDF study, alpha doesn't discriminate much between anything.
 
       end
 
@@ -438,8 +429,8 @@ C - CDF study, alpha doesn't discriminate much between anything.
      $                     pT_rel_J1,pT_rel_J2,jet_algo)
 c     arrays to reconstruct jets
       implicit none
-      include   '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
+      include   'hepevt.h'
+      include 'pwhg_math.h' 
       integer   maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
       real * 8 binsize(700)
@@ -519,7 +510,7 @@ C - Compute the total and missing ET here (CDF arXiv:0807.2204v4).
          call get_pseudorap(pjet(1,j),eta0)
 C - N.B. We have neglected a small E_T cut here, which goes with
 C - |eta|<3.6; each calo tower is required to have ET > 100 MeV
-C - (arXiv:0807.2204v4 item 36 in the bibliography)!!!
+C - (arXiv:0807.2204v4 item 36 in the bibliography).
 C - N.B. Also the sum used to obtain mET and tot_ET is experimentally
 C - defined to be the sum over calorimeter cells, not a sum over jets!
 C - In any case the efficiency of this cut is said to range from
@@ -762,9 +753,9 @@ C - Copying the momenta of the hardest jets
       subroutine analysis(dsig0)
       implicit none
       real * 8 dsig0,dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
       integer ihep
       logical ini
       data ini/.true./
@@ -788,24 +779,19 @@ C - Pico to microbarn conversion:
       dsig=dsig0/1d6
 
       if (ini) then
-         write(*,*) '*****************************'
-         if(WHCPRG.eq.'NLO   ') then
-            write(*,*) '            NLO analysis'
+         write (*,*)
+         write (*,*) '********************************************'
+         if(whcprg.eq.'NLO') then
+            write (*,*) '           NLO ANALYSIS CALLED        '
+         elseif(WHCPRG.eq.'LHE   ') then
+            write (*,*) '           LHE ANALYSIS CALLED        '
          elseif(WHCPRG.eq.'HERWIG') then
-            write (*,*) '                HERWIG ANALYSIS            '
+            write (*,*) '           HERWIG ANALYSIS CALLED     '
          elseif(WHCPRG.eq.'PYTHIA') then
-            write (*,*) '                PYTHIA ANALYSIS            '
+            write (*,*) '           PYTHIA ANALYSIS CALLED     '
          endif
-         write(*,*) '*****************************'
-         
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
-         write(*,*) '                ANALYSIS CUTS                     '
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
-         write(*,*) '   no cuts   '
-         write(*,*) '**************************************************'
-         write(*,*) '**************************************************'
+         write (*,*) '********************************************'
+         write (*,*)
          ini=.false.
       endif
 
@@ -1127,49 +1113,6 @@ C - ... and     pT,J1>180 GeV (74)
      $        call pwhgfill(diag,dphi,dsig/binsize(diag))
       endif
 
-C - The following analysis was moved into the buildjets
-C - routine in order to make sure ALL jets found went into
-C - the plots instead of what is called 'njets' in this 
-C - subroutine. Perhaps this is wrong.
-c$$$C -------------------------------------------------- C
-c$$$C - Inclusive jet pT spectrum using cone algorithm - C
-c$$$C -------------------------------------------------- C
-c$$$
-c$$$      diag=80
-c$$$C -   First just with MC generation cuts [NOT in CDF analysis obviously].
-c$$$      do j=1,njets
-c$$$         call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
-c$$$      enddo
-c$$$C -     |y_jet|<0.1 (81)
-c$$$      diag=diag+1
-c$$$      do j=1,njets
-c$$$         if(abs(rapjets(j)).le.0.1d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
-c$$$      enddo
-c$$$C - 0.1<|y_jet|<0.7 (82)
-c$$$      diag=diag+1
-c$$$      do j=1,njets
-c$$$         if(abs(rapjets(j)).gt.0.1d0.and.abs(rapjets(j)).le.0.7d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
-c$$$      enddo
-c$$$C - 0.7<|y_jet|<1.1 (83)
-c$$$      diag=diag+1
-c$$$      do j=1,njets
-c$$$         if(abs(rapjets(j)).gt.0.7d0.and.abs(rapjets(j)).le.1.1d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
-c$$$      enddo
-c$$$C - 1.1<|y_jet|<1.6 (84)
-c$$$      diag=diag+1
-c$$$      do j=1,njets
-c$$$         if(abs(rapjets(j)).gt.1.1d0.and.abs(rapjets(j)).le.1.6d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
-c$$$      enddo
-c$$$C - 1.6<|y_jet|<2.1 (85)
-c$$$      diag=diag+1
-c$$$      do j=1,njets
-c$$$         if(abs(rapjets(j)).gt.1.6d0.and.abs(rapjets(j)).le.2.1d0)
-c$$$     $        call pwhgfill(diag,ktjets(j),dsig/binsize(diag))
-c$$$      enddo
 C ------------------------------------------------------ C
 C - Inclusive jet Y spectrum using same cone algorithm - C
 C ------------------------------------------------------ C
@@ -1214,7 +1157,7 @@ C - p_T^rel inclusive in jets 1 and 2 in >= 2 jet events (97)
          call pwhgfill(diag,pT_rel_J2,dsig/binsize(diag))
       endif
 
-      if(WHCPRG.eq.'NLO   ') then
+      if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
          continue
       elseif ((WHCPRG.eq.'HERWIG').or.(WHCPRG.eq.'PYTHIA')) then
          continue

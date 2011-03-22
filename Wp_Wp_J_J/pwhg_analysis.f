@@ -7,7 +7,7 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
       integer diag
       real * 8 binsize(100)
@@ -270,12 +270,12 @@ c     total cross section sanity check
       subroutine analysis(dsig0)
       implicit none
       real * 8 dsig0,dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h'
+      include 'hepevt.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h' 
-      include '../include/pwhg_rad.h' 
-      include  '../include/LesHouches.h'
+      include 'pwhg_flst.h' 
+      include 'pwhg_rad.h' 
+      include  'LesHouches.h'
       logical ini
       data ini/.true./
       save ini
@@ -318,7 +318,7 @@ c from pico to femto
       if (ini) then
          write (*,*)
          write (*,*) '********************************************'
-         if(WHCPRG.eq.'NLO   ') then
+         if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
             write (*,*) '           NLO ANALYSIS CALLED        '
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS CALLED     '
@@ -774,7 +774,7 @@ c     arrays to reconstruct jets
       integer mjets
       real * 8  kt(mjets),eta(mjets),rap(mjets),phi(mjets),
      1     pjet(4,mjets),ptrel(mjets)
-      include   '../include/hepevt.h'
+      include   'hepevt.h'
       integer   maxtrack,maxjet
       parameter (maxtrack=2048,maxjet=2048)
       real * 8  ptrack(4,maxtrack),pj(4,maxjet)
@@ -864,7 +864,7 @@ C --------------------------------------------------------------------- C
       logical function bson(j,jb)
       implicit none
       integer j,jb
-      include   '../include/hepevt.h'
+      include   'hepevt.h'
       integer jcurr
       logical bhadrstable
       jcurr=j
@@ -937,7 +937,7 @@ c         write(133,*) idhep,' false '
 
       subroutine incbhadrons(jb)
       implicit none
-      include   '../include/hepevt.h'      
+      include   'hepevt.h'      
       integer jb
       integer barray(1000),bnum
       common/cbarray/barray,bnum
@@ -961,7 +961,7 @@ c         write(133,*) idhep,' false '
       subroutine sortbypt(n,iarr)
       implicit none
       integer n,iarr(n)
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       integer j,k
       real * 8 tmp,pt(nmxhep)
       logical touched

@@ -8,3 +8,4 @@ c          -*- fortran -*-
       common/pwhg_par/par_diexp,par_dijexp,par_2gsupp,
      1         par_fsrtinycsi,par_fsrtinyy,
      2         par_isrtinycsi,par_isrtinyy
+      save /pwhg_par/

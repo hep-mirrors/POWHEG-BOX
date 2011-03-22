@@ -178,7 +178,7 @@ C
       HINT(N) = 0
       HSIG(N) = 0
       DO I=1,NBIN(N)
-         XHIS(N,I)=HMIN(N)+HDEL(N)*(FLOAT(I)-0.5)
+         XHIS(N,I)=HMIN(N)+HDEL(N)*(FLOAT(I)-0.5D0)
          IHIS(N,I)=0
          HIST(N,I)=0
       ENDDO
@@ -714,10 +714,10 @@ C-- setup y-boundaries
       HAVG2(2,N)=0.
       HINT2(N)=0.
       DO 1 I=1,NBIN2(1,N)
-      XHIS2(N,I)=HMIN2(1,N)+HDEL2(1,N)*(FLOAT(I)-0.5)
+      XHIS2(N,I)=HMIN2(1,N)+HDEL2(1,N)*(FLOAT(I)-0.5D0)
    1  CONTINUE
       DO 2 I=1,NBIN2(2,N)
-      YHIS2(N,I)=HMIN2(2,N)+HDEL2(2,N)*(FLOAT(I)-0.5)
+      YHIS2(N,I)=HMIN2(2,N)+HDEL2(2,N)*(FLOAT(I)-0.5D0)
    2  CONTINUE
       DO 3 I=1,NBIN2(1,N)
       DO 3 J=1,NBIN2(2,N)
@@ -1098,7 +1098,7 @@ c     +      ' TITLE 9.5 9 ANGLE -90 ','" MLM   ',I2,'-',I2,1X,A5,'"')
      *       2X,'SET WINDOW Y ',F8.4,' TO ',F8.4)
       XTIT=XL+XTIT0
       YTIT=YU+YTIT0
-      WRITE(99,101) XL,YTIT,TITLE(NH)(1:40)
+      WRITE(99,101) XL,YTIT,TITLE(NH)(1:)
 101   FORMAT('  TITLE ',2(F8.4,1X),'"',A,'"')                  
       YTIT=YTIT-2.*YTIT0
       WRITE(99,102) XTIT,YTIT,HINT(NH)
@@ -1271,14 +1271,14 @@ c
          if(tag.eq.'YST') then
             do l=1,nbin(j)
                hist(j+nmh,l)=hist(j+nmh,l)+hist(j,l)
-               hist(j+nmh2,l)=hist(j+nmh2,l)+hist(j,l)**2
+               hist(j+nmh2,l)=hist(j+nmh2,l)+hist(j,l)*hist(j,l)
                hist(j,l)=0
             enddo
             ient(j+nmh)=ient(j+nmh)+1
             uscore(j+nmh)=uscore(j+nmh)+uscore(j)
-            uscore(j+nmh2)=uscore(j+nmh2)+uscore(j)**2
+            uscore(j+nmh2)=uscore(j+nmh2)+uscore(j)*uscore(j)
             oscore(j+nmh)=oscore(j+nmh)+oscore(j)
-            oscore(j+nmh2)=oscore(j+nmh2)+oscore(j)**2
+            oscore(j+nmh2)=oscore(j+nmh2)+oscore(j)*oscore(j)
             uscore(j)=0
             oscore(j)=0
          endif

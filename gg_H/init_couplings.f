@@ -1,11 +1,11 @@
       subroutine init_couplings
       implicit none
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'    
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'    
       include 'nlegborn.h'      
-      include '../include/pwhg_kn.h'      
-      real * 8 masswindow
+      include 'pwhg_kn.h'      
+      real * 8 masswindow_low,masswindow_high
       logical verbose
       parameter(verbose=.true.)
       integer i,j
@@ -16,27 +16,24 @@ cccccc   INDEPENDENT QUANTITIES
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_Hmass = powheginput('hmass')
       ph_Hwidth = powheginput('hwidth')
-      ph_Zmass  = 91.1876d0     
-      ph_Zwidth =  2.4952d0
-      ph_Wmass  = 80.398d0     
-      ph_Wwidth =  2.141d0
 
-      ph_alphaem = 1d0/137.035999679
-      ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
-      ph_GF= powheginput('gfermi') 
-      ph_topmass = powheginput('topmass')
-      
-c$$$c     CAVEAT: 
-c$$$      ph_CKM(1,1)=0.975 
-c$$$      ph_CKM(1,2)=0.222 
-c$$$      ph_CKM(1,3)=1d-5
-c$$$      ph_CKM(2,1)=0.222 
-c$$$      ph_CKM(2,2)=0.975 
-c$$$      ph_CKM(2,3)=1d-5
-c$$$      ph_CKM(3,1)=1d-5
-c$$$      ph_CKM(3,2)=1d-5
-c$$$      ph_CKM(3,3)=1.0
 
+      ph_GF= powheginput('#gfermi') 
+      if (ph_GF.le.0d0) ph_GF  = 0.116639D-04     
+      ph_topmass = powheginput('#topmass')
+      if (ph_topmass.le.0d0) ph_topmass  = 171.3d0
+      ph_alphaem = powheginput("#alphaem")
+      if (ph_alphaem.le.0d0) ph_alphaem = 1d0/137.035999679d0
+      ph_Zmass = powheginput("#Zmass")
+      if (ph_Zmass.le.0d0) ph_Zmass  = 91.1876d0     
+      ph_Zwidth = powheginput("#Zwidth")
+      if (ph_Zwidth.le.0d0) ph_Zwidth =  2.4952d0
+      ph_Wmass = powheginput("#Wmass")
+      if (ph_Wmass.le.0d0) ph_Wmass  = 80.398d0     
+      ph_Wwidth = powheginput("#Wwidth")
+      if (ph_Wwidth.le.0d0) ph_Wwidth =  2.141d0      
+      ph_sthw2 = powheginput("#sthw2")
+      if (ph_sthw2.le.0d0) ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
 c     number of light flavors
       st_nlight = 5
 
@@ -53,13 +50,14 @@ c     set mass windows around H-mass peak in unit of ph_Hwidth
 c     It is used in the generation of the Born phase space
 C     masswindow is an optonal  parameter passed by the user
 C     the default vale is 10 
-      masswindow = powheginput("#masswindow")
-      if(masswindow.lt.0d0) masswindow=10d0
-c      ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)^2
-      ph_Hmass2low=max(0d0,ph_Hmass-masswindow*ph_Hwidth)
+      masswindow_low = powheginput("#masswindow_low")
+      if(masswindow_low.lt.0d0) masswindow_low=10d0
+      ph_Hmass2low=max(0d0,ph_Hmass-masswindow_low*ph_Hwidth)
       ph_Hmass2low= ph_Hmass2low**2
-c      ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)^2
-      ph_Hmass2high=min(kn_sbeams,(ph_Hmass+masswindow*ph_Hwidth)**2)
+      masswindow_high = powheginput("#masswindow_high")
+      if(masswindow_high.lt.0d0) masswindow_high=10d0
+      ph_Hmass2high=ph_Hmass+masswindow_high*ph_Hwidth
+      ph_Hmass2high= min(kn_sbeams,ph_Hmass2high**2)
       ph_HmHw = ph_Hmass * ph_Hwidth
 
 
@@ -73,10 +71,6 @@ c      ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)^2
       write(*,*) 'sthw2 = ',ph_sthw2
       write(*,*) 'GF = ',ph_GF
       write(*,*) 'top mass = ',ph_topmass
-c      write(*,*) 'CKM matrix' 
-c      do i=1,3
-c         write(*,*) (ph_CKM(i,j),j=1,3)
-c      enddo
       write(*,*) '*************************************'
       write(*,*)
       write(*,*) '*************************************'

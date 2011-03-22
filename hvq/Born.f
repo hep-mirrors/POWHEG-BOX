@@ -1,9 +1,9 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_kn.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -101,8 +101,8 @@ c     q qbar annihilation
       subroutine born_suppression(fact)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       logical ini
       data ini/.true./
       real * 8 fact,pt2,pt2supp,powheginput,pt
@@ -122,9 +122,9 @@ c     q qbar annihilation
 
 
 
-      subroutine resonances_lh
+      subroutine finalize_lh
       implicit none
-c This should not be here, or perhaps resonances_lh should be
+c This should not be here, or perhaps finalize_lh should be
 c called tail_lh.
 c In case of a real event, replace
 c all colours with those computed using the planar approximation
@@ -142,10 +142,10 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       integer iclabel
       common/ciclabel/iclabel
       real * 8 random
@@ -183,7 +183,7 @@ c     1 and 2 are incoming! conjugate color
 
       subroutine realcolour_lh
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       character * 2 genprc
       integer jflreal
       integer igluon

@@ -9,7 +9,7 @@ c     !: See comments in put_on_mass_shell.
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       integer nlegs
       parameter (nlegs=nlegborn)
@@ -71,9 +71,9 @@ c where k#i,j
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -302,8 +302,9 @@ c     the one obtained with FeynCalc
 
          do i=0,3
             do j=0,3
-               bmunu(i,j)=-born_bmunu(i,j,kbcm(0,1),kbcm(0,2),kbcm(0,3),kbcm(0,4),sqrt(m2t),sqrt(m2w),s,t,u)
-     $*(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf) *ckmtmp
+               bmunu(i,j)=-born_bmunu(i,j,kbcm(0,1),kbcm(0,2),kbcm(0,3),
+     $              kbcm(0,4),sqrt(m2t),sqrt(m2w),s,t,u)
+     $              *(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf) *ckmtmp
             enddo
          enddo
       elseif(bflav(1).eq.0) then
@@ -326,8 +327,9 @@ c     the one obtained with FeynCalc
 
          do i=0,3
             do j=0,3
-               bmunu(i,j)=-born_bmunu(i,j,kbcm(0,2),kbcm(0,1),kbcm(0,3),kbcm(0,4),sqrt(m2t),sqrt(m2w),s,t,u)
-     $*(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf) *ckmtmp
+               bmunu(i,j)=-born_bmunu(i,j,kbcm(0,2),kbcm(0,1),kbcm(0,3),
+     $              kbcm(0,4),sqrt(m2t),sqrt(m2w),s,t,u)
+     $              *(4*pi*st_alpha)*(ewcoupl/8.)/3./8. *(3.*cf) *ckmtmp
             enddo
          enddo
       endif
@@ -343,7 +345,8 @@ cccccccccccccccccccccc
       real *8 tmp
 
       tmp=-(s/u1+u1/s)*(1+m2t/2/m2w)
-      tmp=tmp + 2*(1-m2t/2/m2w-m2t*m2t/2/m2w/m2w)*(m2w*(s+u1)*u1+m2t*m2w*s)/s/u1/u1
+      tmp=tmp + 2*(1-m2t/2/m2w-m2t*m2t/2/m2w/m2w)*
+     $     (m2w*(s+u1)*u1+m2t*m2w*s)/s/u1/u1
       tmp=tmp - (2-3*m2t/m2w+(m2t/m2w)**3)*m2w*m2w/s/u1
       tmp=tmp - m2t/m2w
 
@@ -361,7 +364,7 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
       integer ileg,tmp
       integer tgcol,bgcol
@@ -428,7 +431,7 @@ c     with anticolors
       end
 
 
-      subroutine resonances_lh
+      subroutine finalize_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     Before that, call the routine that generates the decay.
@@ -438,7 +441,7 @@ c     that the overall azimuthal rotation has been already
 c     performed (add_azimuth called in pwhgevent). 
       implicit none
       include 'nlegborn.h'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
       integer tdecaymode
       integer mu,ileg
@@ -697,11 +700,13 @@ c     momentum conservation check
             endif
             print*, '>>> ',toten,totpx,totpy,totpz
             do ileg=1,2
-               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),pup(3,ileg),
+               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),
+     $              pup(3,ileg),
      $              '  mass',pup(5,ileg)
             enddo
             do ileg=3,nup
-               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),pup(3,ileg),
+               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),
+     $              pup(3,ileg),
      $              '  mass',pup(5,ileg)
             enddo
          endif
@@ -1039,10 +1044,10 @@ c     MASSLESS event in pup, add the W and the t decay
 c     products, filling klab_dec. Decay products are MASSLESS.
       implicit none
       include 'nlegborn.h'
-      include '../include/LesHouches.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_st.h'
+      include 'LesHouches.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       real *8 klab_dec(0:3,nlegreal+5)
 
@@ -1440,7 +1445,7 @@ c     Denote this system as wt
      $(kcm_undec(0,3)+kcm_undec(0,4))
       enddo
       do ileg=3,4
-         call boost(beta_cm_to_wtcm,kcm_undec(0,ileg),kwtcm_undec(0,ileg))
+       call boost(beta_cm_to_wtcm,kcm_undec(0,ileg),kwtcm_undec(0,ileg))
       enddo
 
 c     decay products have to be massless
@@ -1628,7 +1633,7 @@ c     It can be argued that other choices are more appropriate.
          xpdf(ileg)=pup(4,ileg)/kn_beams(0,ileg)
          xpdf_dec(ileg)=xpdf(ileg)*sqrttau_dec/sqrttau_undec
          if(xpdf_dec(ileg).gt.1d0) then
-         write(*,*) 'PS&LUM HIT&MISS, x1_dec,x2_dec ',ileg,xpdf_dec(ileg)
+         write(*,*)'PS&LUM HIT&MISS, x1_dec,x2_dec ',ileg,xpdf_dec(ileg)
             goto 2
          endif
          flav(ileg)=idup(ileg)
@@ -1686,7 +1691,7 @@ c     be used in the following with a different notation
          do mu=0,3
             if(dabs(kcm_undec(mu,5)).gt.tiny) then
                write(*,*) 'Error 3 in generating top-w virtuality'
-               write(*,*) 'kcm_undec(mu,5) ',(kcm_undec(ileg,5),ileg=0,3)
+              write(*,*) 'kcm_undec(mu,5) ',(kcm_undec(ileg,5),ileg=0,3)
                call exit(1)
             endif
          enddo
@@ -1715,7 +1720,8 @@ c     given top momentum in partonic cm frame, m67_2 and m68_2,
 c     build top-decay momenta in partonic cm frame
 c     6-> e, 7->ve, 8->b
 
-      call build_decay_mom(kcm_undec_off(0,3),m67_2,m68_2,m6,m7,m8,k3cm_tdec)
+      call build_decay_mom(kcm_undec_off(0,3),m67_2,m68_2,m6,m7,m8,
+     $     k3cm_tdec)
 c$$$      write(*,*) 't-dec mom conservation check'
 c$$$      write(*,*) k3cm_tdec(0,6)+k3cm_tdec(0,7)+k3cm_tdec(0,8)-kcm_undec_off(0,3)
 c$$$      write(*,*) k3cm_tdec(1,6)+k3cm_tdec(1,7)+k3cm_tdec(1,8)-kcm_undec_off(1,3)
@@ -2059,7 +2065,7 @@ c     If we are here, kinematics has been accepted: we can save the momenta
          enddo
       enddo
       do ileg=1,nlegreal
-         call boost(beta_cm_to_lab,kcm_undec_off(0,ileg),klab_dec(0,ileg))
+       call boost(beta_cm_to_lab,kcm_undec_off(0,ileg),klab_dec(0,ileg))
       enddo
 
 c     WARNING: Notice that, at this point, in k3cm_tdec,
@@ -2542,7 +2548,7 @@ c     !: routine checked only when used trivially (i.e. no reshuffling)
       subroutine put_on_mass_shell(tdecayflag,MC_mass,xklab,xklab_os)
       implicit none
       include 'nlegborn.h'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
 c     masses
       real *8 mcmass(0:6)
@@ -3000,7 +3006,8 @@ c     new shat
 c     boost back in the lab frame (with the old boost vector)
          do ileg=1,2
             call boost(betacm,kcm(0,ileg),klab(0,ileg))
-            if(verbose) write(*,*)'\t',klab(0,ileg),klab(1,ileg),klab(2,ileg),klab(3,ileg)
+            if(verbose) write(*,*)'\t',klab(0,ileg),klab(1,ileg),
+     $           klab(2,ileg),klab(3,ileg)
          enddo
 
       endif
@@ -3126,14 +3133,20 @@ c     leave to check momentum conservation
             endif
             print*, '>>>',toten,totpx,totpy,totpz
             print*, 'kcm(*,5)', kcm(0,5),kcm(1,5),kcm(2,5),kcm(3,5)
-            print*, 's partonic',shat,m34**2,2d0*dotp(xklab_os(0,1),xklab_os(0,2)),175**2+2d0*dotp(xklab_os(0,3),xklab_os(0,4))
+            print*, 's partonic',shat,m34**2,
+     $           2d0*dotp(xklab_os(0,1),xklab_os(0,2)),
+     $           175**2+2d0*dotp(xklab_os(0,3),xklab_os(0,4))
             do ileg=1,2
-               print*, xklab_os(0,ileg),xklab_os(1,ileg),xklab_os(2,ileg),xklab_os(3,ileg),
-     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
+               print*, xklab_os(0,ileg),xklab_os(1,ileg),
+     $              xklab_os(2,ileg),xklab_os(3,ileg),
+     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-
+     $              xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
             enddo
             do ileg=3,nup
-               print*, xklab_os(0,ileg),xklab_os(1,ileg),xklab_os(2,ileg),xklab_os(3,ileg),
-     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
+               print*, xklab_os(0,ileg),xklab_os(1,ileg),
+     $              xklab_os(2,ileg),xklab_os(3,ileg),
+     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-
+     $              xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
             enddo
 !            stop
          endif
@@ -3244,7 +3257,7 @@ c     it returns in vec the full 4 momentum in the boosted frame
 c     (i.e. the momentum that has en_prime when boosted back in the original frame).
 c     vec azimuth wrt beta direction is cast randomly.
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       real *8 vec(0:3),en,norm,en_prime,beta(3)
 c     local
       real *8 phi,beta_mod,gamma_b,ctheta,vec_tmp(0:3)

@@ -1,10 +1,10 @@
       subroutine btildereal(xrad,resreal,www)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_par.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_par.h'
       real * 8 xrad(3),resreal(maxprocborn),www
       real * 8 r0(maxalr),rc(maxalr),rp(maxalr),rm(maxalr),
      # r0s(maxalr),rcs(maxalr),rps(maxalr),rms(maxalr),xl,xlp,xlm,
@@ -153,9 +153,9 @@ c     to avoid divergent integral (25 is an ad hoc value)
       implicit none
       integer iun
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_dbg.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_dbg.h'
       external sigreal_btl,soft,collfsr,softcollfsr, collisrp,
      $     softcollisrp,collisrm,softcollisrm
       call randomsave
@@ -250,9 +250,9 @@ c are consistent with total Born
       implicit none
       integer iun
       include 'nlegborn.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_br.h'
+      include 'pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_br.h'
       integer  iborn,j,k,mu
       real * 8 tot
       real * 8 gtens(0:3,0:3),ap
@@ -308,10 +308,10 @@ c are consistent with total Born
 
       subroutine checksoft(sig,sigs,label,iun)
       implicit none
-      include 'include/pwhg_dbg.h'
+      include 'pwhg_dbg.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       character *(*) label
       integer iun
       real * 8 xborn(ndiminteg-3),xrad(3)
@@ -412,10 +412,10 @@ c               if(r0s(alr,jexp).eq.0) iszero=.true.
       subroutine checkcoll(sig,sigc,idir,label,iun)
       implicit none
       integer iun
-      include 'include/pwhg_dbg.h'
+      include 'pwhg_dbg.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       character *(*) label
       integer idir
       real * 8 xborn(ndiminteg-3),xrad(3)
@@ -532,11 +532,11 @@ c     Added this 'if' to be sure that no division by zero occurs
       implicit none
       real * 8 sig
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_par.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_par.h'
       real * 8 r0(maxalr),rc(maxalr),rs(maxalr)
       integer alr,alrpr,iret,em
       integer nmomset,emitter
@@ -694,10 +694,10 @@ c    csi^2 (1-y)   for FSR regions
       subroutine sigreal_btl0(r0,imode)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_par.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_par.h'
       integer imode
       real * 8 r0(maxalr)
       real * 8 rc(maxalr),rs(maxalr),r
@@ -867,7 +867,7 @@ c We should have the masses as a function of flavour id, somewhere!
       subroutine compare_vecs(nmomset,alr,res,imode,alrpr,cprop,iret)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 ep
       parameter (ep=1d-12)
       integer nmomset,alr,alrpr,imode,iret,j,k
@@ -901,7 +901,7 @@ c are not considered.
       subroutine realgr(rflav,p,res)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer rflav(nlegreal)
       real * 8 p(0:3,nlegreal),res
       call real_ampsq(p,rflav,res)
@@ -918,9 +918,9 @@ c         write(*,*) 'realgr:', rflav
       subroutine real_ampsq(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
       real * 8 amp2 

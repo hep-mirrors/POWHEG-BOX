@@ -7,9 +7,9 @@ c  pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
-      include '../include/pwhg_math.h' 
+      include 'pwhg_math.h' 
       integer numplots
       real * 8 binsize(100)
       common/pwhghistcommon/binsize,numplots
@@ -256,9 +256,9 @@ c     total cross section sanity check
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h' 
-      include '../include/pwhg_math.h' 
-      include  '../include/LesHouches.h'
+      include 'hepevt.h' 
+      include 'pwhg_math.h' 
+      include  'LesHouches.h'
 c     other common blocks
       integer numplots
       real * 8 binsize(100)
@@ -307,7 +307,7 @@ c     we need to tell to this analysis file which program is running it
 
       if (ini) then
          write(*,*) '*****************************'
-         if(WHCPRG.eq.'NLO   ') then
+         if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
             write(*,*) '   NLO analysis not implemented        '
             write(*,*) 'No analysis will be run'
          elseif(WHCPRG.eq.'HERWIG') then
@@ -320,7 +320,7 @@ c     we need to tell to this analysis file which program is running it
          ini=.false.
       endif
 
-      if (WHCPRG.eq.'NLO   ') then
+      if (whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
          return
       elseif (WHCPRG.eq.'HERWIG'.or.WHCPRG.eq.'PYTHIA') then
          if(WHCPRG.eq.'HERWIG') then
@@ -523,10 +523,12 @@ c     Find the hardest jet
             endif
          enddo
 c     Now ij1 is the hardest jet
-         pj1(0)=pjet(4,ij1)
-         do mu=1,3
-            pj1(mu)=pjet(mu,ij1)
-         enddo
+         if(ij1.ne.0) then
+            pj1(0)=pjet(4,ij1)
+            do mu=1,3
+               pj1(mu)=pjet(mu,ij1)
+            enddo
+         endif
 
          if(njets.ge.2) then
 c     Find the next-to-hardest jet
@@ -543,10 +545,12 @@ c     Find the next-to-hardest jet
                endif
             enddo
 c     Now ij2 is the next-to-hardest jet
-            pj2(0)=pjet(4,ij2)
-            do mu=1,3
-               pj2(mu)=pjet(mu,ij2)
-            enddo
+            if(ij2.ne.0) then
+               pj2(0)=pjet(4,ij2)
+               do mu=1,3
+                  pj2(mu)=pjet(mu,ij2)
+               enddo
+            endif
             if(ij1.eq.ij2) then
                write(*,*) 'Suspicious event: ij1=ij2'
                skipjet=.true.
@@ -1052,7 +1056,7 @@ c     !: protect for small p(0)-p(3) values
 
       function azi(p)
       implicit none
-      include '../include/pwhg_math.h'  
+      include 'pwhg_math.h'  
       real * 8 azi,p(0:3)
       azi = atan(p(2)/p(1))
       if (p(1).lt.0d0) then

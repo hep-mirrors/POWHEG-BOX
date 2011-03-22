@@ -7,7 +7,7 @@ c     pwhgfill  :  fills the histograms with data
 
       subroutine init_hist
       implicit none
-      include  '../include/LesHouches.h'
+      include  'LesHouches.h'
       include '../pwhg_book.h'
       include 'PhysPars.h'
       integer diag
@@ -23,10 +23,11 @@ c     we need to tell to this analysis file which program is running it
 
       call pwhginihist
 
-      if(WHCPRG.eq.'NLO   ') then
+      if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
          EMMIN=sqrt(ph_Hmass2low)
          EMMAX=sqrt(ph_Hmass2high)
-      elseif((WHCPRG.eq.'HERWIG').or.(WHCPRG.eq.'PYTHIA')) then
+      elseif((WHCPRG.eq.'HERWIG').or.(WHCPRG.eq.'PYTHIA')
+     $.or.(WHCPRG.eq.'LHE   ')) then
          EMMIN=powheginput('hmass')-10*powheginput('hwidth')
          EMMAX=powheginput('hmass')+10*powheginput('hwidth')
       endif
@@ -103,8 +104,8 @@ c     we need to tell to this analysis file which program is running it
       subroutine analysis(dsig)
       implicit none
       real * 8 dsig
-      include '../include/hepevt.h'
-      include '../include/pwhg_math.h' 
+      include 'hepevt.h'
+      include 'pwhg_math.h' 
       include 'PhysPars.h'
       real*8 m1,pt1,y1,delphi
       real*8 e1,px1,py1,pz1,p1
@@ -138,8 +139,10 @@ c arrays to reconstruct jets
  
       if (ini) then
          write(*,*) '*****************************'
-         if(WHCPRG.eq.'NLO   ') then
+         if(whcprg.eq.'NLO'.or.whcprg.eq.'LHE') then
             write(*,*) '       NLO ANALYSIS'
+         elseif(WHCPRG.eq.'LHE   ') then
+            write(*,*) '       LHE ANALYSIS'
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS            '
          elseif(WHCPRG.eq.'PYTHIA') then

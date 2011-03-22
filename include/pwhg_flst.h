@@ -58,5 +58,4 @@ c     born2alr(1.. born2alr(0,k),k)= pointer to corresponding alpha_r
      2         flst_nalr,flst_alr,flst_nregular,flst_regular,
      3         flst_uborn,flst_mult,flst_ubmult,flst_emitter,
      4         flst_allreg,flst_alr2born,flst_born2alr,flst_lightpart
-
-
+      save /pwhg_flst/

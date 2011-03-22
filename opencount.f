@@ -10,16 +10,17 @@
       real * 8 powheginput
       external powheginput
       integer nev
-c     this call is necessary to read the prefix of the file
-      nev=powheginput('numevts')
       maxev=0
-      file=pwgprefix(1:lprefix)//'events.lhe'
+      file='pwgevents.lhe'
       open(unit=97,file=file,status='old',iostat=ios)
       if(ios.ne.0) then
          write(*,*)' enter name of event file'
          read(*,'(a)') file
          open(unit=97,file=file,status='old')
       endif
+      write(*,*) ' Opened event file ',file
+      write(*,*) ' Counting events in ', file
+      write(*,*) ' This may take some time...'
  1    continue
       read(unit=97,fmt='(a)',end=2) string
       if(string.eq.'</event') then
@@ -28,8 +29,7 @@ c     this call is necessary to read the prefix of the file
       endif
       goto 1
  2    continue
-      write(*,*) ' found ',maxev,' events in file ',file
-c      stop
+      write(*,*) ' Found ',maxev,' events in file ',file
       if (maxev.eq.0) then
          write(*,*) ' NO EVENTS!! Program exits'
          call exit(3)

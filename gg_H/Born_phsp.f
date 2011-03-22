@@ -1,9 +1,9 @@
       subroutine born_phsp(xborn)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-3)
       real * 8 m2,xjac,tau,y,beta,vec(3),s,
@@ -13,24 +13,29 @@
       data ini/.true./
       save ini
       real * 8 Hmass2,Hmass2low,Hmass2high,HmHw  
-      real * 8 mass,bwfactor      
-      external mass      
+      real * 8 mass,bwfactor,powheginput      
+      external mass,powheginput      
       logical check
       parameter(check=.false.)
       logical BW
-      parameter (BW=.true.)
-      integer bwshape
-      parameter (bwshape=1)
-      real * 8 epsilon
-      parameter (epsilon=1d-10)
-  
-
+      integer BWshape
+      save BW,BWshape
       if(ini) then
 c     set initial- and final-state masses for Born and real
          do k=1,nlegborn
             kn_masses(k)=0
          enddo
          kn_masses(nlegreal)=0
+         if (powheginput("#zerowidth").eq.1) then
+            BW=.false.
+         else
+            BW=.true.
+         endif
+         if (powheginput("#bwshape").eq.2) then
+            BWshape=2
+         else
+            BWshape=1
+         endif
          ini=.false.
       endif
 
@@ -59,25 +64,27 @@ c     d m^2 jacobian
 c     Assign the Higgs boson mass
       kn_masses(3)=sqrt(m2)
 
+      if(BW) then
 C     Evaluate BW factor due to the presence of an 
 c     off-shell Higgs boson (see eq. 2.6 of 0812.0578)
 c     In the case of Higgs running width,
 c     the cross section is obtained with the formula
 c     (32) of  hep-ph/9504378 
-      if (bwshape.eq.1) then
-         bwfactor=m2*HmHw/Hmass2/pi/
-     $        ((m2- Hmass2)**2+(m2*HmHw/Hmass2)**2)
+         if (bwshape.eq.1) then
+            bwfactor=m2*HmHw/Hmass2/pi/
+     $           ((m2- Hmass2)**2+(m2*HmHw/Hmass2)**2)
 C     MC@NLO and MCFM use instead:
 c     BW(M,M0,Ga)=M0 Ga/pi * 1/((M^2-M0^2)^2+M0^2 Ga^2
-      elseif (bwshape.eq.2) then   
-         bwfactor=HmHw/pi/
+         elseif (bwshape.eq.2) then   
+            bwfactor=HmHw/pi/
      $        ((m2-Hmass2)**2+HmHw**2)          
-      else 
-         write(*,*) 'ERROR in bwshape'
-         call exit(1)
-      endif
+         else 
+            write(*,*) 'ERROR in bwshape'
+            call exit(1)
+         endif
 c     BW factor 
-      xjac=xjac*bwfactor
+         xjac=xjac*bwfactor
+      endif
 
 c     d x1 d x2 = d tau d y;
       tau=m2/kn_sbeams
@@ -132,20 +139,29 @@ c minimal value of sqrt(s)
       end
 
 
-
       subroutine born_suppression(fact)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       logical ini
       data ini/.true./
-      real * 8 fact
-c CAVEAT!!!  process dependent subroutine
+      real * 8 fact,pt
+      real * 8 powheginput
+      external powheginput
       if (ini) then
-c         write(*,*) '**************************'
-c         write(*,*) 'No Born suppression factor'
-c         write(*,*) '**************************'
+         pt = powheginput("#ptsupp")         
+         if(pt.gt.0) then
+            write(*,*) ' ******** WARNING: ptsupp is deprecated'
+            write(*,*) ' ******** Replace it with bornsuppfact'
+         else
+            pt = powheginput("#bornsuppfact")
+         endif
+         if(pt.ge.0) then
+            write(*,*) '**************************'
+            write(*,*) 'No Born suppression factor'
+            write(*,*) '**************************'
+         endif
          ini=.false.
       endif
       fact=1d0
@@ -153,46 +169,59 @@ c         write(*,*) '**************************'
 
 
       subroutine set_fac_ren_scales(muf,mur)
-C     The following routine sets the renormalization and factorization scales
-C     IMPORTANT: if a kinematic-dependent scale is adopted, remember
-C     that only the Born kinematics is considered, since this function is called 
-C     inside the btilde function before che construction of the real phase space.
       implicit none
       include 'PhysPars.h'
       include 'nlegborn.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
       real *8 muref
       real *8 dotp
       external dotp
-      integer scalechoiche
-      parameter (scalechoiche=0)
-      if (ini) then
-         if(scalechoiche.eq.0) then
-            write(*,*) '*************************************'
-            write(*,*) '    Factorization and renormalization '
-            write(*,*) '    scales set to the H exact mass    '
-            write(*,*) '*************************************'
-         elseif(scalechoiche.eq.1) then
-            write(*,*) '*************************************'
-            write(*,*) '    Factorization and renormalization '
-            write(*,*) '    scales set to the H virtuality   '
-            write(*,*) '*************************************'
+      logical runningscales
+      save runningscales
+      real * 8 pt2
+      real * 8 powheginput
+      external powheginput
+      if(ini) then
+         if(powheginput('#runningscale').ge.1) then
+            runningscales=.true.
          else
-            write(*,*) '*************************************'
-            write(*,*) 'ERROR: scale choice not yet supported'
-            write(*,*) '*************************************'
-            call exit(1)
+            runningscales=.false.
          endif
-         ini=.false.
       endif
-
-      if(scalechoiche.eq.0) then
+      if (runningscales) then
+         if (ini) then
+            write(*,*) '*************************************'
+            write(*,*) '    Factorization and renormalization '
+            if (powheginput('#runningscale').eq.1) then
+               write(*,*) '    scales set to the H virtuality '            
+            elseif(powheginput('#runningscale').eq.2) then
+               write(*,*) '    scales set to the H transverse mass ' 
+            else 
+               write(*,*) "runningscale value not allowed"
+               call exit(1)
+            endif
+            write(*,*) '*************************************'
+            ini=.false.
+         endif
+         if(powheginput('#runningscale').eq.2) then
+            pt2=kn_pborn(1,3)**2+kn_pborn(2,3)**2
+            muref=sqrt(pt2+ph_Hmass*ph_Hmass)
+         else
+            muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,3)))
+         endif
+      else
+         if (ini) then
+            write(*,*) '*************************************'
+            write(*,*) '    Factorization and renormalization '
+            write(*,*) '    scales set to the H mass '
+            write(*,*) '*************************************'
+            ini=.false.
+         endif
          muref=ph_Hmass
-      elseif(scalechoiche.eq.1) then
-         muref=sqrt(dotp(kn_pborn(0,3),kn_pborn(0,3)))
       endif
       muf=muref
       mur=muref

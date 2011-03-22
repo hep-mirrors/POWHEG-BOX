@@ -1,10 +1,10 @@
       subroutine bbinit
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_rnd.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_rnd.h'
+      include 'pwhg_rad.h'
       integer iret1,iret2,iun
       real * 8 sigbtl,errbtl,sigrm,errrm,
      #         xint,xintrm
@@ -12,8 +12,6 @@
       real * 8 xx(ndiminteg)
       integer ncall1,ncall2,itmx1,itmx2
       include 'cgengrids.h'      
-      logical negflag
-      common /cbbarra/negflag
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
@@ -52,7 +50,6 @@
      2     ifold,ifoldrm)
       if(iret1.ne.0) call loadxgrid(iret2,xgrid,xint,xgridrm,xintrm)
       if(iret2.ne.0) then
-         negflag=.false.
          write(*,*)
          write(*,*)' POWHEG: initialization'
          write(*,*)' Computing the integral of the absolute value'
@@ -70,7 +67,6 @@
             write(*,*) ' Computing the integral of the'//
      #           ' remnant cross section' 
             write(*,*) ' to set up the adaptive grid'
-            negflag=.false.
             flg_nlotest=.false.
             call newunit(iun)
             open(unit=iun,file=pwgprefix(1:lprefix)//'rmngrid.top',
@@ -97,7 +93,6 @@ c set  up the folding here, if required
          ifold(ndiminteg-2) = powheginput("foldcsi")
          ifold(ndiminteg-1) = powheginput("foldy")
          ifold(ndiminteg)   = powheginput("foldphi")
-         negflag=.false.
          if(flg_withnegweights) then
             write(*,*)' POWHEG: Computing pos.+|neg.| '
      1           //' weight contribution to inclusive cross section' 
@@ -203,7 +198,6 @@ c Output NLO histograms
       else
          write(*,*)
      #     ' stored grids successfully loaded'
-         negflag=.false.
          write(*,*) 'btilde pos.   weights:', rad_totposbtl,' +-',
      1        rad_etotposbtl
          write(*,*) 'btilde |neg.| weights:', rad_totnegbtl,' +-',
@@ -233,7 +227,6 @@ c Set up upper bounding envelope for btilde
       write(*,*) ' Upper bounding envelope for btilde computed'
       write(*,*) ' Efficiency for btilde generation is printed above'
 c initialize gen; the array xmmm is set up at this stage.
-      negflag=.false.
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,0,
      #    mcalls,icalls,xx)
 
@@ -259,15 +252,12 @@ c compute normalization of upper bounding function for radiation
       subroutine gen_btilde(mcalls,icalls)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer mcalls,icalls
       include 'cgengrids.h'
-      logical negflag
-      common /cbbarra/negflag
       real * 8 xx(ndiminteg)      
       real * 8 btilde
       external btilde
-      negflag=.false.
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,1,
      #    mcalls,icalls,xx)
       end
@@ -275,17 +265,14 @@ c compute normalization of upper bounding function for radiation
       subroutine gen_sigremnant
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       include 'pwhg_flg-add.h'
       include 'cgengrids.h'
-      logical negflag
-      common /cbbarra/negflag
       real * 8 xx(ndiminteg)
       integer mcalls,icalls
       logical savelogical
       real * 8 sigremnant
       external sigremnant
-      negflag=.false.
 c communicate file to load upper bound data
       savelogical=flg_fastbtlbound
       flg_fastbtlbound=.false.
@@ -299,11 +286,11 @@ c communicate file to load upper bound data
      #                ifold,ifoldrm,ncall2,itmx2)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_rnd.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_rnd.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       integer nbins
@@ -346,11 +333,11 @@ c communicate file to load upper bound data
      #           ifold,ifoldrm)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_rnd.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_rnd.h'
       real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
      #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
       real * 8 xxgrid(0:50,ndiminteg),xymax(50,ndiminteg)
@@ -532,10 +519,10 @@ c random seeds
       subroutine storexgrid(xgrid,xint,xgridrm,xintrm)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),xgridrm(0:50,ndiminteg),
      1     xint,xintrm
       integer nbins
@@ -556,10 +543,10 @@ c random seeds
       subroutine loadxgrid(iret,xgrid,xint,xgridrm,xintrm)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
       real * 8 xgrid(0:50,ndiminteg),xgridrm(0:50,ndiminteg),
      1     xint,xintrm
       integer iret

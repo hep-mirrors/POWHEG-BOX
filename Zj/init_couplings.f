@@ -1,9 +1,10 @@
       subroutine init_couplings
       implicit none
       include 'PhysPars.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_flg.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_physpar.h'
       real * 8 masswindow_low,masswindow_high
       flg_withdamp=.true.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -17,7 +18,10 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 c     number of light flavors
       st_nlight = 5
-
+c Masses of light leptons for Z decays:
+      physpar_ml(1)=0.511d-3
+      physpar_ml(2)=0.1057d0
+      physpar_ml(3)=1.777d0
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   DEPENDENT QUANTITIES       

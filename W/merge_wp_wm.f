@@ -15,7 +15,7 @@
       subroutine find_totals(total_ev)
       implicit none
       integer total_ev
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer iun_wp,iun_wm,ios,nev_wp,nev_wm
       character * 50 name_wp,name_wm
       double precision Xsec_wp,Xsec_wm,Xsec_tot
@@ -87,7 +87,7 @@ c     than the required one
       subroutine merge(total_ev)
       implicit none
       integer total_ev
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer iun_wp,iun_wm,iun_merge,ios,nev_wp,nev_wm,iev,nwp,nwm
       character * 50 name_wp,name_wm,name_merge
       double precision Xsec_wp,Xsec_wm,Xsec_tot,errXsec_wp,errXsec_wm
@@ -225,7 +225,7 @@ c...reads initialization information from a les houches events file on unit nlf.
       integer nlf
       character * 100 string
       integer ipr
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
  1    read(nlf,fmt='(a)',err=998,end=998) string
       if(string(1:5).eq.'<init') then
          read(nlf,*) idbmup(1),idbmup(2),ebmup(1),ebmup(2),
@@ -248,7 +248,7 @@ c...reads event information from a les houches events file on unit nlf.
       implicit none
       integer nlf
       character * 100 string
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,j
  1    read(nlf,fmt='(a)',err=998,end=998) string
       if(string.eq.'</LesHouchesEvents>') then
@@ -279,9 +279,10 @@ c...writes initialization information to a les houches events file on unit nlf.
       integer lnamewp,lnamewm
       character * 50 namewp,namewm
       real * 8 version
-      common/pwghvq/version
+      common/cversion/version
+      data version/1.0/
       integer ipr,iran,n1ran,n2ran
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       write(nlf,'(a)') '<LesHouchesEvents version="1.0">'
       write(nlf,'(a)') '<!--'
       write(nlf,'(a,f3.1)') 'file generated with POWHEG-BOX version ',
@@ -314,8 +315,8 @@ c...writes event information to a les houches events file on unit nlf.
       subroutine lhefwritev(nlf)
       implicit none
       integer nlf
-      include '../include/LesHouches.h'
-      include '../include/pwhg_flg.h'
+      include 'LesHouches.h'
+      include 'pwhg_flg.h'
       integer i,j
       write(nlf,'(a)')'<event>'
       write(nlf,210) nup,idprup,xwgtup,scalup,aqedup,aqcdup
@@ -367,7 +368,7 @@ c...writes event information to a les houches events file on unit nlf.
 
       subroutine lhefreadpdfrw(nlf)
       implicit none
-      include '../include/pwhg_flg.h'
+      include 'pwhg_flg.h'
       integer nlf
       integer id1,id2
       real * 8 x1,x2,xf1,xf2,xmufact

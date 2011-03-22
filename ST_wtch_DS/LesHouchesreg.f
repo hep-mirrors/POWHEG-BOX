@@ -1,12 +1,12 @@
       subroutine gen_leshouches_reg
       implicit none
-      include '../include/pwhg_math.h'
-      include '../nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_rad.h'
-      include '../include/LesHouches.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'nlegborn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'LesHouches.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       integer ileg,fl,tmp
       integer tcol,col2
@@ -105,7 +105,7 @@ c     with anticolors
       endif
 
 c     add resonance 
-      call resonances_lh 
+      call finalize_lh
 c     Don't forget to set scale for scalup equal to the pt of the 
 c     radiation (whatever it is now!)
       scalup=sqrt(rad_pt2max)

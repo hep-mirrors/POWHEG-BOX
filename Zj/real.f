@@ -1,9 +1,9 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal),rflavs(nlegreal)
       real * 8 amp2
@@ -47,7 +47,7 @@ c     q q -> e- e+ g g
       subroutine real_ampsq_g_last(p,realflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 charge(-5:5)
       data charge
      #     / 0.33333333333333333333d0, !   1d0/3
@@ -195,8 +195,8 @@ c     p(i,1) is the i-th component of vector p1...
       real * 8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
      #     ,p6(0:3),pg(0:3)
 c      include 'couplings.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp
@@ -611,8 +611,8 @@ c     p(i,1) is the i-th component of vector p1...
       real *8  p5(0:3),p6(0:3)
 c      include 'couplings.h'
       
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p12,p13,p14,p15,p23,p24,p25
       real * 8 p34,p35,p45,p16,p26,p36,p46,p56
@@ -937,7 +937,7 @@ c     minus sign for fermion statistic
          z1=amp_ljj(1,hel_lep,hel_1,hel_2)+
      #        amp_ljj(2,hel_lep,hel_1,hel_2)
          
-         z2=-amp_ljj(3,hel_lep,hel_1,hel_2)+
+         z2=-amp_ljj(3,hel_lep,hel_1,hel_2)
      #        -amp_ljj(4,hel_lep,hel_1,hel_2)
          
          amp2 = amp2 + 
@@ -1075,8 +1075,8 @@ c     p(i,1) is the i-th component of vector p1...
       real *8  p5(0:3),p6(0:3)
 c      include 'couplings.h'
 
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp
@@ -1328,8 +1328,8 @@ c     p(i,1) is the i-th component of vector p1...
       real * 8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8  p5(0:3),p6(0:3)
 c      include 'couplings.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 p34
       real * 8 dotp,tmp

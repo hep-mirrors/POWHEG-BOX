@@ -1,72 +1,40 @@
-c This subroutine performs momentum reshuffling, giving masses to final state particles that were
-c treated as massless, and rescaling the momenta accordingly, so that the total energy and momentum is
-c conserved.
-c The subroutine works on the LHIUP (Les Houches Interface for User Processes). It assumes that initial
-c state particles have imohep(1,)=0. All other particles have imohep(1,) either pointing to the initial
-c state particle 1, or to a resonance.
-c The value of the masses are set in the subroutine lhfm_setmasses.
-c The main routine is subroutine reshuffle.
+c The subroutine lhefinitemasses performs momentum reshuffling, giving
+c masses to final state particles that were treated as massless, and
+c rescaling the momenta accordingly, so that the total energy and
+c momentum is conserved. The masses of resonances present are
+c preserved. The subroutine works on the LHIUP (Les Houches Interface
+c for User Processes). It assumes that initial state particles have
+c imohep(1,)=0. All other particles have imohep(1,) either pointing to
+c the initial state particle 1, or to a resonance.  The value of the
+c masses are in the common block in pwhg_physpar.h.  The main routine is
+c subroutine lhefinitemasses.
 
 
 c default values for quark masses should be set here      
       subroutine lhfm_setmasses
       implicit none
-      include 'include/LesHouches.h'
-      include 'include/pwhg_st.h'
+      include 'LesHouches.h'
+      include 'pwhg_st.h'
+      include 'pwhg_physpar.h'
       integer j,id
-      real * 8  mq(5),ml(11:15)
-c$$$      data mq/0.2d0,0.2d0,0.5d0,1.5d0,4.75d0/
-c$$$      data ml/0.51d-3,0d0,0.10566d0,0d0,1.777d0/
-      real *8 powheginput
-      external powheginput
-      logical ini
-      data ini/.true./
-      save mq,ml,ini
-
-      if(ini) then
-c     quarks
-         mq(1)=powheginput('#lhfm/dmass')
-         if(mq(1).lt.0d0) mq(1)=0.2d0
-         mq(2)=powheginput('#lhfm/umass')
-         if(mq(2).lt.0d0) mq(2)=0.2d0
-         mq(3)=powheginput('#lhfm/smass')
-         if(mq(3).lt.0d0) mq(3)=0.5d0
-         mq(4)=powheginput('#lhfm/cmass')
-         if(mq(4).lt.0d0) mq(4)=1.5d0
-         mq(5)=powheginput('#lhfm/bmass')
-         if(mq(5).lt.0d0) mq(5)=4.75d0
-c     leptons
-         ml(12)=0d0
-         ml(14)=0d0
-         ml(11)=powheginput('#lhfm/emass')
-         if(ml(11).lt.0d0) ml(11)=0.51d-3
-         ml(13)=powheginput('#lhfm/mumass')
-         if(ml(13).lt.0d0) ml(13)=0.10566d0
-         ml(15)=powheginput('#lhfm/taumass')
-         if(ml(15).lt.0d0) ml(15)=1.777d0
-         ini=.false.
-      endif
-
       do j=3,nup
          if(istup(j).eq.1) then
             id=abs(idup(j))
             if(id.ge.1.and.id.le.st_nlight) then
-c               write(*,*) ' lhfm_setmasses,',idup(j),pup(5,j),'->',mq(id)
-               pup(5,j)=mq(id)
+               pup(5,j)=physpar_mq(id)
             elseif(id.eq.11.or.id.eq.13.or.id.eq.15) then
-c               write(*,*) ' lhfm_setmasses,',idup(j),pup(5,j),'->',ml(id)
-               pup(5,j)=ml(id)
+               pup(5,j)=physpar_ml(id)
             endif
          endif
       enddo
       end
 
-c If particle i has imohep(1,)=moth,  iret=1;
+c If particle i has mothup(1,)=moth,  iret=1;
 c Else, if moth is an ancestor of i,  iret=2;
 c Else (i is not an ancestor of moth) iret=0;
       subroutine lhfm_sonof(i,moth,iret)
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,moth,iret
       integer icurr
 c      write(*,*) ' entering sonof'
@@ -102,7 +70,7 @@ c istup is changed to 1, so that it may become subject to further reshuffling.
 c The program terminates when it does not find any more subsets to reshuffle.
       subroutine lhefinitemasses
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,j,moth,iret
       integer n,arr(maxnup)
       common/clhfm_push/arr,n
@@ -166,7 +134,7 @@ c      call lhefwritev(6)
 c set status of subset of reshuffled particles and of mother
       subroutine lhfm_changestatus
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer n,arr(maxnup)
       common/clhfm_push/arr,n
       integer j
@@ -183,7 +151,7 @@ c will be set to point to this resonance. Notice: should not
 c increase nup, this fake resonance will never be reshuffled.
       subroutine lhfm_addfakeinires
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,mu,nfk
 c if moth=1 it means we are dealing with the whole production process;
 c set up a fake mother with the correct momentum on the LHI
@@ -212,7 +180,7 @@ c Set up momentum of fake resonance
 c reset correct status for all particles
       subroutine lhfm_resetstatus 
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer n,arr(maxnup)
       common/clhfm_pushmoth/arr,n
       integer j
@@ -239,7 +207,7 @@ c imode=1: push value in stack
 c imode=2: set i to current length of stack
       subroutine lhfm_push(i,imode)
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,imode
       integer n,arr(maxnup)
       common/clhfm_push/arr,n
@@ -258,7 +226,7 @@ c imode=0: initialize stack
 c imode=1: push value in stack
       subroutine lhfm_pushmoth(i,imode)
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer i,imode
       integer n,arr(maxnup)
       common/clhfm_pushmoth/arr,n
@@ -272,7 +240,7 @@ c imode=1: push value in stack
       end
 
 c reshuffle momenta for the n particles in common/clhfm_push/arr,n;
-c The total momentum of the n particles equals teh momentum of the
+c The total momentum of the n particles equals the momentum of the
 c mother resonance.
 c The system is boosted longitudinally to a frame where its
 c total longitudinal momentum is zero, then to a frame where its
@@ -290,7 +258,7 @@ c After all this operations, the initial longitudinal and perpendicular boosts
 c are performed again in reverse.  
       subroutine lhfm_reshuffle(iret)
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer iret
       real * 8 beta(2),betaz,sc,de,en,diffen,diff2en,mass
       integer moth,j,mu,ipart
@@ -349,13 +317,15 @@ c      call checkmomres
 c check momentum balance in array arr,n
       subroutine lhfm_checkmomres
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       real * 8 p(4),diff
       integer moth,mu,j
       integer ipart
       integer n,arr(maxnup)
       common/clhfm_push/arr,n      
-      p=0
+      do mu=1,4
+         p(mu)=0
+      enddo
       moth=mothup(1,arr(1))
       do j=1,n
          ipart=arr(j)
@@ -373,7 +343,7 @@ c check momentum balance in array arr,n
 
       subroutine lhfm_reboost(moth,sc)
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer moth
       real * 8 sc
       real * 8 beta,vec(3),gamma,gammamo,pparallel,e,p,ep,pp,m,tot
@@ -432,7 +402,7 @@ c only for direct sons
 
       subroutine lhfm_totalen(s,en,diffen,diff2en)
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       real * 8 s,en,diffen,diff2en
       real * 8 k,m,e
       integer j,ipart
@@ -457,7 +427,7 @@ c     boosts the m vectors vin(0:3,m) into the vectors vout(0:3,m) (that can
 c     be the same) in the direction of vec(3) (|vec|=1) with velocity
 c     beta.  Lorents convention: (t,x,y,z).
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer moth,iret
       real * 8 beta,gamma,pparallel
       integer ipart
@@ -483,7 +453,7 @@ c     boosts the m vectors vin(0:3,m) into the vectors vout(0:3,m) (that can
 c     be the same) in the direction of vec(3) (|vec|=1) with velocity
 c     beta.  Lorents convention: (t,x,y,z).
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       integer ipart,moth,iret
       real * 8 betav(2),beta
       real * 8 gamma
@@ -512,7 +482,7 @@ c     beta.  Lorents convention: (t,x,y,z).
 
       subroutine lhfm_checkmom
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       real * 8 sum,tmp,total(4)
       integer mu,i,moth,iret
       sum()=abs(total(1))+abs(total(2))+abs(total(3))+abs(total(3))

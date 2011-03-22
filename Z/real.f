@@ -1,9 +1,9 @@
       subroutine setreal(p,rflav,amp2real)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal)
       real * 8 amp2real
@@ -259,8 +259,8 @@ c p(i,1) is the i-th component of vector p1...
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       include 'PhysPars.h'
-      include '../include/pwhg_math.h'  
-      include '../include/pwhg_st.h'  
+      include 'pwhg_math.h'  
+      include 'pwhg_st.h'  
       real * 8 p1(0:3),p2(0:3),pp1(0:3),pp2(0:3),pp5(0:3)
       real * 8 p34
       real * 8 dotp,tmp

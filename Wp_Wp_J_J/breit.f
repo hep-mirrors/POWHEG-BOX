@@ -7,7 +7,7 @@ c---- breit-wigner should still be included in the matrix element
 c     wt is the jacobian between integration in msq and integration in x1
       double precision x1,mminsq,mmaxsq,rmass,rwidth,msq,wt
       double precision almin,almax,al,tanal
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       logical zerowidth 
 
       zerowidth = .true. 

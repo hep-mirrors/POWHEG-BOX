@@ -3,7 +3,6 @@ C --------------------------------------------------------------------
 c
       implicit none
       include 'nlegborn.h'
-      include 'PhysPars.h'
       character * 1 ks_label
       integer nleg,vflav(nleg),ks_map(nleg)
       integer v(nlegreal),vv(nlegreal)
@@ -47,9 +46,8 @@ c rather than q Q -> -Q -q (if q>Q)
       subroutine setvirtual(p,vflav,virtual)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
-      include 'PhysPars.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
 
       integer nlegs
       parameter (nlegs=nlegborn)
@@ -145,8 +143,8 @@ C ACCORDING ELLIS-SEXTON  A,B,C,D FUNCTIONS
       function psitilde6ns_a(p1,p2,p3,p4)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real *8  psitilde6ns_a
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
@@ -203,8 +201,8 @@ C
       function psitilde6ns_b(p1,p2,p3,p4)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real *8  psitilde6ns_b
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
@@ -285,8 +283,8 @@ C
       function psitilde6ns_c(p1,p2,p3,p4)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real *8  psitilde6ns_c
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u
@@ -355,8 +353,8 @@ C
       function psitilde6ns_d(p1,p2,p3,p4)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       real *8  psitilde6ns_d
       real *8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       real *8 s,t,u

@@ -3,7 +3,7 @@ c      integer ndim
 c      character * 20 pwgprefix
 c      integer lprefix
 c      common/cpwgprefix/pwgprefix,lprefix
-c      include '../include/pwhg_rnd.h'
+c      include 'pwhg_rnd.h'
 c      parameter (ndim=19)
 c      real * 8 ymax(50,ndim),xint,ymmm,ymin
 c      integer k,j
@@ -29,7 +29,7 @@ c initialize the storage of values for the determination of the
 c upper bounding envelope in MINT
       subroutine startstoremintupb(filetag)
       implicit none
-      include '../include/pwhg_rnd.h'
+      include 'pwhg_rnd.h'
       character * (*) filetag
       character * 20 pwgprefix
       integer lprefix
@@ -171,7 +171,7 @@ c          from the beginning
       character *(*) filetag
       integer ndim,cells(ndim),iret
       real * 8 f,f0
-      include '../include/pwhg_rnd.h'
+      include 'pwhg_rnd.h'
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
@@ -375,7 +375,12 @@ c stop updating the rat grid, if satisfactory
             write(*,*) ' envelope efficiency',totrat/ubtotrat
             write(*,*) 'failure estimate',failrat/totrat
          endif
-         write(*,*) ' iterate'
+         if(iterations.lt.4) then
+            write(*,*) ' iterating upper bounding envelope formation'
+         elseif(iterations.lt.5) then
+            write(*,*) ' more iteration needed'
+            write(*,*) ' this can take a moment ...'
+         endif
          iterations=iterations+1
          goto 1
       endif
@@ -428,7 +433,7 @@ c stop updating the rat grid, if satisfactory
       implicit none
       real * 8 x
       integer icalls
-      include '../include/pwhg_rnd.h'
+      include 'pwhg_rnd.h'
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
@@ -450,7 +455,7 @@ c stop updating the rat grid, if satisfactory
       function strictubound(cells)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flg.h'
+      include 'pwhg_flg.h'
       integer cells(ndiminteg)
       real * 8 strictubound
       include 'cgengrids.h'

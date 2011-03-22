@@ -1,10 +1,10 @@
       function btilde(xx,www0,ifirst)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_flg.h'
-      include 'include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_flg.h'
+      include 'pwhg_math.h'
 c     independent variables for real graph: number of final state
 c     legs times 3, take away 4 for 4-momentum conservation, add 2
 c     for x_1 and x_2, and take away an overall azimuth
@@ -15,8 +15,6 @@ c     for x_1 and x_2, and take away an overall azimuth
       real * 8 resborn(maxprocborn),resvirt(maxprocborn),
      #     resreal(maxprocborn),rescoll(maxprocborn)
       real * 8 results(maxprocborn)
-      logical negflag
-      common /cbbarra/negflag      
       real * 8 tmp,suppfact,www,wwwtot
       integer j
       save resborn,resvirt,wwwtot
@@ -116,22 +114,14 @@ c this is only useful if withnegweights on (i.e. =1 in powheg.input,
 c logical true here). However, better set a default (Les Houches
 c interface will simply output this sign for the event.)
             rad_btilde_sign(j)=1
-            if(negflag) then
+            if(flg_withnegweights) then
                if(results(j).lt.0) then
                   results(j)=-results(j)
-               else
-                  results(j)=0
-               endif
+                  rad_btilde_sign(j)=-1
+               endif                  
             else
-               if(flg_withnegweights) then
-                  if(results(j).lt.0) then
-                     results(j)=-results(j)
-                     rad_btilde_sign(j)=-1
-                  endif                  
-               else
-                  if(results(j).lt.0) then
-                     results(j)=0
-                  endif
+               if(results(j).lt.0) then
+                  results(j)=0
                endif
             endif
             btilde=btilde+results(j)
@@ -208,7 +198,7 @@ c j contributions
       subroutine resettotals
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
       real * 8 totj(maxprocborn),totabsj(maxprocborn),
      1     totposj(maxprocborn),totnegj(maxprocborn),
@@ -243,8 +233,8 @@ c j contributions
       subroutine finaltotals
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_rad.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
       real * 8 totj(maxprocborn),totabsj(maxprocborn),
      1     totposj(maxprocborn),totnegj(maxprocborn),

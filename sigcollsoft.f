@@ -49,8 +49,8 @@ c            kinematic regions).
       subroutine collfsr(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       real * 8 pdf1(-6:6),pdf2(-6:6)
       integer alr
@@ -65,8 +65,8 @@ c            kinematic regions).
       subroutine collfsrnopdf(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       integer alr,em
       real * 8 kperp(0:3),kperp2,q0,xocsi,csi,x,phi
@@ -90,8 +90,8 @@ c for fsr csi is y independent
       subroutine buildkperp(em,phi,kperp,kperp2)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       integer em
       real * 8 phi,kperp(0:3),kperp2,dir(1:3)
 c     Construct kperp; First construct a vector in the plane of p_em and
@@ -113,8 +113,8 @@ c     Then rotate it counterclockwise around the em direction
       subroutine softcollfsr(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       real * 8 pdf1(-6:6),pdf2(-6:6)
       integer alr
@@ -135,7 +135,7 @@ c     Then rotate it counterclockwise around the em direction
       subroutine collisrp(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 rc(maxalr)
       call collisr(1,rc)
       end
@@ -143,7 +143,7 @@ c     Then rotate it counterclockwise around the em direction
       subroutine collisrm(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 rc(maxalr)
       call collisr(2,rc)
       end
@@ -151,8 +151,8 @@ c     Then rotate it counterclockwise around the em direction
       subroutine softcollisrp(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       real * 8 pdf1(-6:6),pdf2(-6:6)
       integer alr
@@ -171,8 +171,8 @@ c     Then rotate it counterclockwise around the em direction
       subroutine softcollisrm(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       real * 8 pdf1(-6:6),pdf2(-6:6)
       integer alr
@@ -192,8 +192,8 @@ c     Then rotate it counterclockwise around the em direction
       implicit none
       integer i
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       real * 8 pdf1(-6:6),pdf2(-6:6),x1,x2
       integer alr
@@ -216,9 +216,9 @@ c     Then rotate it counterclockwise around the em direction
       implicit none
       integer i
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
       real * 8 rc(maxalr)
       integer alr
       real * 8 kperp(0:3),csi,phi
@@ -252,11 +252,11 @@ c p(0:3,nleg):  real * 8, momenta, 0 is time component
 c softvec(0:3): real * 8, 4-vector of soft gluon normalized to softvec(0)=1
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_br.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_br.h'
       real * 8 r0(maxalr)
       integer alr,em
       real * 8 y
@@ -279,12 +279,12 @@ c find boost velocity
       subroutine collfsralr(alr,csi,xocsi,x,q0,kperp,kperp2,res)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_br.h'
-      include 'include/pwhg_par.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_br.h'
+      include 'pwhg_par.h'
       integer alr
       real * 8 csi,xocsi,x,q0,kperp(0:3),kperp2,res
       integer iub,em,emflav,raflav,mu,nu
@@ -338,11 +338,11 @@ c provide multiplicity of emitter in underlyng Born
       subroutine collisralr(alr,i,csi,kperp,res)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_br.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_br.h'
       integer alr,i,em
       real * 8 csi,kperp(0:3),res
       integer iub,emflav,raflav,mu,nu
@@ -399,11 +399,11 @@ c     The remaining csi=1-x factor has been applied earlier
       subroutine softalr(alr,em,y,res)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_br.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_br.h'
       integer alr,em
       real * 8 y,res
       integer iub,j,k
@@ -483,11 +483,11 @@ c p(0:3,nleg):  real * 8, momenta, 0 is time component
 c softvec(0:3): real * 8, 4-vector of soft gluon normalized to softvec(0)=1
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_math.h'
-      include 'include/pwhg_st.h'
-      include 'include/pwhg_br.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_br.h'
       real * 8 r0(maxalr)
       integer alr,em
       real * 8 y
@@ -508,8 +508,8 @@ c cross section used in Btilde
       subroutine collbtl(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 rc(maxalr)
       integer alr,em,i
       real * 8 kperp(0:3),kperp2,q0,xocsi,csi,x,phi,r1,r2
@@ -568,9 +568,9 @@ c in the real radiation cross section
       subroutine collrad(rc)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       real * 8 rc(maxalr)
       integer alr,em
       real * 8 q0,xocsi,csi,phi,x,kperp(0:3),kperp2,r1,r2
@@ -621,9 +621,9 @@ c     Construct kperp
       subroutine softrad(r0)
       implicit none
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
       real * 8 r0(maxalr)
       integer alr,em,j
       real * 8 y,csi

@@ -1,7 +1,7 @@
       PROGRAM HWIGPR
 C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
       INCLUDE '../herwig6510.inc'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
       integer n
       logical uevent 
@@ -90,7 +90,7 @@ c      close(iun)
 
       subroutine UPEVNT
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       logical ini
       save ini
       data ini/.true./
@@ -133,7 +133,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       subroutine hwanal
       INCLUDE '../herwig6510.inc'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       if (ierror.ne.0) then
          return
       endif

@@ -9,9 +9,9 @@ c     ds2 ds3 d^4 p2 d^4 p3 (2 pi)^4 delta(p1-p2-p3)/(2 pi)^6
 c     delta(p2^2-s2) delta(p3^2-s3)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi

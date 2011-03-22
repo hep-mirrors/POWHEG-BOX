@@ -1,8 +1,8 @@
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -36,7 +36,7 @@ c Rule from 2.98 in FNO2007, leads to B_i j=B* C_i
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       real * 8 p(0:3,nlegborn)
       integer bflav(nlegborn)
       real * 8 born,bmunu(0:3,0:3)
@@ -120,9 +120,9 @@ c In case there are several colour structure, one
 c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_flst.h'
 c     neutral particles
       icolup(1,3)=0
       icolup(2,3)=0
@@ -146,7 +146,7 @@ c     colored particles
       end
 
 
-      subroutine resonances_lh
+      subroutine finalize_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
@@ -165,7 +165,7 @@ c     a massive decay is chosen
 c     i1<i2
       subroutine momenta_reshuffle(ires,i1,i2,decmass)
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       integer ires,i1,i2,j
       real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
       if (i1.ge.i2) then
@@ -260,7 +260,7 @@ c p(i,1) is the i-th component of vector p1...
       real * 8 pphy(0:3,nleg)
       real * 8 amp2
       include 'PhysPars.h'
-      include '../include/pwhg_math.h'      
+      include 'pwhg_math.h'      
       real * 8 p1(0:3),p2(0:3)
       real * 8 p34
       real * 8 dotp,tmp
@@ -422,7 +422,7 @@ c     to take account of the gamma/Z interference
       amp2 = amp2*ph_unit_e**4 
 c     1/4 from average over initial-state polarization
 c     1/nc^2 * nc = 1/nc from average over initial-state colors and sum over 
-c     quark colors 
+c     quark colors
       amp2=  amp2/4d0/nc 
       
       end

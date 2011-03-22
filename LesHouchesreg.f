@@ -1,11 +1,11 @@
       subroutine gen_leshouches_reg
       implicit none
-      include 'include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_rad.h'
-      include 'include/LesHouches.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_rad.h'
+      include 'LesHouches.h'
       integer ireg
       nup=nlegreal
       scalup=sqrt(rad_pt2max)
@@ -24,8 +24,8 @@ c Remember: gluons are marked 0 here!
          spinup(ireg)=9
          vtimup(ireg)=0
       enddo
-c     add resonance 
-      call resonances_lh 
+c add resonances, perform decays, put particles on shell, etc.(or nothing!)
+      call finalize_lh 
 c no remnants for now!
 c     Don't forget to set scale for scalup equal to the pt of the 
 c     radiation (whatever it is now!)

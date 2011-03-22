@@ -1,12 +1,12 @@
       subroutine pwhginit
       implicit none
-      include 'include/LesHouches.h'
+      include 'LesHouches.h'
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
-      include 'include/pwhg_kn.h'
-      include 'include/pwhg_pdf.h'
-      include 'include/pwhg_rad.h'
-      include 'include/pwhg_flg.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_pdf.h'
+      include 'pwhg_rad.h'
+      include 'pwhg_flg.h'
       real * 8 powheginput
       external powheginput
       integer i1,n1,n2
@@ -106,7 +106,7 @@ c now the cross section is available
 
       subroutine init_flsttag
       include 'nlegborn.h'
-      include 'include/pwhg_flst.h'
+      include 'pwhg_flst.h'
       integer j,l
       do j=1,maxprocreal
          do l=1,nlegreal

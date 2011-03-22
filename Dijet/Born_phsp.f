@@ -1,10 +1,9 @@
       subroutine born_phsp(xborn)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_math.h'
-      include 'PhysPars.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
 
       real * 8 xborn(ndiminteg-3)
       real * 8 vec(3),phidec
@@ -187,7 +186,7 @@ C -      call checkmass(2,kn_pborn(0,3))
       subroutine born_suppression(fact)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_kn.h'
       logical ini
       data ini/.true./
       real*8 fact,pt2,pt2supp,powheginput,pt
@@ -214,9 +213,8 @@ C -      call checkmass(2,kn_pborn(0,3))
 
       subroutine set_fac_ren_scales(muf,mur)
       implicit none
-      include 'PhysPars.h'
       include 'nlegborn.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_kn.h'
       logical ini,fixedscale
       data ini/.true./
       real * 8 muf,mur

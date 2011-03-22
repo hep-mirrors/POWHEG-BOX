@@ -1,6 +1,6 @@
       program main_pythia
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
 c     pythia common blocks
       real * 8 parp,pari
       integer mstp,msti
@@ -232,7 +232,7 @@ c pythia routine to abort event
 
       subroutine pyanal
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
 c     pythia common blocks
       integer NMXHEP,NEVHEP,NHEP,ISTHEP,IDHEP,
      &     JMOHEP,JDAHEP
@@ -271,7 +271,7 @@ c$$$     #           mstu(27),mstu(28)
       endif
       nevhep=nevhep+1
 
-      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
+      if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

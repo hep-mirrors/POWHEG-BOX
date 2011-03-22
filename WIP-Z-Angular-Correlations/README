@@ -1,8 +1,0 @@
-Work In Progress folder: Analysis of Z angular correlations
-
-Results collected in testreun0tev and testrun-LHC directories are
-displayed in testrunrebin folder also, where a rebinning procedure to
-obtain the same graphs as in A. Bodek's slides is applied.
-
-To rebin and obtain *.eps file simply call make_all.sh from testrebin
-subfolder

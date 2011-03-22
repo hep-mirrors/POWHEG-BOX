@@ -13,3 +13,4 @@ c flg_bornonly: do the Born contribution only
      2     flg_withreg,flg_smartsig,flg_bornonly,flg_debug,
      3     flg_withnegweights,flg_jacsing,flg_weightedev,
      4     flg_pdfreweight,flg_collremnsamp
+      save /pwhg_flg/

@@ -159,6 +159,7 @@ c find random x, and its random cell
 c contribution to integral
          if(imode.eq.0) then
             f=abs(fun(x,vol,ifirst))+f
+            f=fun(x,vol,2)
          else
 c this accumulated value will not be used
             f=fun(x,vol,ifirst)+f

@@ -1,8 +1,8 @@
       subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
 c     to use madgraph
       include 'coupl.inc'
@@ -147,7 +147,7 @@ c     ordering ALSO FOR gu->tddx and ug->tddx. This ALWAYS happens.
 c     In these cases, perform a switch to call madgraph or mcnlo properly.
          if((rflav_ME_int(1)+rflav_ME_int(2)).eq.2) then
             if((rflav_ME_int(4).ne.1).or.(rflav_ME_int(5).ne.-1)) then
-               if((rflav_ME_int(4).ne.-1).or.(rflav_ME_int(5).ne.1)) then
+               if((rflav_ME_int(4).ne.-1).or.(rflav_ME_int(5).ne.1))then
                   write(*,*) 'Error in fill_real'
                   write(*,*) 'Unrecognized ordering for gu/ug'
                   write(*,*) 'rflav_loc ',rflav_loc

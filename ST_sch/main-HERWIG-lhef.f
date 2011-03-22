@@ -1,7 +1,7 @@
       PROGRAM HWIGPR
 C---COMMON BLOCKS ARE INCLUDED AS FILE herwig6510.h
-      INCLUDE 'HERWIG65.INC'
-      include '../include/LesHouches.h'
+      INCLUDE '../HERWIG65.INC'
+      include 'LesHouches.h'
 c     local
       integer n
 c     external
@@ -251,8 +251,8 @@ c$$$C-----------------------------------------------------------------------
 
 
       subroutine hwanal
-      INCLUDE 'HERWIG65.INC'
-      include '../include/LesHouches.h'
+      INCLUDE '../HERWIG65.INC'
+      include 'LesHouches.h'
 c     check parameters
       logical verbose
       parameter (verbose=.false.)
@@ -272,7 +272,7 @@ c$$$            call hwuepr         !all the event
          return
       endif
       
-      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
+      if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

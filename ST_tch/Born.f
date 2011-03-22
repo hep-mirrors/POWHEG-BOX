@@ -16,7 +16,7 @@ cccccccccccccccccccccccccccccccccccccc
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
 ccccccccccccccccc
       integer three_ch(-6:6)
@@ -110,8 +110,8 @@ c     13 24 = CF
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_flst.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegborn)
@@ -224,7 +224,7 @@ c should pick one with a probability proportional to
 c the value of the corresponding cross section, for the
 c kinematics defined in the Les Houches interface
       implicit none
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
       integer three_ch(-6:6)
       data three_ch /-2,1,-2,1,-2,1,0,-1,2,-1,2,-1,2/
@@ -323,7 +323,7 @@ c     with anticolors
       end
 
 
-      subroutine resonances_lh
+      subroutine finalize_lh
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     Before that, call the routine that generates the decay.
@@ -333,7 +333,7 @@ c     that the overall azimuthal rotation has been already
 c     performed (add_azimuth called in pwhgevent). 
       implicit none
       include 'nlegborn.h'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
       integer tdecaymode
       integer mu,ileg
@@ -558,11 +558,13 @@ c     momentum conservation check
             endif
             print*, '>>> ',toten,totpx,totpy,totpz
             do ileg=1,2
-               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),pup(3,ileg),
+               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),
+     $              pup(3,ileg),
      $              '  mass',pup(5,ileg)
             enddo
             do ileg=3,nup
-               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),pup(3,ileg),
+               print*, idup(ileg),pup(4,ileg),pup(1,ileg),pup(2,ileg),
+     $              pup(3,ileg),
      $              '  mass',pup(5,ileg)
             enddo
          endif
@@ -700,10 +702,10 @@ c     MASSLESS event in pup, add the t decay products, filling
 c     klab_dec. Decay products are MASSLESS.
       implicit none
       include 'nlegborn.h'
-      include '../include/LesHouches.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_st.h'
+      include 'LesHouches.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       include 'coupl.inc'
       real *8 klab_dec(0:3,nlegreal+3)
@@ -879,7 +881,7 @@ c     from klab_undec to kblab
          call preal_to_pborn(klab_undec,kblab)
          if(check_bME) then
             s=2d0*dotp(kblab(0,1),kblab(0,2))
-            t=dotp(kblab(0,3),kblab(0,3)) - 2d0*dotp(kblab(0,1),kblab(0,3)) 
+         t=dotp(kblab(0,3),kblab(0,3)) - 2d0*dotp(kblab(0,1),kblab(0,3)) 
             u=dotp(kblab(0,3),kblab(0,3))-s-t
             ewcoupl=4d0*pi*alphaem_pow/sthw2_pow
          endif
@@ -889,7 +891,7 @@ c     ddx
      #(three_ch(idup_loc(2)).eq.1)) then
             call sbdx_tux(kblab,amp2mad)
             if(check_bME) then
-               write(*,*) 'bdx ',u*(u-topmass_pow**2)/(t-wmass_pow**2)**2/4
+            write(*,*) 'bdx ',u*(u-topmass_pow**2)/(t-wmass_pow**2)**2/4
      $*ewcoupl**2/amp2mad
             endif
 c     dxd
@@ -897,7 +899,7 @@ c     dxd
      #(three_ch(idup_loc(2)).eq.-1)) then
             call sdxb_tux(kblab,amp2mad)
             if(check_bME) then
-               write(*,*) 'dxb ',t*(t-topmass_pow**2)/(u-wmass_pow**2)**2/4
+            write(*,*) 'dxb ',t*(t-topmass_pow**2)/(u-wmass_pow**2)**2/4
      $*ewcoupl**2/amp2mad
             endif
 c     ud
@@ -905,7 +907,7 @@ c     ud
      #(three_ch(idup_loc(2)).eq.-1)) then
             call sub_td(kblab,amp2mad)
             if(check_bME) then
-               write(*,*) 'ub ',s*(s-topmass_pow**2)/(u-wmass_pow**2)**2/4
+            write(*,*) 'ub ',s*(s-topmass_pow**2)/(u-wmass_pow**2)**2/4
      $*ewcoupl**2/amp2mad
             endif
 c     du
@@ -913,7 +915,7 @@ c     du
      #(three_ch(idup_loc(2)).eq.2)) then
             call sbu_td(kblab,amp2mad)
             if(check_bME) then
-               write(*,*) 'bu ',s*(s-topmass_pow**2)/(t-wmass_pow**2)**2/4
+            write(*,*) 'bu ',s*(s-topmass_pow**2)/(t-wmass_pow**2)**2/4
      $*ewcoupl**2/amp2mad
             endif
          else
@@ -944,10 +946,12 @@ c     we want to have the sequences gu->tddx and ug->tddx.
          else
             if((idup_loc(4)).gt.(idup_loc(5))) then
 c     revert, but keep as it is if gu/ug
-               if((three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
-     $        (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
+               if(
+     $ (three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
+     $ (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
                   if((idup_loc(4).ne.1).or.(idup_loc(5).ne.-1)) then
-                     write(*,*) 'Error in tdecay, real fl. order',idup_loc(1),idup(2),idup_loc(4),idup_loc(5)
+                     write(*,*) 'Error in tdecay, real fl. order',
+     $                    idup_loc(1),idup(2),idup_loc(4),idup_loc(5)
                      call exit(1)
                   endif
                else
@@ -965,8 +969,9 @@ c     reorder idup
                endif
             else
 c     keep as it is, but revert if gu/ug
-               if((three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
-     $        (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
+               if(
+     $ (three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
+     $ (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
 c     reorder momenta
                   do mu=0,3
                      ptemp(mu)=klab_undec(mu,4)
@@ -999,7 +1004,8 @@ c     gu -> tddx
      #(three_ch(idup_loc(4)).eq.-1)) then
                call Sgu_tdbx_T(klab_undec,amp2mad)
             else
-               write(*,*) 'Error in tdecay (real flavour 1)',idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
+               write(*,*) 'Error in tdecay (real flavour 1)',
+     $              idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
                call exit(1)
             endif
          elseif(idup(2).eq.igluon) then
@@ -1017,7 +1023,8 @@ c     ug -> tddx
      #(three_ch(idup_loc(4)).eq.-1)) then
                call Sug_tdbx_T(klab_undec,amp2mad)
             else
-               write(*,*) 'Error in tdecay (real flavour 2)',idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
+               write(*,*) 'Error in tdecay (real flavour 2)',
+     $              idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
                call exit(1)
             endif
          elseif((idup(1).ne.igluon).and.(idup(2).ne.igluon)) then
@@ -1039,7 +1046,8 @@ c     du
      #(three_ch(idup_loc(2)).eq.2)) then
                call Sbu_tdg(klab_undec,amp2mad)
             else
-               write(*,*) 'Error in tdecay (real flavour 3)',idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
+               write(*,*) 'Error in tdecay (real flavour 3)',
+     $              idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
                call exit(1)
             endif
          else
@@ -1102,7 +1110,8 @@ c     Denote this system as 3rec
      $(kcm_undec(0,3)+kcm_undec(0,4))  !:!
       enddo
       do ileg=3,4 !:!
-         call boost(beta_cm_to_3reccm,kcm_undec(0,ileg),k3reccm_undec(0,ileg))
+         call boost(beta_cm_to_3reccm,kcm_undec(0,ileg),
+     $        k3reccm_undec(0,ileg))
       enddo
 
 c     decay products have to be massless
@@ -1227,7 +1236,8 @@ c     3rec system (i.e. the 3 momentum of the radiated parton)
      $        /E3rec_cm  !:!
       enddo
       do ileg=3,4 !:!
-         call boost(beta_3reccm_to_cm,k3reccm_dec(0,ileg),kcm_dec(0,ileg))
+         call boost(beta_3reccm_to_cm,k3reccm_dec(0,ileg),
+     $        kcm_dec(0,ileg))
       enddo
 
 c     check that k3recvec_dec and k3recvec_undec are the same
@@ -1270,7 +1280,7 @@ c     It can be argued that other choices are more appropriate.
          xpdf(ileg)=pup(4,ileg)/kn_beams(0,ileg)
          xpdf_dec(ileg)=xpdf(ileg)*sqrttau_dec/sqrttau_undec
          if(xpdf_dec(ileg).gt.1d0) then
-         write(*,*) 'PS&LUM HIT&MISS, x1_dec,x2_dec ',ileg,xpdf_dec(ileg)
+         write(*,*)'PS&LUM HIT&MISS, x1_dec,x2_dec ',ileg,xpdf_dec(ileg)
             goto 2
          endif
          flav(ileg)=idup(ileg)
@@ -1329,7 +1339,7 @@ c     be used in the following with a different notation
          do mu=0,3
             if(dabs(kcm_undec(mu,5)).gt.tiny) then
                write(*,*) 'Error 3 in generating top virtuality'
-               write(*,*) 'kcm_undec(mu,5) ',(kcm_undec(ileg,5),ileg=0,3)
+               write(*,*)'kcm_undec(mu,5) ',(kcm_undec(ileg,5),ileg=0,3)
                call exit(1)
             endif
          enddo
@@ -1357,7 +1367,8 @@ c     be used in the following with a different notation
 c     given top momentum in partonic cm frame, m67_2 and m68_2,
 c     build top-decay momenta in partonic cm frame
 c     6-> e, 7->ve, 8->b
-      call build_decay_mom(kcm_undec_off(0,3),m67_2,m68_2,m6,m7,m8,k3cm_dec)
+      call build_decay_mom(kcm_undec_off(0,3),m67_2,m68_2,m6,m7,m8,
+     $     k3cm_dec)
 
 
 c$$$      write(*,*) 't-dec mom conservation check'
@@ -1411,10 +1422,12 @@ c     we want to have the sequences gu->tddx and ug->tddx.
          else
             if((idup_loc(4)).gt.(idup_loc(5))) then
 c     revert, but keep as it is if gu/ug
-               if((three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
-     $        (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
+               if(
+     $ (three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
+     $ (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
                   if((idup_loc(4).ne.1).or.(idup_loc(5).ne.-1)) then
-                     write(*,*) 'Error in tdecay, real fl. order',idup_loc(1),idup(2),idup_loc(4),idup_loc(5)
+                     write(*,*) 'Error in tdecay, real fl. order',
+     $                    idup_loc(1),idup(2),idup_loc(4),idup_loc(5)
                      call exit(1)
                   endif
                else
@@ -1432,8 +1445,9 @@ c     reorder idup
                endif
             else
 c     keep as it is, but revert if gu/ug
-               if((three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
-     $        (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
+               if(
+     $ (three_ch(idup_loc(1)).eq.0.and.three_ch(idup_loc(2)).eq.2).or.
+     $ (three_ch(idup_loc(2)).eq.0.and.three_ch(idup_loc(1)).eq.2)) then
 c     reorder momenta
                   do mu=0,3
                      ptemp(mu)=krcm_mad(mu,6)
@@ -1547,7 +1561,8 @@ c     gu -> tddx
      #(three_ch(idup_loc(4)).eq.-1)) then
                call Sgu_epvebdbx_T(krcm_mad,amp2mad)
             else
-               write(*,*) 'Error in tdecay (real dec flavour 1)',idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
+               write(*,*) 'Error in tdecay (real dec flavour 1)',
+     $              idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
                call exit(1)
             endif
          elseif(idup(2).eq.igluon) then
@@ -1565,7 +1580,8 @@ c     ug -> tddx
      #(three_ch(idup_loc(4)).eq.-1)) then
                call Sug_epvebdbx_T(krcm_mad,amp2mad)
             else
-               write(*,*) 'Error in tdecay (real dec flavour 2)',idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
+               write(*,*) 'Error in tdecay (real dec flavour 2)',
+     $              idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
                call exit(1)
             endif
          elseif((idup(1).ne.igluon).and.(idup(2).ne.igluon)) then
@@ -1587,7 +1603,8 @@ c     du
      #(three_ch(idup_loc(2)).eq.2)) then
                call Sbu_epvebdg(krcm_mad,amp2mad)
             else
-               write(*,*) 'Error in tdecay (real dec flavour 3)',idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
+               write(*,*) 'Error in tdecay (real dec flavour 3)',
+     $              idup_loc(1),idup_loc(2),idup_loc(4),idup_loc(5)
                call exit(1)
             endif
          else
@@ -1675,7 +1692,7 @@ c     If we are here, kinematics has been accepted: we can save the momenta
          enddo
       enddo
       do ileg=1,nlegreal
-         call boost(beta_cm_to_lab,kcm_undec_off(0,ileg),klab_dec(0,ileg))
+       call boost(beta_cm_to_lab,kcm_undec_off(0,ileg),klab_dec(0,ileg))
       enddo
       do ileg=nlegreal+1,nlegreal+3
          call boost(beta_cm_to_lab,k3cm_dec(0,ileg),klab_dec(0,ileg))
@@ -1770,9 +1787,12 @@ c     j-type decay. If prbs(j)=0, the corresponding decay channel will be closed
 c     mass of decay products. For internal consistency, here one should use
 c     the masses assumed by the shower. Leptonic W decay products masses have to be
 c     assigned here. The 3 light quarks are assumed massless.
-         mass(11)=powheginput('tdec/emass')
-         mass(13)=powheginput('tdec/mumass')
-         mass(15)=powheginput('tdec/taumass')
+         mass(11)=powheginput('#tdec/emass')
+         if(mass(11).lt.0) mass(11)=0.000511
+         mass(13)=powheginput('#tdec/mumass')
+         if(mass(13).lt.0) mass(13)=0.1056
+         mass(15)=powheginput('#tdec/taumass')
+         if(mass(15).lt.0) mass(15)=1.777 
          mass(12)=0
          mass(14)=0
          mass(16)=0
@@ -1968,7 +1988,7 @@ c     Boost them back in original frame (all decay products along top velocity)
       subroutine put_on_mass_shell(tdecayflag,MC_mass,xklab,xklab_os)
       implicit none
       include 'nlegborn.h'
-      include '../include/LesHouches.h'
+      include 'LesHouches.h'
       include 'PhysPars.h'
 c     masses
       real *8 mcmass(0:6)
@@ -2401,7 +2421,8 @@ c     new shat
 c     boost back in the lab frame (with the old boost vector)
          do ileg=1,2
             call boost(betacm,kcm(0,ileg),klab(0,ileg))
-            if(verbose) write(*,*)'\t',klab(0,ileg),klab(1,ileg),klab(2,ileg),klab(3,ileg)
+            if(verbose) write(*,*)'\t',klab(0,ileg),klab(1,ileg),
+     $           klab(2,ileg),klab(3,ileg)
          enddo
 
       endif
@@ -2527,14 +2548,19 @@ c     leave to check momentum conservation
             endif
             print*, '>>>',toten,totpx,totpy,totpz
             print*, 'kcm(*,5)', kcm(0,5),kcm(1,5),kcm(2,5),kcm(3,5)
-            print*, 's partonic',shat,m34**2,2d0*dotp(xklab_os(0,1),xklab_os(0,2)),175**2+2d0*dotp(xklab_os(0,3),xklab_os(0,4))
+            print*, 's partonic',shat,m34**2,2d0*dotp(xklab_os(0,1),
+     $       xklab_os(0,2)),175**2+2d0*dotp(xklab_os(0,3),xklab_os(0,4))
             do ileg=1,2
-               print*, xklab_os(0,ileg),xklab_os(1,ileg),xklab_os(2,ileg),xklab_os(3,ileg),
-     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
+               print*, xklab_os(0,ileg),xklab_os(1,ileg),
+     $              xklab_os(2,ileg),xklab_os(3,ileg),
+     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-
+     $              xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
             enddo
             do ileg=3,nup
-               print*, xklab_os(0,ileg),xklab_os(1,ileg),xklab_os(2,ileg),xklab_os(3,ileg),
-     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
+               print*, xklab_os(0,ileg),xklab_os(1,ileg),
+     $              xklab_os(2,ileg),xklab_os(3,ileg),
+     #' mass ',dsqrt(xklab_os(0,ileg)**2-xklab_os(1,ileg)**2-
+     $              xklab_os(2,ileg)**2-xklab_os(3,ileg)**2)
             enddo
 !            stop
          endif
@@ -2645,7 +2671,7 @@ c     it returns in vec the full 4 momentum in the boosted frame
 c     (i.e. the momentum that has en_prime when boosted back in the original frame).
 c     vec azimuth wrt beta direction is cast randomly.
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       real *8 vec(0:3),en,norm,en_prime,beta(3)
 c     local
       real *8 phi,beta_mod,gamma_b,ctheta,vec_tmp(0:3)

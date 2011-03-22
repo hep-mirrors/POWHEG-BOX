@@ -1,9 +1,9 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/LesHouches.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'LesHouches.h'
       integer i1,i2,i3,i4,i5,k,ii(5)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
@@ -15,7 +15,7 @@
       real * 8 powheginput
       external powheginput
 c     vector boson id and decay
-      integer idvecbos,vdecaymode
+      integer idvecbos,vdecaymode,tmp
       common/cvecbos/idvecbos,vdecaymode
 c     lepton masses
       real *8 lepmass(3),decmass
@@ -26,10 +26,27 @@ c******************************************************
 c     Choose the process to be implemented
 c******************************************************
 c     ID of vector boson produced
-      idvecbos=powheginput('idvecbos')
+      idvecbos=23
 c     decay products of the vector boson
-      vdecaymode=powheginput('vdecaymode')
-
+      tmp=powheginput('vdecaymode')
+      select case(tmp)
+      case (1)
+         vdecaymode=11
+      case (2)
+         vdecaymode=13
+      case (3)
+         vdecaymode=15
+      case (4)
+         vdecaymode=12
+      case (5)
+         vdecaymode=14
+      case (6)
+         vdecaymode=16
+      case default
+         write(*,*) 'ERROR: The decay mode you selected'
+     #  //' is not allowed (Up to now only leptonic decays)'
+         stop
+      end select
       if (lepmass(1).ne.0.51099891d-3) then
          write(*,*) 'block data lepmass not loaded. stop running' 
          stop
@@ -41,22 +58,16 @@ c     decay products of the vector boson
          stop
       endif
             
-      if(idvecbos.eq.23) then
-         write(*,*) 
-         write(*,*) ' POWHEG: Single Z production and decay'
-         if (vdecaymode.eq.11) write(*,*) '         to e- e+ '
-         if (vdecaymode.eq.12) write(*,*) '         to ve ve~ '
-         if (vdecaymode.eq.13) write(*,*) '         to mu- mu+ '
-         if (vdecaymode.eq.14) write(*,*) '         to vmu vmu~ '
-         if (vdecaymode.eq.15) write(*,*) '         to tau- tau+ '
-         if (vdecaymode.eq.16) write(*,*) '         to vtau vtau~ '
-         write(*,*) 
-      else
-         write(*,*) 'ERROR: The ID of vector boson you selected'
-     #  //' is not admitted (23: Z)'
-         stop
-      endif
-
+      write(*,*) 
+      write(*,*) ' POWHEG: Single Z production and decay'
+      if (vdecaymode.eq.11) write(*,*) '         to e- e+ '
+      if (vdecaymode.eq.12) write(*,*) '         to ve ve~ '
+      if (vdecaymode.eq.13) write(*,*) '         to mu- mu+ '
+      if (vdecaymode.eq.14) write(*,*) '         to vmu vmu~ '
+      if (vdecaymode.eq.15) write(*,*) '         to tau- tau+ '
+      if (vdecaymode.eq.16) write(*,*) '         to vtau vtau~ '
+      write(*,*) 
+      
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
       lprup(1)=10000+vdecaymode ! 10000+idup of first decay product of the Z

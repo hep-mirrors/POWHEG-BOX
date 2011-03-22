@@ -6,8 +6,8 @@ c     The as/(2pi) factor is attached at a later point
       use consts_MCFM; use dpinitialization; use define_ampl  
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
       include 'epinv.f' 
       include 'epinv2.f' 
       include 'scale.f' 

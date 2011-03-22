@@ -1,21 +1,41 @@
       subroutine init_processes
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_flg.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_flg.h'
       integer i1,i2,i3,i4,i5,i6,k,ii(6)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5)),(i6,ii(6))
       logical debug
       parameter (debug=.false.)
-      integer j
+      integer vdecaymode,j
+      real * 8 powheginput
+      external powheginput
 c     check nlegborn. This is only a sanity check while we are TESTING 
 c     the code and we change often from one process to the other
       if (nlegborn.ne.5) then
          write(*,*) ' ERROR: set nlegborn to the appropriate value'
          write(*,*) ' for this process in nlegborn.h'
          stop
+      endif
+      vdecaymode=powheginput("#vdecaymode")
+      if(vdecaymode.eq.1) then
+c     electronic decay
+         i3=11
+         i4=-11
+      elseif(vdecaymode.eq.2) then
+c     muonic decay
+         i3=13
+         i4=-13
+      elseif(vdecaymode.eq.3) then
+c     tauonic decay
+         i3=15
+         i4=-15
+      else
+c     default: muonic decay
+         i3=13
+         i4=-13
       endif
 
 *********************************************************************
@@ -26,8 +46,6 @@ c     index of the first LIGHT coloured parton in the final state
 *********************************************************************
 ***********            REAL SUBPROCESSES              ***************
 *********************************************************************
-      i3=11
-      i4=-11
       flst_nreal=0
       do i1=-5,5
          do i2=-5,5

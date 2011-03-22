@@ -1,9 +1,9 @@
       subroutine setreal(p,fermion_flav,amp2)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_math.h'
-      include '../include/pwhg_st.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
       include 'PhysPars.h'
       integer nleg
       parameter (nleg=nlegreal)
@@ -18,10 +18,10 @@
       subroutine compreal(pin,rflav,realamp2)
       use consts_MCFM; use dpinitialization; use define_ampl  
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_st.h' ! for alphas 
+      include 'pwhg_flst.h'
+      include 'pwhg_st.h' ! for alphas 
       include 'qcdcouple.f' 
       include 'facscale.f' 
       include 'PhysPars.h'

@@ -30,7 +30,7 @@ c      inquire(file=fname,exist=present)
 
       subroutine storenlo(xx)
       implicit none
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       real * 8 xx
       integer innlounit,outnlounit
       common/cnlounits/innlounit,outnlounit
@@ -43,7 +43,7 @@ c      inquire(file=fname,exist=present)
 
       subroutine storeendseqnlo
       implicit none
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       integer innlounit,outnlounit
       common/cnlounits/innlounit,outnlounit
       if(outnlounit.gt.0) then
@@ -54,7 +54,7 @@ c a negative nhep signals the end of a bunch of correlated events
 
       subroutine readnlo(xx,iret)
       implicit none
-      include '../include/hepevt.h'
+      include 'hepevt.h'
       real * 8 xx
       integer iret
       integer innlounit,outnlounit
@@ -75,7 +75,7 @@ c a negative nhep signals the end of a bunch of correlated events
       subroutine getfilename(filetag,fname)
       implicit none
       character *(*) filetag, fname
-      include '../include/pwhg_rnd.h'
+      include 'pwhg_rnd.h'
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix

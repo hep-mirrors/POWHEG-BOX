@@ -1,9 +1,9 @@
       subroutine born_phsp(xborn)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-3)
       real * 8 xjac,tau,y,beta,vec(3)
@@ -194,8 +194,8 @@ c     -- checks invariants, mom. conservation etc in CM frame
       subroutine born_suppression(fact)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       logical ini
       data ini/.true./
       real * 8 fact,pt2supp,powheginput,pt
@@ -225,8 +225,8 @@ c      endif
       implicit none
       include 'PhysPars.h'
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
@@ -274,8 +274,8 @@ C      endif
       function smincuts()
       real * 8 smincuts
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       smincuts=min(
      1     sqrt(kn_cmpborn(1,7)**2+kn_cmpborn(2,7)**2),
      2     sqrt(kn_cmpborn(1,8)**2+kn_cmpborn(2,8)**2),

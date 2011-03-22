@@ -1,9 +1,9 @@
       subroutine born_phsp(xborn)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
+      include 'pwhg_math.h'
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-3)
       real * 8 m2,xjac,tau,y,beta,vec(3),cth,cthdec,phidec,s,
@@ -20,12 +20,11 @@ c     set initial- and final-state masses for Born and real
          kn_masses(nlegreal)=0
          ini=.false.
       endif
-
 c Phase space:
 c 1 /(16 pi S) d m^2 d cth d y
       xjac=1d0/kn_sbeams/(16*pi)
       zlow=atan((ph_Zmass2low  - ph_Zmass2)/ph_ZmZw)
-      zhigh=atan((min(ph_Zmass2high,kn_sbeams)  - ph_Zmass2)/ph_ZmZw)
+      zhigh=atan((ph_Zmass2high  - ph_Zmass2)/ph_ZmZw)
       z=zlow+(zhigh-zlow)*xborn(1)
       xjac=xjac*(zhigh-zlow)
       m2=ph_ZmZw*tan(z)+ph_Zmass2
@@ -83,8 +82,8 @@ c now boost everything along 3
 c      call checkmomzero(nlegborn,kn_pborn)
 c      call checkmass(2,kn_pborn(0,3))
 
-c minimal value of sqrt(s)
-      kn_minmass=sqrt(ph_Zmass2low)
+c minimal final state mass 
+      kn_minmass=sqrt(ph_Wmass2low)
 
       end
 
@@ -92,16 +91,26 @@ c minimal value of sqrt(s)
       subroutine born_suppression(fact)
       implicit none
       include 'nlegborn.h'
-      include '../include/pwhg_flst.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       logical ini
       data ini/.true./
-      real * 8 fact
-c CAVEAT!!!  process dependent subroutine
+      real * 8 fact,pt
+      real * 8 powheginput
+      external powheginput
       if (ini) then
-         write(*,*) '**************************'
-         write(*,*) 'No Born suppression factor'
-         write(*,*) '**************************'
+         pt = powheginput("#ptsupp")         
+         if(pt.gt.0) then
+            write(*,*) ' ******** WARNING: ptsupp is deprecated'
+            write(*,*) ' ******** Replace it with bornsuppfact'
+         else
+            pt = powheginput("#bornsuppfact")
+         endif
+         if(pt.ge.0) then
+            write(*,*) '**************************'
+            write(*,*) 'No Born suppression factor'
+            write(*,*) '**************************'
+         endif
          ini=.false.
       endif
       fact=1d0
@@ -112,40 +121,58 @@ c CAVEAT!!!  process dependent subroutine
       implicit none
       include 'PhysPars.h'
       include 'nlegborn.h'
-      include '../include/pwhg_kn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_kn.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
       real *8 muref
       real *8 dotp
       external dotp
-      if (ini) then
-c         write(*,*) '*************************************'
-c         write(*,*) '    Factorization and renormalization '
-c         write(*,*) '    scales set to Z exact mass        '
-c         write(*,*) '*************************************'
-
-         write(*,*) '*************************************'
-         write(*,*) '    Factorization and renormalization '
-         write(*,*) '    scales set to Z virtuality  '
-         write(*,*) '*************************************'
-
-c         write(*,*) '*************************************'
-c         write(*,*) '    Factorization and renormalization '
-c         write(*,*) '    scales set to the Z transverse mass'
-c         write(*,*) '*************************************'
-
-         ini=.false.
+      logical runningscales
+      save runningscales
+      real * 8 pt2
+      real * 8 powheginput
+      external powheginput
+      if(ini) then
+         if(powheginput('#runningscale').ge.1) then
+            runningscales=.true.
+         else
+            runningscales=.false.
+         endif
       endif
-
-c      muref=ph_Zmass
-      muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
-c      muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)) + (kn_pborn(1,3)
-c     $     +kn_pborn(1,4))**2 + (kn_pborn(2,3)
-c     $     +kn_pborn(2,4))**2)
-
+      if (runningscales) then
+         if (ini) then
+            write(*,*) '*************************************'
+            write(*,*) '    Factorization and renormalization '
+            if (powheginput('#runningscale').eq.1) then
+               write(*,*) '    scales set to the Z virtuality '            
+            elseif(powheginput('#runningscale').eq.2) then
+               write(*,*) '    scales set to the Z transverse mass ' 
+            else 
+               write(*,*) "runningscale value not allowed"
+               call exit(1)
+            endif
+            write(*,*) '*************************************'
+            ini=.false.
+         endif
+         if(powheginput('#runningscale').eq.2) then
+            pt2=(kn_pborn(1,3)+kn_pborn(1,4))**2+(kn_pborn(2,3)
+     $           +kn_pborn(2,4))**2
+            muref=sqrt(pt2+ph_Wmass*ph_Wmass)
+         else
+            muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
+         endif
+      else
+         if (ini) then
+            write(*,*) '*************************************'
+            write(*,*) '    Factorization and renormalization '
+            write(*,*) '    scales set to the Z mass '
+            write(*,*) '*************************************'
+            ini=.false.
+         endif
+         muref=ph_Wmass
+      endif
       muf=muref
       mur=muref
-
-
       end

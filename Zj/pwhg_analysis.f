@@ -346,7 +346,6 @@ c arrays to reconstruct jets
       parameter (findinvmass=.true.)
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
-      data WHCPRG/'POWHEG'/
       logical is_Z
       integer nfoundjets
       integer maxjets
@@ -364,7 +363,7 @@ c     binsize
       save problem_with_lep
       data problem_with_lep/0/
 
-      if (WHCPRG.ne.'POWHEG') then 
+      if (WHCPRG.ne.'NLO'.and.WHCPRG.ne.'LHE') then 
 c     set values if analysis file is run by HERWIG and PYTHIA
          Zmass = 91.188d0
          Zwidth = 2.486d0
@@ -387,7 +386,7 @@ c     set values if analysis file is run by HERWIG and PYTHIA
          ini = .false.
       endif
 
-      if (WHCPRG.eq.'POWHEG') then 
+      if (WHCPRG.eq.'NLO'.or.WHCPRG.eq.'LHE') then 
          neminus=0
          neplus=0
          do i=1,maxnumlep

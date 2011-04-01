@@ -1,4 +1,4 @@
-vdecaymode  2   ! Z decay products (default 2): 1 for electronic, 2 for muonic and 3 for tauonic decay
+vdecaymode  1   ! Z decay products (default 2): 1 for electronic, 2 for muonic and 3 for tauonic decay
 
 numevts 50000     ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)

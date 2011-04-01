@@ -3,7 +3,7 @@
 # The analysis file should be ready to handle weighted events 
 # (possibly with negative weights).
 
-vdecaymode  2   ! Z decay products (default 2): 1 for electronic, 2 for muonic and 3 for tauonic decay
+vdecaymode  1   ! Z decay products (default 2): 1 for electronic, 2 for muonic and 3 for tauonic decay
 
 
 numevts 50000     ! number of events to be generated

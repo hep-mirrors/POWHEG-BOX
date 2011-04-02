@@ -83,7 +83,7 @@ c      call checkmomzero(nlegborn,kn_pborn)
 c      call checkmass(2,kn_pborn(0,3))
 
 c minimal final state mass 
-      kn_minmass=sqrt(ph_Wmass2low)
+      kn_minmass=sqrt(ph_Zmass2low)
 
       end
 
@@ -159,7 +159,7 @@ c minimal final state mass
          if(powheginput('#runningscale').eq.2) then
             pt2=(kn_pborn(1,3)+kn_pborn(1,4))**2+(kn_pborn(2,3)
      $           +kn_pborn(2,4))**2
-            muref=sqrt(pt2+ph_Wmass*ph_Wmass)
+            muref=sqrt(pt2+ph_Zmass*ph_Zmass)
          else
             muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
          endif
@@ -171,7 +171,7 @@ c minimal final state mass
             write(*,*) '*************************************'
             ini=.false.
          endif
-         muref=ph_Wmass
+         muref=ph_Zmass
       endif
       muf=muref
       mur=muref

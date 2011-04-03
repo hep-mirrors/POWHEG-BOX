@@ -159,7 +159,7 @@ c minimal final state mass
          if(powheginput('#runningscale').eq.2) then
             pt2=(kn_pborn(1,3)+kn_pborn(1,4))**2+(kn_pborn(2,3)
      $           +kn_pborn(2,4))**2
-            muref=sqrt(pt2+ph_Zmass*ph_Zmass)
+            muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4))+pt2)
          else
             muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
          endif

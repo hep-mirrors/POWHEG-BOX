@@ -205,7 +205,7 @@ c minimal value of sqrt(s)
             write(*,*) '*************************************'
             ini=.false.
          endif
-         muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,3)))
+         muref=sqrt(dotp(kn_pborn(0,3),kn_pborn(0,3)))
       else
          if (ini) then
             write(*,*) '*************************************'

@@ -135,7 +135,7 @@ c minimal final state mass
       real * 8 powheginput
       external powheginput
       if(ini) then
-         if(powheginput('#runningscale').ge.1) then
+         if(powheginput('#runningscale').eq.1) then
             runningscales=.true.
          else
             runningscales=.false.
@@ -147,8 +147,6 @@ c minimal final state mass
             write(*,*) '    Factorization and renormalization '
             if (powheginput('#runningscale').eq.1) then
                write(*,*) '    scales set to the W virtuality '            
-            elseif (powheginput('#runningscale').eq.2) then
-               write(*,*) '    scales set to the W transverse mass ' 
             else 
                write(*,*) "runningscale value not allowed"
                call exit(1)
@@ -156,14 +154,8 @@ c minimal final state mass
             write(*,*) '*************************************'
             ini=.false.
          endif
-         if(powheginput('#runningscale').eq.2) then
-            pt2=(kn_pborn(1,3)+kn_pborn(1,4))**2+(kn_pborn(2,3)
-     $           +kn_pborn(2,4))**2
-            muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4))+pt2)
-         else
-            muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
-         endif
-      else
+         muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,4)))
+       else
          if (ini) then
             write(*,*) '*************************************'
             write(*,*) '    Factorization and renormalization '

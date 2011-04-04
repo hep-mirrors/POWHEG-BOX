@@ -21,7 +21,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       if (ph_Wwidth.le.0d0) ph_Wwidth =  2.141d0
 
       ph_alphaem = powheginput("#alphaem")
-      if (ph_alphaem.le.0d0) ph_alphaem = 1d0/137.035999679d0
+      if (ph_alphaem.le.0d0) ph_alphaem = 1d0/133.715d0
       ph_Zmass = powheginput("#Zmass")
       if (ph_Zmass.le.0d0) ph_Zmass  = 91.1876d0     
       ph_Zwidth = powheginput("#Zwidth")
@@ -54,9 +54,9 @@ c     number of light flavors
 
 c     mass window
       masswindow_low = powheginput("#masswindow_low")
-      if (masswindow_low.le.0d0) masswindow_low=10d0
+      if (masswindow_low.le.0d0) masswindow_low=30d0
       masswindow_high = powheginput("#masswindow_high")
-      if (masswindow_high.le.0d0) masswindow_high=10d0
+      if (masswindow_high.le.0d0) masswindow_high=30d0
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   DEPENDENT QUANTITIES       

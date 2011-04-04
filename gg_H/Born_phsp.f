@@ -198,8 +198,6 @@ c minimal value of sqrt(s)
             write(*,*) '    Factorization and renormalization '
             if (powheginput('#runningscale').eq.1) then
                write(*,*) '    scales set to the H virtuality '            
-            elseif(powheginput('#runningscale').eq.2) then
-               write(*,*) '    scales set to the H transverse mass ' 
             else 
                write(*,*) "runningscale value not allowed"
                call exit(1)
@@ -207,12 +205,7 @@ c minimal value of sqrt(s)
             write(*,*) '*************************************'
             ini=.false.
          endif
-         if(powheginput('#runningscale').eq.2) then
-            pt2=kn_pborn(1,3)**2+kn_pborn(2,3)**2
-            muref=sqrt(pt2+ph_Hmass*ph_Hmass)
-         else
-            muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,3)))
-         endif
+         muref=sqrt(2d0*dotp(kn_pborn(0,3),kn_pborn(0,3)))
       else
          if (ini) then
             write(*,*) '*************************************'

@@ -43,13 +43,13 @@ contains
   !!                     V              V
   !!        ( -> ve(3) + e^+(4))   (vm(5) + mu^+(6)
   
-  subroutine getamplqqqq_v(pin, muu, i1,i2,i3,i4, css, tree, res, polesonly)
+  subroutine getamplqqqq_v(pin, muu, i1,i2,i3,i4, css, tree, treesplit, res, polesonly)
     complex(dp), intent(inout)      :: pin(:,:)
     real(dp), intent(in)             :: muu
     integer, intent(in)          :: i1,i2,i3,i4
     integer, intent(in)          :: css
     logical, intent(in)          :: polesonly
-    complex(dp), intent(out)         :: tree, res(-2:1)
+    complex(dp), intent(out)         :: tree, res(-2:1), treesplit(2)
 !----------------------------------------------------
     complex(dp)                  :: div1, div2, div3
     complex(dp)                  :: resWW(-2:1), treeWW
@@ -77,6 +77,7 @@ contains
     tree = czero
     div1 = czero
     div2 = czero
+    treesplit = czero
     outgoing = .true.
     crossed_gl = .false.
 
@@ -242,7 +243,9 @@ contains
           if (verbose)  write(*,*) 'res init', resWW
 
             res(:) = res(:) + resWW(:)
-            tree = tree + treeWW
+ ! Added RR 24-03-2011 -- for fermion loops
+             treesplit(i) = treesplit(i) + treeWW
+             tree = tree + treeWW
              
 
          endif
@@ -282,6 +285,7 @@ contains
 
    res =  res/hardscale**4
    tree = tree/hardscale**4
+   treesplit = treesplit/hardscale**4
    total_ampl = total_ampl+1 
  
    if (verbose) write(*,*) 'tree',tree
@@ -289,26 +293,21 @@ contains
    call compute_lnprec(res,div2,div1,tree,lnprec)
 
    ! -- if presision check fail then recompute the amplitude in higher precision 
-   if (lnprec(-2) > -3d0 .or. lnprec(-1) > -3d0 .or. abs_rel_err_dp > 2d-1 .or. &
+   if (lnprec(-2) > -3d0 .or. lnprec(-1) > -3d0 .or. abs_rel_err_dp > 2d-1&
+        &.or. &
         &res(0)+1d0 == res(0) .or. res(1)+1d0 == res(1) .or. & ! true is result is Infinite 
         &res(0) /= res(0) .or. res(1) /= res(1) .or. &         ! true is result is NaN 
         &abs(res(0)+res(1)) > 1000d0*abs(tree)) then           
 
-
       if (recomputed_in_qp == 0) &
            &write(*,*) 'Switch to Multiple Precision if lnprec > -3, abs_rel_err > 2d-1, |V| > 1000|B|, found NaN, or infinite'  
       
-!       call redo_ampl_in_qp(pin,muu,i1,i2,i3,i4,css,tree_qp,res_qp)
       call redo_ampl_in_mp(pin,muu,i1,i2,i3,i4,css,tree_mp,res_mp)
 
-
-!      if ((recomputed_in_qp / 1000)*1000 == recomputed_in_qp) &
-!           &write(*,*) 'Amplitudes done in HP',recomputed_in_qp
-
+      if ((recomputed_in_qp / 1000)*1000 == recomputed_in_qp) &
+           &write(*,*) 'Amplitudes done in HP',recomputed_in_qp
       recomputed_in_qp = recomputed_in_qp+1 
       res= res_mp
-!      res= 0d0
-
    endif
 
       
@@ -356,7 +355,8 @@ contains
       !---------------------------------------------------------------------------
       real(dp)                       :: rat_s, rat_t
       logical                        :: csp
-      complex(dp)                    :: Ls, Lt
+      complex(dp)                    :: Ls1, Ls2,Lt1,Lt2, treesplit_s(2), treesplit_t(2), treesplit(2)
+      complex(dp)                    ::pW1(4),pW2(4)
       !---------------------------------------------------------------------------
 
       if (verbose) write(*,*) 'entering getamplqqqq_v_stu'
@@ -365,48 +365,55 @@ contains
       tree_t = czero
       res_s = czero
       res_t = czero
-
+      pW1(:) = pin(3,:) + pin(4,:)
+      pW2(:) = pin(5,:) + pin(6,:)
       ! check single pole
       csp = log_val_opt('-justepinv1', .false.)
 
     ! --- now calculate the amps
+      ! Note: treesplit is dummy variable, not used. Variables actually used: treesplit_s & treesplit_t
     if (chn .eq. 'qqb') then
       
        ! s-channel
        if (verbose1) write(*,*) 's-channel B1'
-       call getamplqqqq_v(pin,muu,1,2,7,8,1,tree_s(1),res_s(1,-2:1),polesonly) ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,1,2,7,8,1,tree_s(1),treesplit_s, res_s(1,-2:1),polesonly) ! Prim #1 - B1
 
        if (verbose1) write(*,*) 's-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,1,2,8,7,3,tree_s(2),res_s(2,-2:1),polesonly) ! Prim #2 - B1 crossed gl
+       call getamplqqqq_v(pin,muu,1,2,8,7,3,tree_s(2),treesplit, res_s(2,-2:1),polesonly) ! Prim #2 - B1 crossed gl
        
        if (verbose1) write(*,*) 's-channel B2-1'
-       call getamplqqqq_v(pin,muu,1,2,7,8,2,tree_s(3),res_s(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,1,2,7,8,2,tree_s(3),treesplit, res_s(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) 's-channel B2-2' 
-       call getamplqqqq_v(pin,muu,7,8,1,2,2,tree_s(4),res_s(4,-2:1),polesonly) ! Prim #4 - B2           
+       call getamplqqqq_v(pin,muu,7,8,1,2,2,tree_s(4),treesplit, res_s(4,-2:1),polesonly) ! Prim #4 - B2           
 
        !t-channel
        if (verbose1) write(*,*) 't-channel B1'
-       call getamplqqqq_v(pin,muu,1,8,7,2,1,tree_t(1),res_t(1,-2:1),polesonly) ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,1,8,7,2,1,tree_t(1),treesplit_t, res_t(1,-2:1),polesonly) ! Prim #1 - B1
 
 
        if (verbose1) write(*,*) 't-channel crossed gluons'                              
-       call getamplqqqq_v(pin,muu,1,8,2,7,3,tree_t(2),res_t(2,-2:1),polesonly) ! Prim #2 - B1 crossed gl
+       call getamplqqqq_v(pin,muu,1,8,2,7,3,tree_t(2),treesplit, res_t(2,-2:1),polesonly) ! Prim #2 - B1 crossed gl
        
        if (verbose1)  write(*,*) 't-channel B2-1'
 
-       call getamplqqqq_v(pin,muu,1,8,7,2,2,tree_t(3),res_t(3,-2:1),polesonly) ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,1,8,7,2,2,tree_t(3),treesplit,res_t(3,-2:1),polesonly) ! Prim #3 - B2
        
        if (verbose1) write(*,*) 't-channel B2-2'                                                        
 
-       call getamplqqqq_v(pin,muu,7,2,1,8,2,tree_t(4),res_t(4,-2:1),polesonly) ! Prim #4 - B2
+       call getamplqqqq_v(pin,muu,7,2,1,8,2,tree_t(4),treesplit,res_t(4,-2:1),polesonly) ! Prim #4 - B2
 
        if (csp) call single_pole_check(pin,muu,1,2,7,8, tree_s(1), tree_t(1))
 
 
        if (ferm_loops_WW_nf) then
-          call log_mom(pin(1,:),pin(2,:),muu,Ls)
-          call log_mom(pin(1,:),pin(8,:),muu,Lt)
+        
+          ! Logs take 3 momenta as arguments
+          call log_mom(pin(1,:),pin(2,:),pW1,muu,Ls1)
+          call log_mom(pin(1,:),pin(2,:),pW2,muu,Ls2)
+
+          call log_mom(pin(1,:),pin(8,:),pW1,muu,Lt1)
+          call log_mom(pin(1,:),pin(8,:),pW2,muu,Lt2)
        endif
 
        
@@ -414,109 +421,117 @@ contains
 
        ! s-channel
        if (verbose1) write(*,*) 's-channel B1'
-       call getamplqqqq_v(pin,muu,2,1,7,8,1,tree_s(1),res_s(1,-2:1),polesonly)  ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,2,1,7,8,1,tree_s(1),treesplit_s,res_s(1,-2:1),polesonly)  ! Prim #1 - B1
        
        if (verbose1) write(*,*) 's-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,2,1,8,7,3,tree_s(2),res_s(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
+       call getamplqqqq_v(pin,muu,2,1,8,7,3,tree_s(2),treesplit,res_s(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
 
        if (verbose1) write(*,*) 's-channel B2-1'
-       call getamplqqqq_v(pin,muu,2,1,7,8,2,tree_s(3),res_s(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,2,1,7,8,2,tree_s(3),treesplit,res_s(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) 's-channel B2-2'
-       call getamplqqqq_v(pin,muu,7,8,2,1,2,tree_s(4),res_s(4,-2:1),polesonly)  ! Prim #4 - B2
+       call getamplqqqq_v(pin,muu,7,8,2,1,2,tree_s(4),treesplit,res_s(4,-2:1),polesonly)  ! Prim #4 - B2
 
 
       !t-channel     
        if (verbose1) write(*,*) 't-channel B1'
-       call getamplqqqq_v(pin,muu,2,8,7,1,1,tree_t(1),res_t(1,-2:1),polesonly)  ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,2,8,7,1,1,tree_t(1),treesplit_t,res_t(1,-2:1),polesonly)  ! Prim #1 - B1
        
        if (verbose1) write(*,*) 't-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,2,8,1,7,3,tree_t(2),res_t(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
+       call getamplqqqq_v(pin,muu,2,8,1,7,3,tree_t(2),treesplit,res_t(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
 
        if (verbose1) write(*,*) 't-channel B2-1'
-       call getamplqqqq_v(pin,muu,2,8,7,1,2,tree_t(3),res_t(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,2,8,7,1,2,tree_t(3),treesplit,res_t(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) 't-channel B2-2'
-       call getamplqqqq_v(pin,muu,7,1,2,8,2,tree_t(4),res_t(4,-2:1),polesonly)  ! Prim #4 - B2
+       call getamplqqqq_v(pin,muu,7,1,2,8,2,tree_t(4),treesplit,res_t(4,-2:1),polesonly)  ! Prim #4 - B2
 
 !       if (csp) call single_pole_check(pin,muu,2,1,7,8, tree_s(1), tree_t(1))
 
        if (ferm_loops_WW_nf) then
-          call log_mom(pin(2,:),pin(1,:),muu,Ls)
-          call log_mom(pin(2,:),pin(8,:),muu,Lt)
+          call log_mom(pin(2,:),pin(1,:),pW1,muu,Ls1)
+          call log_mom(pin(2,:),pin(1,:),pW2,muu,Ls2)
+          call log_mom(pin(2,:),pin(8,:),pW1,muu,Lt1)
+          call log_mom(pin(2,:),pin(8,:),pW2,muu,Lt2)
        endif
      
     elseif (chn .eq. 'qqq') then
 
        ! s-channel
        if (verbose1) write(*,*) 's-channel B1'
-       call getamplqqqq_v(pin,muu,1,7,2,8,1,tree_s(1),res_s(1,-2:1),polesonly)  ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,1,7,2,8,1,tree_s(1),treesplit_s,res_s(1,-2:1),polesonly)  ! Prim #1 - B1
        
        if (verbose1) write(*,*) 's-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,1,7,8,2,3,tree_s(2),res_s(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
+       call getamplqqqq_v(pin,muu,1,7,8,2,3,tree_s(2),treesplit,res_s(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
 
        if (verbose1) write(*,*) 's-channel B2-1'
-       call getamplqqqq_v(pin,muu,1,7,2,8,2,tree_s(3),res_s(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,1,7,2,8,2,tree_s(3),treesplit,res_s(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) 's-channel B2-2'
-       call getamplqqqq_v(pin,muu,2,8,1,7,2,tree_s(4),res_s(4,-2:1),polesonly)  ! Prim #4 - B2
+       call getamplqqqq_v(pin,muu,2,8,1,7,2,tree_s(4),treesplit,res_s(4,-2:1),polesonly)  ! Prim #4 - B2
        
 
 
        !t-channel
        if (verbose1) write(*,*) 't-channel B1'
-       call getamplqqqq_v(pin,muu,1,8,2,7,1,tree_t(1),res_t(1,-2:1),polesonly)  ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,1,8,2,7,1,tree_t(1),treesplit_t,res_t(1,-2:1),polesonly)  ! Prim #1 - B1
        
        if (verbose1) write(*,*) 't-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,1,8,7,2,3,tree_t(2),res_t(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
+       call getamplqqqq_v(pin,muu,1,8,7,2,3,tree_t(2),treesplit,res_t(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
 
        if (verbose1) write(*,*) 't-channel B2-1'
-       call getamplqqqq_v(pin,muu,1,8,2,7,2,tree_t(3),res_t(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,1,8,2,7,2,tree_t(3),treesplit,res_t(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) 't-channel B2-2'
-       call getamplqqqq_v(pin,muu,2,7,1,8,2,tree_t(4),res_t(4,-2:1),polesonly)  ! Prim #4 - B2
+       call getamplqqqq_v(pin,muu,2,7,1,8,2,tree_t(4),treesplit,res_t(4,-2:1),polesonly)  ! Prim #4 - B2
 
        if (csp) call single_pole_check(pin,muu,1,7,2,8,tree_s(1), tree_t(1))
 
        if (ferm_loops_WW_nf) then
-          call log_mom(pin(1,:),pin(7,:),muu,Ls)
-          call log_mom(pin(1,:),pin(8,:),muu,Lt)
+          call log_mom(pin(1,:),pin(7,:),pW1,muu,Ls1)
+          call log_mom(pin(1,:),pin(7,:),pW2,muu,Ls2)
+          call log_mom(pin(1,:),pin(8,:),pW1,muu,Lt1)
+          call log_mom(pin(1,:),pin(8,:),pW2,muu,Lt2)
        endif
        
     elseif (chn .eq. 'qbb') then
 
        ! s-channel
        if (verbose1) write(*,*) 's-channel B1'
-       call getamplqqqq_v(pin,muu,7,1,8,2,1,tree_s(1),res_s(1,-2:1),polesonly)  ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,7,1,8,2,1,tree_s(1),treesplit_s,res_s(1,-2:1),polesonly)  ! Prim #1 - B1
 
        if (verbose1) write(*,*) 's-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,7,1,2,8,3,tree_s(2),res_s(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
+       call getamplqqqq_v(pin,muu,7,1,2,8,3,tree_s(2),treesplit,res_s(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
 
        if (verbose1) write(*,*) 's-channel B2'
-       call getamplqqqq_v(pin,muu,7,1,8,2,2,tree_s(3),res_s(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,7,1,8,2,2,tree_s(3),treesplit,res_s(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) ',s-channel B2-2'
-       call getamplqqqq_v(pin,muu,8,2,7,1,2,tree_s(4),res_s(4,-2:1),polesonly)  ! Prim #4 - B2
+       call getamplqqqq_v(pin,muu,8,2,7,1,2,tree_s(4),treesplit,res_s(4,-2:1),polesonly)  ! Prim #4 - B2
 
 
        !t-channel
        if (verbose1) write(*,*) 't-channel B1'
-       call getamplqqqq_v(pin,muu,7,2,8,1,1,tree_t(1),res_t(1,-2:1),polesonly)  ! Prim #1 - B1
+       call getamplqqqq_v(pin,muu,7,2,8,1,1,tree_t(1),treesplit_t,res_t(1,-2:1),polesonly)  ! Prim #1 - B1
 
        if (verbose1) write(*,*) 't-channel crossed gluons'
-       call getamplqqqq_v(pin,muu,7,2,1,8,3,tree_t(2),res_t(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
+       call getamplqqqq_v(pin,muu,7,2,1,8,3,tree_t(2),treesplit,res_t(2,-2:1),polesonly)  ! Prim #2 - B1 crossed g
 
        if (verbose1) write(*,*) 't-channel B2'
-       call getamplqqqq_v(pin,muu,7,2,8,1,2,tree_t(3),res_t(3,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,7,2,8,1,2,tree_t(3),treesplit,res_t(3,-2:1),polesonly)  ! Prim #3 - B2
 
        if (verbose1) write(*,*) 't-channel B2-2'
-       call getamplqqqq_v(pin,muu,8,1,7,2,2,tree_t(4),res_t(4,-2:1),polesonly)  ! Prim #3 - B2
+       call getamplqqqq_v(pin,muu,8,1,7,2,2,tree_t(4),treesplit,res_t(4,-2:1),polesonly)  ! Prim #3 - B2
 
        if (csp) call single_pole_check(pin,muu,7,1,8,2, tree_s(1), tree_t(1))
 
        if (ferm_loops_WW_nf) then
-          call log_mom(pin(7,:),pin(1,:),muu,Ls)
-          call log_mom(pin(7,:),pin(2,:),muu,Lt)
+          call log_mom(pin(7,:),pin(1,:),pW1,muu,Ls1)
+          call log_mom(pin(7,:),pin(1,:),pW2,muu,Ls2)
+
+          call log_mom(pin(7,:),pin(2,:),pW1,muu,Lt1)
+          call log_mom(pin(7,:),pin(2,:),pW2,muu,Lt2)
+
        endif
 
     endif
@@ -524,15 +539,20 @@ contains
     ! Include the fermion loop.
     ! This has the same colour factor as for prim #1 - TaTbTbTa
     ! Prefactor - see hep-ph/9305239, and notes.
-    if (ferm_loops_WW_nf) then                                   
+    if (ferm_loops_WW_nf) then        
+
        res_s(5,-1) = res_s(5,-1) + Nf*(-two/three)*tree_s(1)  
        res_t(5,-1) = res_t(5,-1) + Nf*(-two/three)*tree_t(1)  
-       
-       res_s(5,0) = res_s(5,0) + Nf*(-two/three)*Ls*tree_s(1) 
-       res_t(5,0) = res_t(5,0) + Nf*(-two/three)*Lt*tree_t(1) 
-       
+                                                                 
+       ! Use Q^2 of gluon - this will depend on which W is radiated by quark
+       ! line, so split amplitude into two parts.
+
+       res_s(5,0) = res_s(5,0) + Nf*(-two/three)*(Ls1*treesplit_s(1) + Ls2*treesplit_s(2)) 
+       res_t(5,0) = res_t(5,0) + Nf*(-two/three)*(Lt1*treesplit_t(1) + Lt2*treesplit_t(2)) 
+
        res_s(5,1) = res_s(5,1) + Nf*(-10.0d0/9.0d0)*tree_s(1) 
-       res_t(5,1) = res_t(5,1) + Nf*(-10.0d0/9.0d0)*tree_t(1) 
+       res_t(5,1) = res_t(5,1) + Nf*(-10.0d0/9.0d0)*tree_t(1)                                                                  
+
     endif
        
     ! Tree amplitudes should be the same regardless of primitive:
@@ -880,21 +900,22 @@ contains
 !-----------------------------------------
 
 
-    subroutine log_mom(p1,p2,muu,L)
-      complex(dp), intent(in)    :: p1(:), p2(:)
+    subroutine log_mom(p1,p2,p3,muu,L)
+      complex(dp), intent(in)    :: p1(:), p2(:),p3(:)
       real(dp), intent(in)           :: muu
       complex(dp), intent(out)   :: L
 !------------
-      complex(dp)                :: s
+      complex(dp)                :: s, psum(4)
       
 
-
-      s = two*sc(p1,p2)
+      psum(:) = p1(:)+p2(:) + p3(:)
+      s = sc(psum,psum)
+!      s = two*sc(p1,p2)
 
       if (real(s) < zero) then 
           L = log(muu**2/(-s))
        else
-          L = log(muu**2/s)-ci*pi 
+          L = log(muu**2/s)+ci*pi 
        endif
 
      end subroutine log_mom

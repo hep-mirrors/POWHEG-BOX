@@ -139,8 +139,8 @@ C     see p.10 of 1002.2581
          virtual = 0.2d0*born     ! -- FAKE constant K factor 
       endif
       countampl = countampl +1 
-      if ((countampl/1000)*1000 == countampl) 
-     1  write(*,*) 'Done', countampl, 'virtual squared amplitudes'  
+c      if ((countampl/100000)*100000 == countampl) 
+c     1  write(*,*) 'Done', counampl, 'virtual squared amplitudes'  
       end
 
 

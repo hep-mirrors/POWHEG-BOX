@@ -488,8 +488,9 @@ c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t
       logical verbose
       parameter (verbose=.true.)
       logical flavequiv
-      external flavequiv
-c check that light partons start with flst_lightpart
+      external flavequiv      
+      if (flg_lightpart_check) then
+c check that there are no coloured light partons before flst_lightpart
       do j=1,flst_nreal
          do ipart=3,flst_lightpart-1
             if(abs(flst_real(ipart,j)).le.st_nlight) then
@@ -522,6 +523,7 @@ c check that light partons start with flst_lightpart
             endif
          enddo
       enddo
+      endif
 c map flavours to internal flavour numbers      
       call mapflavours
 c sanity check on real flavour configurations;

@@ -93,6 +93,10 @@ c scale factors
       st_facfact=powheginput('#facscfact')
       if(st_facfact.lt.0) st_facfact=1
       if(st_renfact.lt.0) st_renfact=1
+
+c     if true, perform the check that there are no coloured light
+c     partons before flst_lightpart
+      flg_lightpart_check=.true.
 c
 c initialize Lambda values for radiation
       call init_rad_lambda

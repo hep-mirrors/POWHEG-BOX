@@ -495,7 +495,7 @@ c random seeds
                   write(*,*)  pwgprefix(1:lprefix)//'grid-'//
      1                 rnd_cwhichseed//
      2                 '.dat does not have the same folding as'
-                  write(*,*) ,pwgprefix(1:lprefix)//'grid.dat'
+                  write(*,*) pwgprefix(1:lprefix)//'grid.dat'
                   call exit(-1)
                endif
             enddo

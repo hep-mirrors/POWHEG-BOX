@@ -138,7 +138,7 @@ c     than the required one
       errXsec_tb = xerrup(1)
 
       Xsec_tot=Xsec_t+Xsec_tb
-      errXsec_tot=sqrt(errXsec_t**2+errXsec_tb)
+      errXsec_tot=sqrt(errXsec_t**2+errXsec_tb**2)
       
       nev_t=nint(1.05*(Xsec_t/Xsec_tot)*total_ev)
       nev_tb=nint(1.05*(Xsec_tb/Xsec_tot)*total_ev)

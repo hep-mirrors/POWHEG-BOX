@@ -138,7 +138,7 @@ c     than the required one
       errXsec_wm = xerrup(1)
 
       Xsec_tot=Xsec_wp+Xsec_wm
-      errXsec_tot=sqrt(errXsec_wp**2+errXsec_wm)
+      errXsec_tot=sqrt(errXsec_wp**2+errXsec_wm**2)
       
       nev_wp=nint(1.05*(Xsec_wp/Xsec_tot)*total_ev)
       nev_wm=nint(1.05*(Xsec_wm/Xsec_tot)*total_ev)

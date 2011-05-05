@@ -100,6 +100,12 @@ btilde.o: ../btilde.f $(INCLUDE)
 	sh make_btilde.sh
 	$(FF) -c -o obj/$@ btilde_ggH.f
 
+# target to build the modified sigremnants local version (sigremnants_ggH)
+# in process subdirectory
+sigremnants.o: ../sigremnants.f $(INCLUDE) 
+	sh make_sigremnants.sh
+	$(FF) -c -o obj/$@ sigremnants_ggH.f
+
 %.o: %.f $(INCLUDE)
 	$(FF) -c -o obj/$@ $<
 

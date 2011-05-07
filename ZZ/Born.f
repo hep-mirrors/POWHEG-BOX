@@ -158,7 +158,9 @@ c     lepton masses
       common/clepmass/lepmass,decmass
 c     Resonance Z -> e-(3) e+(4)
       call add_resonance(23,3,4)
-      call add_resonance(23,5,6)
+c Careful now! 5 6 have been bumped to 6 7 by the
+c resonance inserted above!
+      call add_resonance(23,6,7)
 c     give masses to final-state light particles
       call lhefinitemasses
       end

@@ -22,8 +22,12 @@ c default values for quark masses should be set here
             id=abs(idup(j))
             if(id.ge.1.and.id.le.st_nlight) then
                pup(5,j)=physpar_mq(id)
-            elseif(id.eq.11.or.id.eq.13.or.id.eq.15) then
-               pup(5,j)=physpar_ml(id)
+            elseif(id.eq.11) then
+               pup(5,j)=physpar_ml(1)
+            elseif(id.eq.13) then
+               pup(5,j)=physpar_ml(2)
+            elseif(id.eq.15) then
+               pup(5,j)=physpar_ml(3)
             endif
          endif
       enddo

@@ -159,8 +159,8 @@ c     lepton masses
 c     Resonance Z -> e-(3) e+(4)
       call add_resonance(23,3,4)
       call add_resonance(23,5,6)
-c     The following routine also performs the reshuffling of momenta if
-c     a massive decay is chosen
+c     give masses to final-state light particles
+      call lhefinitemasses
       end
 
 

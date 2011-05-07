@@ -6,7 +6,7 @@
       double complex function L0(x,y)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -25,7 +25,7 @@
       double complex function L1(x,y)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -44,7 +44,7 @@
       double complex function L2(x,y)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -65,7 +65,7 @@
       double complex function L0old(x,y)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -81,7 +81,7 @@
       double complex function L1old(x,y)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -96,7 +96,7 @@
       double complex function Ls0(x1,y1,x2,y2)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -112,7 +112,7 @@
       double complex function Ls1(x1,y1,x2,y2)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -130,7 +130,7 @@
       double complex function Lsm1(x1,y1,x2,y2)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -158,7 +158,7 @@
       double complex function Lsm1_2mh(s,t,m1sq,m2sq)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -173,7 +173,7 @@
       double complex function Lsm1_2mht(s,t,m1sq,m2sq)
       implicit none
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),
@@ -214,7 +214,7 @@ c----  %%CITATION = HEP-PH 9306240;%%
 c----  Eqs. (I.13)
 C---- analytic continuation has been checked by calculating numerically.
 !      include 'constants.f'
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision one,half,pisqo6
       double complex cone,impi
       parameter (one=1d0,half=1d0/2d0,pisqo6=pi**2/6d0,cone=(1d0,0d0),

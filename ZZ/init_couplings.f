@@ -4,11 +4,20 @@
       include 'zcouple.f'  !TM now set the z-coupling parameters here
       include 'ewcharge.f'
       include 'qcdcouple.f'
-      include '../include/pwhg_st.h'
-      include '../include/pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_math.h'
+      include 'pwhg_physpar.h'
       real * 8 masswindow_low,masswindow_high
       logical verbose
       parameter(verbose=.true.)
+      physpar_ml(1)=0.511d-3
+      physpar_ml(2)=0.1057d0
+      physpar_ml(3)=1.777d0
+      physpar_mq(1)=0.33d0     ! up
+      physpar_mq(2)=0.33d0     ! down
+      physpar_mq(3)=0.50d0     ! strange
+      physpar_mq(4)=1.50d0     ! charm
+      physpar_mq(5)=4.80d0     ! bottom
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

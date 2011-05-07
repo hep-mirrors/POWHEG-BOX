@@ -4,7 +4,7 @@ c---  DKS Eq. 2.12
 !      include 'epinv.f'
 !      include 'epinv2.f'
 !      include 'scale.f'
-      include '../include/pwhg_st.h'
+      include 'pwhg_st.h'
       !TM added these
       double precision musq,epinv,epinv2
       double precision sij

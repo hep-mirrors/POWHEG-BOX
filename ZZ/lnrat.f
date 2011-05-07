@@ -9,7 +9,7 @@ c     sign of x and y to get the right sign for epsilon                *
       implicit none
 !      include 'constants.f'
       !TM added
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision half,one
       double complex impi
       parameter (half=1d0/2d0,one=1d0,impi=(0d0,pi))

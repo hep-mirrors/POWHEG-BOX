@@ -12,7 +12,7 @@ C     defined in their equation II.9
 C     \int da_1 da_2 da_3 /(-a_1*a_2*s1-a_2*a_3*s2-a_3*a_1*s3)
        implicit none
 !      include 'constants.f'
-      include './../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision two,pisq,one
       parameter (two=2d0,pisq=pi**2,one=1d0)
       double precision s1,s2,s3,smax,smid,smin,del3,rtdel3
@@ -68,7 +68,7 @@ c     %``Massless one loop scalar three point integral and associated Clausen,
 c     %Glaisher and L functions,''
 c     SLAC-PUB-5809
 !      include 'constants.f'
-      include './../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision two,pisq,one
       parameter (two=2d0,pisq=pi**2,one=1d0)
       double precision s1,s2,s3,d1,d2,d3,rtmdel,arg1,arg2,arg3,dclaus
@@ -97,7 +97,7 @@ C  [arXiv:hep-ph/9402223].
 C  %%CITATION = HEP-PH 9402223;%%
 
 !      include 'constants.f'
-      include './../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision two,pisq,one
       double complex impi
       parameter (two=2d0,pisq=pi**2,one=1d0,impi=(0d0,pi))

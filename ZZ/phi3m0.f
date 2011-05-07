@@ -9,7 +9,7 @@ c     Expression evaluated is
 c     d^4 p1 d^4 p2 (2 pi)^4 delta(p0-p1-p2)/(2 pi)^6
 c     delta(p2^2) delta(p3^2)
       implicit none
-      include '../include/pwhg_math.h'
+      include 'pwhg_math.h'
       double precision p0(4),p1(4),p2(4),p1cm(4)
       double precision xth,xphi,phi,s,roots,costh,sinth
       double precision wt0,wt

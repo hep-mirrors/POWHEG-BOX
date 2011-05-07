@@ -9,7 +9,7 @@ c   for the moment --- radiation only from initial line
       include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'ewcharge.f'
-      include './../include/pwhg_math.h'
+      include 'pwhg_math.h'
       include 'pwhg_st.h'
       double precision xn
       integer nf,mxpart

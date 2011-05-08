@@ -128,12 +128,8 @@ c     we need to tell to this analysis file which program is running it
             write(*,*) '       LHE analysis'
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS            '
-            write(*,*) 'not implemented analysis'
-            write(*,*) 'no plots will be present at the end of the run'
          elseif(WHCPRG.eq.'PYTHIA') then
             write (*,*) '           PYTHIA ANALYSIS            '
-            write(*,*) 'not implemented analysis'
-            write(*,*) 'no plots will be present at the end of the run'
          endif
          write(*,*) '*****************************'
          vdecaytemp=lprup(1)-10000 ! Z decay product, with positive id
@@ -155,22 +151,26 @@ c     we need to tell to this analysis file which program is running it
       vdecaytemp2=13
 
 
-      if((WHCPRG.eq.'NLO   ').or.(WHCPRG.eq.'LHE   ')) then
 c     find Z decay products
-         do ihep=1,nhep
-            if(isthep(ihep).eq.1) then
-               if(idhep(ihep).eq.vdecaytemp1) then
-                  i3=ihep
-               elseif(idhep(ihep).eq.-vdecaytemp1) then
-                  i4=ihep
-               elseif(idhep(ihep).eq.vdecaytemp2) then
-                  i5=ihep
-               elseif(idhep(ihep).eq.-vdecaytemp2) then
-                  i6=ihep
-               endif
+      i3=0
+      i4=0
+      i5=0
+      i6=0
+      do ihep=1,nhep
+         if(isthep(ihep).eq.1) then
+            if(idhep(ihep).eq.vdecaytemp1) then
+               i3=ihep
+            elseif(idhep(ihep).eq.-vdecaytemp1) then
+               i4=ihep
+            elseif(idhep(ihep).eq.vdecaytemp2) then
+               i5=ihep
+            elseif(idhep(ihep).eq.-vdecaytemp2) then
+               i6=ihep
             endif
-         enddo
-      else
+         endif
+      enddo
+      if(i3.eq.0.or.i4.eq.0.or.i5.eq.0.or.i6.eq.0) then
+         write(*,*) ' not all leptons found'
          return
       endif
       rr=0.7

@@ -59,7 +59,7 @@
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>
       <bibitem*|1><label|bib-noi>T.<nbsp>Melia, P.<nbsp>Nason,
-      R.<nbsp>Rontsch, and G.<nbsp>Zanderighi.
+      R.<nbsp>Rontsch, and G.<nbsp>Zanderighi, in preparation.
 
       <bibitem*|2><label|bib-Dixon:1998py>L.<nbsp>J. Dixon, Z.<nbsp>Kunszt,
       and A.<nbsp>Signer, <with|font-shape|italic|Helicity amplitudes for

@@ -15,6 +15,7 @@
       integer ios
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
+      integer iseed,n1,n2
       nev=powheginput('numevts')
       call newunit(iun)
 c The following allows to perform multiple runs with
@@ -80,6 +81,22 @@ c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
 c     let the analysis subroutine know that it is run by this program
          WHCPRG='LHE   '
       endif
+c if we are using manyseeds, and iseed is given, it means that we want
+c to examine that event in particular
+      if(rnd_cwhichseed.ne.'none') then
+         iseed=powheginput('#iseed')
+         n1=powheginput('#rand1')
+         n2=powheginput('#rand2')
+         if(iseed.ge.0.and.n1.ge.0.and.n2.ge.0)
+     1        call setrandom(iseed,n1,n2)
+      endif
+      call resetcnt
+     1       ('upper bound failure in inclusive cross section')
+      call resetcnt
+     1       ('vetoed calls in inclusive cross section')
+      call resetcnt(
+     1 'upper bound failures in generation of radiation')
+      call resetcnt('vetoed radiation')
       do j=1,nev
          call pwhgevent
 c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)

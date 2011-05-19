@@ -20,8 +20,8 @@
 
       subroutine setbornmassdep
       implicit none
-      logical large_mtlim
-      common/clarge_mtlim/large_mtlim
+      logical large_mtlim,bloop
+      common/clarge_mtlim/large_mtlim,bloop
       logical ini
       data ini/.true./ 
       save ini
@@ -44,6 +44,12 @@
             write(*,*) '         correction factor given by the ratio'
             write(*,*) '         Born(mt=topmass) / Born(mt=inf).' 
             write(*,*)
+            bloop=powheginput("#includebloop").eq.1
+            if(bloop) then
+               write(*,*) '        b-quark loop contributions included'
+               write(*,*) '        in rescaling factor.             ' 
+               write(*,*)
+            endif
          elseif(mtdep.eq.1) then
             write(*,*)
             write(*,*) ' POWHEG: top mass -> inf for both Born'
@@ -70,8 +76,8 @@
       
       subroutine setbornmass2inf
       implicit none
-      logical large_mtlim
-      common/clarge_mtlim/large_mtlim
+      logical large_mtlim,bloop
+      common/clarge_mtlim/large_mtlim,bloop
       integer mtdep
       common/cmtdep/mtdep
       large_mtlim=.true.
@@ -101,8 +107,8 @@ c     if they were not already evaluated previously
      #           0d0, 0d0,-1d0, 0d0,
      #           0d0, 0d0, 0d0,-1d0/
       save gtens
-      logical large_mtlim
-      common/clarge_mtlim/large_mtlim
+      logical large_mtlim,bloop
+      common/clarge_mtlim/large_mtlim,bloop
       data large_mtlim/.true./
 C     large_mtlim has to be initialized to .true.
 C     in order to correctly perform the check
@@ -111,7 +117,7 @@ C     of soft/collinear limits
 C    Born Cross section with finite top mass 
          call M2_gg_h(p,1,born)
       else
-C     Born Cross section with in the large top mass limit
+C     Born Cross section in the large top mass limit
          call M2_gg_h(p,2,amp2_inf)
 c     Born amplitude and the color- and spin-correlated ones, needed as
 c     counterterms for real contributions, must be evaluated only in
@@ -206,6 +212,30 @@ c     From eq.(2.2) of NPB359(91)283
 c     the multiplication for 2s is needed to remove the flux factor
        end
 
+
+      function afunc(mq,mh)
+      implicit none
+      include 'nlegborn.h'
+      include 'pwhg_math.h'
+      include 'pwhg_kn.h'
+      include 'PhysPars.h'
+      real*8 tauq,mq,mh,tmp,etapl,etamn
+      complex * 16 afunc,tmpc,zic
+      parameter (zic=(0.d0,1.d0))
+c     From eq.(2.2) of NPB359(91)283
+      tauq=4*(mq/mh)**2
+      tmpc=(0d0,0d0)
+      if(tauq.gt.1.d0)then
+         tmp=tauq*(1+(1-tauq)*(asin(1/sqrt(tauq)))**2)
+         tmpc=tmp
+      else
+         etapl=1+sqrt(1-tauq)
+         etamn=1-sqrt(1-tauq)
+         tmpc=tauq*(1-(1-tauq)*(log(etapl/etamn)-zic*pi)**2/4.d0)
+      endif
+      afunc=tmpc
+      end
+
       function finitemtcorr()
       implicit none
       include 'nlegborn.h'
@@ -215,9 +245,12 @@ c     the multiplication for 2s is needed to remove the flux factor
       integer mtdep
       common/cmtdep/mtdep
       real * 8 finitemtcorr
-      complex * 16 zic,tmpc
+      complex * 16 zic,tmpc,afunc
+      external afunc
       parameter (zic=(0.d0,1.d0))
       real * 8 tmp,tauq,etapl,etamn
+      logical large_mtlim,bloop
+      common/clarge_mtlim/large_mtlim,bloop
       logical initialized,ini
       common/cinitialized/initialized
       save ini
@@ -226,26 +259,18 @@ c     the multiplication for 2s is needed to remove the flux factor
          finitemtcorr=1d0
          return
       else
-c     From eq.(2.2) of NPB359(91)283
-         tauq=4*(ph_topmass/ph_Hmass)**2
-         if(tauq.gt.1.d0)then
-            tmp=tauq*(1+(1-tauq)*(asin(1/sqrt(tauq)))**2)
-            tmp=tmp**2
-         else
-            etapl=1+sqrt(1-tauq)
-            etamn=1-sqrt(1-tauq)
-            tmpc=tauq*(1-(1-tauq)*(log(etapl/etamn)-zic*pi)**2/4.d0)
-            tmp=tmpc*dconjg(tmpc)
-         endif
+         tmpc=afunc(ph_topmass,ph_hmass)
+         if(bloop) tmpc=tmpc+afunc(ph_bmass,ph_hmass)
+         tmp=tmpc*dconjg(tmpc)
+      endif
 c     divide by the result in large top mass limit
-         finitemtcorr=tmp*9d0/4d0
-         if (ini) then
+      finitemtcorr=tmp*9d0/4d0
+      if (ini) then
          write(*,*)
          write(*,*) " POWHEG: finite top-mass correction "
          write(*,*) " factor is :", finitemtcorr
          write(*,*)
          ini=.false.
-         endif
       endif
       end
 

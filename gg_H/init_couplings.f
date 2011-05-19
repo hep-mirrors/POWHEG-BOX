@@ -22,6 +22,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       if (ph_GF.le.0d0) ph_GF  = 0.116639D-04     
       ph_topmass = powheginput('#topmass')
       if (ph_topmass.le.0d0) ph_topmass  = 171.3d0
+      ph_bmass = powheginput('#bmass')
+      if (ph_bmass.le.0d0) ph_bmass  = 4.55d0
       ph_alphaem = powheginput("#alphaem")
       if (ph_alphaem.le.0d0) ph_alphaem = 1d0/137.035999679d0
       ph_Zmass = powheginput("#Zmass")

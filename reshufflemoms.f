@@ -496,7 +496,7 @@ c     beta.  Lorents convention: (t,x,y,z).
       do i=3,nup
          tmp=pup(1,i)**2+pup(2,i)**2+pup(3,i)**2+pup(5,i)**2-pup(4,i)**2
          tmp=abs(tmp)
-         if(tmp.gt.1d-8) then
+         if(tmp.gt.1d-6) then
             write(*,*) 'iup',i,' check mass:',tmp
             write(*,*) pup(1,i),pup(2,i),pup(3,i),pup(4,i),pup(5,i)
          endif

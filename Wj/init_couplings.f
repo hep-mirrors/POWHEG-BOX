@@ -1,17 +1,16 @@
       subroutine init_couplings
       implicit none
+      include 'nlegborn.h'
       include 'PhysPars.h'
       include 'pwhg_st.h'
-      include 'pwhg_math.h'
-      include 'nlegborn.h'
       include 'pwhg_kn.h'
-      real * 8 masswindow_low,masswindow_high
-      real * 8powheginput
+      include 'pwhg_math.h'
+      include 'pwhg_physpar.h'      
+      real * 8 masswindow_low,masswindow_high,powheginput
       external powheginput
       logical verbose
       parameter(verbose=.true.)
       integer i,j
-
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -52,11 +51,12 @@ c     CAVEAT:
 c     number of light flavors
       st_nlight = 5
 
-c     mass window
-      masswindow_low = powheginput("#masswindow_low")
-      if (masswindow_low.le.0d0) masswindow_low=30d0
-      masswindow_high = powheginput("#masswindow_high")
-      if (masswindow_high.le.0d0) masswindow_high=30d0
+c Masses of light leptons for W decays:
+      physpar_ml(1)=0.51099891d-3
+      physpar_ml(2)=0.1056583668d0
+      physpar_ml(3)=1.77684d0     
+
+      
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   DEPENDENT QUANTITIES       
@@ -66,13 +66,22 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_Zmass2 = ph_Zmass**2
       ph_Wmass2 = ph_Wmass**2
 
-c     set mass window around W-mass peak in unit of ph_Wwidth
+
+
+c     set mass windows around W-mass peak in unit of ph_Wwidth
 c     It is used in the generation of the Born phase space
+C     masswindow is an optonal  parameter passed by the user
+C     the default vale is 30 
+      masswindow_low = powheginput("#masswindow_low")
+      if(masswindow_low.lt.0d0) masswindow_low=30d0
       ph_Wmass2low=max(0d0,ph_Wmass-masswindow_low*ph_Wwidth)
-      ph_Wmass2low=ph_Wmass2low**2
+      ph_Wmass2low= ph_Wmass2low**2
+      masswindow_high = powheginput("#masswindow_high")
+      if(masswindow_high.lt.0d0) masswindow_high=30d0
       ph_Wmass2high=ph_Wmass+masswindow_high*ph_Wwidth
-      ph_Wmass2high=min(kn_sbeams,ph_Wmass2high**2)
-      ph_WmWw = ph_Wmass * ph_Wwidth
+      ph_Wmass2high= min(kn_sbeams,ph_Wmass2high**2)
+      ph_WmWw = ph_Wmass * ph_wwidth
+
       ph_unit_e = sqrt(4*pi*ph_alphaem)
 
       if(verbose) then
@@ -96,4 +105,7 @@ c     It is used in the generation of the Born phase space
       write(*,*) '*************************************'
       endif
       end
+
+
+
 

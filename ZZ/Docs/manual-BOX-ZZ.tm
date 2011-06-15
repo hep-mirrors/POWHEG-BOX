@@ -37,9 +37,9 @@
   <section|Input parameters>
 
   Parameters in <with|font-family|tt|powheg.input> that are specific to
-  <math|Z Z> pair production:<next-line><with|font-family|tt|vdecaymode1 11
+  <math|Z Z> pair production:<next-line><with|font-family|tt|vdecaymodeZ1 11
   \ \ \ \ \ ! decay mode of 1st Z (11=electron, 12=nue,
-  etc)><next-line><with|font-family|tt|vdecaymode2 13 \ \ \ \ \ ! decay mode
+  etc)><next-line><with|font-family|tt|vdecaymodeZ2 13 \ \ \ \ \ ! decay mode
   of 2nd Z (13=muons, etc.)><next-line>Only leptonic decay modes are
   implemented at this stage. In the case of decay into neutrino, a neutrino
   flavour must be indicated explicitly. It is up to the user to multiply the
@@ -47,26 +47,28 @@
   decays.<next-line><with|font-family|tt|mllmin 50 \ \ \ \ \ \ \ \ \ \ !
   minimum mass of lepton pair in decay is 50
   GeV><next-line><with|font-family|tt|zerowidth 0 \ \ \ \ \ \ \ \ ! If 1
-  (true) use zero with approximation (default
-  0)><next-line><with|font-family|tt|dronly \ \ \ 0 \ \ \ \ \ \ \ \ ! If 1
-  (true) use only double resonant contributions
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! (default
-  0)><next-line>If <with|font-family|tt|zerowidth> is absent or equal to
-  zero, the <math|Z>'s are given finite width, <math|Z>-<math|\<gamma\>>
-  interference is accounted for. Singly resonant graphs are also included by
-  default, unless the <with|font-family|tt|dronly> flag is set to 1.
+  (true) use zerowidth approximation (default
+  0)><next-line><with|font-family|tt|<with|font-family|tt|withinterference 1
+  \ ! If 1 (true) include interference for identical leptons
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! (default
+  1)><next-line>dronly \ \ 0 \ \ \ \ \ \ \ \ \ ! If 1 (true) include only
+  double resonant contributions \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  (default 0)><next-line>If <with|font-family|tt|zerowidth> is absent or
+  equal to zero, the <math|Z>'s are given finite width,
+  <math|Z>-<math|\<gamma\>> interference is accounted for. Singly resonant
+  graphs are also included by default, unless the
+  <with|font-family|tt|dronly> flag is set to 1.
 
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>
       <bibitem*|1><label|bib-noi>T.<nbsp>Melia, P.<nbsp>Nason,
-      R.<nbsp>Rontsch, and G.<nbsp>Zanderighi, in preparation.
+      R.<nbsp>Rontsch, and G.<nbsp>Zanderighi.
 
       <bibitem*|2><label|bib-Dixon:1998py>L.<nbsp>J. Dixon, Z.<nbsp>Kunszt,
       and A.<nbsp>Signer, <with|font-shape|italic|Helicity amplitudes for
-      O(alpha-s) production of <with|mode|math|W<rsup|+>W<rsup|->>,
-      <with|mode|math|W<rsup|\<pm\>>Z>, <with|mode|math|Z*Z>,
-      <with|mode|math|W<rsup|\<pm\>>\<gamma\>>, or
-      <with|mode|math|Z\<gamma\>> pairs at hadron colliders>,
+      O(alpha-s) production of <math|W<rsup|+>W<rsup|->>,
+      <math|W<rsup|\<pm\>>Z>, <math|Z*Z>, <math|W<rsup|\<pm\>>\<gamma\>>, or
+      <math|Z\<gamma\>> pairs at hadron colliders>,
       <with|font-shape|italic|Nucl.Phys.> <with|font-series|bold|B531> (1998)
       3--23, [<hlink|<with|font-family|tt|hep-ph/9803250>|http://xxx.lanl.gov/abs/hep-ph/9803250>].
 

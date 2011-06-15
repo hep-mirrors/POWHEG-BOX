@@ -20,9 +20,8 @@ c     lepton masses
       real *8 lepmass(3),decmass,decmass1,decmass2
       common/clepmass/lepmass,decmass,decmass1,decmass2
       logical condition
-
-      !TM WHAT IS THIS?
-      integer lprup1(100),lprup2(100)
+      include 'vvsettings.f'
+      integer lprup1(100), lprup2(100) 
 
 c******************************************************
 c     Choose the process to be implemented
@@ -30,27 +29,58 @@ c******************************************************
 
 c     ID of vector boson produced
 c     decay products of the vector boson
-      vdecaymode1=powheginput('vdecaymode1')
-      vdecaymode2=powheginput('vdecaymode2')
+      vdecaymodeZ1=powheginput('vdecaymodeZ1')
+      vdecaymodeZ2=powheginput('vdecaymodeZ2')
 
-      if(vdecaymode1.eq.vdecaymode2) then
-         vsymfact=0.5d0
+      if (powheginput("#zerowidth").eq.1) then 
+         zerowidth = .true. 
+         write(*,*) 'Zerowidth approximation' 
       else
-         vsymfact=1
+         zerowidth = .false. 
+         write(*,*) 'Generating off-shell Z-bosons with mll>',mllmin 
+      endif
+
+      if (powheginput("#dronly").eq.1) then 
+         dronly = .true. 
+         write(*,*) 'Double resonant diagrams only'
+c  cant have srdiags if zerowidth is true
+      elseif (zerowidth) then
+         write(*,*) 'Single resonant diagrams require off-shell Z'
+         write(*,*) 'Double resonant diagrams only'
+         dronly = .true.
+      else
+         dronly=.false.
+         write(*,*) 'Including single resonant diagrams'
+      endif
+
+      interference = (powheginput('#withinterference').ne.0)
+C     ensure no interference for e mu
+      interference=interference.and.
+     .     (abs(vdecaymodeZ1).eq.abs(vdecaymodeZ2))
+      
+c no interference if zerowidth is true
+      interference=(interference).and.(.not. zerowidth)
+
+      if(interference) then
+         vsymfact=0.25d0
+         write(*,*)'Interference effects taken into account'
+      elseif(abs(vdecaymodeZ1).eq.abs(vdecaymodeZ2)) then
+         vsymfact=0.5d0
+         write(*,*)'No interference effects taken into account'
+      else
+         vsymfact=1d0
       endif
 
       idvecbos1 = 23
       idvecbos2 = 23
-
-      lprup(1) = 10013
 
       if (lepmass(1).ne.0.51099891d-3) then
          write(*,*) 'block data lepmass not loaded. stop running' 
          call exit(-1)
       endif
 
-      if ((vdecaymode1.lt.11).or.(vdecaymode1.gt.16)
-     # .or.(vdecaymode2.lt.11).or.(vdecaymode2.gt.16)) then
+      if ((vdecaymodeZ1.lt.11).or.(vdecaymodeZ1.gt.16)
+     # .or.(vdecaymodeZ2.lt.11).or.(vdecaymodeZ2.gt.16)) then
          write(*,*) 'ERROR: The decay mode you selected'
      #  //' is not allowed (Up to now only leptonic decays)'
          call exit(-1)
@@ -59,19 +89,19 @@ c     decay products of the vector boson
       if((idvecbos1.eq.23).and.(idvecbos2.eq.23)) then
          write(*,*) 
          write(*,*) ' POWHEG: ZZ production and decay'
-         if (vdecaymode1.eq.11) write(*,*) '         to e- e+ '
-         if (vdecaymode1.eq.12) write(*,*) '         to ve ve~ '
-         if (vdecaymode1.eq.13) write(*,*) '         to mu- mu+ '
-         if (vdecaymode1.eq.14) write(*,*) '         to vmu vmu~ '
-         if (vdecaymode1.eq.15) write(*,*) '         to tau- tau+ '
-         if (vdecaymode1.eq.16) write(*,*) '         to vtau vtau~ '
+         if (vdecaymodeZ1.eq.11) write(*,*) '         to e- e+ '
+         if (vdecaymodeZ1.eq.12) write(*,*) '         to ve ve~ '
+         if (vdecaymodeZ1.eq.13) write(*,*) '         to mu- mu+ '
+         if (vdecaymodeZ1.eq.14) write(*,*) '         to vmu vmu~ '
+         if (vdecaymodeZ1.eq.15) write(*,*) '         to tau- tau+ '
+         if (vdecaymodeZ1.eq.16) write(*,*) '         to vtau vtau~ '
          write(*,*)'            and'
-         if (vdecaymode2.eq.11) write(*,*) '            e- e+ '
-         if (vdecaymode2.eq.12) write(*,*) '            ve ve~ '
-         if (vdecaymode2.eq.13) write(*,*) '            mu- mu+ '
-         if (vdecaymode2.eq.14) write(*,*) '            vmu vmu~ '
-         if (vdecaymode2.eq.15) write(*,*) '            tau- tau+ '
-         if (vdecaymode2.eq.16) write(*,*) '            vtau vtau~ '
+         if (vdecaymodeZ2.eq.11) write(*,*) '            e- e+ '
+         if (vdecaymodeZ2.eq.12) write(*,*) '            ve ve~ '
+         if (vdecaymodeZ2.eq.13) write(*,*) '            mu- mu+ '
+         if (vdecaymodeZ2.eq.14) write(*,*) '            vmu vmu~ '
+         if (vdecaymodeZ2.eq.15) write(*,*) '            tau- tau+ '
+         if (vdecaymodeZ2.eq.16) write(*,*) '            vtau vtau~ '
          write(*,*) 
       else
          write(*,*) 'ERROR: The ID of vector boson you selected'
@@ -81,8 +111,8 @@ c     decay products of the vector boson
 
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
-      lprup1(1)=10000+vdecaymode1 ! 10000+idup of first decay product of Z1
-      lprup2(1)=10000+vdecaymode2 ! 10000+idup of first decay product of Z2
+      lprup1(1)=10000+vdecaymodeZ1 ! 10000+idup of first decay product of Z1
+      lprup2(1)=10000+vdecaymodeZ2 ! 10000+idup of first decay product of Z2
 
       if(lprup1(1).eq.10011) then
          decmass1=lepmass(1)
@@ -126,9 +156,9 @@ c     index of the first coloured particle in the final state
 c     (all subsequent particles are coloured)
       flst_lightpart=7
 c     Z decay products
-      i3=vdecaymode1
+      i3=vdecaymodeZ1
       i4=-i3
-      i5=vdecaymode2
+      i5=vdecaymodeZ2
       i6=-i5
 
 *********************************************************************

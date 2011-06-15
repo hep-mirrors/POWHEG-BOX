@@ -5,7 +5,7 @@
       include 'pwhg_kn.h'
       include 'pwhg_math.h'
       include 'PhysPars.h'
-      include 'zerowidth.f' 
+      include 'vvsettings.f' 
       real * 8 xborn(ndiminteg-3)
       real * 8 xjac,tau,beta,vec(3)
 
@@ -35,20 +35,6 @@
          kn_masses(nlegreal)=0
          mllmin=powheginput("#mllmin")
          if(mllmin.le.0) mllmin=0.1d0
-         if (powheginput("#zerowidth").eq.1) then 
-            zerowidth = .true. 
-            write(*,*) 'Zerowidth approximation' 
-         else
-            zerowidth = .false. 
-            write(*,*) 'Generating off-shell Z-bosons with mll>',mllmin 
-         endif
-         if (powheginput("#dronly").eq.1) then 
-            dronly = .true. 
-            write(*,*) 'Single resonant diagrams switched off'
-         else
-            dronly = .false. 
-            write(*,*) 'Including single resonant diagrams'
-         endif
          ini=.false.
       endif
 C     

@@ -19,7 +19,8 @@ c----No statistical factor of 1/2 included.
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'ewcharge.f'
-      include 'zerowidth.f'
+      include 'cvecbos.h'
+      include 'vvsettings.f' 
 
       !TM added 'parameters' - THESE NEED TO BE SET TO POWHEG ONES
       double precision xn
@@ -31,12 +32,16 @@ c----No statistical factor of 1/2 included.
      
       double complex qqb(2,2,2),qbq(2,2,2),q_qb,qb_q
       double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
-      double complex propz1,propz2,props,a6trees,cprop
+      double complex propz1,propz2,props,a6trees
       double complex prop12,prop34,prop56
 
       double precision FAC
       integer j,k,polq,pol1,pol2
       parameter(ave=0.25d0/xn)
+      
+      integer iloop,nloop
+      double complex q_qb_SAVE(-nf:nf,-nf:nf,2,2,2)
+      double complex qb_q_SAVE(-nf:nf,-nf:nf,2,2,2)
 
       fac=-4D0*esq**2
 
@@ -49,42 +54,53 @@ c--set msq=0 to initalize
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
+      q_qb_SAVE(j,k,:,:,:)=0d0
+      qb_q_SAVE(j,k,:,:,:)=0d0
       enddo
       enddo
+
+      if (interference) then
+         nloop=2
+      else
+         nloop=1
+      endif
+
+      do iloop=1,nloop
+
 
 C----Change the momenta to DKS notation 
 c   We have --- q(-p1)+qbar(-p2)-->l(p3)+lbar(p4) + l'(p5)+lbar'(p6)
 c   DKS have--- q(q2) +qbar(q1) -->mu^-(q3)+mu^+(q4)+e^-(q6)+e^+(q5)
 
-      do j=1,4
-      qdks(1,j)=p(1,j)
-      qdks(2,j)=p(2,j)
-      qdks(3,j)=p(3,j)
-      qdks(4,j)=p(4,j)
-      qdks(5,j)=p(6,j)
-      qdks(6,j)=p(5,j)
-      enddo
+
+      if (iloop.eq.1) then
+         do j=1,4
+            qdks(1,j)=p(1,j)
+            qdks(2,j)=p(2,j)
+            qdks(3,j)=p(3,j)
+            qdks(4,j)=p(4,j)
+            qdks(5,j)=p(6,j)
+            qdks(6,j)=p(5,j)
+         enddo
+      elseif (iloop.eq.2) then
+         do j=1,4
+            qdks(1,j)=p(1,j)
+            qdks(2,j)=p(2,j)
+            qdks(3,j)=p(3,j)
+            qdks(4,j)=p(6,j)
+            qdks(5,j)=p(4,j)
+            qdks(6,j)=p(5,j)
+         enddo
+      endif
 
       call spinoru(6,qdks,za,zb)
 
 c--   s returned from sprod (common block) is 2*dot product
 
 c--   calculate propagators
-      if     (zerowidth) then
-c     keep this for comparison with Madgraph 
       prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
       prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
       prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-      cprop=dcmplx(1d0)
-      else
-      prop12=dcmplx(s(1,2)/(s(1,2)-zmass**2))
-      prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
-      prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-      propz1=(s(3,4)-zmass**2)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      propz2=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-      props=(s(1,2)-zmass**2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
-      cprop=propz1*propz2*props
-      endif
             
 c-- here the labels correspond to the polarizations of the
 c-- quark, lepton 4 and lepton 6 respectively
@@ -133,7 +149,6 @@ c---for supplementary diagrams.
 
       do j=-nf,nf
       k=-j
-      msq(j,k)=0d0
 
       if (j.eq.0) go to 20
 
@@ -165,9 +180,21 @@ c---for supplementary diagrams.
 
         endif
       endif
-C-- Inclusion of width a la Baur and Zeppenfeld
-      q_qb=FAC*q_qb*cprop
+      q_qb=FAC*q_qb
       msq(j,k)=msq(j,k)+ave*abs(q_qb)**2
+
+
+      !interference terms
+      if ((iloop.eq.1).and.(interference)) then
+         q_qb_SAVE(j,k,polq,pol1,pol2)=q_qb
+      elseif (iloop.eq.2) then
+         if (pol1.eq.pol2) then
+      msq(j,k)=msq(j,k)-ave*(dconjg(q_qb_SAVE
+     &        (j,k,polq,pol1,pol2))*q_qb+q_qb_SAVE(j,k,polq,pol1,pol2)
+     &        *dconjg(q_qb))
+         endif
+      endif
+
 
       enddo
       enddo
@@ -201,9 +228,21 @@ C-- Inclusion of width a la Baur and Zeppenfeld
 
         endif
       endif
-C-- Inclusion of width a la Baur and Zeppenfeld
-      qb_q=FAC*qb_q*cprop
+      qb_q=FAC*qb_q
       msq(j,k)=msq(j,k)+ave*abs(qb_q)**2
+
+      !set-up interference terms
+      if ((interference).and.(iloop.eq.1)) then
+         qb_q_SAVE(j,k,polq,pol1,pol2)=qb_q
+      elseif (iloop.eq.2) then
+         if (pol1.eq.pol2) then
+         msq(j,k)=msq(j,k)-ave*(dconjg(qb_q_SAVE
+     &        (j,k,polq,pol1,pol2))*qb_q+qb_q_SAVE(j,k,polq,pol1,pol2)
+     &        *dconjg(qb_q))
+         endif
+      endif
+
+
 
       enddo
       enddo
@@ -212,8 +251,16 @@ C-- Inclusion of width a la Baur and Zeppenfeld
       endif
 
 
+
  20   continue
       enddo
+
+
+      enddo   ! iloop 
+
+
+c     symmetry factor
+      msq=msq*vsymfact
 
       return
       end

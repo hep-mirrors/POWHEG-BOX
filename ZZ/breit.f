@@ -8,10 +8,8 @@ c     wt is the jacobian between integration in msq and integration in x1
       double precision x1,mminsq,mmaxsq,rmass,rwidth,msq,wt
       double precision almin,almax,al,tanal
       include 'pwhg_math.h'
-      include 'zerowidth.f' 
-!      logical zerowidth 
+      include 'vvsettings.f' 
 
-!      zerowidth = .false. 
 c--- in case the maximum msq is very small, just generate linearly for safety
       if (.not.zerowidth.and.mmaxsq .lt. rmass*1d-3) then
         msq=mminsq+x1*(mmaxsq-mminsq)
@@ -31,8 +29,6 @@ c--- in case the maximum msq is very small, just generate linearly for safety
       endif
 
       msq=rmass**2+rmass*rwidth*tanal
-!      write(*,*) 'mminsq,mmaxsq',mminsq,mmaxsq
-!      write(*,*) 'almin,almax, al, tanal, msq',almin,almax, al,tanal,msq
 c---- bw=(1d0+tanal**2)*rmass**2*rwidth**2
       wt=(almax-almin)*rmass*rwidth*(1d0+tanal**2)
       return

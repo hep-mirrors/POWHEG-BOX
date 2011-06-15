@@ -7,7 +7,7 @@ FC=$(COMPILER)
 PDF=lhapdf
 #Choose Analysis: none, default
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
-ANALYSIS=default
+ANALYSIS=ZZ
 ## For static linking uncomment the following
 STATIC= #-static
 #
@@ -22,7 +22,7 @@ F77=gfortran -fno-automatic
 ## Use -O2 to be on the safe side
 OPT=-O2
 ## For debugging uncomment the following
-DEBUG= -ggdb -pg
+#DEBUG= -ggdb -pg
 ifdef DEBUG
 OPT=
 endif
@@ -84,7 +84,19 @@ PWHGANAL=pwhg_bookhist-new.o pwhg_analysis.o fastjetfortran.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 else
+ifeq ("$(ANALYSIS)","ZZ")
+##To include Fastjet configuration uncomment the following lines. 
+#FASTJET_CONFIG=/users/melia/fastj/bin/fastjet-config
+FASTJET_CONFIG=$(shell which fastjet-config)
+#FASTJET_CONFIG=~/lib/fastjet242/bin/fastjet-config
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
+FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
+PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-ZZ.o fastjetfortran.o
+## Also add required Fastjet drivers to PWHGANAL (examples are reported)
+#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
+else
 PWHGANAL=pwhg_analysis-dummy.o
+endif
 endif
 
 
@@ -99,7 +111,7 @@ endif
 
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-     real.o phi1_2.o phi3m0.o boost.o breit.o \
+     real.o suppfact4e.o phi1_2.o phi3m0.o boost.o breit.o \
            spinoru.o qqb_zz.o t.o a6tree.o couplz.o vpole.o a6loop.o \
 	qqb_zz_v.o lnrat.o fa.o lfunctions.o L34_12.o i3m.o dclaus.o \
 	BigT.o qqb_zz_g.o zzamps.o a7tree.o a7treesingres.o zzsingres.o $(PWHGANAL)

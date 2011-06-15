@@ -17,11 +17,12 @@ c----No statistical factor of 1/2 included.
       include 'zcouple.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
-!      include 'scheme.f'
       include 'ewcharge.f'
       include 'pwhg_math.h'
       include 'pwhg_st.h'
-      include 'zerowidth.f'
+      include 'cvecbos.h'
+      include 'vvsettings.f' 
+
       !TM ADDED PARAMETERS
       double precision xn,two
       integer nf,mxpart
@@ -33,13 +34,19 @@ c----No statistical factor of 1/2 included.
      
       double complex qqb(2,2,2),qbq(2,2,2),lqqb(2,2,2),lqbq(2,2,2)
       double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
-      double complex propz1,propz2,props,a6trees,a6loops,cprop
+      double complex propz1,propz2,props,a6trees,a6loops
       double complex aqqb,aqbq,bqqb,bqbq,Vpole,Vpole12,suppl
       double complex prop12,prop34,prop56
         
 
       integer j,k,polq,pol1,pol2
       parameter(ave=0.25d0/xn)
+
+      integer iloop,nloop
+      double complex aqqb_SAVE(-nf:nf,-nf:nf,2,2,2)
+      double complex bqqb_SAVE(-nf:nf,-nf:nf,2,2,2)
+      double complex aqbq_SAVE(-nf:nf,-nf:nf,2,2,2)
+      double complex bqbq_SAVE(-nf:nf,-nf:nf,2,2,2)
 
       ason2pi = st_alpha/2d0/pi
       
@@ -55,43 +62,57 @@ c--set msq=0 to initalize
       do j=-nf,nf
       do k=-nf,nf
       msqv(j,k)=0d0
+      aqqb_SAVE(j,k,:,:,:)=0d0
+      aqbq_SAVE(j,k,:,:,:)=0d0
+      bqqb_SAVE(j,k,:,:,:)=0d0
+      bqbq_SAVE(j,k,:,:,:)=0d0
+
       enddo
       enddo
 
-c---calculate the lowest order matrix element
-      call qqb_zz(p,msq)
+      if (interference) then
+         nloop=2
+      else
+         nloop=1
+      endif
+
 
 C----Change the momenta to DKS notation 
 c   We have --- q(-p1)+qbar(-p2)-->l(p3)+lbar(p4) + l'(p5)+lbar'(p6)
 c   DKS have--- q(q2) +qbar(q1) -->mu^-(q3)+mu^+(q4)+e^-(q6)+e^+(q5)
 
-      do j=1,4
-      qdks(1,j)=p(1,j)
-      qdks(2,j)=p(2,j)
-      qdks(3,j)=p(3,j)
-      qdks(4,j)=p(4,j)
-      qdks(5,j)=p(6,j)
-      qdks(6,j)=p(5,j)
-      enddo
 
+      do iloop=1,nloop
+
+
+      if (iloop.eq.1) then
+         do j=1,4
+            qdks(1,j)=p(1,j)
+            qdks(2,j)=p(2,j)
+            qdks(3,j)=p(3,j)
+            qdks(4,j)=p(4,j)
+            qdks(5,j)=p(6,j)
+            qdks(6,j)=p(5,j)
+         enddo
+      elseif (iloop.eq.2) then
+         do j=1,4
+            qdks(1,j)=p(1,j)
+            qdks(2,j)=p(2,j)
+            qdks(3,j)=p(3,j)
+            qdks(4,j)=p(6,j)
+            qdks(5,j)=p(4,j)
+            qdks(6,j)=p(5,j)
+         enddo
+      endif
+
+         
       call spinoru(6,qdks,za,zb)
 c--   s returned from sprod (common block) is 2*dot product
 
 c--   calculate propagators
-      if     (zerowidth) then
         prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
         prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
         prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-        cprop=dcmplx(1d0)
-      else
-        prop12=dcmplx(s(1,2)/(s(1,2)-zmass**2))
-        prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
-        prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-        propz1=(s(3,4)-zmass**2)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-        propz2=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-        props=(s(1,2)-zmass**2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
-        cprop=propz1*propz2*props
-      endif
       
 c-- here the labels correspond to the polarizations of the
 c-- quark, lepton 4 and lepton 6 respectively
@@ -116,7 +137,7 @@ c-- quark, lepton 4 and lepton 6 respectively
       lqqb(1,2,1)=A6loops(2,1,5,6,4,3,za,zb) 
       lqqb(1,2,2)=A6loops(2,1,5,6,3,4,za,zb)
 
-      if (.not. dronly) then
+      if (.not.dronly) then
 c---for supplementary diagrams.
       qbq1(1,1,1)=+A6trees(3,4,1,2,5,6,za,zb)
       qbq2(1,1,1)=+A6trees(6,5,1,2,4,3,za,zb)
@@ -166,7 +187,7 @@ c---loop diagrams just tree*Vpole since they're all triangle-type
      .     *(prop34*v1(pol2)*l(j)+q1*q(j))* qqb(polq,pol1,pol2)
        bqqb=(prop56*v2(pol1)*l(j)+q2*q(j))
      .     *(prop34*v1(pol2)*l(j)+q1*q(j))*lqqb(polq,pol1,pol2)
-         if (.not. dronly) then
+         if (.not.dronly) then
          suppl=-(
      .       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
      .       *(prop12*v1(pol2)*l(j)+q1*q(j))*qqb1(polq,pol1,pol2)
@@ -181,7 +202,7 @@ c---loop diagrams just tree*Vpole since they're all triangle-type
      .     *(prop34*v1(pol2)*r(j)+q1*q(j))* qqb(polq,pol1,pol2)
        bqqb=(prop56*v2(pol1)*r(j)+q2*q(j))
      .     *(prop34*v1(pol2)*r(j)+q1*q(j))*lqqb(polq,pol1,pol2)
-         if (.not. dronly) then
+         if (.not.dronly) then
          suppl=-(
      .       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
      .       *(prop12*v1(pol2)*r(j)+q1*q(j))*qqb1(polq,pol1,pol2)
@@ -192,10 +213,25 @@ c---loop diagrams just tree*Vpole since they're all triangle-type
          bqqb=bqqb+suppl*Vpole12
          endif
       endif
-C-- Inclusion of width a la Baur and Zeppenfeld
-      aqqb=FAC*aqqb*cprop
-      bqqb=FAC*bqqb*cprop
+
+      aqqb=FAC*aqqb
+      bqqb=FAC*bqqb
       virt=virt+facnlo*ave*two*dble(dconjg(aqqb)*bqqb)
+
+      !interference terms
+      if ((iloop.eq.1).and.(interference)) then
+         aqqb_SAVE(j,k,polq,pol1,pol2)=aqqb
+         bqqb_SAVE(j,k,polq,pol1,pol2)=bqqb
+      elseif (iloop.eq.2) then
+         if (pol1.eq.pol2) then
+      virt=virt-facnlo*ave*(dconjg(aqqb)*bqqb_SAVE(j,k,polq,pol1,pol2)
+     .           +aqqb*dconjg(bqqb_SAVE(j,k,polq,pol1,pol2))
+     .           +dconjg(aqqb_SAVE(j,k,polq,pol1,pol2))*bqqb
+     .           +aqqb_SAVE(j,k,polq,pol1,pol2)*dconjg(bqqb))
+         endif
+      endif
+
+
       enddo
       enddo
       enddo
@@ -210,7 +246,7 @@ C-- Inclusion of width a la Baur and Zeppenfeld
      .     *(prop34*v1(pol2)*l(k)+q1*q(k))* qbq(polq,pol1,pol2)
        bqbq=(prop56*v2(pol1)*l(k)+q2*q(k))
      .     *(prop34*v1(pol2)*l(k)+q1*q(k))*lqbq(polq,pol1,pol2)
-         if (.not. dronly) then
+         if (.not.dronly) then
          suppl=
      .       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
      .       *(prop12*v1(pol2)*l(k)+q1*q(k))*qbq1(polq,pol1,pol2)
@@ -224,7 +260,7 @@ C-- Inclusion of width a la Baur and Zeppenfeld
      .     *(prop34*v1(pol2)*r(k)+q1*q(k))* qbq(polq,pol1,pol2)
        bqbq=(prop56*v2(pol1)*r(k)+q2*q(k))
      .     *(prop34*v1(pol2)*r(k)+q1*q(k))*lqbq(polq,pol1,pol2)
-         if (.not. dronly) then
+         if (.not.dronly) then
          suppl=
      .       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
      .       *(prop12*v1(pol2)*r(k)+q1*q(k))*qbq1(polq,pol1,pol2)
@@ -234,20 +270,46 @@ C-- Inclusion of width a la Baur and Zeppenfeld
          bqbq=bqbq+suppl*Vpole12
          endif
       endif
-C-- Inclusion of width a la Baur and Zeppenfeld
-      aqbq=FAC*aqbq*cprop
-      bqbq=FAC*bqbq*cprop
+
+      aqbq=FAC*aqbq
+      bqbq=FAC*bqbq
+
       virt=virt+facnlo*ave*two*dble(dconjg(aqbq)*bqbq)
+
+
+      !interference terms
+      if ((iloop.eq.1).and.(interference)) then
+         aqbq_SAVE(j,k,polq,pol1,pol2)=aqbq
+         bqbq_SAVE(j,k,polq,pol1,pol2)=bqbq
+      elseif (iloop.eq.2) then
+         if (pol1.eq.pol2) then
+      virt=virt-facnlo*ave*(dconjg(aqbq)*bqbq_SAVE(j,k,polq,pol1,pol2)
+     .           +aqbq*dconjg(bqbq_SAVE(j,k,polq,pol1,pol2))
+     .           +dconjg(aqbq_SAVE(j,k,polq,pol1,pol2))*bqbq
+     .           +aqbq_SAVE(j,k,polq,pol1,pol2)*dconjg(bqbq))
+         endif
+      endif
+
+
       enddo
       enddo
       enddo
 
       endif
 
-      msqv(j,k)=virt
+      msqv(j,k)=msqv(j,k)+virt
+
+
 
  20   continue
       enddo
+
+
+      enddo !iloop
+
+
+c     symmetry factor
+      msqv=msqv*vsymfact
 
       return
       end

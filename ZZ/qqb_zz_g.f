@@ -7,10 +7,11 @@ c   for the moment --- radiation only from initial line
       include 'zcouple.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
-      include 'zerowidth.f'
       include 'ewcharge.f'
       include 'pwhg_math.h'
       include 'pwhg_st.h'
+      include 'cvecbos.h'
+      include 'vvsettings.f' 
       double precision xn
       integer nf,mxpart
       parameter(xn=3d0,nf=5,mxpart=12)
@@ -31,15 +32,20 @@ c   for the moment --- radiation only from initial line
       double complex qg2(2,2,2,2),gq2(2,2,2,2)
       double complex gqb1(2,2,2,2),qbg1(2,2,2,2) 
       double complex gqb2(2,2,2,2),qbg2(2,2,2,2)
-      double complex cprop,propz1,propz2,propz3,amp
+      double complex propz1,propz2,propz3,amp
       double precision s127
       double complex prop34,prop56,prop127
+
+      integer iloop,nloop
+      double complex amp_SAVE(-nf:nf,-nf:nf,2,2,2,2)
 
       do jp=-nf,nf
       do kp=-nf,nf
       msq(jp,kp)=0d0
       enddo
       enddo
+      
+      amp_SAVE=0d0
 
       !TM set the qcd parameters here
       gsq = st_alpha*4d0*pi
@@ -55,16 +61,35 @@ c   for the moment --- radiation only from initial line
 C----Change the momenta to DKS notation 
 c   We have --- q(p1)+qbar(p2)-->nu(p3)+e^+(p4)+b(p5)+bbar(p6)+g(p7)
 c   DKS have--- q(q2)+qbar(q1)-->nu(q3)+e^+(q4)+b(q6)+bbar(q5)+g(q7)
+      if (interference) then
+         nloop=2
+      else
+         nloop=1
+      endif
 
-      do jp=1,4
-      qdks(1,jp)=p(1,jp)
-      qdks(2,jp)=p(2,jp)
-      qdks(3,jp)=p(3,jp)
-      qdks(4,jp)=p(4,jp)
-      qdks(5,jp)=p(6,jp)
-      qdks(6,jp)=p(5,jp)
-      qdks(7,jp)=p(7,jp)
-      enddo
+      do iloop=1,nloop
+
+      if (iloop.eq.1) then
+         do jp=1,4
+            qdks(1,jp)=p(1,jp)
+            qdks(2,jp)=p(2,jp)
+            qdks(3,jp)=p(3,jp)
+            qdks(4,jp)=p(4,jp)
+            qdks(5,jp)=p(6,jp)
+            qdks(6,jp)=p(5,jp)
+            qdks(7,jp)=p(7,jp)
+         enddo
+      elseif (iloop.eq.2) then
+         do jp=1,4
+            qdks(1,jp)=p(1,jp)
+            qdks(2,jp)=p(2,jp)
+            qdks(3,jp)=p(3,jp)
+            qdks(4,jp)=p(6,jp)
+            qdks(5,jp)=p(4,jp)
+            qdks(6,jp)=p(5,jp)
+            qdks(7,jp)=p(7,jp)
+         enddo
+      endif
 
       call spinoru(7,qdks,za,zb)
 c--   s returned from sprodx (common block) is 2*dot product
@@ -73,16 +98,11 @@ c--   calculate propagators
       if     (zerowidth) then
       prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
       prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-      cprop=dcmplx(1d0)
       else
       s127=s(1,2)+s(1,7)+s(2,7)
-      prop127=dcmplx(s127/(s127-zmass**2))
-      prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
-      prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-      propz1=(s(3,4)-zmass**2)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      propz2=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-      propz3=(s127-zmass**2)/dcmplx(s127-zmass**2,zmass*zwidth)
-      cprop=propz1*propz2*propz3
+      prop127=s127/dcmplx(s127-zmass**2,zmass*zwidth)
+      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
       endif
 
 c---case qbar-q
@@ -99,7 +119,7 @@ c---case g-qbar
       call zzamps(2,7,3,4,5,6,1,za,zb,gqb)
 
 c -- singly resonant contributions
-      if (.not. dronly) then
+      if (.not.dronly) then
 c --- two calls to swap lepton pairs (3,4) <--> (5,6)
 
 c     -- channel qbq         
@@ -149,7 +169,7 @@ c---  case qbar-q
                         amp=(prop56*v2(pol1)*l(k)+q2*q(k))
      .                       *(prop34*v1(pol2)*l(k)+q1*q(k))
      .                       *qbq(polq,pol1,pol2,pol3)
-                        if (.not. dronly) then
+                        if (.not.dronly) then
                                 amp=amp+
      .                          (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                          *(prop127*v1(pol2)*l(k)+q1*q(k))*
@@ -162,7 +182,7 @@ c---  case qbar-q
                              amp=(prop56*v2(pol1)*r(k)+q2*q(k))
      .                            *(prop34*v1(pol2)*r(k)+q1*q(k))
      .                            *qbq(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                               amp = amp+
      .                          (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                          *(prop127*v1(pol2)*r(k)+q1*q(k))*
@@ -178,7 +198,7 @@ c---  case q-qbar
                              amp=(prop56*v2(pol1)*l(j)+q2*q(j))
      .                            *(prop34*v1(pol2)*l(j)+q1*q(j))
      .                            *qqb(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp=amp+
      .                               (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                               *(prop127*v1(pol2)*l(j)+q1*q(j))*
@@ -191,7 +211,7 @@ c---  case q-qbar
                              amp=(prop56*v2(pol1)*r(j)+q2*q(j))
      .                            *(prop34*v1(pol2)*r(j)+q1*q(j))
      .                            *qqb(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp = amp+
      .                               (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                               *(prop127*v1(pol2)*r(j)+q1*q(j))*
@@ -207,7 +227,7 @@ c---  case qbar-g
                              amp=(prop56*v2(pol1)*l(-jk)+q2*q(-jk))
      .                            *(prop34*v1(pol2)*l(-jk)+q1*q(-jk))
      .                            *qbg(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp=amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*l(-jk)+q1*q(-jk))*
@@ -220,7 +240,7 @@ c---  case qbar-g
                              amp=(prop56*v2(pol1)*r(-jk)+q2*q(-jk))
      .                            *(prop34*v1(pol2)*r(-jk)+q1*q(-jk))
      .                            *qbg(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp = amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*r(-jk)+q1*q(-jk))*
@@ -236,7 +256,7 @@ c---  case g-qbar
                              amp=(prop56*v2(pol1)*l(-jk)+q2*q(-jk))
      .                            *(prop34*v1(pol2)*l(-jk)+q1*q(-jk))
      .                            *gqb(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp=amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*l(-jk)+q1*q(-jk))*
@@ -249,7 +269,7 @@ c---  case g-qbar
                              amp=(prop56*v2(pol1)*r(-jk)+q2*q(-jk))
      .                            *(prop34*v1(pol2)*r(-jk)+q1*q(-jk))
      .                            *gqb(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp = amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*r(-jk)+q1*q(-jk))*
@@ -265,7 +285,7 @@ c---  case q-g
                              amp=(prop56*v2(pol1)*l(jk)+q2*q(jk))
      .                            *(prop34*v1(pol2)*l(jk)+q1*q(jk))
      .                            *qg(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp=amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*l(jk)+q1*q(jk))*
@@ -278,7 +298,7 @@ c---  case q-g
                              amp=(prop56*v2(pol1)*r(jk)+q2*q(jk))
      .                            *(prop34*v1(pol2)*r(jk)+q1*q(jk))
      .                            *qg(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp = amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*r(jk)+q1*q(jk))*
@@ -294,7 +314,7 @@ c---  case g-q
                              amp=(prop56*v2(pol1)*l(jk)+q2*q(jk))
      .                            *(prop34*v1(pol2)*l(jk)+q1*q(jk))
      .                            *gq(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp=amp+
      .                               (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                               *(prop127*v1(pol2)*l(jk)+q1*q(jk))*
@@ -307,7 +327,7 @@ c---  case g-q
                              amp=(prop56*v2(pol1)*r(jk)+q2*q(jk))
      .                            *(prop34*v1(pol2)*r(jk)+q1*q(jk))
      .                            *gq(polq,pol1,pol2,pol3)
-                             if (.not. dronly) then
+                             if (.not.dronly) then
                                 amp = amp+
      .                            (prop56*v1(pol2)*v2(pol1)+q2*q1)
      .                            *(prop127*v1(pol2)*r(jk)+q1*q(jk))*
@@ -319,12 +339,20 @@ c---  case g-q
                           endif
                        endif
                        
-C--   Inclusion of width a la Baur and Zeppenfeld
-                       amp=amp*FAC*cprop
+                       amp=amp*FAC
                        msq(j,k)=msq(j,k)+fac1*ave*abs(amp)**2
 
-!                       write(*,*) polq,pol1,pol2,pol3
-!                       write(*,*) fac1*abs(amp)**2*3d0
+                                !set-up interference terms
+                       if ((interference).and.(iloop.eq.1)) then
+                          amp_SAVE(j,k,polq,pol1,pol2,pol3)=amp
+                       elseif (iloop.eq.2) then
+                          if (pol1.eq.pol2) then
+                          msq(j,k)=msq(j,k)-fac1*ave*(dconjg(amp_SAVE
+     &  (j,k,polq,pol1,pol2,pol3))*amp+amp_SAVE(j,k,polq,pol1,pol2,pol3)
+     &                         *dconjg(amp))
+                          endif
+                       endif
+
                        
                     enddo
                  enddo
@@ -335,6 +363,13 @@ C--   Inclusion of width a la Baur and Zeppenfeld
         enddo
       enddo
       
+      
+      enddo !iloop
+
+
+c     symmetry factor
+      msq=msq*vsymfact
+
       return
       end
       

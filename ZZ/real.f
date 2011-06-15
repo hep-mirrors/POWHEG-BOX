@@ -14,7 +14,8 @@ c     vector boson id and decay
       integer i,mxpart
       parameter (mxpart=12)
       double precision p(mxpart,4),msq(-5:5,-5:5)
-
+      real * 8 suppfact4e
+      external suppfact4e
       ason2pi = st_alpha/2d0/pi
 
       do i=1,nlegreal
@@ -30,18 +31,9 @@ c     vector boson id and decay
 
 
       amp2real = msq(rflav(1),rflav(2))
+      amp2real = amp2real/ason2pi
 
-      !again, not sure if this divide out by ason2pi is needed with 
-      ! this mcfm routine - to check
-
-      amp2real = vsymfact*amp2real/ason2pi
-
-
-
-!      write(*,*)'here in the real????',amp2real
-
-!      call testsuda
-
-!      stop
+c phase space suppression of (36)(45) singularities
+      amp2real = suppfact4e(pin,rflav) * amp2real
 
       end

@@ -21,6 +21,8 @@ c     vector boson id and decay
       real *8 s,dotp
       external dotp
       integer i
+      real * 8 suppfact4e
+      external suppfact4e
 
       ason2pi = st_alpha/2d0/pi
 
@@ -32,14 +34,17 @@ c     vector boson id and decay
       p(2,:)=-p(2,:)
 
       call qqb_zz(p,msqB)
-      born=vsymfact*msqB(vflav(1),vflav(2))
+      born=msqB(vflav(1),vflav(2))
       call qqb_zz_v(p,msq)
 
       ! -- divide out ason2pi
-      virtual = vsymfact*msq(vflav(1),vflav(2))/ason2pi
+      virtual = msq(vflav(1),vflav(2))/ason2pi
 
       ! -- scheme change from dred 
       virtual = virtual + born*(-2d0*(cf/2d0)) 
+
+c phase space suppression of (36)(45) singularities
+      virtual = suppfact4e(pin,vflav) * virtual
 
       end
 

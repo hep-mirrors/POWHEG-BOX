@@ -18,7 +18,7 @@
       if(idwtup.eq.3) then
          xwgtup=1
       elseif(idwtup.eq.-4) then
-         xwgtup=rad_totgen
+         xwgtup=rad_totgen * rad_branching
       else
          write(*,*) ' only 3 and -4 are allowed for idwtup'
          call exit(-1)

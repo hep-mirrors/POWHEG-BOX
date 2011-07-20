@@ -40,7 +40,7 @@
       real * 8 powheginput
       character *(*) stringa
       integer maxnum
-      parameter (maxnum=100)
+      parameter (maxnum=150)
       character * 100 line,line0
       character * 20 string
       character * 20 pwgprefix
@@ -48,10 +48,11 @@
       common/cpwgprefix/pwgprefix,lprefix
       character * 20 keywords(maxnum)
       real * 8 values(maxnum)
+      logical used(maxnum)
       integer ios,numvalues,j,k,l,imode
       integer ini
       data ini/0/      
-      save ini, keywords, values, numvalues
+      save ini, keywords, values, numvalues,used
       string=stringa
       if(ini.eq.0) then
          open(unit=33,file='powheg.input',status='old',iostat=ios)
@@ -92,7 +93,7 @@
             if(line.ne.' ') then
                if(numvalues.eq.maxnum) then
                   write(*,*) ' too many entries in powheginput.dat'
-                  stop
+                  call exit(-1)
                endif
                numvalues=numvalues+1
 c skip blanks
@@ -104,6 +105,7 @@ c skip blanks
                keywords(numvalues)=line(1:k-1)
                line=line(k+1:)
                read(unit=line,fmt=*,iostat=ios) values(numvalues)
+               used(numvalues)=.false.
                if(ios.ne.0) then
                   write(*,*) ' powheginput error: cannot parse '
                   write(*,'(a)') line0
@@ -124,14 +126,31 @@ c skip blanks
       do j=1,numvalues
          if(string.eq.keywords(j)) then
             powheginput=values(j)
+            if(.not.used(j)) then
+               used(j)=.true.
+               write(*,*) ' powheginput keyword ',keywords(j),
+     1                    ' set to ',values(j)
+            endif
             return
          endif
       enddo
       if(imode.eq.1) then
          write(*,*) ' powheginput: keyword ',string,' not found'
-         stop
+         call exit(-1)
       endif
+c Not found; assign value -1d6; store the token anyhow
+      if(numvalues.eq.maxnum) then
+         write(*,*) ' too many entries in powheginput.dat'
+         write(*,*) ' increase maxnum in powheginput.f'
+         call exit(-1)
+      endif
+      numvalues=numvalues+1
+      keywords(numvalues)=string
+      values(numvalues)=-1d6
+      used(numvalues)=.true.
       powheginput=-1d6
+      write(*,*) ' powheginput keyword ',keywords(j),
+     1     ' absent; set to ',values(j)
       end
 
 

@@ -7,7 +7,7 @@ PDF=lhapdf
 # Choose Analysis: none, default
 # default analysis requires FASTJET package, that has to be installed 
 # separately (see below)
-ANALYSIS=none
+ANALYSIS=default
 ## For static linking uncomment the following
 #STATIC= -static
 

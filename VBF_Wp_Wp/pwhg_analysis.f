@@ -21,116 +21,88 @@ c  pwhgfill  :  fills the histograms with data
 
 c cross section with pt_jet constraint only:
       diag = 1
-c      diag=diag+1
       binsize(diag) = 1d0
       call pwhgbookup(diag,'sig(no lept cuts)','LIN'
      &               ,binsize(diag),0d0,1d0)
 
 C -----------------------------------------------------
-C     -- SAME HISTOGRAMS WITH VBF CUTS 
+C     -- HISTOGRAMS WITH VBF CUTS 
 
-      diag = 83
-c      diag=diag+1
+      diag = 2
       binsize(diag) = 1d0
       call pwhgbookup(diag,'sig(all VBF cuts)','LIN',
      &                binsize(diag),0d0,1d0)
 
-      diag = 86
-c      diag=diag+1
+      diag = 3
       binsize(diag) = 40d0
       call pwhgbookup(diag,'PT jet 1- VBF CUTS','LOG',
      .     binsize(diag),0d0,880d0)
 
-      diag = 87
-c      diag=diag+1
+      diag = 4
       binsize(diag) = 20d0
       call pwhgbookup(diag,'PT jet 2- VBF CUTS','LOG',
      .     binsize(diag),0d0,520d0)
 
-      diag = 88
-c      diag=diag+1
+      diag = 5
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'Y jet 1- VBF CUTS','LIN',
      .     binsize(diag),-4d0,4d0)
 
-      diag = 91
-c      diag=diag+1
+      diag = 6
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'Y jet 2- VBF CUTS','LIN',
      .     binsize(diag),-4d0,4d0)
 
-      diag = 94
-c      diag=diag+1
+      diag = 7
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'Y j1j2(tag)- VBF CUTS','LIN',
      .     binsize(diag),-6d0,6d0)
     
-
-      diag = 97
-c      diag=diag+1
+      diag = 8
       binsize(diag) = 20d0
       call pwhgbookup(diag,'PT LEPT- VBF CUTS','LOG',
      .     binsize(diag),0d0,440d0)
 
-      diag = 99
-c      diag=diag+1
+      diag = 9
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'Eta_lept- VBF CUTS','LIN',
      .     binsize(diag),-4d0,4d0)
 
-      diag = 101
-c      diag=diag+1
+      diag = 10
       binsize(diag) = 60d0
       call pwhgbookup(diag,'M(l1l2)- VBF CUTS','LOG',
      .     binsize(diag),0d0,960d0)
 
-      diag = 105
-c      diag=diag+1
+      diag = 11
       binsize(diag) = 0.2d0
       call pwhgbookup(diag,'Phi(l1l2)- VBF CUTS','LIN',
      .     binsize(diag),0d0,3.2d0)
 
-      diag = 106
-c      diag=diag+1
-c      binsize(diag) = 20d0
+      diag = 12
       binsize(diag) = 5d0
       call pwhgbookup(diag,'Pt J3- VBF CUTS','LOG',
      .     binsize(diag),0d0,500d0)
 
-      diag = 107
-c      diag=diag+1
-c      binsize(diag) = 0.4d0
+      diag = 13
       binsize(diag) = 0.1d0
       call pwhgbookup(diag,'Y J3- VBF CUTS','LOG',
      .     binsize(diag),-5d0,5d0)
 
-      diag = 109
-c      diag=diag+1
+      diag = 14
       binsize(diag) = 10d0
       call pwhgbookup(diag,'Ptrel J1- VBF CUTS','LOG',
      .     binsize(diag),0d0,200d0)
 
-
-      diag = 111
-c      diag=diag+1
+      diag = 15
       binsize(diag) = 200d0
       call pwhgbookup(diag,'M_j1j2(tag) - VBF CUTS','LIN',
      .     binsize(diag),0d0,3000d0)
 
-      diag = 112
-c      diag=diag+1
-      binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'Phi(j1j2)- VBF CUTS','LIN',
-     .     binsize(diag),0d0,3.2d0)
-  
-   
-      diag = 115
+      diag = 16
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'y*- VBF CUTS','LIN',
      .     binsize(diag),0d0,4d0)
-c
-ccccccc
-c
+
       end 
       
       subroutine analysis(dsig0)
@@ -159,14 +131,9 @@ c     we need to tell to this analysis file which program is running it
       real * 8  kt(maxjet),eta(maxjet),rap(maxjet),
      1    phi(maxjet),pj(4,maxjet),ptrel(maxjet)
       real * 8 ptel1,ptel2,etael1,etael2
-      real * 8 pj12(4),y12, pel12(4)
-      real*8 ptl(100),etal(100)
-      real * 8  mll, phill
-      real * 8 invmass 
-      real * 8 mjj,phijj
-      real * 8 r,fphi
+      real * 8 pj12(4),y12, pel12(4), ptl(100),etal(100), mll, phill
+      real * 8 invmass, mjj, r,fphi, etafromp,ptfromp 
       integer ihep,j,mjets
-      real * 8 etafromp,ptfromp 
       logical passcuts_vbf
      
 c cut parameters:
@@ -178,64 +145,41 @@ c cut parameters:
 
       common /jetcuts/ptj_min,yj_max,Rjj_min
 
-      logical with_vbf_cuts
-      parameter (with_vbf_cuts = .true.)
-
       real*8 Rjl_tmp0,Rjl_tmp1
-      integer ij,il
       real*8 Rll_tmp
       real*8 Rjj_tmp,Rjj_tmp0
+      integer ij,il
 
-      integer itag1,itag2,itag3
       real*8 pt_1,pt_2,pt_3
-      integer ltag1,ltag2
       real*8 ptl_1,ptl_2
       real*8 ystar
-c
+      integer ltag1,ltag2
+      integer itag1,itag2,itag3
+
 c =======================================================
+c     VBF cuts
 
-c initialize all cuts:
-      etal_max   = 1d10 
-      ptl_min    = 0d0   
-   
-      ptj_min = 0d0
-      yj_max  = 1d10
+      etal_max   = 2.5d0
+      ptl_min    = 20d0
       
-      yjj_min = 0d0
-      rap_sign = .false.
-      rap_gap  = .false.
+      ptj_min = 20d0
+      yj_max  = 4.5d0
 
-      Rjj_min = 0d0
-      mjj_min = 0d0
-
-      Rjl_min = 0d0
-      Rll_min = 0d0
-C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C
-c VBF cuts (can be modified by user):
-C
-        etal_max   = 2.5d0
-        ptl_min    = 20d0
-  
-        ptj_min = 20d0
-        yj_max  = 4.5d0
-
-        yjj_min  = 4d0
-        rap_sign = .true.
-        rap_gap  = .true.
-
-        Rjj_min = 0.4d0
-        mjj_min = 600d0
-
-        Rjl_min = 0.4d0
-        Rll_min = 0.1d0
-C
-        passcuts_vbf = .true. 
-C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-c      
-c from pico to femto      
+      yjj_min  = 4d0
+      rap_sign = .true.
+      rap_gap  = .true.
+      
+      Rjj_min = 0.4d0
+      mjj_min = 600d0
+      
+      Rjl_min = 0.4d0
+      Rll_min = 0.1d0
+      
+      passcuts_vbf = .true. 
+      
+c     ==========================================================
+c     
+c     from pico to femto      
       dsig=dsig0*1000
       diag = 0 
       if (ini) then
@@ -257,33 +201,33 @@ c from pico to femto
             write(*,*) '      e+ve e+ve final states     '
             write(*,*) '                 STOP            '
             write(*,*) '**************************************'
-c            call exit(1)
+            call exit(1)
          endif
 
 c
-         write (*,*) '********************************************'
          write(*,*) '********************************************'
-         write(*,*) '                ANALYSIS CUTS                     '
-         write(*,*) '*********************************************'
-         write(*,*) '*********************************************'
-            write(*,*) ''
-            write(*,*) 'jet cuts:'
-            write(*,*) 'ptj_min = ',ptj_min
-            write(*,*) 'yj_max  = ',yj_max
-            write(*,*) 'yjj_min = ',yjj_min
-            write(*,*) 'Rjj_min = ',Rjj_min
-            write(*,*) 'mjj_min = ',mjj_min
-            write(*,*) ''
-            write(*,*) 'lepton cuts:'
-            write(*,*) 'ptl_min    = ',ptl_min 
-            write(*,*) 'etal_max   = ',etal_max 
-            write(*,*) 'Rll_min    = ',Rll_min
-            write(*,*) ''
-            write(*,*) 'extra cuts:'
-            write(*,*) 'Rjl_min  = ',Rjl_min
-            write(*,*) 'rap_gap  = ',rap_gap
-            write(*,*) 'rap_sign  = ',rap_sign
-            write(*,*) ''
+         write(*,*) '********************************************'
+         write(*,*) '                ANALYSIS CUTS               '
+         write(*,*) '********************************************'
+         write(*,*) '********************************************'
+         write(*,*) ''
+         write(*,*) 'jet cuts:'
+         write(*,*) 'ptj_min = ',ptj_min
+         write(*,*) 'yj_max  = ',yj_max
+         write(*,*) 'yjj_min = ',yjj_min
+         write(*,*) 'Rjj_min = ',Rjj_min
+         write(*,*) 'mjj_min = ',mjj_min
+         write(*,*) ''
+         write(*,*) 'lepton cuts:'
+         write(*,*) 'ptl_min    = ',ptl_min 
+         write(*,*) 'etal_max   = ',etal_max 
+         write(*,*) 'Rll_min    = ',Rll_min
+         write(*,*) ''
+         write(*,*) 'extra cuts:'
+         write(*,*) 'Rjl_min   = ',Rjl_min
+         write(*,*) 'rap_gap   = ',rap_gap
+         write(*,*) 'rap_sign  = ',rap_sign
+         write(*,*) ''
          write(*,*) '********************************************'
          write(*,*) '********************************************'        
          ini=.false.
@@ -333,11 +277,10 @@ c sort by pt
       if (kt(2).lt.ptj_min) return
 
 c cross section with ptj constraint only
-      diag = 1!diag+1
+      diag = 1
       call pwhgfill(diag,0.5d0,dsig)
 
 c************************************
-c
 c check, if event passes VBF cuts:
 c
 c identify 2 hardest jets ("tag" jets) and 3rd hardest jet, 
@@ -464,77 +407,75 @@ c separation of tagging jets from leading charged leptons:
      &     (max(rap(itag1),rap(itag2)).le.max(etael1,etael2)))
      & passcuts_vbf = .false.
 
-c*************************
 
-      if (passcuts_vbf) then
+      if (.not. passcuts_vbf) return 
 
 c     VBF cross section
-      diag = 83   
+      diag = 2   
       call pwhgfill(diag,0.5d0,dsig)
 
 c     PT of jet 1
-      diag=86!diag+1
+      diag=3
       call pwhgfill(diag,kt(itag1),dsig/binsize(diag))
 c     PT of jet 2
-      diag=87!diag+1
+      diag=4
       call pwhgfill(diag,kt(itag2),dsig/binsize(diag))
 c     Y of jet 1
-      diag=88!diag+1
+      diag=5
       call pwhgfill(diag,rap(itag1),dsig/binsize(diag))
 c     Y of jet 2
-      diag=91!diag+1
+      diag=6
       call pwhgfill(diag,rap(itag2),dsig/binsize(diag))
 c     Y jet1 - Y jet 2
-      diag=94!diag+1
+      diag=7
       pj12 = pj(:4,itag1)+pj(:4,itag2)
       y12 = rap(itag1)-rap(itag2)
       call pwhgfill(diag,y12,dsig/binsize(diag))
 
 C     Pt lept     
-      diag=97!diag+1
+      diag=8
       call pwhgfill(diag,ptel1,dsig/binsize(diag)/2d0)
       call pwhgfill(diag,ptel2,dsig/binsize(diag)/2d0)
 
 C     ETA lept
-      diag=99!diag+1
+      diag=9
       call pwhgfill(diag,etael1,dsig/binsize(diag)/2d0)
       call pwhgfill(diag,etael2,dsig/binsize(diag)/2d0)
 
 C     M(l1l2) 
-      diag=101!diag+1
+      diag=10
       pel12 = phep(:4,ielectrons(ltag1))+phep(:4,ielectrons(ltag2))
       mll = invmass(pel12)
       call pwhgfill(diag,mll,dsig/binsize(diag))
 
 c     Phi(l1l2) 
-      diag=105!diag+1 
+      diag=11
       phill=fphi(phep(1,ielectrons(ltag1)),phep(1,ielectrons(ltag2)))
       call pwhgfill(diag,phill,dsig/binsize(diag))
 
 c     pt of third jet
-      diag=106!diag+1
+      diag=12
       if(itag3.ne.0) call pwhgfill(diag,kt(itag3),dsig/binsize(diag))
+
 c     y of third jet
-      diag=107!diag+1
+      diag=13
       if(itag3.ne.0 .and. kt(itag3) > ptj_min ) 
      .     call pwhgfill(diag,rap(itag3),dsig/binsize(diag))
+
 c     pt-rel of first jet
-      diag=109!diag+1
-      if(mjets.ge.1) call pwhgfill(diag,ptrel(itag1),dsig/binsize(diag))
+      diag=14
+      call pwhgfill(diag,ptrel(itag1),dsig/binsize(diag))
 
 C     M_j1j2
-      diag=111!diag+1
+      diag=15
       mjj = invmass(pj12)
-      if(mjets.ge.2) call pwhgfill(diag,mjj,dsig/binsize(diag))
+      call pwhgfill(diag,mjj,dsig/binsize(diag))
 
 c     y* 
-      diag=115!diag+1
+      diag=16
       if(itag3.ne.0 .and. kt(itag3) > ptj_min ) then 
          ystar = rap(itag3)-(rap(itag1)+rap(itag2))/2d0
          call pwhgfill(diag,ystar,dsig/binsize(diag))
-      endif
-
-
       endif
 
       end

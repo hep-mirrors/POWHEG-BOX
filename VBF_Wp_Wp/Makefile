@@ -84,12 +84,12 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o            \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
 # target to generate LHEF output
-pwhg_main:$(PWHG) vbfnlo-files/libvbfnlo.a 
+pwhg_main:$(PWHG) vbfnlo-files/libvbfnlo.a
 	(cd vbfnlo-files; make;)
 	$(FF) $(patsubst %,obj/%, $(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
 
 
-vbfnlo-files/libvbfnlo.a: vbfnlo-files/*f 
+vbfnlo-files/libvbfnlo.a: vbfnlo-files/*f  vbfnlo-files/*/*f
 	cd vbfnlo-files ; make
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o         \

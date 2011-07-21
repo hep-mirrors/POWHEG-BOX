@@ -394,7 +394,7 @@ c exchange who is positive with the one that is negative
             ris(3) = 1.d0
             ris(2) = -(l1+l2) + I*pi
             ris(1) = -2*(
-     #           dilog(r1) + l1*l1mr1 + 
+     #           dilog(r1) + l1*l1mr1  
      #           -dilog(q2sq/t)-1.d0/2*l2**2+pi**2/3+l2*log(r2-1.d0))
      #           +1.d0/2.d0*(l1**2+l2**2)+l1*l2
      #           + I*pi*( 2*l1mr1-l2-l1)

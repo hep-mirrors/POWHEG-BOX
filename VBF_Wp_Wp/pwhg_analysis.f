@@ -186,23 +186,25 @@ c     from pico to femto
          write (*,*)
          write (*,*) '********************************************'
          if(WHCPRG.eq.'NLO   ') then
-            write (*,*) '       parton-level ANALYSIS CALLED        '
+            write (*,*) 'Fixed order ANALYSIS CALLED '
+         
+           if(vdecaymodew1.eq.-11.and.vdecaymodew2.eq.-11
+     $        ) then
+              continue
+           else
+             write(*,*) '**************************************'
+             write(*,*) ' template analysis works only for'
+             write(*,*) '      e+ve e+ve final states     '
+             write(*,*) '                 STOP            '
+             write(*,*) '**************************************'
+             call exit(1)
+           endif
+      
          elseif(WHCPRG.eq.'HERWIG') then
             write (*,*) '           HERWIG ANALYSIS CALLED     '
          elseif(WHCPRG.eq.'PYTHIA') then
             write (*,*) '           PYTHIA ANALYSIS CALLED     '
-         endif         
-         if(vdecaymodew1.eq.-11.and.vdecaymodew2.eq.-11
-     $      ) then
-            continue
-         else
-            write(*,*) '**************************************'
-            write(*,*) ' template analysis works only for'
-            write(*,*) '      e+ve e+ve final states     '
-            write(*,*) '                 STOP            '
-            write(*,*) '**************************************'
-            call exit(1)
-         endif
+         endif  
 
 c
          write(*,*) '********************************************'

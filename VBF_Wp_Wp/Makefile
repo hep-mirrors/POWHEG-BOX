@@ -33,7 +33,7 @@ endif
 
 
 ifeq ("$(FC)","ifort")
-F77 = ifort -save
+F77 = ifort -save -132 
 #  -extend_source
 #CXX = icpc
 LIBS = -limf

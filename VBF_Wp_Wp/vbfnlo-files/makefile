@@ -1,5 +1,16 @@
-FC = gfortran
-FFLAGS = -g -fno-automatic -ffixed-line-length-none -O2
+
+COMPILER=gfortran
+FC=$(COMPILER)
+ifeq ("$(FC)","gfortran")
+F77= gfortran -fno-automatic -ffixed-line-length-none -O2
+endif
+ifeq ("$(FC)","g77")
+F77= g77 -fno-automatic -ffixed-line-length-none -O2
+endif
+ifeq ("$(FC)","ifort")
+F77= ifort -save -132 -O3
+endif
+
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
@@ -37,7 +48,6 @@ OBJECTS_PH =  ./amp_aux.o \
           ./tensor_redux/tensor_redux_Cij.o \
           ./tensor_redux/tensor_redux_Dij.o \
           ./tensor_redux/tensor_redux_Eij.o \
-          ./tensor_redux/boost.o \
 	  ./tensor_redux/dilog.o \
           ./tensor_redux/virtual1.o \
 	  ./tensor_redux/virtual2.o  
@@ -58,7 +68,7 @@ TARGETS_PH = libvbfnlo.a
 
 # for g77 or gfortran: 
 .f.o:
-	$(FC) -c -o $*.o  $(FFLAGS) $*.f
+	$(F77) -c -o $*.o  $(FFLAGS) $*.f
 
 # ----------------------------------------------------------------------------
 

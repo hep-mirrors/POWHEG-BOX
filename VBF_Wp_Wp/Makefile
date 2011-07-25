@@ -1,18 +1,51 @@
-#-- Makefile to be used for VBF pp->W+W+jj
+#-*- Makefile -*-
+## Choose compiler: gfortran,g77,ifort
+COMPILER=gfortran
+FC=$(COMPILER)
 
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
-PDF=lhapdf
+PDF=native
 
 # Choose Analysis: none, default
-# default analysis requires FASTJET package, that has to be installed 
+# default analysis may require FASTJET package, that has to be installed 
 # separately (see below)
 ANALYSIS=none
 ## For static linking uncomment the following
-#STATIC= -static
-
+STATIC= -static
+#
+ifeq ("$(FC)","gfortran")	
 F77= gfortran -fno-automatic -ffixed-line-length-none
 OPT=-O2
+## For debugging uncomment the following
+#DEBUG= -ggdb -pg
+endif
+
+ifeq ("$(FC)","g77")
+F77= g77 -fno-automatic 
+#FFLAGS= -Wall -ffortran-bounds-check
+## For floating point exception trapping  uncomment the following 
+#FPEOBJ=trapfpe.o
+OPT=-O3
+## For debugging uncomment the following
+#DEBUG= -ggdb -pg
+endif
+
+
+ifeq ("$(FC)","ifort")
+F77 = ifort -save
+#  -extend_source
+#CXX = icpc
+LIBS = -limf
+#FFLAGS =  -check
+## For floating point exception trapping  uncomment the following 
+#FPE = -fpe0
+OPT = -O3 #-fast
+## For debugging uncomment the following
+#DEBUG= -debug -g
+endif
+
+
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
@@ -27,6 +60,8 @@ FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLU
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
 
 ifeq ("$(PDF)","lhapdf")
+# LHAPDF may be compiled with ifort or gfortran. The user might need to 
+# set up the correct path.
 LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
 LIBSLHAPDF= -Wl,-rpath,$(shell $(LHAPDF_CONFIG) --libdir)  -L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF
@@ -35,8 +70,8 @@ ifeq  ("$(STATIC)","-static")
 ## libgfortran as well. The same holds for libstdc++. 
 ## One possible solution is to use fastjet, since $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 ## does perform this inclusion. The path has to be set by the user. 
-# LIBGFORTRANPATH=/usr/lib/gcc/x86_64-redhat-linux/4.1.2
-# LIBSTDCPP=/lib64
+ LIBGFORTRANPATH=/usr/lib/gcc/x86_64-redhat-linux/4.1.2
+ LIBSTDCPP=/lib64
  LIBSLHAPDF+=  -L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran -L$(LIBSTDCPP) -lstdc++
 endif
 LIBS+=$(LIBSLHAPDF)
@@ -45,6 +80,7 @@ PDFPACK=mlmpdfif.o hvqpdfpho.o
 endif
 
 ifeq ("$(ANALYSIS)","default")
+##To include Fastjet configuration uncomment the following lines. 
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
@@ -86,7 +122,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o            \
 # target to generate LHEF output
 pwhg_main:$(PWHG) vbfnlo-files/libvbfnlo.a
 	(cd vbfnlo-files; make;)
-	$(FF) $(patsubst %,obj/%, $(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
+	$(FF) $(patsubst %,obj/%, $(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@  $(STATIC)
 
 
 vbfnlo-files/libvbfnlo.a: vbfnlo-files/*f  vbfnlo-files/*/*f
@@ -100,7 +136,7 @@ LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o         \
 
 # target to analyze LHEF output
 lhef_analysis:$(LHEFANAL)
-	$(FF) $(patsubst %,obj/%,$(LHEFANAL)) -o $@ $(LIBS) $(LIBSFASTJET)
+	$(FF) $(patsubst %,obj/%,$(LHEFANAL)) -o $@ $(LIBS) $(LIBSFASTJET) $(STATIC) 
 
 
 # target to read event file, shower events with HERWIG + analysis
@@ -112,7 +148,7 @@ HERWIG=main-HERWIG.o setup-HERWIG-lhef.o herwig6510.o \
 
 
 main-HERWIG-lhef: $(HERWIG)
-	$(FF) $(patsubst %,obj/%,$(HERWIG)) -o $@ $(LIBSFASTJET)
+	$(FF) $(patsubst %,obj/%,$(HERWIG)) $(STATIC) -o $@ $(LIBSFASTJET)
 
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o \
@@ -123,7 +159,7 @@ PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o \
 
 
 main-PYTHIA-lhef: $(PYTHIA)
-	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBS) $(LIBSFASTJET) $(LIBS)
+	$(FF) $(patsubst %,obj/%,$(PYTHIA)) -o $@ $(LIBS) $(LIBSFASTJET) $(LIBS) $(STATIC) 
 
 clean:
 	rm -f *.o obj_ew/*.o obj/*.o \

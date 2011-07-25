@@ -10,7 +10,6 @@ c  pwhgfill  :  fills the histograms with data
       include  'LesHouches.h'
       include '../pwhg_book.h'
 
-      call init_couplings
       call inihists
 
 c     total cross section sanity check
@@ -81,7 +80,6 @@ C     -- variables involving the jet
       include 'cvecbos.h'
       include 'nwz.f'
       include 'constants.f'
-      include 'zwcouple.f'
       logical passcuts, passjetcuts
       integer ihep,mu
       logical ini
@@ -112,8 +110,8 @@ c-----TM added
       real * 8 pt_3456,mass_3456,eta_3456,y_3456
       integer j
       double precision mtrans,fbZm,fbZp,fbW
-!      double precision zmass
-!      save zmass
+      double precision zmass
+      parameter (zmass=91.1876d0)      
       double precision dr1,dr2,dr3,drmin
 
       if(dsig.eq.0) return

@@ -9,7 +9,7 @@ c     Expression evaluated is
 c     d^4 p1 d^4 p2 (2 pi)^4 delta(p0-p1-p2)/(2 pi)^6
 c     delta(p2^2) delta(p3^2)
       implicit none
-      include 'pwhg_math.h'
+      include '../include/pwhg_math.h'
       double precision p0(4),p1(4),p2(4),p1cm(4)
       double precision xth,xphi,phi,s,roots,costh,sinth
       double precision wt0,wt
@@ -18,14 +18,15 @@ c     delta(p2^2) delta(p3^2)
       wt=0d0
 
       s=p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2  
-      if (s .lt. 0d0) then
-       write(*,*)'phi3m0: s < 0' ,s
-       wt=0d0
-       write(*,*) 'phi3m0: s < 0'
-       call exit(-1)
-      endif
+c      if (s .lt. 0d0) then
+c       write(*,*)'phi3m0: s < 0' ,s
+C       wt=0d0
+c       write(*,*) 'phi3m0: s < 0'
+c       call exit(-1)
+c         s=0
+c      endif
 
-      roots=dsqrt(s)
+      roots=dsqrt(abs(s))
       costh=2d0*xth-1d0    
       sinth=dsqrt(1d0-costh**2)
       phi=2d0*pi*xphi

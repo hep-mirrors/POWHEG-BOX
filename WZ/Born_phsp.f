@@ -54,9 +54,9 @@ C
       xjac=1
 c     First determine virtualities of lepton pairs
       smin=0d0
-      smax=(sqrts)**2
-      z=xborn(1)
-      xjac=1d0
+      smax=(sqrts-mllminz)**2
+      z=xborn(1)**2
+      xjac=2*xborn(1)
 c breitw, if zerowidth is true, does the right thing
 c TM here there different min for the W mll 
       call breitw(z,smin,smax,ph_wmass,ph_wwidth,s,wt)
@@ -92,13 +92,13 @@ c 2 pi
       endif
 
 c---if x's out of normal range abort
-      if   ((xx(1) .gt. 1d0)
-     & .or. (xx(2) .gt. 1d0)
-     & .or. (xx(1) .lt. xmin)
-     & .or. (xx(2) .lt. xmin)) then
-         write(*,*) ' error in Born phase space!, x1,x2 our of range'
-         call exit(-1)
-      endif
+c      if   ((xx(1) .gt. 1d0)
+c     & .or. (xx(2) .gt. 1d0)
+c     & .or. (xx(1) .lt. xmin)
+c     & .or. (xx(2) .lt. xmin)) then
+c         write(*,*) ' error in Born phase space!, x1,x2 our of range'
+c         call exit(-1)
+c      endif
 
 C     NB positive energy even if incoming, i.e. p1+p2 = \sum_3^8 p_i   
 c     pos rapidity
@@ -160,11 +160,11 @@ c     minimal final state mass
       endif
 
       
-      if (m56 .lt. mllminz) then
+c      if (m56 .lt. mllminz) then
 c         write(*,*) 'error in Born phase space!, m34 or m56 below limit'
 c         write(*,*) m34/mllminz,m56/ mllminz
 c         call exit(-1)
-      endif
+c      endif
 
 c     print out for checks 
       if (debug) then 

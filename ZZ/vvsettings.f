@@ -1,6 +1,7 @@
       logical zerowidth
       logical dronly
       logical interference
-      double precision mllmin,wllmin
-      common/vvsettings/mllmin,wllmin,zerowidth,dronly,interference
+      logical cutallpairs
+      common/vvsettings/zerowidth,dronly,interference,
+     1     cutallpairs
 

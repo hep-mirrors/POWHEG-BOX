@@ -18,13 +18,13 @@ c     delta(p2^2) delta(p3^2)
       wt=0d0
 
       s=p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2  
-      if (s .lt. 0d0) then
+c      if (s .lt. 0d0) then
 c       write(*,*)'phi3m0: s < 0' ,s
 C       wt=0d0
 c       write(*,*) 'phi3m0: s < 0'
 c       call exit(-1)
-         s=0
-      endif
+c         s=0
+c      endif
 
       roots=dsqrt(abs(s))
       costh=2d0*xth-1d0    

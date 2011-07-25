@@ -32,12 +32,14 @@ c   for the moment --- radiation only from initial line
       double complex qg2(2,2,2,2),gq2(2,2,2,2)
       double complex gqb1(2,2,2,2),qbg1(2,2,2,2) 
       double complex gqb2(2,2,2,2),qbg2(2,2,2,2)
-      double complex propz1,propz2,propz3,amp
+      double complex amp
       double precision s127
       double complex prop34,prop56,prop127
 
       integer iloop,nloop
       double complex amp_SAVE(-nf:nf,-nf:nf,2,2,2,2)
+      double complex cpropfac
+      external cpropfac
 
       do jp=-nf,nf
       do kp=-nf,nf
@@ -96,13 +98,18 @@ c--   s returned from sprodx (common block) is 2*dot product
 
 c--   calculate propagators
       if     (zerowidth) then
-      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+c      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+c      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+         prop34=cpropfac(s(3,4),zmass,zwidth)
+         prop56=cpropfac(s(5,6),zmass,zwidth)
       else
-      s127=s(1,2)+s(1,7)+s(2,7)
-      prop127=s127/dcmplx(s127-zmass**2,zmass*zwidth)
-      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+         s127=s(1,2)+s(1,7)+s(2,7)
+c      prop127=s127/dcmplx(s127-zmass**2,zmass*zwidth)
+c      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+c      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+         prop127=cpropfac(s127,zmass,zwidth)
+         prop34=cpropfac(s(3,4),zmass,zwidth)
+         prop56=cpropfac(s(5,6),zmass,zwidth)
       endif
 
 c---case qbar-q

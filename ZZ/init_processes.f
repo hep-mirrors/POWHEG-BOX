@@ -2,6 +2,7 @@
       implicit none
       include 'nlegborn.h'
       include 'pwhg_flst.h'
+      include 'pwhg_flg.h'
       include 'pwhg_kn.h'
       include 'LesHouches.h'
       integer i1,i2,i3,i4,i5,i6,i7,k,ii(7)
@@ -21,7 +22,6 @@ c     lepton masses
       common/clepmass/lepmass,decmass,decmass1,decmass2
       logical condition
       include 'vvsettings.f'
-      integer lprup1(100), lprup2(100) 
 
 c******************************************************
 c     Choose the process to be implemented
@@ -29,15 +29,22 @@ c******************************************************
 
 c     ID of vector boson produced
 c     decay products of the vector boson
-      vdecaymodeZ1=powheginput('vdecaymodeZ1')
-      vdecaymodeZ2=powheginput('vdecaymodeZ2')
+
+c Take the absolute value, so that lepton and antilepton
+c always occupy the same position
+      vdecaymodeZ1=abs(powheginput('vdecaymodeZ1'))
+      vdecaymodeZ2=abs(powheginput('vdecaymodeZ2'))
+
+      if(powheginput('#cutallpairs').eq.0) then
+         cutallpairs = .false.
+      else
+         cutallpairs = .true.
+      endif
 
       if (powheginput("#zerowidth").eq.1) then 
          zerowidth = .true. 
-         write(*,*) 'Zerowidth approximation' 
       else
          zerowidth = .false. 
-         write(*,*) 'Generating off-shell Z-bosons with mll>',mllmin 
       endif
 
       if (powheginput("#dronly").eq.1) then 
@@ -51,6 +58,12 @@ c  cant have srdiags if zerowidth is true
       else
          dronly=.false.
          write(*,*) 'Including single resonant diagrams'
+      endif
+
+      if(powheginput("#withdamp").ne.0) then
+         flg_withdamp = .true.
+      else
+         flg_withdamp = .false.
       endif
 
       interference = (powheginput('#withinterference').ne.0)
@@ -85,46 +98,40 @@ c no interference if zerowidth is true
      #  //' is not allowed (Up to now only leptonic decays)'
          call exit(-1)
       endif
-            
-      if((idvecbos1.eq.23).and.(idvecbos2.eq.23)) then
-         write(*,*) 
-         write(*,*) ' POWHEG: ZZ production and decay'
-         if (vdecaymodeZ1.eq.11) write(*,*) '         to e- e+ '
-         if (vdecaymodeZ1.eq.12) write(*,*) '         to ve ve~ '
-         if (vdecaymodeZ1.eq.13) write(*,*) '         to mu- mu+ '
-         if (vdecaymodeZ1.eq.14) write(*,*) '         to vmu vmu~ '
-         if (vdecaymodeZ1.eq.15) write(*,*) '         to tau- tau+ '
-         if (vdecaymodeZ1.eq.16) write(*,*) '         to vtau vtau~ '
-         write(*,*)'            and'
-         if (vdecaymodeZ2.eq.11) write(*,*) '            e- e+ '
-         if (vdecaymodeZ2.eq.12) write(*,*) '            ve ve~ '
-         if (vdecaymodeZ2.eq.13) write(*,*) '            mu- mu+ '
-         if (vdecaymodeZ2.eq.14) write(*,*) '            vmu vmu~ '
-         if (vdecaymodeZ2.eq.15) write(*,*) '            tau- tau+ '
-         if (vdecaymodeZ2.eq.16) write(*,*) '            vtau vtau~ '
-         write(*,*) 
-      else
-         write(*,*) 'ERROR: The ID of vector boson you selected'
-     #  //' is not admitted (23: Z)'
-         stop
-      endif
+
+      write(*,*) 
+      write(*,*) ' POWHEG: ZZ production and decay'
+      if (vdecaymodeZ1.eq.11) write(*,*) '         to e- e+ '
+      if (vdecaymodeZ1.eq.12) write(*,*) '         to ve ve~ '
+      if (vdecaymodeZ1.eq.13) write(*,*) '         to mu- mu+ '
+      if (vdecaymodeZ1.eq.14) write(*,*) '         to vmu vmu~ '
+      if (vdecaymodeZ1.eq.15) write(*,*) '         to tau- tau+ '
+      if (vdecaymodeZ1.eq.16) write(*,*) '         to vtau vtau~ '
+      write(*,*)'            and'
+      if (vdecaymodeZ2.eq.11) write(*,*) '            e- e+ '
+      if (vdecaymodeZ2.eq.12) write(*,*) '            ve ve~ '
+      if (vdecaymodeZ2.eq.13) write(*,*) '            mu- mu+ '
+      if (vdecaymodeZ2.eq.14) write(*,*) '            vmu vmu~ '
+      if (vdecaymodeZ2.eq.15) write(*,*) '            tau- tau+ '
+      if (vdecaymodeZ2.eq.16) write(*,*) '            vtau vtau~ '
+      write(*,*) 
 
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
-      lprup1(1)=10000+vdecaymodeZ1 ! 10000+idup of first decay product of Z1
-      lprup2(1)=10000+vdecaymodeZ2 ! 10000+idup of first decay product of Z2
+c     10000+idup of first decay product of Z1 + decay product of Z2
+      lprup(1)=10000+vdecaymodeZ1+vdecaymodeZ2 
 
-      if(lprup1(1).eq.10011) then
+      if(vdecaymodeZ1.eq.11) then
          decmass1=lepmass(1)
-      elseif(lprup1(1).eq.10012) then
+      elseif(vdecaymodeZ1.eq.12) then
          decmass1=0d0   
-      elseif(lprup1(1).eq.10013) then
+      elseif(vdecaymodeZ1.eq.13) then
          decmass1=lepmass(2)
-      elseif(lprup1(1).eq.10014) then
+      elseif(vdecaymodeZ1.eq.14) then
          decmass1=0d0   
-      elseif(lprup1(1).eq.10015) then
+      elseif(vdecaymodeZ1.eq.15) then
          decmass1=lepmass(3)     
-      elseif(lprup1(1).eq.10016) then
+      elseif(vdecaymodeZ1.eq.16) then
          decmass1=0d0   
       else
 c     not yet implemented
@@ -132,17 +139,17 @@ c     not yet implemented
      #        'not yet implemented'
          stop
       endif
-      if(lprup2(1).eq.10011) then
+      if(vdecaymodeZ2.eq.11) then
          decmass2=lepmass(1)
-      elseif(lprup2(1).eq.10012) then
+      elseif(vdecaymodeZ2.eq.12) then
          decmass2=0d0   
-      elseif(lprup2(1).eq.10013) then
+      elseif(vdecaymodeZ2.eq.13) then
          decmass2=lepmass(2)
-      elseif(lprup2(1).eq.10014) then
+      elseif(vdecaymodeZ2.eq.14) then
          decmass2=0d0   
-      elseif(lprup2(1).eq.10015) then
+      elseif(vdecaymodeZ2.eq.15) then
          decmass2=lepmass(3)     
-      elseif(lprup2(1).eq.10016) then
+      elseif(vdecaymodeZ2.eq.16) then
          decmass2=0d0   
       else
 c     not yet implemented
@@ -155,7 +162,8 @@ c     not yet implemented
 c     index of the first coloured particle in the final state
 c     (all subsequent particles are coloured)
       flst_lightpart=7
-c     Z decay products
+c     Z decay products; since the absolute value of vdecaymodeZ1/2
+c     was taken, 3 and 5 are always leptons, 4 and 6 are antileptons
       i3=vdecaymodeZ1
       i4=-i3
       i5=vdecaymodeZ2

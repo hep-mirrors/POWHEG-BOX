@@ -5,6 +5,7 @@
       include 'pwhg_kn.h'
       include 'pwhg_math.h'
       include 'PhysPars.h'
+      include 'cvecbos.h' 
       include 'vvsettings.f' 
       real * 8 xborn(ndiminteg-3)
       real * 8 xjac,tau,beta,vec(3)
@@ -18,12 +19,13 @@
       double precision m34,m56,smin,smax,s,z
       double precision xmin,taumin,sqrts
       integer i,k
+      real * 8 mllmin34,mllmin56,mllmin
       real * 8 powheginput
       external powheginput
       logical debug,ini
       data ini/.true./
       data debug/.false./
-      save ini
+      save ini,mllmin34,mllmin56,mllmin
 
       double precision lntaum,ymax,ycm
 
@@ -35,6 +37,22 @@
          kn_masses(nlegreal)=0
          mllmin=powheginput("#mllmin")
          if(mllmin.le.0) mllmin=0.1d0
+         if(vdecaymodeZ1.eq.12.or.vdecaymodeZ1.eq.14.
+     1  .or.vdecaymodeZ1.eq.16) then
+c neutrino
+            mllmin34=0
+         else
+c charged particles
+            mllmin34=mllmin
+         endif
+         if(vdecaymodeZ2.eq.12.or.vdecaymodeZ2.eq.14.
+     1  .or.vdecaymodeZ2.eq.16) then
+c neutrino
+            mllmin56=0
+         else
+c charged particles
+            mllmin56=mllmin
+         endif
          ini=.false.
       endif
 C     
@@ -42,8 +60,8 @@ C
       sqrts = sqrt(kn_sbeams)
       xjac=1
 c First determine virtualities of lepton pairs
-      smin=mllmin**2
-      smax=(sqrts-mllmin)**2
+      smin=mllmin34**2
+      smax=(sqrts-mllmin56)**2
       z=xborn(1)**4
       xjac=xjac*4*xborn(1)**3
 c breitw, if zerowidth is true, does the right thing
@@ -52,6 +70,8 @@ c wt is the Jacobian from z to s; we do ds/(2 pi), so provide
 c 2 pi
       xjac=xjac*wt/(2*pi)
       m34=sqrt(s)
+c
+      smin=mllmin56**2
       smax=(sqrts-m34)**2
       z=xborn(2)**4
       xjac=xjac*4*xborn(2)**3
@@ -77,13 +97,13 @@ c 2 pi
       endif
 
 c---if x's out of normal range abort
-      if   ((xx(1) .gt. 1d0)
-     & .or. (xx(2) .gt. 1d0)
-     & .or. (xx(1) .lt. xmin)
-     & .or. (xx(2) .lt. xmin)) then
-         write(*,*) ' error in Born phase space!, x1,x2 our of range'
-         call exit(-1)
-      endif
+c      if   ((xx(1) .gt. 1d0)
+c     & .or. (xx(2) .gt. 1d0)
+c     & .or. (xx(1) .lt. xmin)
+c     & .or. (xx(2) .lt. xmin)) then
+c         write(*,*) ' error in Born phase space!, x1,x2 our of range'
+c         call exit(-1)
+c      endif
 
 C     NB positive energy even if incoming, i.e. p1+p2 = \sum_3^8 p_i   
 c     pos rapidity
@@ -141,14 +161,14 @@ c     minimal final state mass
       if(zerowidth) then
          kn_minmass= 2 * ph_zmass
       else
-         kn_minmass=2d0*mllmin 
+         kn_minmass=mllmin34+mllmin56 
       endif
 
-      if (m34.lt.mllmin.or. m56 .lt. mllmin) then
+c      if (m34.lt.mllmin34.or. m56 .lt. mllmin56) then
 c         write(*,*) 'error in Born phase space!, m34 or m56 below limit'
-c         write(*,*) m34/mllmin,m56/ mllmin
+c         write(*,*) m34/mllmin34,m56/ mllmin56
 c         call exit(-1)
-      endif
+c      endif
 
 c     print out for checks 
       if (debug) then 
@@ -199,6 +219,27 @@ c     -- checks invariants, mom. conservation etc in CM frame
      .        kn_cmpborn(3,i)*kn_cmpborn(3,i)
       enddo
 
+      endif
+
+c if Z1 and Z2 decay in the same charge lepton, cut
+c also on the remaining combinations of oppositely
+c charged leptons. This could also be done at the
+c analysis level, but in this way we avoid confusing the user
+      if(vdecaymodeZ1.eq.vdecaymodeZ2 .and.
+     1  (vdecaymodeZ1.ne.12.and.vdecaymodeZ1.ne.14.and.
+     1   vdecaymodeZ1.ne.16) .and. cutallpairs .and.
+     1     (
+     1    ( (kn_cmpborn(0,3)+kn_cmpborn(0,6))**2
+     1     -(kn_cmpborn(1,3)+kn_cmpborn(1,6))**2
+     1     -(kn_cmpborn(2,3)+kn_cmpborn(2,6))**2
+     1     -(kn_cmpborn(3,3)+kn_cmpborn(3,6))**2.lt.mllmin**2
+     1     .or.
+     1      (kn_cmpborn(0,4)+kn_cmpborn(0,5))**2
+     1     -(kn_cmpborn(1,4)+kn_cmpborn(1,5))**2
+     1     -(kn_cmpborn(2,4)+kn_cmpborn(2,5))**2
+     1     -(kn_cmpborn(3,4)+kn_cmpborn(3,5))**2.lt.mllmin**2) )
+     1  ) then
+         kn_jacborn = 0
       endif
 
       end

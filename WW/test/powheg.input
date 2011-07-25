@@ -1,10 +1,10 @@
 ! ZZ boson production parameters
 
-vdecaymodeZ1 11  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
-vdecaymodeZ2 13  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
-mllmin 20d0     ! Minimum invariant mass of lepton pairs from Z decay
+vdecaymodeWp -11 ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
+vdecaymodeWm 13  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
+mllmin 20d0      ! Minimum invariant mass of lepton pairs from Z decay
 #dronly 0        ! default 0; if 1 only double resonant diagrams
-#zerowidth 1    ! default 0 (offshell Zs); if 1 generate Z's on shell
+#zerowidth 1     ! default 0 (offshell Zs); if 1 generate Z's on shell
 #withinterference 1 ! default 1; 0 switches off interfernce for same flavour charged leptons (no used otherwise) 
 
 numevts 500000    ! number of events to be generated
@@ -16,8 +16,8 @@ ebeam2 3500d0     ! energy of beam 2
 lhans1   21100    ! pdf set for hadron 1 (LHA numbering)
 lhans2   21100    ! pdf set for hadron 2 (LHA numbering)
 ! To be set only if using internal mlm pdf
-#ndns1 131         ! pdf set for hadron 1 (mlm numbering)
-#ndns2 131         ! pdf set for hadron 2 (mlm numbering)
+!ndns1 131         ! pdf set for hadron 1 (mlm numbering)
+!ndns2 131         ! pdf set for hadron 2 (mlm numbering)
 ! To be set only if using different pdf sets for the two incoming hadrons
 ! QCDLambda5  0.25 ! for not equal pdf sets 
 
@@ -27,19 +27,19 @@ use-old-ubound  0 ! if 1 use norm of upper bounding function stored in pwgubound
 
 ncall1   300000   ! number of calls for initializing the integration grid
 itmx1    3        ! number of iterations for initializing the integration grid
-ncall2   1000000  ! number of calls for computing the integral and finding upper bounds
+ncall2   1000000  ! number of calls for computing the integral and finding upper bound
 itmx2    5        ! number of iterations for computing the integral and finding upper bound
 foldcsi   1       ! number of folds on csi integration
 foldy     1       ! number of folds on  y  integration
 foldphi   1       ! number of folds on phi integration
-nubound  500000   ! number of bbarra calls to setup norm of upper bounding function
+nubound 500000    ! number of bbarra calls to setup norm of upper bounding function
 
 ! OPTIONAL PARAMETERS
 
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #bornonly   0      ! (default 0) if 1 do Born only
-#withdamp 0        ! (default 1) if 0 do not apply (no remnants)
+#withdamp 1
 testplots  1      ! (default 0, do not) do NLO and PWHG distributions
 
 #iseed    12345    ! initialize random number sequence 

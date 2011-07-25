@@ -7,6 +7,7 @@ FC=$(COMPILER)
 PDF=lhapdf
 #Choose Analysis: none, default
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
+#ANALYSIS=WZ
 ANALYSIS=sanity
 ## For static linking uncomment the following
 STATIC= #-static
@@ -22,7 +23,7 @@ F77=gfortran -fno-automatic
 ## Use -O2 to be on the safe side
 OPT=-O2
 ## For debugging uncomment the following
-DEBUG= -ggdb -pg
+#DEBUG= -ggdb -pg
 ifdef DEBUG
 OPT=
 endif
@@ -110,18 +111,12 @@ endif
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 
-USER=init_couplings.o smcouplings.o init_processes.o Born_phsp.o Born.o suppfact2e.o virtual.o	cpropfac.o \
-     real.o phi1_2.o phi3m0.o boost.o breit.o couplz.o qqb_wz.o amps_anom.o\
-	spinoru.o a6tree.o t.o qqb_wz_v.o lnrat.o fa.o vpole.o a6loop.o \
-	lfunctions.o L34_12.o i3m.o dclaus.o BigT.o qqb_wz_g.o wzamps.o a7tree.o \
-	b7tree.o setckmmatrix.o setanomcoup.o $(PWHGANAL)
-
-
-#USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-#     real.o phi1_2.o phi3m0.o boost.o breit.o \
-#           spinoru.o qqb_zz.o t.o a6tree.o couplz.o vpole.o a6loop.o \
-#	qqb_zz_v.o lnrat.o fa.o lfunctions.o L34_12.o i3m.o dclaus.o \
-#	BigT.o qqb_zz_g.o zzamps.o a7tree.o a7treesingres.o zzsingres.o $(PWHGANAL)
+USER=init_couplings.o smcouplings.o init_processes.o Born_phsp.o Born.o \
+     suppfact2e.o virtual.o cpropfac.o real.o phi1_2.o phi3m0.o boost.o \
+     breit.o couplz.o qqb_wz.o amps_anom.o spinoru.o a6tree.o t.o \
+     qqb_wz_v.o lnrat.o fa.o vpole.o a6loop.o lfunctions.o L34_12.o \
+     i3m.o dclaus.o BigT.o qqb_wz_g.o wzamps.o a7tree.o \
+     b7tree.o setckmmatrix.o setanomcoup.o $(PWHGANAL)
 
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
@@ -139,8 +134,8 @@ pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
 
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o		\
-     opencount.o powheginput.o pwhg_bookhist.o $(PWHGANAL)	\
-     lhefread.o newunit.o pwhg_analysis_driver.o init_couplings.o $(FPEOBJ)
+     opencount.o powheginput.o $(PWHGANAL)	\
+     lhefread.o newunit.o pwhg_analysis_driver.o $(FPEOBJ)
 
 # target to analyze LHEF output
 lhef_analysis:$(LHEF)
@@ -150,17 +145,16 @@ lhef_analysis:$(LHEF)
 
 # target to read event file, shower events with HERWIG + analysis
 HERWIG=main-HERWIG.o setup-HERWIG-lhef.o herwig.o boostrot.o	\
-	powheginput.o pwhg_bookhist.o $(PWHGANAL) lhefread.o	\
+	powheginput.o $(PWHGANAL) lhefread.o	\
 	pdfdummies.o opencount.o $(FPEOBJ) 
 
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG))  $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o		\
-	pwhg_bookhist.o $(PWHGANAL) lhefread.o newunit.o pdfdummies.o	\
-	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
-	init_couplings.o $(FPEOBJ)
+PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o\
+       $(PWHGANAL) lhefread.o newunit.o pdfdummies.o	\
+       pwhg_analysis_driver.o random.o cernroutines.o opencount.o $(FPEOBJ)
 
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) $(LIBSFASTJET)  $(STATIC) -o $@

@@ -26,6 +26,7 @@ c     multiple interactions
       parameter (mult_inter=.true.)
       integer maxev
       common/mcmaxev/maxev
+      real * 8 powheginput
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c     multiple interactions
 c     (MI can increase a lot the execution time)
@@ -41,6 +42,14 @@ c     photon radiation off quarks and leptons
 c       mstj(41)=12              
 c     No photon radiation off quarks and leptons
 c      mstj(41)=11              
+      if(powheginput("#noqedrad").gt.0) then
+         if(mstj(41).eq.12) then
+            mstj(41)=11
+         elseif(mstj(41).eq.2) then
+            mstj(41)=1
+         endif
+         write(*,*)' No QED radiation from PYTHIA'
+      endif
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 c      mstp(61)=0                !No IS shower
@@ -98,6 +107,13 @@ c     Make PI0 stable as in herwig default
 
       subroutine UPEVNT
       implicit none
+      include 'LesHouches.h'
+      include 'pwhg_physpar.h'
+      integer j
+      real * 8 powheginput
+      logical ini
+      data ini/.true./
+      save ini
       call lhefreadev(97)
       end
 

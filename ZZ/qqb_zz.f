@@ -32,7 +32,7 @@ c----No statistical factor of 1/2 included.
      
       double complex qqb(2,2,2),qbq(2,2,2),q_qb,qb_q
       double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
-      double complex propz1,propz2,props,a6trees
+      double complex a6trees
       double complex prop12,prop34,prop56
 
       double precision FAC
@@ -42,6 +42,8 @@ c----No statistical factor of 1/2 included.
       integer iloop,nloop
       double complex q_qb_SAVE(-nf:nf,-nf:nf,2,2,2)
       double complex qb_q_SAVE(-nf:nf,-nf:nf,2,2,2)
+      double complex cpropfac
+      external cpropfac
 
       fac=-4D0*esq**2
 
@@ -98,9 +100,12 @@ c   DKS have--- q(q2) +qbar(q1) -->mu^-(q3)+mu^+(q4)+e^-(q6)+e^+(q5)
 c--   s returned from sprod (common block) is 2*dot product
 
 c--   calculate propagators
-      prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
-      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+c      prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
+c      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+c      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+      prop12=cpropfac(s(1,2),zmass,zwidth)
+      prop34=cpropfac(s(3,4),zmass,zwidth)
+      prop56=cpropfac(s(5,6),zmass,zwidth)
             
 c-- here the labels correspond to the polarizations of the
 c-- quark, lepton 4 and lepton 6 respectively

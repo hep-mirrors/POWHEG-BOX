@@ -9,9 +9,9 @@ c     d^4 p2/(2 pi)^4   d^4 p3 /(2 pi)^4  (2 pi)^4 delta(p1-p2-p3)
 c     (2 pi) delta(p2^2-m2^2) (2 pi) delta(p3^2-m3^2)
       implicit none
       include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_kn.h'
-      include 'pwhg_math.h'
+      include '../include/pwhg_flst.h'
+      include '../include/pwhg_kn.h'
+      include '../include/pwhg_math.h'
       include 'PhysPars.h'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x3,x4,costh,sinth,phi,cphi,sphi
@@ -28,12 +28,12 @@ c     (2 pi) delta(p2^2-m2^2) (2 pi) delta(p3^2-m3^2)
       m1=dsqrt(s1)
 
 c     The following should never happen
-      if(m1.lt.m2+m3) then 
-         write(*,*) 'p1', p1 
-         write(*,*) 'm1,m2,m3', m1, m2, m3
-         write(*,*) 'phi1_2: m1 < m2+m3 ?'  
-         call exit(-1)
-      endif
+c      if(m1.lt.m2+m3) then 
+c         write(*,*) 'p1', p1 
+c         write(*,*) 'm1,m2,m3', m1, m2, m3
+c         write(*,*) 'phi1_2: m1 < m2+m3 ?'  
+c         call exit(-1)
+c      endif
 
       costh=two*x3-one      
       phi=two*pi*x4
@@ -66,12 +66,12 @@ c     The following should never happen
 !      elseif (s56 .lt. 0d0) then
 !         write(*,*)'s56 is lt zero,in phi12',s56,x1,x2,x3,x4
 !      endif
-      if (  (p1(4) .lt. 0d0) 
-     & .or. (p2(4) .lt. 0d0) 
-     & .or. (p3(4) .lt. 0d0)) then
-         write(*,*) 'phi1_2: one of E1,E2,E3 < 0'
-         call exit(-1)
-      endif
+c      if (  (p1(4) .lt. 0d0) 
+c     & .or. (p2(4) .lt. 0d0) 
+c     & .or. (p3(4) .lt. 0d0)) then
+c         write(*,*) 'phi1_2: one of E1,E2,E3 < 0'
+c         call exit(-1)
+c      endif
 
       end
 

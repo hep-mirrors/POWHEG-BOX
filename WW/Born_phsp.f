@@ -75,13 +75,13 @@ c 2 pi
       endif
 
 c---if x's out of normal range abort
-      if   ((xx(1) .gt. 1d0)
-     & .or. (xx(2) .gt. 1d0)
-     & .or. (xx(1) .lt. xmin)
-     & .or. (xx(2) .lt. xmin)) then
-         write(*,*) 'Born_phsp: warning x1,x2 our of range:',xx(1),xx(2)
+c      if   ((xx(1) .gt. 1d0)
+c     & .or. (xx(2) .gt. 1d0)
+c     & .or. (xx(1) .lt. xmin)
+c     & .or. (xx(2) .lt. xmin)) then
+c         write(*,*) 'Born_phsp: warning x1,x2 our of range:',xx(1),xx(2)
 c         call exit(-1)
-      endif
+c      endif
 
 C     NB positive energy even if incoming, i.e. p1+p2 = \sum_3^8 p_i   
 c     pos rapidity

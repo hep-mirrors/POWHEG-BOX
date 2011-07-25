@@ -7,7 +7,8 @@ FC=$(COMPILER)
 PDF=lhapdf
 #Choose Analysis: none, default
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
-ANALYSIS=default
+ANALYSIS=sanity
+#ANALYSIS=ZZ
 ## For static linking uncomment the following
 STATIC= #-static
 #
@@ -95,7 +96,19 @@ PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-ZZ.o fastjetfortran.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 else
+ifeq ("$(ANALYSIS)","sanity")
+##To include Fastjet configuration uncomment the following lines. 
+#FASTJET_CONFIG=/users/melia/fastj/bin/fastjet-config
+FASTJET_CONFIG=$(shell which fastjet-config)
+#FASTJET_CONFIG=~/lib/fastjet242/bin/fastjet-config
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
+FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
+PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-sanity.o fastjetfortran.o
+## Also add required Fastjet drivers to PWHGANAL (examples are reported)
+#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
+else
 PWHGANAL=pwhg_analysis-dummy.o
+endif
 endif
 endif
 
@@ -110,12 +123,12 @@ endif
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 
-USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-     real.o suppfact4e.o phi1_2.o phi3m0.o boost.o breit.o \
-           spinoru.o qqb_zz.o t.o a6tree.o couplz.o vpole.o a6loop.o \
-	qqb_zz_v.o lnrat.o fa.o lfunctions.o L34_12.o i3m.o dclaus.o \
-	BigT.o qqb_zz_g.o zzamps.o a7tree.o a7treesingres.o zzsingres.o $(PWHGANAL)
-
+USER=init_couplings.o smcouplings.o init_processes.o Born_phsp.o Born.o \
+     virtual.o real.o suppfact4e.o phi1_2.o phi3m0.o boost.o breit.o \
+     cpropfac.o spinoru.o qqb_zz.o t.o a6tree.o couplz.o vpole.o a6loop.o \
+     qqb_zz_v.o lnrat.o fa.o lfunctions.o L34_12.o i3m.o dclaus.o \
+     BigT.o qqb_zz_g.o zzamps.o a7tree.o a7treesingres.o zzsingres.o \
+     $(PWHGANAL)
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	LesHouches.o LesHouchesreg.o gen_Born_phsp.o find_regions.o	\
@@ -132,7 +145,7 @@ pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
 
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o		\
-     opencount.o powheginput.o $(PWHGANAL)	\
+     opencount.o powheginput.o $(PWHGANAL) 	\
      lhefread.o newunit.o pwhg_analysis_driver.o $(FPEOBJ)
 
 # target to analyze LHEF output
@@ -151,7 +164,7 @@ main-HERWIG-lhef: $(HERWIG)
 
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o		\
-	$(PWHGANAL) lhefread.o newunit.o pdfdummies.o	\
+	$(PWHGANAL) lhefread.o newunit.o pdfdummies.o \
 	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
 	$(FPEOBJ)
 

@@ -7,7 +7,6 @@
       include 'pwhg_st.h'
       include 'pwhg_math.h'
       include 'pwhg_physpar.h'
-      real * 8 masswindow_low,masswindow_high
       logical verbose
       parameter(verbose=.true.)
       physpar_ml(1)=0.511d-3
@@ -18,48 +17,11 @@
       physpar_mq(3)=0.50d0     ! strange
       physpar_mq(4)=1.50d0     ! charm
       physpar_mq(5)=4.80d0     ! bottom
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cccccc   INDEPENDENT QUANTITIES       
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-C      ph_Zmass  = 91.1876d0     
-C      ph_Zwidth =  2.4952d0
-C      ph_Wmass  = 80.398d0     
-      ph_Wwidth =  2.141d0
 
-C      ph_alphaem = (137.035999679)**-1
-
-      !TM madgraph couplings
-      ph_Zmass = 91.1880d0
-      ph_Zwidth = 2.44140351d0
-      ph_Wmass = 80.419d0
-      ph_alphaem = 0.0948355370740407433d0/4d0/pi
-
-      write(*,*)'alphaem',ph_alphaem
-
-      ph_sthw2 = abs(1d0-(ph_Wmass/ph_Zmass)**2)
-
+      call smcouplings
 
 c     number of light flavors
       st_nlight = 5
-
-
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cccccc   DEPENDENT QUANTITIES       
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      ph_sthw = sqrt(ph_sthw2)
-      ph_cthw = sqrt(1-ph_sthw2)
-      ph_Zmass2 = ph_Zmass**2
-
-c     set mass windows around Z-mass peak in unit of ph_Zwidth
-c     It is used in the generation of the Born phase space
-      masswindow_low = 10
-      masswindow_high = 10
-      ph_Zmass2low=max(0d0,ph_Zmass-masswindow_low*ph_Zwidth)
-      ph_Zmass2low=ph_Zmass2low**2
-      ph_Zmass2high=(ph_Zmass+masswindow_high*ph_Zwidth)**2
-      ph_ZmZw = ph_Zmass * ph_Zwidth
-      ph_unit_e = sqrt(4*pi*ph_alphaem)
-
 
       !TM added QCD couplings
 

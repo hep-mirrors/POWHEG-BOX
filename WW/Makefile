@@ -7,6 +7,7 @@ FC=$(COMPILER)
 PDF=lhapdf
 #Choose Analysis: none, default
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
+#ANALYSIS=WW
 ANALYSIS=sanity
 ## For static linking uncomment the following
 STATIC= #-static
@@ -113,12 +114,11 @@ endif
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 
-USER= setanomcoup.o init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o cpropfac.o \
-     real.o phi1_2.o phi3m0.o boost.o breit.o smcouplings.o \
-           spinoru.o qqb_ww.o t.o a6tree.o couplzw.o vpole.o a6loop.o \
-	qqb_ww_v.o lnrat.o fa.o lfunctions.o L34_12.o i3m.o dclaus.o \
-	BigT.o qqb_ww_g.o  wwamps.o a7tree.o b7tree.o amps_anom.o  $(PWHGANAL)\
-        scalesbtl.o
+USER= setanomcoup.o init_couplings.o init_processes.o Born_phsp.o Born.o \
+      virtual.o cpropfac.o real.o phi1_2.o phi3m0.o boost.o breit.o \
+      smcouplings.o spinoru.o qqb_ww.o t.o a6tree.o couplzw.o vpole.o \
+      a6loop.o qqb_ww_v.o lnrat.o fa.o lfunctions.o L34_12.o i3m.o dclaus.o \
+      BigT.o qqb_ww_g.o  wwamps.o a7tree.o b7tree.o amps_anom.o  $(PWHGANAL)
 
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\

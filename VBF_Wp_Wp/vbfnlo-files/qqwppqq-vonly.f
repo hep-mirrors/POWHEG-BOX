@@ -277,7 +277,7 @@ c
 c  the fermion current corresponding to a quark line with the real emitted W+
 c  attached next to quark number i is stored in jwe/jwu(mu,isig,i). 
 c 
-c  For the virtual amlitudes the notation, e.g. jvwe(mu,isig,is,i)
+c  For the virtual amplitudes the notation, e.g. jvwe(mu,isig,is,i)
 c  is used for the boxline correction to a quark line with 
 c  one W+ attached next to
 c  quark #i and a free Lorentz index mu for the second attached EW boson. 
@@ -862,7 +862,7 @@ c
 c -------------------------------------------------------------------
 c -------------------------------------------------------------------
 c     
-c sum the graphs, square them and map them onto ansi etc.
+c sum the graphs, square them and map them onto "ans" etc.
 
 c i = 1		VV
 c i = 2,3	BV

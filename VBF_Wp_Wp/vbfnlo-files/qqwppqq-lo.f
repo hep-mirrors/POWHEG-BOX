@@ -30,14 +30,13 @@ c
 c
 c variables for the main part of the program
       double precision  pbar(0:3,4+nv)
-      integer sign(4+nv), nlo,L,bos
+      integer sign(4+nv),L,bos
       double precision ans
  
       double precision  p(0:3,4+nv), p21(0:4), p43(0:4), pew(0:4),
      1                  puw(0:4), pww(0:4)
       integer  k,isig1,isig3,isig,i,mu,lk,kk
       integer js1,js3
-c      integer ic
       integer  ifl(4)
       double complex prop21(4), prop43(4)
       double complex mat(-1:1,-1:1,9)
@@ -50,7 +49,6 @@ c      integer ic
      $ 		     zeu,zue
       double precision qee(0:4), quu(0:4)
       double complex prop_ee(2), prop_uu(2),zm2i(2:4)
-c      double complex j5eu(0:3,-1:1,2), j5ue(0:3,-1:1,2)    
       double complex epsawe(0:3,2),epszwe(0:3,2),
      & 		     epswae(0:3,2),epswze(0:3,2),
      &		     epsawu(0:3,2),epszwu(0:3,2),
@@ -71,17 +69,16 @@ c      double complex j5eu(0:3,-1:1,2), j5ue(0:3,-1:1,2)
       double complex mww
       double complex m1
         
-      double complex mm,mv12,mv34
+      double complex mm
       double precision res
 
       logical linit
       data linit /.true./
       
-      logical lgc(4)
       double complex  zero
       parameter (zero = (0d0,0d0) )
 
-      save ifl, zm2i, linit, lgc
+      save ifl, zm2i, linit
 
 c----------------------------------------------------------
 c----------------------------------------------------------
@@ -197,7 +194,7 @@ c  prepare box diagrams: attach W+ to external spinors
 c 
 c      isig = -1   : lefthanded spinors only coupling to W's
 c
-c  Notation for virtual 2-component spinors and momenta
+c  Notation for 2-component spinors and momenta
 c
 c  W->ev   attached to quark number i: psiwe(*,i) with momentum fqe(mu,i)
 c  W->muvm attached to quark number i: psiwu(*,i) with momentum fqu(mu,i)
@@ -205,12 +202,6 @@ c
 c  the fermion current corresponding to a quark line with the real emitted W+
 c  attached next to quark number i is stored in jwe/jwu(mu,isig,i). 
 c 
-c  For the virtual amlitudes the notation, e.g. jvwe(mu,isig,is,i)
-c  is used for the boxline correction to a quark line 
-c  with one W+ attached next to quark #i and a free Lorentz index mu 
-c  for the second attached EW boson. is=+-1
-c  refers to the sign factor of this quark (vs.antiquark line). 
-
       isig = -1
 	 
       do i = 1,3,2
@@ -317,7 +308,7 @@ c  for the q^mu*q^nu/M_V^2 terms in the Z boson propagators we need
 	mat(isig1,isig3,6) = 
      &       (maeu+mzeu+maue+mzue)*clr(3,3,-1)*clr(3,3,-1)
 
-c ------------------------------------------------------------------------------
+c ------------------------------------------------------------------------
 c
 c  next do the vertex-box graphs 
 c 	with one boson (We/Wu) emitted from a quark line and
@@ -468,7 +459,7 @@ c  eps1=v,eps2=j_upper,eps3=v'
 	
 c -------------------------------------------------------------------
 c     
-c sum the graphs, square them and map them onto ansi etc.
+c sum the graphs, square them and map them onto "ans"
 
 c i = 1		VV
 c i = 2,3	BV

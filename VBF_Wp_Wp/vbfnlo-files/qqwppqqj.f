@@ -22,9 +22,6 @@ C  This code includes only real emission contributions, i.e.
 c
 c      return ucds = |M_real|^2   etc.
 c
-c  debugging: included for NC (works for incoming g only) 
-c	      and CC (arbitrary crossing)
-c
 c	fpials is attached only in the end of the code
 c
 c index j = 2:3 indicates, whether g is emitted from 
@@ -121,10 +118,10 @@ c
      1               m1kaj(2,2:3),m1kzj(2,2:3)
       double complex im
       parameter (im = (0d0,1d0))
-      logical ldebug, linit,lerror
+      logical linit
       integer n,m
      
-      save ifl, zm2i, linit !, lerror,ldebug
+      save ifl, zm2i, linit 
 	
       data linit /.true./ 
 c
@@ -383,7 +380,7 @@ c  prepare box diagrams: attach Ws to external spinors
 c 
 c      isig = -1   : lefthanded spinors only coupling to W's
 c
-c  Notation for virtual 2-component spinors and momenta
+c  Notation for 2-component spinors and momenta
 c
 c  W->ev   attached to quark number i: psiwe(*,i) with momentum fqe(mu,i)
 c  W->muvm attached to quark number i: psiwu(*,i) with momentum fqu(mu,i)

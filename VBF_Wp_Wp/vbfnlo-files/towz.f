@@ -953,7 +953,6 @@ C CONSTANTS
 C  
       INTEGER    NGRAPHS
       PARAMETER (NGRAPHS=  31) 
-      include "genps.inc"
       INTEGER    NWAVEFUNCS    
       PARAMETER (NWAVEFUNCS=  43) 
       REAL*8     ZERO

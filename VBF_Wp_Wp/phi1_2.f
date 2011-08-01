@@ -13,6 +13,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       include 'pwhg_kn.h'
       include 'pwhg_math.h'
       include 'PhysPars.h'
+      include 'ww_width.h'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w2,w3
@@ -42,7 +43,11 @@ c     (should never happen)
 
       if (n2 .eq. 0) then
 C     when generating p3456 make sure invariant mass is enough to decay to WW, WpWp specific  
-         s2min = (2d0*ph_wmass)**2
+         if (zerowidth) then
+            s2min = (2d0*ph_wmass)**2
+         else
+            s2min = 1d-15
+         endif
          w2=s2max-s2min
          s2=s2max*x1+s2min*(1d0-x1)
       elseif (n2 .eq. 1) then

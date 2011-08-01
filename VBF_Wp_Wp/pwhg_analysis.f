@@ -75,7 +75,7 @@ C     -- HISTOGRAMS WITH VBF CUTS
 
       diag = 11
       binsize(diag) = 0.2d0
-      call pwhgbookup(diag,'Phi(l1l2)- VBF CUTS','LIN',
+      call pwhgbookup(diag,'Phi(j1j2)- VBF CUTS','LIN',
      .     binsize(diag),0d0,3.2d0)
 
       diag = 12
@@ -101,7 +101,7 @@ C     -- HISTOGRAMS WITH VBF CUTS
       diag = 16
       binsize(diag) = 0.4d0
       call pwhgbookup(diag,'y*- VBF CUTS','LIN',
-     .     binsize(diag),0d0,4d0)
+     .     binsize(diag),-4d0,4d0)
 
       end 
       
@@ -131,7 +131,7 @@ c     we need to tell to this analysis file which program is running it
       real * 8  kt(maxjet),eta(maxjet),rap(maxjet),
      1    phi(maxjet),pj(4,maxjet),ptrel(maxjet)
       real * 8 ptel1,ptel2,etael1,etael2
-      real * 8 pj12(4),y12, pel12(4), ptl(100),etal(100), mll, phill
+      real * 8 pj12(4),y12, pel12(4), ptl(100),etal(100), mll, phijj
       real * 8 invmass, mjj, r,fphi, etafromp,ptfromp 
       integer ihep,j,mjets
       logical passcuts_vbf
@@ -450,10 +450,10 @@ C     M(l1l2)
       mll = invmass(pel12)
       call pwhgfill(diag,mll,dsig/binsize(diag))
 
-c     Phi(l1l2) 
+c     Phi(j1j2) 
       diag=11
-      phill=fphi(phep(1,ielectrons(ltag1)),phep(1,ielectrons(ltag2)))
-      call pwhgfill(diag,phill,dsig/binsize(diag))
+      phijj=fphi(pj(1:4,itag1),pj(1:4,itag2))
+      call pwhgfill(diag,phijj,dsig/binsize(diag))
 
 c     pt of third jet
       diag=12

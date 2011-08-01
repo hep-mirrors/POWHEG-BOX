@@ -39,16 +39,14 @@ c      endif
 c     photon radiation off quarks and leptons
 c       mstj(41)=12
 c     No photon radiation off quarks and leptons
-c         if(mstj(41).eq.12) then
-c            mstj(41)=11
-c          write(*,*) 'No QED radiation from PYTHIA'
-c         elseif(mstj(41).eq.2) then
-c            mstj(41)=1
-c          write(*,*) 'No QED radiation from PYTHIA'
-c         endif
-c
-c          print*,'mstj(41) = ',mstj(41)
-c          stop
+         if(mstj(41).eq.12) then
+            mstj(41)=11
+          write(*,*) 'No QED radiation from PYTHIA'
+         elseif(mstj(41).eq.2) then
+            mstj(41)=1
+          write(*,*) 'No QED radiation from PYTHIA'
+         endif
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 c      mstp(61)=0                !No IS shower

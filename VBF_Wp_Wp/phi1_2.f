@@ -13,7 +13,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       include 'pwhg_kn.h'
       include 'pwhg_math.h'
       include 'PhysPars.h'
-      include 'ww_width.h'
+      include 'ww_widths.h'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w2,w3
@@ -31,7 +31,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
 
 c--- if both particles are produced on-shell, reject if m1 too small 
 c     (should never happen) 
-      if (m1 .lt. mass2*dfloat(n2)+mass3*dfloat(n3)) then 
+      if (zerowidth.and.(m1 .lt. mass2*dfloat(n2)+mass3*dfloat(n3))) then 
          write(*,*) 'p1', p1 
          write(*,*) 'm1,m2,m3', m1, mass2, mass3, n2, n3 
          stop 'phi1_2: m1 < m2+m3 ?'  

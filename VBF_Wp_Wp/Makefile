@@ -5,14 +5,14 @@ FC=$(COMPILER)
 
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
-PDF=native
+PDF=lhapdf
 
 # Choose Analysis: none, default
 # default analysis may require FASTJET package, that has to be installed 
 # separately (see below)
 ANALYSIS=none
 ## For static linking uncomment the following
-STATIC= -static
+#STATIC= -static
 #
 ifeq ("$(FC)","gfortran")	
 F77= gfortran -fno-automatic -ffixed-line-length-none

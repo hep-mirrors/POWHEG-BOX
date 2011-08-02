@@ -56,12 +56,13 @@ c symmetry factors depending on decays:
          wsymfact=1d0
       endif
 
-      if (powheginput("#zerowidth").eq.1) then 
-         zerowidth = .true. 
-         write(*,*) 'Zero-width approximation for Ws' 
-      else
+C     default if zerowidth = .true. 
+      if (powheginput("#zerowidth").eq.0) then 
          zerowidth = .false. 
          write(*,*) 'Generating off-shell W-bosons'
+      else
+         zerowidth = .true. 
+         write(*,*) 'Zero-width approximation for Ws' 
       endif
 
       if (lepmass(1).ne.0.51099891d-3) then

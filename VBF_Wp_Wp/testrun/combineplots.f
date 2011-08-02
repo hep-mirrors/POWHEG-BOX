@@ -7,6 +7,8 @@ c combine multiseed powheg output pwgNLO-????.top.
       real * 8 xx(nmax),yy(nmax),ee(nmax),xmin,xmax
       write(*,*) ' enter number of files'
       read(*,*) nfiles
+      write(*,*) ' enter number of calls'
+      read(*,*) ncalls
       write(*,*) ' enter number of first file'
       read(*,*) firstfile
       if(nfiles.gt.500) then
@@ -25,10 +27,9 @@ c combine multiseed powheg output pwgNLO-????.top.
          endif
       enddo
       open(unit=11,file=files(1),status='old')
-      open(unit=12,file='combined.top',status='unknown')
-      open(unit=112,file='combined-gnu.top',status='unknown')
+      open(unit=12,file='combinedNLO.top',status='unknown')
+      open(unit=112,file='combinedNLO-gnu.top',status='unknown')
       npoints=nmax
-      ncalls=2500
       index = 0 
  1    do k=1,1000
          call getdata(11,12,tag,xmin,xmax,npoints,xxx,yyy,eee)

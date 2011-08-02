@@ -124,8 +124,8 @@ c     we need to tell to this analysis file which program is running it
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
       data WHCPRG/'NLO   '/
-      integer nelectrons,nnue,nmuons,nnumu
-      integer ielectrons(100),inue(100),imuons(100),inumu(100)
+      integer nleptons,nnu
+      integer ileptons(200),inu(200)
       integer   maxjet
       parameter (maxjet=2048)
       real * 8  kt(maxjet),eta(maxjet),rap(maxjet),
@@ -191,11 +191,16 @@ c     from pico to femto
            if(vdecaymodew1.eq.-11.and.vdecaymodew2.eq.-11
      $        ) then
               continue
+           elseif((vdecaymodew1.eq.-11.and.vdecaymodew2.eq.-13).
+     $         or.(vdecaymodew1.eq.-13.and.vdecaymodew2.eq.-11)   
+     $        ) then
+              continue
            else
              write(*,*) '**************************************'
-             write(*,*) ' template analysis works only for'
-             write(*,*) '      e+ve e+ve final states     '
-             write(*,*) '                 STOP            '
+             write(*,*) ' template analysis works only for     '
+             write(*,*) '      e+ve e+ve and e+ve mu+vm        '
+             write(*,*) '                final states          '
+             write(*,*) '                 STOP                 '
              write(*,*) '**************************************'
              call exit(1)
            endif
@@ -235,42 +240,33 @@ c
          ini=.false.
       endif
          
-c find electrons and muons
-      nelectrons=0
-      nnue=0
-      nmuons=0
-      nnumu=0
+c find electrons and muons and neutrinos
+      nleptons=0
+      nnu=0
       do ihep=1,nhep
          if(isthep(ihep).eq.1) then
-            if(abs(idhep(ihep)).eq.11) then
-               nelectrons=nelectrons+1
-               ielectrons(nelectrons)=ihep
-            elseif(abs(idhep(ihep)).eq.12) then
-               nnue=nnue+1
-               inue(nnue)=ihep
-            elseif(abs(idhep(ihep)).eq.13) then
-               nmuons=nmuons+1
-               imuons(nmuons)=ihep
-            elseif(abs(idhep(ihep)).eq.14) then
-               nnumu=nnumu+1
-               inumu(nnumu)=ihep
+            if((abs(idhep(ihep)).eq.11).or.
+     %         (abs(idhep(ihep)).eq.13)) then
+               nleptons=nleptons+1
+               ileptons(nleptons)=ihep
+            elseif((abs(idhep(ihep)).eq.12).or.
+     %             (abs(idhep(ihep)).eq.14)) then
+               nnu=nnu+1
+               inu(nnu)=ihep
             endif
          endif
       enddo
-      if(nelectrons.gt.100.or.nnue.gt.100
-     1     .or.nmuons.gt.100.or.nnumu.gt.100) then
+      if(nleptons.gt.200.or.nnu.gt.200) then
          write(*,*) ' crazy event, too many leptons'
          return
       endif
-      if(nelectrons.lt.2.or.nnue.lt.2) then
+      if(nleptons.lt.2.or.nnu.lt.2) then
          write(*,*) ' crazy event, missing leptons'
          return
       endif
 c sort by pt
-      call sortbypt(nelectrons,ielectrons)
-      call sortbypt(nnue,inue)
-      call sortbypt(nmuons,imuons)
-      call sortbypt(nnumu,inumu)
+      call sortbypt(nleptons,ileptons)
+      call sortbypt(nnu,inu)
 
       mjets=10
       call buildjets(mjets,kt,eta,rap,phi,pj,ptrel)
@@ -328,18 +324,18 @@ c identify 2 hardest leptons:
       ptl_2 = 0d0
       ltag1 = 0
       ltag2 = 0
-      do j = 1,nelectrons
-         ptl(j) = ptfromp(phep(1,ielectrons(j)))
-         etal(j)= etafromp(phep(1,ielectrons(j)))
+      do j = 1,nleptons
+         ptl(j) = ptfromp(phep(1,ileptons(j)))
+         etal(j)= etafromp(phep(1,ileptons(j)))
       enddo
-      do j = 1,nelectrons 
+      do j = 1,nleptons
            if ( ptl(j).gt.ptl_1 .and. ptl(j).gt.ptl_min 
      &          .and. abs(etal(j)).lt.etal_max) then
               ltag1 = j   
               ptl_1 = ptl(j)
            end if
       end do
-      do j = 1,nelectrons
+      do j = 1,nleptons
            if ( ptl(j).gt.ptl_2 .and. ptl(j).gt.ptl_min 
      &          .and. abs(etal(j)).lt.etal_max
      &          .and. j.ne.ltag1 
@@ -383,9 +379,9 @@ c separation of tagging jets from leading charged leptons:
       Rjl_tmp1 = 1d10
       do ij = 1,mjets
          if(ij.eq.itag1.or.ij.eq.itag2) then
-         do il = 1,nelectrons
+         do il = 1,nleptons
             if(il.eq.ltag1.or.il.eq.ltag2) then
-               Rjl_tmp0 = r(pj(1:4,ij),phep(1:4,ielectrons(il)))
+               Rjl_tmp0 = r(pj(1:4,ij),phep(1:4,ileptons(il)))
                Rjl_tmp1 = min(Rjl_tmp0,Rjl_tmp1)
             endif   
          enddo !il
@@ -393,8 +389,8 @@ c separation of tagging jets from leading charged leptons:
       enddo !ij
       if (Rjl_tmp1.lt.Rjl_min) passcuts_vbf = .false.
 
-      Rll_tmp = r(phep(1:4,ielectrons(ltag1)),
-     &            phep(1:4,ielectrons(ltag2)))
+      Rll_tmp = r(phep(1:4,ileptons(ltag1)),
+     &            phep(1:4,ileptons(ltag2)))
       if (Rll_tmp.lt.Rll_min) passcuts_vbf = .false.
 
       pj12 = pj(:4,itag1)+pj(:4,itag2)
@@ -446,7 +442,7 @@ C     ETA lept
 
 C     M(l1l2) 
       diag=10
-      pel12 = phep(:4,ielectrons(ltag1))+phep(:4,ielectrons(ltag2))
+      pel12 = phep(:4,ileptons(ltag1))+phep(:4,ileptons(ltag2))
       mll = invmass(pel12)
       call pwhgfill(diag,mll,dsig/binsize(diag))
 

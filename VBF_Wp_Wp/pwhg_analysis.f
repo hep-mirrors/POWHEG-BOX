@@ -130,8 +130,8 @@ c     we need to tell to this analysis file which program is running it
       parameter (maxjet=2048)
       real * 8  kt(maxjet),eta(maxjet),rap(maxjet),
      1    phi(maxjet),pj(4,maxjet),ptrel(maxjet)
-      real * 8 ptel1,ptel2,etael1,etael2
-      real * 8 pj12(4),y12, pel12(4), ptl(100),etal(100), mll, phijj
+      real * 8 ptl1,ptl2,etal1,etal2
+      real * 8 pj12(4),y12, pl12(4), ptl(200),etal(200), mll, phijj
       real * 8 invmass, mjj, r,fphi, etafromp,ptfromp 
       integer ihep,j,mjets
       logical passcuts_vbf
@@ -363,17 +363,17 @@ c
       Rjj_tmp = r(pj(1:4,itag1),pj(1:4,itag2))
       if (Rjj_tmp.lt.Rjj_min) passcuts_vbf = .false.
       
-      etael1=etal(ltag1)
-      if(abs(etael1).gt.etal_max) passcuts_vbf = .false. 
+      etal1=etal(ltag1)
+      if(abs(etal1).gt.etal_max) passcuts_vbf = .false. 
 
-      etael2=etal(ltag2)
-      if(abs(etael2).gt.etal_max)  passcuts_vbf = .false. 
+      etal2=etal(ltag2)
+      if(abs(etal2).gt.etal_max)  passcuts_vbf = .false. 
 
-      ptel1=ptl(ltag1)
-      if(ptel1.lt.ptl_min)  passcuts_vbf = .false. 
+      ptl1=ptl(ltag1)
+      if(ptl1.lt.ptl_min)  passcuts_vbf = .false. 
 
-      ptel2=ptl(ltag2)
-      if(ptel2.lt.ptl_min)  passcuts_vbf = .false. 
+      ptl2=ptl(ltag2)
+      if(ptl2.lt.ptl_min)  passcuts_vbf = .false. 
 
 c separation of tagging jets from leading charged leptons:
       Rjl_tmp1 = 1d10
@@ -398,11 +398,11 @@ c separation of tagging jets from leading charged leptons:
       if(mjj.lt.mjj_min)  passcuts_vbf = .false. 
 
       if (rap_gap.and.
-     &     (min(rap(itag1),rap(itag2)).ge.min(etael1,etael2)))
+     &     (min(rap(itag1),rap(itag2)).ge.min(etal1,etal2)))
      & passcuts_vbf = .false.
 
       if (rap_gap.and.
-     &     (max(rap(itag1),rap(itag2)).le.max(etael1,etael2)))
+     &     (max(rap(itag1),rap(itag2)).le.max(etal1,etal2)))
      & passcuts_vbf = .false.
 
 
@@ -432,18 +432,18 @@ c     Y jet1 - Y jet 2
 
 C     Pt lept     
       diag=8
-      call pwhgfill(diag,ptel1,dsig/binsize(diag)/2d0)
-      call pwhgfill(diag,ptel2,dsig/binsize(diag)/2d0)
+      call pwhgfill(diag,ptl1,dsig/binsize(diag)/2d0)
+      call pwhgfill(diag,ptl2,dsig/binsize(diag)/2d0)
 
 C     ETA lept
       diag=9
-      call pwhgfill(diag,etael1,dsig/binsize(diag)/2d0)
-      call pwhgfill(diag,etael2,dsig/binsize(diag)/2d0)
+      call pwhgfill(diag,etal1,dsig/binsize(diag)/2d0)
+      call pwhgfill(diag,etal2,dsig/binsize(diag)/2d0)
 
 C     M(l1l2) 
       diag=10
-      pel12 = phep(:4,ileptons(ltag1))+phep(:4,ileptons(ltag2))
-      mll = invmass(pel12)
+      pl12 = phep(:4,ileptons(ltag1))+phep(:4,ileptons(ltag2))
+      mll = invmass(pl12)
       call pwhgfill(diag,mll,dsig/binsize(diag))
 
 c     Phi(j1j2) 

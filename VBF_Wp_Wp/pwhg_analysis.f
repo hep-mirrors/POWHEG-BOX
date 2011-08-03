@@ -197,7 +197,7 @@ c     from pico to femto
            else
              write(*,*) '**************************************'
              write(*,*) ' template analysis works only for Wp  '
-             write(*,*) ' bosons decaying to electons or muoms '
+             write(*,*) ' bosons decaying to electrons or muons'
              write(*,*) '                 STOP                 '
              write(*,*) '**************************************'
              call exit(1)

@@ -1,5 +1,5 @@
 #/bin/sh
-cat ../btilde.f | sed -e "s/         call allborn/c set the mt dependency in Born cross section\n\
+cat ../btilde.f | perl -pe 's/         call allborn/c set the mt dependency in Born cross section\n\
          call setbornmassdep\n\
 c evaluate Born cross section with the chosen top mass\n\
          call allborn/;
@@ -8,7 +8,7 @@ c re-evaluate Born amplitudes in large top mass limit, if needed\n\
          call setbornmass2inf/;
 s/www=www0\*hc2/real \*8 finitemtcorr\n\
       external finitemtcorr\n\
-      www=www0\*hc2*finitemtcorr()/" >  btilde_ggH.f
+      www=www0\*hc2*finitemtcorr()/gi' >  btilde_ggH.f
 
 mv btilde_ggH.f tmpfile
 echo "c###################################################### " >btilde_ggH.f  

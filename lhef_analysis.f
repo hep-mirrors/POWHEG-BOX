@@ -11,6 +11,10 @@ c     let the analysis subroutine know that it is run by this program
       call init_hist 
       do j=1,nev
          call upevnt
+         if(nup.eq.0) then
+            write(*,*) ' nup = 0 skipping event'
+            goto 111
+         endif
          call lhuptohepevt(j)
          if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
          call analysis(xwgtup)
@@ -22,6 +26,7 @@ c     let the analysis subroutine know that it is run by this program
             call pwhgtopout
             close(99)
          endif
+111     continue
       enddo
       open(unit=99,file='LHEF_analysis.top')
       call pwhgsetout
@@ -50,6 +55,9 @@ c     let the analysis subroutine know that it is run by this program
       do ihep=1,nhep
          isthep(ihep)=istup(ihep)
          idhep(ihep)=idup(ihep)
+         do mu=1,2
+            jmohep(mu,ihep)=mothup(mu,ihep)
+         enddo
          do mu=1,5
             phep(mu,ihep)=pup(mu,ihep)
          enddo

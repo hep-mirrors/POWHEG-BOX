@@ -213,7 +213,7 @@ c rad_iupper=3:  pwhg_upperb_rad = st_alpha/(x**2*(1-x)*(1-y**2))
          else
             write(*,*) ' rad_iupper=',rad_iupperisr,
      1        'alternative not implemented'
-            stop
+            call exit(1)
          endif
       else
 c for now use the same
@@ -228,7 +228,7 @@ c for now use the same
          else
             write(*,*) ' rad_iupper=',rad_iupperfsr,
      1            'alternative not implemented'
-            stop
+            call exit(1)
          endif
       endif
       end
@@ -277,7 +277,7 @@ c see Notes/upperbounding-isr.pdf
             endif
          else
             write(*,*) ' rad_iupper=',rad_iupperisr,' not implemented'
-            stop
+            call exit(1)
 c Alternatives: rad_iupper=2
 c         pt2solve=cunorm*pi/b0/2
 c     #        *(log(q2/xlam2c)*log(log(kt2max/xlam2c)/log(pt2/xlam2c))
@@ -306,7 +306,7 @@ c final state radiation
      2   /(p*xm)/2.d+0) + xlr
          else
             write(*,*) ' rad_iupper=',rad_iupperfsr,' not implemented'
-            stop
+            call exit(1)
          endif            
       endif
       end
@@ -351,7 +351,7 @@ c upper bound is log(q2/t)
          q2=2*sborn
       elseif(rad_iupperisr.eq.2) then
          write(*,*) ' rad_iupper=',rad_iupperisr,' not implemented'
-         stop
+         call exit(1)
 c Alternative rad_iupper=2
 c         q2=4*sborn/min(x1b,x2b)**2
       endif
@@ -377,7 +377,7 @@ c error conditions
      # .and.err.gt.rad_ptsqmin-kt2max) then
          write(*,*) 'DZERO fails'
          write(*,*) ' number of calls exceeded'
-         stop
+         call exit(1)
       endif
  3    if(t.lt.rad_ptsqmin.or.t.lt.tmax) then
 c below cut (either below absolute minimum, or below previously generated
@@ -411,9 +411,9 @@ c to set xmuren2:
       tmp2=st_alpha / pwhg_alphas0(t,rad_lamll,nlc)
       tmp=tmp1*tmp2
       if(tmp.gt.1) then
-         write(*,*) ' errore: maggiorante non maggiora',
+         write(*,*) ' Error: upper bound lower than actual value',
      #        tmp,tmp1,tmp2,t
-         stop
+         call exit(1)
       endif
       if(rv.gt.tmp) then
          goto 1
@@ -533,7 +533,7 @@ c error conditions
      # .and.err.gt.rad_ptsqmin-kt2max) then
          write(*,*) 'DZERO fails'
          write(*,*) ' number of calls exceeded'
-         stop
+         call exit(1)
       endif
  3    if(t.lt.rad_ptsqmin.or.t.lt.tmax) then
 c below cut (either below absolute minimum, or below previously generated
@@ -553,9 +553,9 @@ c vetoes:
          tmp=st_alpha
       endif
       if(tmp.gt.1) then
-         write(*,*) ' errore: maggiorante non maggiora',
+         write(*,*) ' Error: upper bound lower than actual value',
      #        tmp,t
-         stop
+         call exit(1)
       endif
       if(rv.gt.tmp) then
          goto 1

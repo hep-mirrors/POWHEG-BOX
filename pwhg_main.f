@@ -97,12 +97,13 @@ c to examine that event in particular
       call resetcnt(
      1 'upper bound failures in generation of radiation')
       call resetcnt('vetoed radiation')
+      write(*,*)
+      write(*,*)' POWHEG: generating events'
       do j=1,nev
          call pwhgevent
-c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
          call lhefwritev(iun)
          if(idwtup.eq.3) then
-            weight=rad_totgen*xwgtup
+            weight=rad_totgen*xwgtup*rad_branching
          elseif(idwtup.eq.-4) then
             weight=xwgtup
          else
@@ -131,6 +132,16 @@ c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
       call lhefwritetrailer(iun)
       close(iun)
  999  continue
+      call write_counters
+      end
+
+      subroutine write_counters
+      implicit none
+      include 'pwhg_rnd.h'
+      integer iun
+      character * 20 pwgprefix
+      integer lprefix
+      common/cpwgprefix/pwgprefix,lprefix
       call newunit(iun)
       if(rnd_cwhichseed.eq.'none') then
          open(unit=iun,file=pwgprefix(1:lprefix)//'counters.dat'
@@ -142,3 +153,4 @@ c         write(*,*)  j,' / ',nev,' pt = ',sqrt(st_muren2)
       call printcnt(iun)
       close(iun)
       end
+

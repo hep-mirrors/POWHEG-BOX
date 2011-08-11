@@ -3,7 +3,7 @@ C   100       A : Rick Field's CDF Tune A                     (Oct 2002)
 C   103      DW : Rick Field's CDF Tune DW                    (Apr 2006)
 C   320 Perugia 0 : "Perugia" update of S0-Pro                (Feb 2009)
 C   
-ccc      call PYTUNE(320)
+      call PYTUNE(320)
       end
 
       subroutine setup_PYTHIA_parameters
@@ -23,7 +23,7 @@ ccc      call PYTUNE(320)
       external pycomp
 c     multiple interactions
       logical mult_inter
-      parameter (mult_inter=.false.)
+      parameter (mult_inter=.true.)
       integer maxev
       common/mcmaxev/maxev
 
@@ -44,8 +44,10 @@ c      mstp(91)=0                !No Primordial kt
 c      mstp(131)=0               !No Pile Up
 c      mstp(111)=0               !No hadronization
 
-c       mstp(64) =3 !use Lambda_MC for IS shower
-      mstp(64) =1               !use Lambda_MSbar (default)
+c     Change lambda in alfa running.
+c     Keep all commented to let PYTHIA do its default
+c     mstp(64) =3 !use Lambda_MC for IS shower
+c     mstp(64) =1               !use Lambda_MSbar (default)
 
 c     number of warnings printed on the shell
       mstu(26)=20
@@ -132,7 +134,7 @@ c pythia routine to abort event
       include 'LesHouches.h'
       include 'hepevt.h'
       nevhep=nevhep+1
-      if(idwtup.eq.3) xwgtup=xwgtup*xsecup(1)
+      if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end

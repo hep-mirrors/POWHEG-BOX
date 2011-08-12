@@ -43,7 +43,8 @@ c compute Z momentum in partonic cm
 c ymax=|log(tau)|/2
       y=-(1-2*xborn(3))*log(tau)/2
       xjac=-xjac*log(tau)
-      cthmax=sqrt(1-(kn_ktmin/kzed)**2)
+c abs to protect from tiny negative values
+      cthmax=sqrt(abs(1d0-(kn_ktmin/kzed)**2))
       z=1-2*xborn(4)
       xjac=xjac*2
       cth=1.5d0*(z-z**3/3)

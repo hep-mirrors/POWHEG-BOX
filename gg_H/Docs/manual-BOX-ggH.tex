@@ -63,7 +63,7 @@
 
 The \tmtexttt{POWHEG BOX} program is a framework for implementing NLO
 calculations in Shower Monte Carlo programs according to the
-\POWHEG{} method. An explation of the method and a discussion of
+\POWHEG{} method. An explanation of the method and a discussion of
 how the code is organized can be found in
 refs.~\cite{Nason:2004rx,Frixione:2007vw,Alioli:2010xd}.  The code is
 distributed according to the ``MCNET GUIDELINES for Event Generator
@@ -95,7 +95,7 @@ you use the program.
 
 In order to run the \tmtexttt{POWHEG BOX} program, we recommend the
 reader to start from the \tmtexttt{POWHEG BOX} user manual, which
-contains all the informations and settings that are common between
+contains all the information and settings that are common between
 all subprocesses. In this note we focus on  the settings and
 parameters specific to $gg\to H$ implementation.
 
@@ -142,10 +142,10 @@ space points where NLO corrections are bigger than LO contributions.
 Had we performed the integration over the full radiation phase space these negative weights would have
 disappeared completely. 
 
-In case one is interfacing to \HERWIG{} or \PYTHIA{} SMC programs, we provide a facility to select the higgs boson decay products in  these programs :  
+In case one is interfacing to \HERWIG{} or \PYTHIA{} SMC programs, we provide a facility to select the Higgs boson decay products in  these programs :  
 ~\\
 \tmtexttt{
-  hdecaymode 12 \phantom{aa} ! PDG code for higgs decay products allowed values are.\\
+  hdecaymode 12 \phantom{aa} ! code for selection of Higgs boson decay products:\\
 \phantom{aaaaaaaaaaaaaaaaa}!  -1 the Higgs boson is left undecayed by the SMC\\ 
 \phantom{aaaaaaaaaaaaaaaaa}!  0 all decay channels are open\\
 \phantom{aaaaaaaaaaaaaaaaa}!  1-6 d dbar, u ubar,..., t tbar (as in HERWIG)\\
@@ -154,16 +154,15 @@ In case one is interfacing to \HERWIG{} or \PYTHIA{} SMC programs, we provide a 
 }
 \\
 
-Togheter with the mandatory parameters, the \POWHEGBOX{} input facility  allows for an easy setting of run parameters, by explicitly adding the relevant lines to the input card. In case one of the following entries is not present in the input card  the reported default value is assumed. In any case, these parameters are printed in the output of the program, so their values can be easily tracked down. 
+Together with the mandatory parameters, the \POWHEGBOX{} input facility  allows for an easy setting of run parameters, by explicitly adding the relevant lines to the input card. In case one of the following entries is not present in the input card  the reported default value is assumed. In any case, these parameters are printed in the output of the program, so their values can be easily tracked down. 
 \\
 \tmtexttt{masswindow\_low 10   ! M\_H > Hmass - masswindow\_low * Hwidth}\\
 \tmtexttt{masswindow\_high 10  ! M\_H < Hmass + masswindow\_high * Hwidth  }\\
 \tmtexttt{runningscale 0  ! choice for ren and fac scales in Bbar integration}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 0: fixed scale M\_H}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 1: running scale inv mass H}\\ 
-\phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 2: running scale transverse mass H}\\
 
-Of particular imporatnce are the following parameters: 
+Of particular importance are the following parameters: 
 \begin{itemize}
 
 \item{\tmtexttt{largemtlim 0} (default 0) controls how the large
@@ -182,8 +181,8 @@ Of particular imporatnce are the following parameters:
   also the contributions coming from the diagrams with a loop of bottom quarks.  
   The mass of the bottom quark can be set via the \tmtexttt{bmass}  token in the \POWHEGBOX{} input file.
   If not provided, a default value of $m_b = 4.55 \rm{GeV}$ is assumed.
-
-\item{\tmtexttt{hhfact    100d0    ! (default no dumping factor) dump factor for high-pt radiation: > 0 dumpfac=h**2/(pt2+h**2) } controls how much of real contribution 
+}
+\item{\tmtexttt{hfact    100d0    ! (default no dumping factor) dump factor for high-pt radiation: > 0 dumpfac=hfact**2/(pt2+hfact**2) } controls how much of real contribution 
     enters in the \POWHEG{} Sudakov form factor. By default all real
     contributions are included, but this may lead to a NNLO mismatch in the
     higher Higgs boson $\pt$ distribution tail, with respect to fixed order NLO
@@ -197,7 +196,7 @@ Of particular imporatnce are the following parameters:
 \item{\tmtexttt{zerowidth 1} (default 0 = false) enforce the calculation in the Higgs zero width approximation.
 }
 
-\item{\tmtexttt{bwshape 2} (default 1) choose the functional form of the Breit-Wigner along which the Higgs virtuality is distributed, in case of the zero width approximation  has not been choosen. Allowed values are $1$ for a BW with a running width, or $2$ for a fixed width.
+\item{\tmtexttt{bwshape 2} (default 1) choose the functional form of the Breit-Wigner along which the Higgs virtuality is distributed, in case of the zero width approximation  has not been chosen. Allowed values are $1$ for a BW with a running width, or $2$ for a fixed width.
 }
 
 \end{itemize}

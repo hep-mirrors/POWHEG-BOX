@@ -25,9 +25,9 @@ c     for Wbb production set h > 0
          h = 1d0
 c        h=powheginput("#hfact")
          if(h.gt.0) then
-            write(*,*)'***************************************'
-            write(*,*)' Using a damping factor'
-            write(*,*)'***************************************'
+            write(*,*)'**********************************************'
+            write(*,*)' Using the separation of the real contribution'
+            write(*,*)'**********************************************'
          endif
          ini=.false.
       endif

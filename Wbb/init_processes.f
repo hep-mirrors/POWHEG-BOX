@@ -3,6 +3,7 @@
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'LesHouches.h'
+      include 'pwhg_flg.h'
 c      include 'pwhg_kn.h'
       logical debug
       parameter (debug=.false.)
@@ -50,10 +51,11 @@ c******************************************************
          call exit(1)
       endif     
 
+c     for Wbb set flg_withdamp ALWAYS to true
+      flg_withdamp=.true.
+
       flst_nborn=0
       flst_nreal=0
-
-
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
       lprup(1)=10000 

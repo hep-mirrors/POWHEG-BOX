@@ -61,3 +61,7 @@ hdecaymode -1   ! -1 no decay
                 ! 10  W+W-
                 ! 11  ZZ
                 ! 12  gamma gamma    
+
+
+#higgsfixedwidth  1  ! use old behaviour with fixed width Breit-Wigner
+                     ! default is running width

@@ -24,13 +24,18 @@
       real * 8 epsilon
       parameter (epsilon=1d-10)
       real * 8 pt1cut,pt2cut,pt1,pt2,m2jjmin
-
+      real * 8 BW_fixed,BW_running
+      logical higgsfixedwidth
+      save higgsfixedwidth
+      real * 8 powheginput
+      external powheginput
       if(ini) then
 c     set initial- and final-state masses for Born and real
          do k=1,nlegborn
             kn_masses(k)=0
          enddo
          kn_masses(nlegreal)=0
+         higgsfixedwidth=powheginput("#higgsfixedwidth").gt.0
          ini=.false.
          pt1cut = 0d0
          pt2cut = 0d0
@@ -56,6 +61,14 @@ c         m2jjmin = 0.1d0**2
          m2=VmVw*tan(z)+Vmass2
 c     The BW integrates to Pi ==> divide by Pi
          xjac=xjac/pi
+
+         if(.not.higgsfixedwidth) then
+c     running width
+            BW_fixed=ph_HmHw/((m2-ph_Hmass2)**2 + ph_HmHw**2)
+            BW_running= (m2*ph_Hwidth/ph_Hmass) /
+     $           ((m2-ph_Hmass2)**2+(m2*ph_Hwidth/ph_Hmass)**2)
+            xjac = xjac * BW_running/BW_fixed
+         endif
       else
          xjac = 1
          m2 = Vmass2
@@ -249,6 +262,15 @@ c      endif
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       real * 8 muf,mur
+      logical ini
+      data ini/.true./
+      save ini
       muf=ph_Hmass
       mur=ph_Hmass
+      if (ini) then
+         write(*,*) 'RENORMALIZATION SCALE = ',mur
+         write(*,*) 'FACTORIZATION   SCALE = ',muf
+         ini=.false.
+      endif
+
       end

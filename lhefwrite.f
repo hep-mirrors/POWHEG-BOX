@@ -102,5 +102,5 @@ c     save last random number
       real * 8 x1,x2,xf1,xf2,xmufact
       call pdfreweightinfo(id1,id2,x1,x2,xmufact,xf1,xf2)
       write(nlf,111)'#pdf ',id1,id2,x1,x2,xmufact,xf1,xf2
- 111  format(a,2(1x,i2),5(1x,d14.8))
+ 111  format(a,2(1x,i2),5(1x,e14.8))
       end

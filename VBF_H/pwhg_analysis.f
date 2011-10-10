@@ -307,7 +307,7 @@ c     find Higgs boson
 c     set up different searching stategies according to the shower Monte Carlo
 c     program used      
          if ((WHCPRG.eq.'HERWIG').and.(idhep(ihep).eq.25).and.
-     $        (isthep(ihep).eq.195)) then 
+     $        (isthep(ihep).eq.155)) then 
             higgsfound = .true.      
          elseif ((WHCPRG.eq.'PYTHIA').and.(idhep(ihep).eq.25).and.
      #           (ISTHEP(ihep).eq.1)) then 

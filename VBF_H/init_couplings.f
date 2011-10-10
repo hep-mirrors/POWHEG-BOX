@@ -7,31 +7,49 @@
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       real * 8 masswindow
+      real * 8 powheginput
+      external powheginput
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+      
+      ph_Hmass = powheginput("#hmass")
+      ph_Hwidth = powheginput("#hwidth")
+      
+c     if one of two parameters is missing, use the default ones
+      if ((ph_Hmass.lt.0d0).or.(ph_Hwidth.lt.0d0)) then
+c     ph_Hmass  = 100d0
+c     ph_Hwidth = 0.0033d0
+c     ph_Hmass  = 120d0
+c     ph_Hwidth = 0.00437d0 
+         ph_Hmass  = 150d0
+         ph_Hwidth = 0.0182d0
+c     ph_Hmass  = 300d0
+c     ph_Hwidth = 8.4086d0
+c     ph_Hmass  = 400d0
+c     ph_Hwidth = 29.42d0 
+c     ph_Hmass  = 300d0
+c     ph_Hwidth = 8.445d0 
+c     ph_Hmass  = 600d0
+c     ph_Hwidth = 122.6d0 
+c     ph_Hmass  = 800d0
+c     ph_Hwidth = 265.d0 
+      endif
+
+      write(*,*) '**************************************'
+      write(*,*) '**************************************'
+      write(*,*) 'Higgs boson mass  = ',ph_Hmass
+      write(*,*) 'Higgs boson width = ',ph_Hwidth
+      write(*,*) '**************************************'
+      write(*,*) '**************************************'
+
+      
+      
       ph_Zmass  = 91.1876d0
       ph_Zwidth =  2.4952d0
       ph_Wmass  = 80.398d0
       ph_Wwidth =  2.141d0
-
-c      ph_Hmass  = 100d0
-c      ph_Hwidth = 0.0033d0
-c      ph_Hmass  = 120d0
-c      ph_Hwidth = 0.00437d0 
-c      ph_Hmass  = 150d0
-c      ph_Hwidth = 0.0182d0
-c      ph_Hmass  = 300d0
-c      ph_Hwidth = 8.4086d0
-c      ph_Hmass  = 400d0
-c      ph_Hwidth = 29.42d0 
-c      ph_Hmass  = 300d0
-c      ph_Hwidth = 8.445d0 
-      ph_Hmass  = 600d0
-      ph_Hwidth = 122.6d0 
-
-
-
       ph_alphaem = 1d0/128.930d0
 c      ph_sthw2 = 0.2312d0
       ph_sthw2 = 0.23102d0

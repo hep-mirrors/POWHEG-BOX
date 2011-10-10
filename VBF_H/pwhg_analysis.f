@@ -208,6 +208,8 @@ c      data iniptcut/.true./
 c     we need to tell to the this analysis file which program is running it
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
+      data WHCPRG/'NLO   '/
+      
       
 c     DISABLE ALL CUTS
       ptalljetmin = 0d0            
@@ -310,7 +312,8 @@ c     program used
          elseif ((WHCPRG.eq.'PYTHIA').and.(idhep(ihep).eq.25).and.
      #           (ISTHEP(ihep).eq.1)) then 
             higgsfound = .true.      
-         elseif ( (WHCPRG.eq.'NLO'.or.WHCPRG.eq.'LHE').and.
+         elseif (( (WHCPRG.eq.'POWHEG').or.(WHCPRG.eq.'NLO   ').or.
+     $           (WHCPRG.eq.'LHE   ')).and.
      #           ((idhep(ihep).eq.HWW).or.(idhep(ihep).eq.HZZ).or.
      #           (idhep(ihep).eq.25) )) then
             higgsfound = .true.            

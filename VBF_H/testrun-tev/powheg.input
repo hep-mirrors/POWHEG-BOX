@@ -32,7 +32,7 @@ nubound 100000 ! number of calls to set up the upper bounding norms for radiatio
 
 
 ! OPTIONAL PARAMETERS
-#withnegweights 1  ! (default 0) if 1, use negative weights
+withnegweights 1  ! (default 0) if 1, use negative weights
 xupbound 2d0   ! increase upper bound for radiation generation
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
@@ -53,6 +53,11 @@ withdamp    1      ! (default 0, do not use) use Born-zero damping factor
                    ! sequence for the generation of the events.
                    ! The event file is called pwgevents-'j'.lhe
 
+hmass    120d0       ! Higgs boson mass
+hwidth   0.00437d0   ! Higgs boson width   
+
+#higgsfixedwidth  1  ! if 1, use old behaviour with fixed width Breit-Wigner
+                     ! default is running width
 
 hdecaymode -1   ! -1 no decay                
                 ! 0 all decay channels open

@@ -268,8 +268,10 @@ c      endif
       muf=ph_Hmass
       mur=ph_Hmass
       if (ini) then
+         write(*,*) '**********************************'
          write(*,*) 'RENORMALIZATION SCALE = ',mur
          write(*,*) 'FACTORIZATION   SCALE = ',muf
+         write(*,*) '**********************************'
          ini=.false.
       endif
 

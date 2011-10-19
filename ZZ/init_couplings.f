@@ -7,6 +7,7 @@
       include 'pwhg_st.h'
       include 'pwhg_math.h'
       include 'pwhg_physpar.h'
+      include 'cvecbos.h'
       logical verbose
       parameter(verbose=.true.)
       physpar_ml(1)=0.511d-3
@@ -49,21 +50,33 @@ c     number of light flavors
       esq = ph_unit_e**2
       zmass = ph_Zmass
       zwidth = ph_Zwidth
+
       call couplz(ph_sthw2)
 
-
-      ! TM for the different processes the
-      ! ew couplings need to be set, as in
-      ! chooser.f. For now, ee,mumu
-      ! ---really should depend on idvecdecay
-      ! and ideally would be in init_process,
-      ! but the above constatns need to be set
+      if ((vdecaymodeZ1.eq.11).or.(vdecaymodeZ1.eq.13)
+     .    .or.(vdecaymodeZ1.eq.15)) then
       q1=-1d0
       l1=le
       r1=re
+      elseif ((vdecaymodeZ1.eq.12).or.(vdecaymodeZ1.eq.14)
+     .    .or.(vdecaymodeZ1.eq.16)) then
+      q1=0d0
+      l1=ln
+      r1=rn
+      endif
+      if ((vdecaymodeZ2.eq.11).or.(vdecaymodeZ2.eq.13)
+     .    .or.(vdecaymodeZ2.eq.15)) then
       q2=-1d0
       l2=le
       r2=re
+      elseif ((vdecaymodeZ2.eq.12).or.(vdecaymodeZ2.eq.14)
+     .    .or.(vdecaymodeZ2.eq.16)) then
+      q2=0d0
+      l2=ln
+      r2=rn
+      endif
+
+
 
 
       if(verbose) then

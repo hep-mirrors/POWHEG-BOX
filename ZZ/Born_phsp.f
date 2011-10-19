@@ -22,7 +22,7 @@
       real * 8 mllmin34,mllmin56,mllmin
       real * 8 powheginput
       external powheginput
-      logical debug,ini
+      logical debug,ini,pwhg_isfinite
       data ini/.true./
       data debug/.false./
       save ini,mllmin34,mllmin56,mllmin
@@ -40,7 +40,7 @@
          if(vdecaymodeZ1.eq.12.or.vdecaymodeZ1.eq.14.
      1  .or.vdecaymodeZ1.eq.16) then
 c neutrino
-            mllmin34=0
+            mllmin34=1d-3
          else
 c charged particles
             mllmin34=mllmin
@@ -48,7 +48,7 @@ c charged particles
          if(vdecaymodeZ2.eq.12.or.vdecaymodeZ2.eq.14.
      1  .or.vdecaymodeZ2.eq.16) then
 c neutrino
-            mllmin56=0
+            mllmin56=1d-3
          else
 c charged particles
             mllmin56=mllmin
@@ -241,6 +241,8 @@ c analysis level, but in this way we avoid confusing the user
      1  ) then
          kn_jacborn = 0
       endif
+
+      if(.not.pwhg_isfinite(kn_jacborn)) kn_jacborn=0
 
       end
 

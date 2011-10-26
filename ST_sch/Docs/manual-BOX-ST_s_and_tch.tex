@@ -237,6 +237,13 @@ $\stackrel{\scriptscriptstyle{(-)}}{c}$.  Thus, for example, 10000
 means $t \rightarrow e^+ \nu_e b$, 11100 means all semileptonic
 decays, 00011 means fully hadronic.
 
+When all the 5 digits of \tmtexttt{topdecaymode} are set to 0, the
+program will consider the top-quark as a stable particle: its decay
+products will not be generated, and the event file will contain the
+top-quark kinematics. Since there is no information on the top-quark
+spin, obviously spin-correlation effects are lost when these events
+are showered.
+
 The optional parameters are listed below. Their meaning is
 self-explanatory. We remind that it is not allowed to set any entry of
 the CKM matrix exactly equal to zero.\\

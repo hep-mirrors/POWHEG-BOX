@@ -363,7 +363,7 @@ c     killev variables
       common/ckillev/nkillev,killev
       
       tdecaymode=powheginput('#topdecaymode')
-      if(tdecaymode.le.0) then
+      if(tdecaymode.lt.0) then
          write(*,*) 'Invalid value for tdecaymode'
          call exit(1)
       endif
@@ -445,16 +445,22 @@ ccccccccccccccccccccccccccccccccccccccc
 
 cccccccccccccccccccccccccccccccccccccccccccccccc
 c     For the exact meaning of tdecayflag and MC_mass, see below
-c     !: WARNING: Notice that tdecayflag=false
-c     HAS NOT BEEN FULLY TESTED in the BOX implementation
-      tdecayflag=.true.
+c     !: WARNING: tdecayflag=false HAS NOT BEEN 
+c     tested as well as the others running modes.
+      tdecayflag=tdecaymode.ne.0
       MC_mass=1
 cccccccccccccccccccccccccccccccccccccccccccccccc
 
       chflag=2                  ! t-channel
-      do mu=0,3
-         kt(mu)=klab_dec(mu,6)+klab_dec(mu,7)+klab_dec(mu,8)
-      enddo
+      if(tdecayflag) then
+         do mu=0,3
+            kt(mu)=klab_dec(mu,6)+klab_dec(mu,7)+klab_dec(mu,8)
+         enddo
+      else
+         do mu=0,3
+            kt(mu)=klab_dec(mu,3)
+         enddo
+      endif
       mcmass(6) = sqrt(dotp(kt,kt))
       mcmass(5) = powheginput('#bottomthr')
       if (mcmass(5).lt.0d0) mcmass(5)=5.
@@ -486,8 +492,8 @@ c       >nparton_r         -> meaningless
 cccccccccccccccccccccccccccccccccccccccccccc
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     !: WARNING: Notice that tdecayflag=false
-c     HAS NOT BEEN FULLY TESTED in the BOX implementation
+c     !: WARNING: tdecayflag=false HAS NOT BEEN 
+c     tested as well as the others running modes.
 cccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
@@ -676,10 +682,9 @@ c     color connenction in case of a w hadronic decay
       else
          if(ini.eq.0) then
             ini=1
-            write(*,*) '>>>>> WARNING <<<<<<'
-            write(*,*) 
-     $           'tdecayflag=false HAS NOT BEEN FULLY TESTED IN THE BOX'
-            write(*,*) '>>>>>>>>>><<<<<<<<<<'
+c     !: WARNING: tdecayflag=false HAS NOT BEEN 
+c     tested as well as the others running modes.
+            write(*,*) 'will not generate top-decay products'
          endif
       endif   
 
@@ -768,6 +773,8 @@ c     data
 
       real *8 tiny
       parameter (tiny=1.d-6)
+
+      integer tdecaymode
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     variables needed to generate the decay with the veto method:
@@ -1363,6 +1370,23 @@ c     be used in the following with a different notation
          endif
       enddo
 
+c     if we don't want the decay products, don't
+c     waste time to compute their kinematics.
+c     Fill the array klab_dec, and exit from this routine
+      tdecaymode=powheginput('#topdecaymode')
+      if(tdecaymode.eq.0) then
+         do ileg=1,nlegreal
+            call boost(beta_cm_to_lab,kcm_undec_off(0,ileg),klab_dec(0,ileg))
+         enddo
+         do ileg=nlegreal+1,nlegreal+3
+            do mu=0,3
+               klab_dec(mu,ileg)=0d0
+            enddo
+         enddo
+         return
+      endif
+
+
 
 c     given top momentum in partonic cm frame, m67_2 and m68_2,
 c     build top-decay momenta in partonic cm frame
@@ -1805,7 +1829,7 @@ c         mass(5)=powheginput('tdec/bmass')
 c         mass(4)=powheginput('tdec/cmass')
          mass(4)=powheginput('#charmthr')
          if (mass(4).lt.0d0) mass(4)=1.5
-         sin2cabibbo=(CKM_pow(1,2))**2
+         sin2cabibbo=(dCKM_pow(1,2))**2
          if(iw1.eq.-1000) return
       endif
 c     end initialization
@@ -1825,7 +1849,9 @@ c     W decay products
       iwa(1)=iwp(j,1)
       iwa(2)=iwp(j,2)
 c     if any W decay product is down (or strange), it may turn to
-c     strange (or down) with a probability sin^2 theta
+c     strange (or down) with a probability sin^2 theta.
+c     !: If it is down, there is also the chance it becomes a bottom.
+c     !: This has not been implemented yet
       do j=1,2
          if(abs(iwa(j)).eq.1) then
             if(random().lt.sin2cabibbo) then
@@ -2052,8 +2078,8 @@ c     e
 c     ve
             decids(2)=iw2
 c     b
-            v2td=CKM_pow(3,1)**2
-            v2tdts=CKM_pow(3,1)**2+CKM_pow(3,2)**2
+            v2td=dCKM_pow(3,1)**2
+            v2tdts=dCKM_pow(3,1)**2+dCKM_pow(3,2)**2
             r=random()
             if(r.le.v2td) then
                decids(3)=1
@@ -2114,8 +2140,8 @@ c     ve
          m(nlegreal+2)=mdecw2
          m_s(nlegreal+2)=m(nlegreal+2)
 c     b
-         v2td=CKM_pow(3,1)**2
-         v2tdts=CKM_pow(3,1)**2+CKM_pow(3,2)**2
+         v2td=dCKM_pow(3,1)**2
+         v2tdts=dCKM_pow(3,1)**2+dCKM_pow(3,2)**2
          r=random()
          if(r.le.v2td) then
             decids(3)=1

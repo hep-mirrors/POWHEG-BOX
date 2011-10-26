@@ -11,8 +11,8 @@ c     POWHEG COMMON BLOCK (PHYSICAL PARAMETERS)
       common/cwidth/topwidth_pow,wwidth_pow
       real *8 topwidth_pow,wwidth_pow
 
-      common/cckm/CKM_pow,CKM
-      real *8 CKM_pow(3,3),CKM(1:6,1:6)
+      common/cckm/CKM_pow,CKM,dCKM_pow
+      real *8 CKM_pow(3,3),CKM(1:6,1:6),dCKM_pow(3,3)
 
 c     POWHEG COMMON BLOCK (PHASE SPACE GENERATION)
       integer psgen

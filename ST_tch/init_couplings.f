@@ -17,6 +17,7 @@ c$$$      include 'pwhg_par.h'
       integer i,j,idummy
       real *8 alphaem_inv
       common/calphaem_inv/alphaem_inv
+      integer decayCKM
 
 c$$$      par_isrtinycsi = 1d-7
 c$$$      par_isrtinyy =   1d-9
@@ -33,7 +34,13 @@ c     setting physical parameters
       write(*,*) 'POWHEG: loading-setting physical parameters'
 
 c     branching ratio (used only in LH event file)
-      call pickwdecay(-1000,rdummy,idummy,rdummy,totbr)
+      if(powheginput('topdecaymode').eq.0) then
+         write(*,*) 'No decay products will be generated'
+         totbr=1d0
+      else
+         write(*,*) 'Top decay products will be generated'
+         call pickwdecay(-1000,rdummy,idummy,rdummy,totbr)
+      endif
       rad_branching=totbr
 
 c     top mass
@@ -107,6 +114,48 @@ c     CKM matrix entries
       if(CKM_pow(3,2).lt.0) CKM_pow(3,2)= 1d-6
       if(CKM_pow(3,3).lt.0) CKM_pow(3,3)= 1d0
 
+c      decayCKM=powheginput('#decayCKM')
+      decayCKM=0
+      if(decayCKM.eq.1) then
+         write(*,*) '*************** WARNING ****************'
+         write(*,*) 'Using special values for CKM matrix '
+         write(*,*) '        in the decay process'
+         write(*,*) '  THIS IS NOT A STANDARD OPTION'
+         write(*,*) 'BE SURE YOU KNOW WHAT YOU ARE DOING'
+         write(*,*) '***********************************'
+         dCKM_pow(1,1)= powheginput('dCKM_Vud')
+         dCKM_pow(1,2)= powheginput('dCKM_Vus') 
+         dCKM_pow(1,3)= powheginput('dCKM_Vub') 
+         dCKM_pow(2,1)= powheginput('dCKM_Vcd') 
+         dCKM_pow(2,2)= powheginput('dCKM_Vcs') 
+         dCKM_pow(2,3)= powheginput('dCKM_Vcb') 
+         dCKM_pow(3,1)= powheginput('dCKM_Vtd') 
+         dCKM_pow(3,2)= powheginput('dCKM_Vts') 
+         dCKM_pow(3,3)= powheginput('dCKM_Vtb') 
+
+         if(dCKM_pow(1,1).lt.0) dCKM_pow(1,1)= 0.9740
+         if(dCKM_pow(1,2).lt.0) dCKM_pow(1,2)= 0.2225
+         if(dCKM_pow(1,3).lt.0) dCKM_pow(1,3)= 1d-6
+
+         if(dCKM_pow(2,1).lt.0) dCKM_pow(2,1)= 0.2225
+         if(dCKM_pow(2,2).lt.0) dCKM_pow(2,2)= 0.9740
+         if(dCKM_pow(2,3).lt.0) dCKM_pow(2,3)= 1d-6
+
+         if(dCKM_pow(3,1).lt.0) dCKM_pow(3,1)= 1d-6
+         if(dCKM_pow(3,2).lt.0) dCKM_pow(3,2)= 1d-6
+         if(dCKM_pow(3,3).lt.0) dCKM_pow(3,3)= 1d0
+      else
+         dCKM_pow(1,1)= CKM_pow(1,1)
+         dCKM_pow(1,2)= CKM_pow(1,2)
+         dCKM_pow(1,3)= CKM_pow(1,3)
+         dCKM_pow(2,1)= CKM_pow(2,1)
+         dCKM_pow(2,2)= CKM_pow(2,2)
+         dCKM_pow(2,3)= CKM_pow(2,3)
+         dCKM_pow(3,1)= CKM_pow(3,1)
+         dCKM_pow(3,2)= CKM_pow(3,2)
+         dCKM_pow(3,3)= CKM_pow(3,3)
+      endif
+
 c     W width (only for decay)
       wwidth_pow=powheginput('#wwidth')
       if(wwidth_pow.lt.0) wwidth_pow=2.141d0
@@ -176,6 +225,15 @@ c     setting madgraph parameters (needed for madgraph subroutines)
      $,pwhg_alphas(topmass_pow**2,st_lambda5MSB,st_nlight)
          write(*,*)
          write(*,*) 'top branching ratio ',totbr
+         if(decayCKM.eq.1) then
+         write(*,*)'DECAY CKM matrix (rows:u,c,t columns:d,s,b )'
+         write(*,'(a,3(f10.7))')' ',
+     $        dCKM_pow(1,1),dCKM_pow(1,2),dCKM_pow(1,3)
+         write(*,'(a,3(f10.7))')' ',
+     $        dCKM_pow(2,1),dCKM_pow(2,2),dCKM_pow(2,3)
+         write(*,'(a,3(f10.7))')' ',
+     $        dCKM_pow(3,1),dCKM_pow(3,2),dCKM_pow(3,3)
+         endif
          write(*,*) '--------------------------------------'
       endif
 

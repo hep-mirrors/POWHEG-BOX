@@ -2,7 +2,7 @@
 cat ../sigremnants.f | perl -pe 's/external valid_emitter/external valid_emitter\n\
       real \*8 finitemtcorr\n\
       external finitemtcorr\n/;
-s/hc2/hc2\*\n     # finitemtcorr()/gi' >  sigremnants_ggH.f
+s/hc2/hc2\*\n     # finitemtcorr\(\)/gi' >  sigremnants_ggH.f
 
 mv sigremnants_ggH.f tmpfile
 echo "c###################################################### " >sigremnants_ggH.f  

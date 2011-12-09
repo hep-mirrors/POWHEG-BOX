@@ -8,8 +8,19 @@
       include 'pwhg_kn.h'
       include 'hepevt.h'
       real * 8 powheginput
-      
-      if (powheginput('#testplots').ne.1d0) return
+      logical testplots,ini
+      data testplots/.true./
+      data ini/.true./
+      save testplots,ini
+      if(ini) then
+         if (powheginput('#testplots').eq.1d0) then
+            testplots=.true.
+         else
+            testplots=.false.
+         endif
+         ini=.false.
+      endif
+      if(.not.testplots) return
       if(ikin.eq.0) then
          nhep=nlegborn
          do jpart=1,nhep

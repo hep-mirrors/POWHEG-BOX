@@ -7,7 +7,7 @@
       include 'pwhg_kn.h'
       include 'pwhg_rnd.h'
       integer j,iun,nev
-      real * 8 weight
+      real * 8 weight,tmp
       real * 8 powheginput
       character * 20 pwgprefix
       integer lprefix
@@ -16,6 +16,12 @@
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
       integer iseed,n1,n2
+      logical testplots
+      if (powheginput('#testplots').eq.1d0) then
+         testplots=.true.
+      else
+         testplots=.false.
+      endif
       nev=powheginput('numevts')
       call newunit(iun)
 c The following allows to perform multiple runs with
@@ -59,7 +65,7 @@ c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
       else
          rnd_cwhichseed='none'
       endif
-      if (powheginput('#testplots').eq.1d0) WHCPRG='NLO   '
+      if (testplots) WHCPRG='NLO   '
       call pwhginit
       if(nev.gt.0) then
          if(rnd_cwhichseed.ne.'none') then
@@ -76,7 +82,7 @@ c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
          goto 999
       endif
       call lhefwritehdr(iun)
-      if (powheginput('#testplots').eq.1d0) then
+      if (testplots) then
          call init_hist 
 c     let the analysis subroutine know that it is run by this program
          WHCPRG='LHE   '
@@ -110,14 +116,12 @@ c to examine that event in particular
             write(*,*) ' only 3 and -4 are allowed for idwtup'
             call exit(-1)
          endif
-         if(kn_csi.eq.0d0) then
-            call analysis_driver(weight,0)
-         else
-            call analysis_driver(weight,1)
+         if(testplots) then
+            call analysis(weight)
          endif
          call pwhgaccumup
       enddo
-      if (powheginput('#testplots').eq.1d0) then
+      if (testplots) then
          if(rnd_cwhichseed.eq.'none') then
             open(unit=99,file=pwgprefix(1:lprefix)//
      1           'pwhgalone-output.top')
@@ -133,6 +137,9 @@ c to examine that event in particular
       close(iun)
  999  continue
       call write_counters
+c this causes powheginput to print all unused keywords
+c in the powheg.input file; useful to catch mispelled keywords
+      tmp=powheginput('print unused tokens')
       end
 
       subroutine write_counters

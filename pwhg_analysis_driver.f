@@ -68,3 +68,17 @@ c     call analysis routine
 
 
      
+      subroutine lhtohep
+      implicit none
+      include 'hepevt.h'
+      include 'LesHouches.h'
+      integer j
+      nhep=nup
+      do j=1,nup
+         idhep(j)=idup(j)
+         isthep(j)=istup(j)
+         phep(:,j)=pup(:,j)
+         jmohep(:,j)=mothup(:,j)
+      enddo
+      end
+

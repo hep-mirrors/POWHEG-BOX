@@ -117,6 +117,7 @@ c to examine that event in particular
             call exit(-1)
          endif
          if(testplots) then
+            call lhtohep
             call analysis(weight)
          endif
          call pwhgaccumup

@@ -83,10 +83,11 @@ c
       integer ifold(ndimmax),kfold(ndimmax)
       integer nhits(1:nintervals,ndimmax)
       real * 8 rand(ndimmax)
-      real * 8 dx(ndimmax),f,vtot,etot,prod
+      real * 8 dx(ndimmax),f,vtot,etot,prod,vfun
       integer kdim,kint,kpoint,nit,ncalls,ibin,iret,nintcurr,ifirst
       real * 8 random
-      external random,fun
+      logical pwhg_isfinite
+      external random,pwhg_isfinite,fun
       if(ndim.gt.ndiminteg) then
          write(*,*) 'Mint: at most ',ndiminteg,' dimensions'
          write(*,*) 'Got ',ndim
@@ -120,6 +121,7 @@ c
       err=0
  10   continue
       nit=nit+1
+ 11   continue
       if(nit.gt.nitmax) then
          if(imode.eq.0) xint=ans
          return
@@ -158,16 +160,23 @@ c find random x, and its random cell
          enddo
 c contribution to integral
          if(imode.eq.0) then
-            f=abs(fun(x,vol,ifirst))+f
+            vfun=abs(fun(x,vol,ifirst))
+c If you get NaN or Inf, skip this value
+            if(.not.pwhg_isfinite(vfun)) goto 11
+            f=vfun+f
             f=fun(x,vol,2)
+            if(.not.pwhg_isfinite(f)) goto 11
          else
 c this accumulated value will not be used
-            f=fun(x,vol,ifirst)+f
+            vfun=fun(x,vol,ifirst)
+            if(.not.pwhg_isfinite(vfun)) goto 11
+            f=vfun+f
             ifirst=1
             call nextlexi(ndim,ifold,kfold,iret)
             if(iret.eq.0) goto 1
 c closing call: accumulated value with correct sign
             f=fun(x,vol,2)
+            if(.not.pwhg_isfinite(f)) goto 11
          endif
 c
          if(imode.eq.0) then
@@ -241,7 +250,7 @@ c nitmax*ncalls calls.
       real * 8 xn(nintervals),r
       integer kint,jint
       do kint=1,nint
-c xacc (xerr) already containe a factor equal to the interval size
+c xacc (xerr) already contains a factor equal to the interval size
 c Thus the integral of rho is performed by summing up
          if(nhits(kint).ne.0) then
             xacc(kint)= xacc(kint-1)
@@ -250,6 +259,8 @@ c Thus the integral of rho is performed by summing up
             xacc(kint)=xacc(kint-1)
          endif
       enddo
+c If there is no value, keep old grid!
+      if(xacc(nint).eq.0) return
       do kint=1,nint
          xacc(kint)=xacc(kint)/xacc(nint)
       enddo
@@ -390,9 +401,10 @@ c     the returned coordinate vector of the generated point
       real * 8 dx(ndimmax)
       integer icell(ndimmax),ncell(ndimmax)
       integer ifold(ndimmax),kfold(ndimmax)
-      real * 8 r,f,ubound,vol,random,xmmm(nintervals,ndimmax)
+      real * 8 r,f,ubound,vol,vfun,random,xmmm(nintervals,ndimmax)
       real * 8 rand(ndimmax)
-      external fun,random
+      logical pwhg_isfinite
+      external fun,random,pwhg_isfinite
       integer icalls,mcalls,kdim,kint,nintcurr,iret,ifirst
       if(ndim.gt.ndiminteg) then
          write(*,*) 'Mint: at most ',ndiminteg,' dimensions'
@@ -454,15 +466,18 @@ c     the returned coordinate vector of the generated point
          vol=vol*dx(kdim)*nintervals/ifold(kdim)
          x(kdim)=xgrid(icell(kdim)-1,kdim)+rand(kdim)*dx(kdim)
       enddo
-      f=f+fun(x,vol,ifirst)
+      vfun=fun(x,vol,ifirst)
+      if(.not.pwhg_isfinite(vfun)) goto 10
+      f=f+vfun
       ifirst=1
       call nextlexi(ndim,ifold,kfold,iret)
       if(iret.eq.0) goto 5
 c get final value (x and vol not used in this call)
       f=fun(x,vol,2)
+      if(.not.pwhg_isfinite(f)) goto 10
       if(f.lt.0) then
          write(*,*) 'gen: non positive function',f
-         f=fun(x,vol,2)
+c         f=fun(x,vol,2)
 c         stop
       endif
       if(f.gt.ubound) then

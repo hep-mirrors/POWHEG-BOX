@@ -20,6 +20,7 @@
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
       integer j,k,mcalls,icalls,imode,iunstat
+      logical savewithnegweights
       real * 8 powheginput
       external btilde,sigremnant,powheginput
       do j=1,ndiminteg
@@ -48,6 +49,11 @@
       ncall2=powheginput('ncall2')
       itmx1=powheginput('itmx1')
       itmx2=powheginput('itmx2')
+      if(ncall1*itmx1.eq.0) then
+         write(*,*) ' ncall1 set to 0; nothing else to do'
+         call write_counters
+         call exit(0)
+      endif
       iret1=0
       iret2=0
       call loadgrids(iret1,xgrid,ymax,xgridrm,ymaxrm,
@@ -69,8 +75,11 @@
          write(*,*)' result +- errtot (picobarn) for each iteration'
          flg_nlotest=.false.
          imode=0
+         savewithnegweights=flg_withnegweights
+         flg_withnegweights=.true.
          call mint(btilde,ndiminteg,ncall1,itmx1,ifold,imode,iun,
      #        xgrid,xint,ymax,sigbtl,errbtl)
+         flg_withnegweights=savewithnegweights
          close(iun)
          if((flg_withreg.or.flg_withdamp).and..not.flg_bornonly) then
             write(*,*) ' Computing the integral of the'//
@@ -91,8 +100,9 @@
          call storexgrid(xgrid,xint,xgridrm,xintrm)
          write(*,*)' Importance sampling x grids generated and stored'
       endif
-      if(ncall2.eq.0) then
+      if(ncall2*itmx2.eq.0) then
          write(*,*) ' ncall2 set to 0; nothing else to do'
+         call write_counters
          call exit(0)
       endif
 c importance sampling grids have been initialized with default seed;

@@ -4,10 +4,11 @@
       include 'pwhg_flst.h'
       include 'pwhg_math.h'
       include 'pwhg_st.h'
-      include 'pwhg_flg_EW.h' !WZGRAD EDIT
       include 'pwhg_wzgrad.h' !WZGRAD EDIT
       real*8 powheginput !WZGRAD EDIT
       external powheginput
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
 c -*- Fortran -*-
 c      character *2 flav(-5:5)
       real * 8 charge(-5:5)

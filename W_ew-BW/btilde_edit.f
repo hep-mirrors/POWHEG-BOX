@@ -1,10 +1,9 @@
-      f unction btilde(xx,www0,ifirst)
+      function btilde(xx,www0,ifirst)
       implicit none
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       include 'pwhg_flg.h'
-      include 'pwhg_flg_EW.h'
       include 'pwhg_math.h'
 c     independent variables for real graph: number of final state
 c     legs times 3, take away 4 for 4-momentum conservation, add 2
@@ -25,6 +24,8 @@ c     begin WZGRAD EDIT-------------
       common/observsLO/ptl,ptn,etal
       real*8 powheginput,lcut,ncut,etlcut
       external powheginput
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
 c     end WZGRAD EDIT-------------
 
       flg_inbtilde=.true. !WZGRAD EDIT

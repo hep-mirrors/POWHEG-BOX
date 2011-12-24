@@ -5,7 +5,6 @@
       include 'pwhg_kn.h'
       include 'pwhg_br.h'
       include 'pwhg_flg.h'
-      include 'pwhg_flg_EW.h'
       real * 8 virt_arr(maxprocborn)
       integer equivto(maxprocborn)
       real * 8 equivcoef(maxprocborn)
@@ -17,6 +16,8 @@
       logical ini
       data ini/.true./
       save ini,equivto,equivcoef
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
       logical pwhg_isfinite
       external pwhg_isfinite
       if(ini) then
@@ -51,7 +52,6 @@ c     check if virtual(j,iborn) is finite
       flg_inequiv=.false. !WZGRAD EDIT
       endif
       do iborn=1,flst_nborn
-      
          if(equivto(iborn).lt.0) then
             call setvirtual(kn_cmpborn,flst_born(1,iborn),
      #           virt_arr(iborn))

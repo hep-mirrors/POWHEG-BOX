@@ -2,7 +2,6 @@
       implicit none
       include 'nlegborn.h'
       include 'pwhg_flg.h'
-      include 'pwhg_flg_EW.h'
       include 'pwhg_st.h'
       include 'pwhg_math.h'
       include 'pwhg_kn.h'
@@ -15,6 +14,8 @@
       complex*16 fvw,fvwp(2),prop,prop2
       real*8 powheginput
       external powheginput,dotp
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
       if(flg_inbtilde)then
       call init_phys_EW
          if(flg_wgrad2.eq.1)then

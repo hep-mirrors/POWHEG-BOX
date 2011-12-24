@@ -2,7 +2,7 @@
 idvecbos  -24   ! PDG code for vector boson to be produced ( W+:24 W-:-24 )
 vdecaymode 1      !(1:electronic decay, 2: muonic decay, 3: tauonic decay) 
 
-numevts 1d6         ! number of events to be generated
+numevts 1         ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)
 !ndns1 131         ! pdf set for hadron 1 (mlm numbering)
@@ -33,9 +33,9 @@ calo    1        ! calometric cuts for TEV and LHC, electrons and muons
 use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 regenerate)
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
-ncall1 5d6     ! number of calls for initializing the integration grid
+ncall1 500000     ! number of calls for initializing the integration grid
 itmx1    5     ! number of iterations for initializing the integration grid
-ncall2 95d6    ! number of calls for computing the integral and finding upper bound
+ncall2 5000000    ! number of calls for computing the integral and finding upper bound
 itmx2    5     ! number of iterations for computing the integral and finding upper bound
 foldcsi   1    ! number of folds on csi integration
 foldy     1    ! number of folds on  y  integration
@@ -50,7 +50,7 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
-bornonly   1      ! (default 0) if 1 do Born only
+#bornonly   1      ! (default 0) if 1 do Born only
 #smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
 #withdamp    1      ! (default 0, do not use) use Born-zero damping factor

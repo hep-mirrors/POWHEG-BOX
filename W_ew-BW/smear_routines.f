@@ -284,13 +284,16 @@ c***********************************************************************
 
       include 'nlegborn.h'
       include 'pwhg_kn.h'
-      include 'pwhg_flg_EW.h'
       
       real*8 phil,phip,del_phi,pi,ptl,ptp
       real*8 thl,thp,yl,yp,dR,sp1(4),sp2(4),sp3(4)
 
       integer flag1,flag2
       common/leptonidf/flag1,flag2
+
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
+
 
       real*8 powheginput
       external powheginput

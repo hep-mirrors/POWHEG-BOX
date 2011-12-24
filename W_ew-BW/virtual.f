@@ -7,7 +7,6 @@ c     The as/(2pi) factor is attached at a later point
       include 'nlegborn.h'
       include 'pwhg_st.h'
       include 'pwhg_math.h'
-      include 'pwhg_flg_EW.h' !WZGRAD EDIT
       real * 8 p(0:3,nlegborn)
       integer vflav(nlegborn)
       real * 8 virtual
@@ -16,7 +15,8 @@ c     The as/(2pi) factor is attached at a later point
       real*8 virtual_EW,powheginput !WZGRAD EDIT
       external powheginput !WZGRAD EDIT
       external dotp
-
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
       s=2d0*dotp(p(0,1),p(0,2))
       call compborn(p,vflav,born,dummy)
       virtual=pi**2 - 8 - 3*log(st_muren2/s) -log(st_muren2/s)**2

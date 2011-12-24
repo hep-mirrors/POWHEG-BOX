@@ -779,7 +779,6 @@ c    csi^2 (1-y)   for FSR regions
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
-      include 'pwhg_flg_EW.h'
       include 'pwhg_par.h'
       integer imode
       real * 8 r0(maxalr)
@@ -796,6 +795,8 @@ c    csi^2 (1-y)   for FSR regions
       logical ini
       data ini/.true./
       save ini,equivto,equivcoef
+      logical flg_inbtilde,flg_inequiv
+      common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
 
       if(ini) then
       flg_inequiv=.true. !WZGRAD EDIT

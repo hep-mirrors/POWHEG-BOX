@@ -59,7 +59,7 @@ INCLUDE2=$(shell dirname $(PWD))/include
 FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2)
 
 
-INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
+INCLUDE =$(wildcard ../include/*.h *.h include/*.h )
 
 #ifeq ("$(PDF)","lhapdf")
 LHAPDF_CONFIG=lhapdf-config
@@ -93,7 +93,7 @@ PWHGANAL=pwhg_analysis-dummy.o
 endif
 
 WGRAD2=virtual_EW.o collinear_EW.o real_EW.o libweak.o intlib.o \
-       winput.o libqed.o
+       winput.o libqed.o 
 
 %.o: %.f $(INCLUDE)
 	$(FF) -c -o obj/$@ $<
@@ -119,7 +119,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde_edit.o lhefwrite.o		\
 	random.o boostrot.o bra_ket_subroutines.o cernroutines.o	\
 	init_phys.o powheginput.o pdfcalls.o sigreal_edit.o sigcollremn_edit.o\
 	pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o		\
-	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
+	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt_edit.o	\
 	sigcollsoft.o sigvirtual_edit.o  $(PDFPACK) $(USER) $(FPEOBJ)
 
 # target to generate LHEF output

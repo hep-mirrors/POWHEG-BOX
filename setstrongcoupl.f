@@ -2,13 +2,88 @@
       implicit none
       include 'pwhg_math.h'
       include 'pwhg_st.h'
+      include 'pwhg_flg.h'
       real * 8 pwhg_alphas
       external pwhg_alphas
       real * 8 muf,mur
+c signal we will begin by computing Born type contributions
+      flg_btildepart='b'
       call set_fac_ren_scales(muf,mur)
       st_mufact2= muf**2*st_facfact**2
       st_muren2 = mur**2*st_renfact**2
       st_alpha  = pwhg_alphas(st_muren2,st_lambda5MSB,st_nlight)
+      end
+
+      subroutine setscalesbtlreal
+      implicit none
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_flg.h'
+      real * 8 pwhg_alphas
+      external pwhg_alphas
+      real * 8 muf,mur
+      logical ini
+      data ini/.true./
+      save ini
+      real * 8 powheginput
+      external powheginput
+      if(ini) then
+         if(powheginput("#btlscalereal").eq.1d0) then
+            flg_btlscalereal=.true.
+         else
+            flg_btlscalereal=.false.
+         endif
+         ini=.false.
+      endif
+      if(flg_btlscalereal) then
+c if this is active we may compute scales that depends upon
+c the real kinematics; the user routine set_fac_ren_scales
+c should test the flag flg_btildepart to see if this is the case
+         flg_btildepart='r'
+         call set_fac_ren_scales(muf,mur)
+         st_mufact2= muf**2*st_facfact**2
+         st_muren2 = mur**2*st_renfact**2
+         st_alpha  = pwhg_alphas(st_muren2,st_lambda5MSB,st_nlight)
+      endif
+      end
+
+      subroutine setscalesbtlct
+      implicit none
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      include 'pwhg_flg.h'
+      real * 8 pwhg_alphas
+      external pwhg_alphas
+      real * 8 muf,mur
+      logical ini
+      data ini/.true./
+      save ini
+      real * 8 powheginput
+      external powheginput
+      if(ini) then
+         if(powheginput("#btlscalereal").eq.1d0) then
+            flg_btlscalereal=.true.
+         else
+            flg_btlscalereal=.false.
+         endif
+         if(powheginput("#btlscalect").eq.1d0) then
+            flg_btlscalect=.true.
+         else
+            flg_btlscalect=.false.
+         endif
+      endif
+      if(flg_btlscalereal.and.flg_btlscalect) then
+c signal we will begin by computing counterterm contributions, in cases
+c when it is desirable to have the scales of the counterterm differ from
+c those of the real term (the token btlscalect selects this case)
+c The user routine should test the flag flg_btildepart to see if
+c we are in a counterterm.
+         flg_btildepart='c'
+         call set_fac_ren_scales(muf,mur)
+         st_mufact2= muf**2*st_facfact**2
+         st_muren2 = mur**2*st_renfact**2
+         st_alpha  = pwhg_alphas(st_muren2,st_lambda5MSB,st_nlight)
+      endif
       end
 
       subroutine set_rad_scales(ptsq)

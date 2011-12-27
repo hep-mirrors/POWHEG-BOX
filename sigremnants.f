@@ -49,6 +49,9 @@ c the following is needed to compute soft and collinear limits
          xjac=jac_over_csi*kn_csi*kn_csimax*kn_jacborn*suppfact*ww*hc2
       endif
       if(flg_withreg) then
+c This subroutine may set the scales with values depending
+c upon the real emission kinematics
+         call setscalesbtlreal
          call sigreal_reg(xjac,rad_reg_tot,rad_reg_arr)
          if(flg_nlotest) then
             call analysis_driver(rad_reg_tot/suppfact,1)
@@ -65,6 +68,7 @@ c the following is needed to compute soft and collinear limits
             if(valid_emitter(kn_emitter)) then
                if(kn_emitter.le.2) then
 c     No need to generate phase space; it is already available
+                  call setscalesbtlreal
                   call sigreal_damp_rem(xjac,ttt,rad_damp_rem_arr)
                   if(flg_nlotest) then
                      call analysis_driver(ttt/suppfact,1)
@@ -75,6 +79,7 @@ c     No need to generate phase space; it is already available
      #jac_over_csi,jac_over_csi_coll,jac_over_csi_s)
                   xjac=jac_over_csi*kn_csi*kn_csimax
      #                *kn_jacborn*suppfact*ww*hc2
+                  call setscalesbtlreal
                   call sigreal_damp_rem(xjac,ttt,rad_damp_rem_arr)
                   if(flg_nlotest) then
                      call analysis_driver(ttt/suppfact,1)

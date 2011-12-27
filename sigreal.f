@@ -27,11 +27,16 @@ c check that emitter is valid
 c     final state radiation
                call gen_real_phsp_fsr(xrad,jac_over_csi,
      #              jac_over_csi_coll,jac_over_csi_soft)
+c This subroutine may set the scales with values depending
+c upon the real emission kinematics
+               call setscalesbtlreal
 c sigreal fills the array r0 with the value of the R_alpha contribution
 c that have emitter equal to kn_emitter. All other contributions are set
 c to zero. 
                call sigreal_btl(r0)
                if(flg_withsubtr) then
+c We may prefer to set the counterterms scales different from the real scales
+                  call setscalesbtlct
                   call collfsr(rc)
 c     soft subtraction
                   call soft(r0s)
@@ -76,8 +81,10 @@ c     zero rm (rp).
                call gen_real_phsp_isr
      #(xrad,jac_over_csi,jac_over_csi_p,jac_over_csi_m,
      #jac_over_csi_soft)
+               call setscalesbtlreal
                call sigreal_btl(r0)
                if(flg_withsubtr) then
+                  call setscalesbtlct
                   call soft(r0s)
                   if(kn_emitter.ne.2) then
                      call collisrp(rp)
@@ -245,7 +252,7 @@ c            call randomrestore
       end
 
       subroutine checkborn(iun)
-c Check if born, colour correlated born and spin correlated born
+c Check if Born, colour correlated born and spin correlated Born
 c are consistent with total Born
       implicit none
       integer iun

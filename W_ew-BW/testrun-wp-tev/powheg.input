@@ -10,13 +10,13 @@ ih2   -1           ! hadron 2 (1 for protons, -1 for antiprotons)
 ebeam1 980d0    ! energy of beam 1
 ebeam2 980d0    ! energy of beam 2
 ! To be set only if using LHA pdfs
-lhans1  10800     ! pdf set for hadron 1 (LHA numbering)
-lhans2  10800     ! pdf set for hadron 2 (LHA numbering)
+lhans1  10550     ! pdf set for hadron 1 (LHA numbering)
+lhans2  10550     ! pdf set for hadron 2 (LHA numbering)
 ! To be set only if using different pdf sets for the two incoming hadrons
 ! QCDLambda5  0.25 ! for not equal pdf sets 
 
 !begin WGRAD EDIT----------------------------------------------------------------
-ewonly  0        ! if 1 only include NLO EW crxns - QCD pieces zeroed - only for testing
+ewonly  1        ! if 1 only include NLO EW crxns - QCD pieces zeroed - only for testing
 wgrad2  1 	 ! if 1 include NLO EW corrections of WGRAD2
 QED     4        ! which subset of QED crrxns: 1 ISR, 2 FSR, 3 interference, 4 all
 qnonr   0        ! if 0 resonant W production, if 1 nonresonant W production
@@ -26,7 +26,7 @@ bare    1        ! bare cuts for TEV and LHC, electrons and muons
 cut1   25d0      ! min transverse momentum for lepton
 cut2   25d0      ! min transverse momentum for neutrino
 cut3   1d0       ! max rapidity of lepton
-calo    1        ! calometric cuts for TEV and LHC, electrons and muons
+calo    0        ! calometric cuts for TEV and LHC, electrons and muons
 !end WGRAD EDIT------------------------------------------------------------------
 
 ! Parameters to allow or not the use of stored data
@@ -50,7 +50,7 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #renscfact  1d0   ! (default 1d0) ren scale factor: muren  = muref * renscfact 
 #facscfact  1d0   ! (default 1d0) fac scale factor: mufact = muref * facscfact 
 #ptsupp     0d0   ! (default 0d0)  mass param for Born suppression factor (generation cut) If < 0 suppfact = 1
-#bornonly   1      ! (default 0) if 1 do Born only
+bornonly   1      ! (default 0) if 1 do Born only
 #smartsig   1      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
 #withdamp    1      ! (default 0, do not use) use Born-zero damping factor

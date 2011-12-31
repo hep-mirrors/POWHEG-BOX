@@ -128,6 +128,10 @@ c         write(*,*) 'jb,Q,I',jb,Q,I
             
 c we only summed over j>i, multiply by 2
          I=I*2
+         if(powheginput('ewonly').eq.1)then
+         Q=0d0
+         I=0d0
+         endif
          resvirt(jb)=(Q+I+virt_arr(jb))*st_alpha/(2*pi)
      #       *pdfb1(fl1)*pdfb2(fl2)*kn_jacborn
 

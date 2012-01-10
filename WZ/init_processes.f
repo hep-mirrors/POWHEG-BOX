@@ -100,13 +100,17 @@ c--   see if there is a diagonal CKM matrix
       endif
 
 
-      if ((vdecaymodeZ.ne.11).and.(vdecaymodeZ.ne.13).and.
-     .    (vdecaymodeZ.ne.12).and.(vdecaymodeZ.ne.14).and.
-     .    (vdecaymodeZ.ne.16)) stop 'decay of Z is not included, can go to 
-     .    11,13,or neutrinos (12,14,16)'
+
+      if ((vdecaymodeZ.ne.11).and.(vdecaymodeZ.ne.13).and.(vdecaymodeZ
+     $     .ne.15).and.(vdecaymodeZ.ne.12).and.(vdecaymodeZ.ne.14).and
+     $     .(vdecaymodeZ.ne.15).and.(vdecaymodeZ.ne.16)) 
+     $   stop 'decay of Z is not included,
+     $ can go to 11,13,15 or neutrinos (12,14,16)'
+
       
-      if ( (abs(vdecaymodeW).ne.11).and.(abs(vdecaymodeW).ne.13))
-     .     stop 'decay of W can only go to -11,11,-13,13'
+      if ( (abs(vdecaymodeW).ne.11).and. (abs(vdecaymodeW).ne.13).and.
+     $     (abs(vdecaymodeW).ne.15) ) stop
+     $     'decay of W can only go to -11,11,-13,13,-15,15'
 
 
       !TM set MCFM things: nwz 
@@ -120,15 +124,18 @@ c--   see if there is a diagonal CKM matrix
 
       if (vdecaymodeW.eq.-11) write(*,*)'     W+ decays to ve e+'
       if (vdecaymodeW.eq.-13) write(*,*)'     W+ decays to vmu me+'
+      if (vdecaymodeW.eq.-15) write(*,*)'     W+ decays to vtau tau+'
       if (vdecaymodeW.eq.11) write(*,*)'      W- deacys to e- ve~'
-      if (vdecaymodeW.eq.13) write(*,*)'      W- decays to mu- vmu~'      
+      if (vdecaymodeW.eq.13) write(*,*)'      W- decays to mu- vmu~' 
+      if (vdecaymodeW.eq.15) write(*,*)'     W- decays to tau- vtau~'
       if (vdecaymodeZ.eq.11) write(*,*)' and Z decays to e- e+'
       if (vdecaymodeZ.eq.13) write(*,*)' and Z decays to mu- mu+'
+      if (vdecaymodeZ.eq.15) write(*,*)' and Z decays to tau- tau+'
       
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
 c     10000+idup of first decay product of W + decay product of Z
-      lprup(1)=10000+vdecaymodeW+vdecaymodeZ
+      lprup(1)=10000+100*vdecaymodeW+vdecaymodeZ
 
 
 c     index of the first coloured particle in the final state

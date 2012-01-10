@@ -119,7 +119,7 @@ c no interference if zerowidth is true
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
 c     10000+idup of first decay product of Z1 + decay product of Z2
-      lprup(1)=10000+vdecaymodeZ1+vdecaymodeZ2 
+      lprup(1)=10000+100*vdecaymodeZ1+vdecaymodeZ2 
 
       if(vdecaymodeZ1.eq.11) then
          decmass1=lepmass(1)

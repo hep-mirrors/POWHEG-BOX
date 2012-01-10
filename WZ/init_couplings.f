@@ -72,11 +72,12 @@ c     number of light flavors
 
       ! TM for the different processes the
       ! ew couplings need to be set, as in
-      ! chooser.f. For now, ee,mumu
+      ! chooser.f. For now, ee,mumu,tautau
       ! ---really should depend on idvecdecay
       ! and ideally would be in init_process,
       ! but the above constatns need to be set
-      if (((vdecaymodeZ).eq.11).or.((vdecaymodeZ).eq.13)) then
+      if (((vdecaymodeZ).eq.11).or.((vdecaymodeZ).eq.13).or
+     $     .((vdecaymodeZ).eq.15)) then
       q1=-1d0
       l1=le
       r1=re

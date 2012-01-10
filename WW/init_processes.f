@@ -108,7 +108,7 @@ c -- are these even used?
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
 c     10000+idup of first decay product of W1 + decay product of W2
-      lprup(1)=10000+vdecaymodeWp+vdecaymodeWm 
+      lprup(1)=10000+100*vdecaymodeWp+vdecaymodeWm 
       
 
 c     index of the first coloured particle in the final state

@@ -117,10 +117,27 @@ c to examine that event in particular
             call exit(-1)
          endif
          if(testplots) then
+            if(nup.eq.0) then
+               write(*,*) ' nup = 0 skipping event'
+               goto 111
+            endif
             call lhtohep
             call analysis(weight)
+            call pwhgaccumup
+            if (mod(j,20000).eq.0) then
+               if(rnd_cwhichseed.eq.'none') then
+                  open(unit=99,file=pwgprefix(1:lprefix)//
+     1                 'pwhgalone-output.top')
+               else
+                  open(unit=99,file=pwgprefix(1:lprefix)//
+     1                 'pwhgalone-output'//rnd_cwhichseed//'.top')
+               endif
+               call pwhgsetout
+               call pwhgtopout
+               close(99)
+            endif
          endif
-         call pwhgaccumup
+ 111     continue
       enddo
       if (testplots) then
          if(rnd_cwhichseed.eq.'none') then

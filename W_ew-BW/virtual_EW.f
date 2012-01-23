@@ -12,6 +12,9 @@
       real*8 t1,t2,sig_virt12,sig_virt21,sig_virt,k_fac(2),k_faci(2)
       real*8 sig_soft12,sig_soft21,sig_soft,soft,virt
       complex*16 fvw,fvwp(2),prop,prop2
+      common/fvwpfactors/fvwp
+      logical fvwpini
+      common/flg_fvwp/fvwpini
       real*8 powheginput
       external powheginput,dotp
       logical flg_inbtilde,flg_inequiv
@@ -42,13 +45,17 @@
          sig012(2)=4d0*(2d0*dotp(kn_cmpborn(0,2),kn_cmpborn(0,4)))**2 
          endif
 !        ----------------------virtual finite piece--------------------
-            if(qnonr.eq.0)then !resonant weak virtual contrib
-               do j=1,2
+c weak fromfactors only need to be calculated once
+         if(fvwpini)then
+            do j=1,2
                call formweak(j,fvw)
                fvwp(j)=fvw
-               enddo
+            enddo
+            fvwpini=.false.
+         endif
+         if(qnonr.eq.0)then     !resonant weak virtual contrib
             virt=born*dreal(fvwp(1)+fvwp(2))*2d0*pi/st_alpha
-            elseif(qnonr.eq.1)then !nonresonant weak virtual contrib
+         elseif(qnonr.eq.1)then !nonresonant weak virtual contrib
                if(dabs(shat-ph_Wmass2).le.1d0)then
                virt=born*dreal(fvwp(1)+fvwp(2))*2d0*pi/st_alpha 
                else
@@ -147,15 +154,6 @@ c***********************************************************************
             endif
             enddo
          enddo
-
-
-
-
-
-
-
-
-
       end
 c***********************************************************************
       subroutine init_phys_EW
@@ -170,7 +168,9 @@ c***********************************************************************
 
       real * 8 powheginput,dotp
       external powheginput,dotp
-
+c     lepton masses
+      real *8 lepmass(3),decmass
+      common/clepmass/lepmass,decmass
 
       !choice to include EW corrections
       flg_wgrad2 = powheginput('wgrad2')
@@ -182,9 +182,16 @@ c***********************************************************************
       mmu=0.1056583668d0
 
       mff=1d-5 !neutrino mass used only for QED part
-      mffs=mmu 
-      mii=1d-5 !common mass for IS q's-used to regulate QED coll sing
+      if(powheginput('vdecaymode').eq.1)then
+         mffs=lepmass(1) 
+      elseif(powheginput('vdecaymode').eq.2)then
+         mffs=lepmass(2)
+      else
+         write(6,*)'only vdecaymode=1,2 is allowed'
+         stop
+      endif
 
+      mii=1d-5 !common mass for IS q's-used to regulate QED coll sing
       mmi = mii
       mmis = mmi
       mmf = 1d-5
@@ -245,7 +252,7 @@ c***********************************************************************
       !collinear FSR cut - 0:no cut   1:with cut
       !if massless fermions, collcut must be 1 - masses 
       !regulate collinear singularities
-      collcut=1 
+      collcut=0 
       !fictitious photon mass
       lambda=1d0
       !small imaginary part 
@@ -256,7 +263,7 @@ c***********************************************************************
       qnonr=powheginput('qnonr') 
       if(qnonr.eq.1)test(3)=4
       !FS radiation - 1:full FSR   2:FSR a la Berends etal.
-      test(4)=powheginput('FSR') 
+      test(4)=1
       call winput !further prep for input.f, libweak.f and libqed.f 
 
       !calculate invariants for use in libqed.f

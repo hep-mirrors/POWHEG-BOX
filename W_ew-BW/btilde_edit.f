@@ -20,15 +20,17 @@ c     for x_1 and x_2, and take away an overall azimuth
       save resborn,resvirt,wwwtot
       real *8 totborn,totvirt
 c     begin WZGRAD EDIT-------------
-      real*8 ptl,ptn,etal
-      common/observsLO/ptl,ptn,etal
-      real*8 powheginput,lcut,ncut,etlcut
+      real*8 powheginput
       external powheginput
       logical flg_inbtilde,flg_inequiv
       common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
+      logical flg_saverand
+      common/pwhg_flg_saverand/flg_saverand
 c     end WZGRAD EDIT-------------
 
       flg_inbtilde=.true. !WZGRAD EDIT
+      flg_saverand=.true. !WZGRAD EDIT
+
       www=www0*hc2
       do j=1,ndiminteg-3
          xborn(j)=xx(j)
@@ -52,23 +54,6 @@ c     sets xscaled, y, phi in kinematics common block
             call btildecoll(xrad,rescoll,www)
             call btildereal(xrad,resreal,www)
          endif
-c      begin detector acceptance cuts-WZGRAD EDIT----------
-       if(powheginput('bare').eq.1.or.powheginput('calo').eq.1)
-     $ then
-       call LO_observables 
-       lcut=powheginput('cut1')
-       ncut=powheginput('cut2')
-       etlcut=powheginput('cut3')
-          if(ptl.lt.lcut.or.ptn.lt.ncut.or.dabs(etal).gt.etlcut)then
-             do j=1,12
-             resborn(j)=0d0
-             resvirt(j)=0d0
-             rescoll(j)=0d0
-             enddo
-          endif
-       endif 
-c      end detector acceptance cuts-WZGRAD EDIT------------
-
 c     accumulate values
          btilde=0
          do j=1,flst_nborn

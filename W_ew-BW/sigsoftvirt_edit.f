@@ -134,6 +134,8 @@ c we only summed over j>i, multiply by 2
          endif
          resvirt(jb)=(Q+I+virt_arr(jb))*st_alpha/(2*pi)
      #       *pdfb1(fl1)*pdfb2(fl2)*kn_jacborn
+c test
+c         resvirt(jb)=0d0
 
          tot=tot+resvirt(jb)
       enddo

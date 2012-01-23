@@ -3,7 +3,7 @@
 COMPILER=gfortran
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
-PDF = native 
+PDF = lhapdf 
 #Choose Analysis: none, default
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
 ANALYSIS=default
@@ -14,7 +14,7 @@ ifeq ("$(COMPILER)","gfortran")
 F77= gfortran -fno-automatic 	
 ## -fbounds-check sometimes causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
-#FFLAGS= -Wall -Wimplicit-interface -fbounds-check
+FFLAGS= -Wall #-Wimplicit-interface -fbounds-check
 ## For floating point exception trapping  uncomment the following 
 #FPE=-ffpe-trap=invalid,zero,overflow,underflow 
 ## gfortran 4.4.1 optimized with -O3 yields erroneous results
@@ -61,7 +61,7 @@ FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLU
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h )
 
-ifeq ("$(PDF)","lhapdf")
+#ifeq ("$(PDF)","lhapdf")
 LHAPDF_CONFIG=lhapdf-config
 PDFPACK=lhapdfif.o
 LIBSLHAPDF= -Wl,-rpath,$(shell $(LHAPDF_CONFIG) --libdir)  -L$(shell $(LHAPDF_CONFIG) --libdir) -lLHAPDF
@@ -70,14 +70,14 @@ ifeq  ("$(STATIC)","-static")
 ## libgfortran as well. The same holds for libstdc++. 
 ## One possible solution is to use fastjet, since $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 ## does perform this inclusion. The path has to be set by the user. 
- LIBGFORTRANPATH=/usr/lib/gcc/x86_64-redhat-linux/4.1.2
- LIBSTDCPP=/lib64
+ LIBGFORTRANPATH=/usr/lib/gcc/x86_64-linux-gnu/4.4
+ LIBSTDCPP=/usr/lib/gcc/x86_64-linux-gnu/4.4
  LIBSLHAPDF+=  -L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran -L$(LIBSTDCPP) -lstdc++
 endif
 LIBS+=$(LIBSLHAPDF)
-else
-PDFPACK=mlmpdfif.o hvqpdfpho.o
-endif
+#else
+#PDFPACK=mlmpdfif.o hvqpdfpho.o
+#endif
 
 
 ifeq ("$(ANALYSIS)","default")
@@ -98,39 +98,46 @@ WGRAD2=virtual_EW.o collinear_EW.o real_EW.o libweak.o intlib.o \
 %.o: %.f $(INCLUDE)
 	$(FF) -c -o obj/$@ $<
 
+#%.o: W_EW/%.f 
+#	$(FF) -c -o obj/$@ $<
+
 %.o: %.c
 	$(CC) $(DEBUG) -c -o obj/$@ $^ 
 
 %.o: %.cc
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
-
+#==================================================================================
+#./pwhg_main
+#==================================================================================
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
      real.o $(WGRAD2) smear_routines.o $(PWHGANAL)
 
-PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
+PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde_edit.o lhefwrite.o		\
 	LesHouches.o LesHouchesreg.o gen_Born_phsp.o find_regions.o	\
 	test_Sudakov.o pt2maxreg.o sigborn.o gen_real_phsp.o maxrat.o	\
 	gen_index.o gen_radiation.o Bornzerodamp.o sigremnants.o	\
 	random.o boostrot.o bra_ket_subroutines.o cernroutines.o	\
 	init_phys.o powheginput.o pdfcalls.o sigreal_edit.o sigcollremn_edit.o\
-	pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o		\
+	pwhg_bookhist.o pwhg_analysis_driver_edit.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt_edit.o	\
 	sigcollsoft.o sigvirtual_edit.o  $(PDFPACK) $(USER) $(FPEOBJ)
 
 # target to generate LHEF output
 pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
-
+#==================================================================================
+#./lhef_analysis
+#==================================================================================
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o		\
-     opencount.o powheginput.o pwhg_bookhist.o $(PWHGANAL)	\
-     lhefread.o newunit.o pwhg_analysis_driver.o $(FPEOBJ)
+     opencount.o powheginput.o pwhg_bookhist.o smear_routines.o $(PWHGANAL)	\
+     lhefread.o newunit.o pwhg_analysis_driver_edit.o $(FPEOBJ)
 
 # target to analyze LHEF output
 lhef_analysis:$(LHEF)
 	$(FF) $(patsubst %,obj/%,$(LHEF)) $(LIBS) $(LIBSFASTJET) $(STATIC)  -o $@ 
-
-
-
+#==================================================================================
+#./main-HERWIG-lhef
+#==================================================================================
 # target to read event file, shower events with HERWIG + analysis
 HERWIG=main-HERWIG.o setup-HERWIG-lhef.o herwig.o boostrot.o	\
 	powheginput.o pwhg_bookhist.o random.o smear_routines.o $(PWHGANAL) \
@@ -138,14 +145,18 @@ HERWIG=main-HERWIG.o setup-HERWIG-lhef.o herwig.o boostrot.o	\
 
 main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG))  $(LIBSFASTJET)  $(STATIC) -o $@
-
+#==================================================================================
+#./main-PYTHIA-lhef
+#==================================================================================
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o		\
+PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o \
 	pwhg_bookhist.o smear_routines.o $(PWHGANAL) \
-        lhefread.o newunit.o pdfdummies.o pwhg_analysis_driver.o \
+        lhefread.o newunit.o pdfdummies.o pwhg_analysis_driver_edit.o \
         random.o cernroutines.o opencount.o\
 	$(FPEOBJ)
-
+#==================================================================================
+#clean
+#==================================================================================
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) $(LIBSFASTJET)  $(STATIC) -o $@
 
@@ -158,7 +169,6 @@ clean:
 ###################################################################
 # From here on there are targets specific to the W implementation
 ##################################################################
-
 
 MERGE_wp_wm=merge_wp_wm.o newunit.o random.o cernroutines.o
 

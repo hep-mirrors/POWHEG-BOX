@@ -21,17 +21,17 @@ c     total cross section sanity check
       call pwhgbookup(diag,'total','LOG',binsize(diag),0d0,3d0)
 
       diag=diag+1
-      binsize(diag) = 1d0
-      call pwhgbookup(diag,'mt(W)','LOG',binsize(diag),20d0,100d0)
+      binsize(diag) = 0.5d0
+      call pwhgbookup(diag,'mt(W)','LOG',binsize(diag),50d0,100d0)
 
       diag=diag+1
       binsize(diag) = 1d0
       call pwhgbookup(diag,'m(W)','LOG',binsize(diag),20d0,100d0)
 
       diag=diag+1
-      binsize(diag) = 1d0
+      binsize(diag) = 0.25d0
       call pwhgbookup(diag,'pt(lep)','LOG',binsize(diag)
-     $   ,0d0,100d0)
+     $   ,25d0,55d0)
 
 
       diag=diag+1
@@ -75,6 +75,8 @@ c***********************************************************************
       include 'pwhg_kn.h' 
       include 'pwhg_flg.h'  !WZGRAD EDIT
       include 'pwhg_wzgrad.h'  !WZGRAD EDIT
+      integer ikini
+      common/phspinfo/ikini
       real *8 p_neutrino(0:3),p_lepton(0:3),pcm(0:3),p_ll(0:3)
       real *8 dR,p1(4),p2(4),p3(4),sp1(4),sp2(4),sp3(4)!WZGRAD EDIT
       real *8 pt_lepton,pt_neutrino,eta_lepton,eta_neutrino,
@@ -83,6 +85,8 @@ c***********************************************************************
       logical flg_insigreal
       common/caloflags/flg_insigreal
       common/leptonidf/flag1,flag2
+      logical flg_saverand
+      common/pwhg_flg_saverand/flg_saverand
       integer ihep,mu
       logical ini
       data ini/.true./
@@ -106,8 +110,7 @@ c     we need to tell to this analysis file which program is running it
       logical foundlep
       real*8 powheginput,lcut,ncut,etlcut !WZGRAD EDIT
       external powheginput !WZGRAD EDIT
-       
-      
+
       if (ini) then!===================================================
          write (*,*)
          write (*,*) '********************************************'
@@ -175,8 +178,8 @@ c     find W decay products by trivial analysis
 c     find W decay products looking for their invariant mass
       Wmass = 80.398d0
       Wwidth = 2.141d0
-      Wmass2low = (Wmass-30*Wwidth)**2
-      Wmass2high = (Wmass+30*Wwidth)**2
+      Wmass2low = (Wmass-30d0*Wwidth)**2
+      Wmass2high = (Wmass+30d0*Wwidth)**2
       nlep=0
       nnu=0
 
@@ -246,40 +249,32 @@ c     Assign lepton and neutrino momenta
       else
       write(*,*) 'Not yet implemented analysis'
       call exit(1)
-      endif !===========================================================
-
-!     =====================================================
+      endif 
+!===========================================================
 !     perform smearing + recomb - if user set calo = 1 
 !     =====================================================
       if(powheginput('calo').eq.1)then 
-      !if showering, p_neutrino and p_lepton have experienced showering
-      !p_photon did not
-      flag1=0
-         if(flg_insigreal)then
-         call PStest(p_lepton)
+c calculate smeared momenta (with possible recombination)
+         if ((WHCPRG.eq.'HERWIG').or.(WHCPRG.eq.'PYTHIA').or.
+     $        (WHCPRG.eq.'LHE   '))then 
+            flg_saverand=.true.
+            flg_insigreal=.false.
          endif
-
-         if(flag1.eq.0)then !if the photon is hard and non-collinear
-c         print*, 'in ifthen'
          call momentumprep_anl(p_lepton,p_neutrino,p1,p2,p3)
          call smear(p1,p2,p3,sp1,sp2,sp3)
-c         print*, 'p_lepton = ', p_lepton
-c         print*, 'p1 = ', p1
-c         print*, 'sp1 = ', sp1
-c         print*, 'p_neutrino= ', p_neutrino
-c         print*, 'p2 = ', p2
-c         print*, 'sp2 = ', sp2
-
-c         stop
-            if(flg_insigreal)then
-            call delR(sp1,sp2,sp3,dR)
-               if(dR.lt.0.1d0)then
-                  do i=1,4
-                  sp1(i)=sp1(i)+sp3(i)
-                  sp3(i)=0d0
-                  enddo
-               endif
-            endif
+c only allow for recombination when NLO histograms are filled
+c and only for electrons
+         if(whcprg.eq.'NLO    '.and.
+     $        powheginput('vdecaymode').eq.1) then
+         if(powheginput('wgrad2').eq.1.and.
+     $        flg_insigreal.and.ikini.eq.1)then
+            flag1=0
+            call PStest(p_lepton)
+c if the photon is hard and non-collinear
+c recombination if dR<0.1 in electron case
+            if(flag1.eq.0)call delR(sp1,sp2,sp3,dR)
+         endif
+         endif
          p_lepton(0)=sp1(4)
          p_lepton(1)=sp1(1)
          p_lepton(2)=sp1(2)
@@ -288,7 +283,6 @@ c         stop
          p_neutrino(1)=sp2(1)
          p_neutrino(2)=sp2(2)
          p_neutrino(3)=sp2(3)
-         endif
       endif
 !     =====================================================
 !     calculate observables
@@ -309,7 +303,7 @@ c     azimuthal separation between lepton and neutrino
      $        atan2(p_neutrino(2),p_neutrino(1)))
       delphi=min(delphi,2d0*pi-delphi)
 c     transverse mass of the lepton-neutrino system
-      mt_v=sqrt(2*pt_lepton*pt_neutrino*(1d0-dcos(delphi)))
+      mt_v=sqrt(2d0*pt_lepton*pt_neutrino*(1d0-dcos(delphi)))
 c     rapidity of the lepton-neutrino system
       call getrapidity(p_ll,yv)
 
@@ -318,14 +312,13 @@ c     rapidity of the lepton-neutrino system
 !     =====================================================
 !     perform bare cuts - if user set bare =  1
 !     =====================================================
-      if((powheginput('bare').eq.1.or.
-     &                         powheginput('calo').eq.1))then
-      lcut=powheginput('cut1')
-      ncut=powheginput('cut2')
-      etlcut=powheginput('cut3')
+      if(powheginput('bare').eq.1)then
+         lcut=powheginput('cut1')
+         ncut=powheginput('cut2')
+         etlcut=powheginput('cut3')
          if(pt_lepton.lt.lcut.or.pt_neutrino.lt.ncut.or.
-     &      dabs(eta_lepton).gt.etlcut)then
-         goto 99
+     &        dabs(eta_lepton).gt.etlcut)then
+            goto 99
          endif
       endif
 !     =====================================================

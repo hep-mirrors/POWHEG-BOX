@@ -5,18 +5,17 @@
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
       include 'pwhg_wzgrad.h'
-      integer flavor(5),i,j,calocuts
-      real*8 res,sig(2),sigh(3,2),p1(4),p2(4),p3(4)
-      real*8 sp1(4),sp2(4),sp3(4),dR
+      integer flavor(5),i,j
+      real*8 res,sig(2),sigh(3,2)
       real*8 epmin,ephoton,smin,mes
-      integer flag1,flag2,flag3
-      common/leptonidf/flag1,flag2,flag3
+      integer flag1,flag2
+      common/leptonidf/flag1,flag2
       real*8 powheginput
       external powheginput
 
       if(kn_emitter.eq.0)then
          flag1=0 !flag for hard-noncollinear PS
-         flag2=0 !flag for del_R cuts
+         flag2=0 !flag for dR cut
 !        =================================
 !        call in all pieces: sigh(1:3,1:2)
 !        =================================
@@ -39,14 +38,14 @@
          smin=deltac*dsqrt(rl_sinv(1,2))*ephoton
 !        cut 1 ==> is photon soft?
 !        if photon is soft, all contributions must vanish (IS, FS, INT)
-!        and there can be no del_R cuts 
          if(ephoton.lt.epmin)then
-           do j=1,3
-           sigh(j,1)=0d0
-           sigh(j,2)=0d0
-           enddo
-         flag1=1
-         endif
+            do j=1,3
+               sigh(j,1)=0d0
+               sigh(j,2)=0d0
+            enddo
+            flag1=1
+            goto 10
+         endif 
 !        cut2 ==> quark-photon angle too small?
 !        this affects IS and INT contributions
 !        and possibility of del_R cuts
@@ -71,17 +70,21 @@
             flag1=1 
             endif
          endif
-c        cut 4 ==> lepton id cuts
-         calocuts = powheginput('calo')
-         if(flag1.eq.0.and.calocuts.eq.1)then
-         call momentumprep_MES(p1,p2,p3)
-         call smear(p1,p2,p3,sp1,sp2,sp3)
-         call delR(sp1,sp2,sp3,dR)
+ 10      continue
+c dR cut
+c smearing and application of dR cut is done in NLO_observables
+         if(powheginput('calo').eq.1)then 
+            call NLO_observables
             if(flag2.eq.1)then
+               res=0d0
+               return
+            endif
+         endif
+
+         if(flag1.eq.1.and.test(3).eq.4)then
             res=0d0
             return
-            endif
-         endif            
+         endif
 !        ============================================
 !        put result together wrt QED subset from user
 !        ============================================
@@ -173,7 +176,7 @@ c***********************************************************************
 c.....
 c     this subroutine prepares the momenta for smearing - only for MES
 c     input: kn_preal from common/pwhg_kn 
-c     output: p1,p2,p3 of common/smomenta
+c     output: p1,p2,p3 of common/smomenta_NLO
 c.....
       implicit none
       include 'nlegborn.h'

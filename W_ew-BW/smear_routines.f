@@ -14,6 +14,8 @@ c.....
       common/scalet/scalet
       real*8 powheginput
       external powheginput
+      logical flg_saverand
+      common/pwhg_flg_saverand/flg_saverand
 !     =========================================
 !     electron or muon ?
 !     =========================================
@@ -24,20 +26,21 @@ c.....
 !     ==========================================
       scalet=dsqrt(p1(1)**2+p1(2)**2)
       if(powheginput('ih2').eq.-1)then !TEVATRON
-      call d0upgrsmear(p1,sp1,lep) !lepton
-      call metsmear(p2,sp2)        !neutrino
-      call d0upgrsmear(p3,sp3,'e') !photon
+      call d0upgrsmear(1,p1,sp1,lep) !lepton
+      call metsmear(2,p2,sp2)        !neutrino
+      call d0upgrsmear(3,p3,sp3,'e') !photon
       elseif(powheginput('ih2').eq.1)then !LHC
-      call atlsmear(p1,sp1,lep)    !lepton
-      call atlsmear(p2,sp2,'n')    !neutrion
-      call atlsmear(p3,sp3,'e')    !photon
+      call atlsmear(1,p1,sp1,lep)    !lepton
+      call atlsmear(2,p2,sp2,'n')    !neutrino
+      call atlsmear(3,p3,sp3,'e')    !photon
       else
       print*, 'unknown type for hadron 2, error in real_EW.f'
       stop
       endif
+      flg_saverand=.false.
       end
 c***********************************************************************
-      subroutine d0upgrsmear(p,sp,lep)
+      subroutine d0upgrsmear(ip,p,sp,lep)
 c.....
 c     this subroutine smear the 3-momentum component of the 4-vector p
 c     and is suitable for Tevatron 
@@ -47,18 +50,19 @@ c            'n' for missing pt (neutrino)
 c     output: sp, smeared 4-vector
 c.....
       implicit none
-      integer i,j
+      integer i,j,ip
       character*1 lep
       real*8 scalet
       common/scalet/scalet
       real*8 p(4),sp(4)
       real*8 ratio,eta,c,s,en,et,a,b,ret,del,dpx,dpy,dp
+
 c     =======================================
 c     calculate eta and Et - used to calc del
 c     =======================================
       if(p(4).ne.p(3))then
-      ratio = (p(4)+p(3))/(p(4)-p(3))
-         if(ratio.gt.0)then
+         ratio = (p(4)+p(3))/(p(4)-p(3))
+         if(ratio.gt.0d0)then
          eta=dabs(0.5d0*dlog((p(4)+p(3))/(p(4)-p(3))))
          else
          eta=10d0
@@ -71,12 +75,12 @@ c     =====================================
 c     calculate del for electron
 c     =====================================
       if(lep.eq.'e')then !setup
-      c=0.003d0
+         c=0.003d0
          if(eta.lt.1.3d0)then
          s=0.14d0
          en=0.14d0
          elseif(eta.ge.1.3d0.and.eta.lt.4d0)then
-         s=0.157
+         s=0.157d0
          en=0.290d0
          endif
          if(eta.lt.4d0)then
@@ -90,10 +94,10 @@ c     =====================================
 c     calculate del for muon
 c     =====================================
       if(lep.eq.'m')then !setup
-      a=0.015d0
-      b=0.0016d0
+         a=0.015d0
+         b=0.0016d0
          if(eta.lt.1.6d0)then
-         del=dsqrt((b*et)**2+a**2)
+         del=dsqrt((b*et)**2+a**2)*et
          else
          del=0d0
          endif
@@ -112,8 +116,8 @@ c     =====================================
       if(lep.eq.'n')then
       ret=scalet
       del=1.08d0+0.019d0*ret
-      call rgauss(del,dpx)
-      call rgauss(del,dpy)
+      call rgauss(ip,1,del,dpx)
+      call rgauss(ip,2,del,dpy)
       sp(1)=p(1)+dpx
       sp(2)=p(2)+dpy
       sp(3)=p(3)
@@ -123,7 +127,7 @@ c     =====================================
 c     =====================================
 c     perform smearing for everthing else
 c     =====================================
-    9 call rgauss(del,dp) 
+    9 call rgauss(ip,0,del,dp) 
       if(p(4).gt.0d0.and.dp.gt.-p(4))then
       sp(4)=p(4)+dp
          do i=1,3
@@ -138,7 +142,7 @@ c     =====================================
    15 return
       end
 c***********************************************************************
-      subroutine metsmear(p,sp)
+      subroutine metsmear(ip,p,sp)
 
 c     this subroutine smear the pt-momentum component of the 4-vector p
 c     of a neutrino
@@ -149,16 +153,18 @@ c     p    : 4-vector to be smeared
 c     output: 
 c     sp    : smeared 4-vector
       implicit none
-      integer i
+      integer i,ip
       real*8 p(4),sp(4),pi,x,et,del,dp,random
 
       pi=4d0*datan(1d0)
       et=dsqrt(p(1)**2+p(2)**2)
       del=5d0
 
-      call rgauss(del,dp)
+      call rgauss(ip,0,del,dp)
 
 c     if et=0, then smear in a random direction
+c if calo=1, also bare=1 so that ET=0 
+c is always cut, so it is ok not to save the random number here
       if(et.eq.0d0)then
       x=random()
       sp(1)=dp*dcos(x*pi)
@@ -174,7 +180,7 @@ c     if et=0, then smear in a random direction
 
       end
 c***********************************************************************
-      subroutine atlsmear(p,sp,lep)
+      subroutine atlsmear(ip,p,sp,lep)
 c.....
 c     this subroutine smear the 3-momentum component of the 4-vector p
 c     and is suitable for Tevatron 
@@ -186,7 +192,7 @@ c.....
 
       implicit none
       character*1 lep
-      integer i,j
+      integer i,j,ip
       real*8 scalet
       common/scalet/scalet
       real*8 p(4),sp(4)
@@ -228,8 +234,8 @@ c.....
       if(lep.eq.'n')then  !neutrino
       ret=scalet
       del=0.45d0*dsqrt(ret)
-      call rgauss(del,dpx)
-      call rgauss(del,dpy)
+      call rgauss(ip,1,del,dpx)
+      call rgauss(ip,2,del,dpy)
       sp(1)=p(1)+dpx
       sp(2)=p(2)+dpy
       sp(3)=p(3)
@@ -237,7 +243,7 @@ c.....
       goto 15
       endif
 
-    9 call rgauss(del,dp)
+    9 call rgauss(ip,0,del,dp)
       
        if(p(4).gt.0d0.and.dp.gt.-p(4))then
        sp(4)=p(4)+dp
@@ -253,12 +259,16 @@ c.....
    15  return  
        end
 c***********************************************************************
-      subroutine rgauss(del,dp)
+      subroutine rgauss(ip,icomp,del,dp)
 
 c     yields gaussian distribution of random numbers
       implicit none
-      real*8 x(2),random
+      integer ip,icomp
+      real*8 x(2),random,xsave(3,0:2,2)
       real*8 del,dp,gauss,test 
+      common/saverandom/xsave
+      logical flg_saverand
+      common/pwhg_flg_saverand/flg_saverand
 
       if(del.le.0d0)then !del must be positive 
       dp=0d0
@@ -267,6 +277,15 @@ c     yields gaussian distribution of random numbers
 
     5 x(1) = random()
       x(2) = random()
+c the same random numbers are used for smearing of momenta
+c belonging to one event
+      if(flg_saverand)then
+         xsave(ip,icomp,1)=x(1)
+         xsave(ip,icomp,2)=x(2)
+      else
+         x(1)=xsave(ip,icomp,1)
+         x(2)=xsave(ip,icomp,2)
+      endif
 
       dp=3d0*del*(-1d0+2d0*x(1))
       gauss=dexp(-dp**2/2d0/del**2)
@@ -275,13 +294,17 @@ c     yields gaussian distribution of random numbers
       if(test.le.0d0)then
       return
       else
+         if(.not.flg_saverand)then
+            write(6,*)'test failed in smearing routine'
+            stop
+         endif
       goto 5  
       endif
       end
 c***********************************************************************
       subroutine delR(sp1,sp2,sp3,dR)
       implicit none
-
+      integer i
       include 'nlegborn.h'
       include 'pwhg_kn.h'
       
@@ -294,15 +317,16 @@ c***********************************************************************
       logical flg_inbtilde,flg_inequiv
       common/pwhg_flg_EW/flg_inbtilde,flg_inequiv
 
-
       real*8 powheginput
       external powheginput
 
       pi = 4d0*datan(1d0)
-
       !define delta_R
-      phil = datan(sp1(2)/sp1(1))
-      phip = datan(sp3(2)/sp3(1))
+      phil = datan2(sp1(2),sp1(1))
+      phip = datan2(sp3(2),sp3(1))
+      if(phil.lt.0.d0)phil=phil+2d0*pi
+      if(phip.lt.0.d0)phip=phip+2d0*pi
+
       del_phi = dabs(phil-phip)
       if(del_phi.gt.pi)del_phi=2d0*pi-del_phi
 
@@ -317,12 +341,19 @@ c***********************************************************************
  
       dR = dsqrt(del_phi**2+(yl-yp)**2)
 
-      !impose delta_R cuts only if calculating real EW MES
+cimpose delta_R cuts only if calculating real EW MES in Btilde
+      flag2=0
       if(flg_inbtilde)then
          if(powheginput('vdecaymode').eq.1)then
-            if((dR.ge.0.1d0).and.(dR.le.0.4d0))then
-               if(sp3(4).gt.0.1*sp1(4))then
-               flag2=1
+c only recombine when a hard photon is present
+            if(dR.lt.0.1d0.and.flag1.eq.0)then
+               do i=1,4
+                  sp1(i) = sp1(i)+sp3(i)
+                  sp3(i) = 0d0
+               end do
+            elseif((dR.ge.0.1d0).and.(dR.le.0.4d0))then
+               if(sp3(4).gt.0.1d0*sp1(4))then
+                  flag2=1
                endif
             endif
          elseif(powheginput('vdecaymode').eq.2)then
@@ -330,7 +361,7 @@ c***********************************************************************
             flag2=1
             endif
             if((dR.ge.0.1d0).and.(dR.le.0.4d0))then
-               if(sp3(4).gt.0.1*sp1(4))then
+               if(sp3(4).gt.0.1d0*sp1(4))then
                flag2=1
                endif
             endif

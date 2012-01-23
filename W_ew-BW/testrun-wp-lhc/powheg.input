@@ -1,8 +1,8 @@
 !Single vector boson production parameters
 idvecbos  24   ! PDG code for vector boson to be produced ( W+:24 W-:-24 )
-vdecaymode 1      !(1:electronic decay, 2: muonic decay, 3: tauonic decay) 
+vdecaymode 2      !(1:electronic decay, 2: muonic decay, 3: tauonic decay) 
 
-numevts 1         ! number of events to be generated
+numevts 5d5         ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)
 !ndns1 131         ! pdf set for hadron 1 (mlm numbering)
@@ -20,22 +20,21 @@ ewonly  0        ! if 1 only include NLO EW crxns - QCD pieces zeroed - only for
 wgrad2  1 	 ! if 1 include NLO EW corrections of WGRAD2
 QED     4        ! which subset of QED crrxns: 1 ISR, 2 FSR, 3 interference, 4 all
 qnonr   0        ! if 0 resonant W production, if 1 nonresonant W production
-FSR     1        ! FS radiation: 1 full FSR, 2 approximation ala Berends et.al.
 lfc     1        ! factorization scheme: 0 MSbar, 1 DIS
 bare    1        ! bare cuts for TEV and LHC, electrons and muons
 cut1   25d0      ! min transverse momentum for lepton
 cut2   25d0      ! min transverse momentum for neutrino
 cut3   1d0       ! max rapidity of lepton
-calo    1        ! calometric cuts for TEV and LHC, electrons and muons
+calo    0        ! calometric cuts for TEV and LHC, electrons and muons
 !end WGRAD EDIT------------------------------------------------------------------
 
 ! Parameters to allow or not the use of stored data
 use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 regenerate)
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
-ncall1 500000     ! number of calls for initializing the integration grid
+ncall1 5d6     ! number of calls for initializing the integration grid
 itmx1    5     ! number of iterations for initializing the integration grid
-ncall2 5000000! number of calls for computing the integral and finding upper bound
+ncall2 25d6    ! number of calls for computing the integral and finding upper bound
 itmx2    5     ! number of iterations for computing the integral and finding upper bound
 foldcsi   1    ! number of folds on csi integration
 foldy     1    ! number of folds on  y  integration

@@ -11,7 +11,10 @@
       logical verbose
       parameter(verbose=.true.)
       integer i,j
+      logical fvwpini
+      common/flg_fvwp/fvwpini
 
+      fvwpini=.true.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

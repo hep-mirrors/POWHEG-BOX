@@ -75,12 +75,12 @@ c final state:
          if (i.eq.2) then 
             if (wopt.eq.1) then
             mat = alpha0/pi/(dw**2+xmw*gamw**2)*(
-c     $           (-(qf*pfspi*mmf/kpf)**2-(qfs*pfpis*mmfs/kpfs)**2+
+     $           -(qf*pfspi*mmf/kpf)**2-(qfs*pfpis*mmfs/kpfs)**2+
      $           (pfspi**2+pfpis**2)*shat/2d0/kq*(qf**2/kpf+
      $           qfs**2/kpfs-(qf-qfs)**2/kq))
             else if (wopt.eq.2) then
             mat = alpha0/pi/(dw**2+(shat/mw*gamw)**2)*(
-c     $           (-(qf*pfspi*mmf/kpf)**2-(qfs*pfpis*mmfs/kpfs)**2+
+     $           -(qf*pfspi*mmf/kpf)**2-(qfs*pfpis*mmfs/kpfs)**2+
      $           (pfspi**2+pfpis**2)*shat/2d0/kq*(qf**2/kpf+
      $           qfs**2/kpfs-(qf-qfs)**2/kq))
             end if
@@ -110,128 +110,6 @@ c interference:
             end if
         end if
       matri(j) = sig0s*mat
-      end do
-      return
-      end
-c**********************************************************************
-      subroutine mathard_nc(i,xvi,xai,xqi,xvf,xaf,xqf,matri)
-c matri: matrix element squared and averaged (summed) over 
-c initial state (final state) spin and colour degrees
-c of freedom to hard photon emission in the
-c Z,gamma production process at the Tevatron and LHC:
-c i(=quark with charge qi, mass mi and four momentum pi,p4 or b1) +
-c i'(=antiquark,qis,mis,pis,p3 or b2) -> gamma,Z 
-c -> f(=lepton-,qf,mf,pf,p2) + f'(=lepton+,qfs,mfs,pfs,p1) + gamma(momentum k)
-c i=1,2,3: initial state radiation, final state radiation
-c and interference.
-c j =1,2: U(x1)U~(x2), U(x2)U~(x1)
-      implicit real*8(a-z)
-      integer i,ii,j,jj
-      real*8 matri(2)
-      real*8 sinv(5,5)
-      include 'pwhg_wzgrad.h'
-c      include 'config.inc'
-      real*8 pi,pi2
-      integer i1(2),i2(2)
-      data i1,i2/1,2,2,1/
-      vi=xvi
-      ai=xai
-      qi=xqi
-      vf=xqf
-      af=xaf
-      qf=xqf
-      pi = 4d0*datan(1d0)
-      pi2 = pi**2
-c alpha representation:
-      if (rep.eq.1) then
-         sig0s = 64d0*(pi*alpha)**2*pi2/3d0
-c G_mu representation:
-      else
-         sig0s = 64d0*(w2*gfermi*xmw*sw2)**2*pi2/3d0
-      endif
-c itwasme - BEGIN we need rl_sinv here
-c      do ii = 1,5
-c        do jj = 1,5
-c        sinv(ii,jj) = rl_sinv(ii,jj)
-c        enddo
-c      enddo
-c itwasme END
-      do j=1,2
-         shat = sinv(1,2)
-         kq = (sinv(1,5)+sinv(2,5))/2d0
-         kpi = sinv(i1(j),5)/2d0
-         kpis = sinv(i2(j),5)/2d0
-         kpf = sinv(4,5)/2d0
-         kpfs = sinv(3,5)/2d0
-         pfpis = sinv(i2(j),4)/2d0
-         pfspi = sinv(i1(j),3)/2d0
-         pfpi = sinv(i1(j),4)/2d0
-         pfspis = sinv(i2(j),3)/2d0
-         dz = shat-xmz
-         mat = 0d0
-c initial state:
-         if (i.eq.1) then 
-            if (wopt.eq.1) then
-               mat = alpha0/pi/((dz-2d0*kq)**2+xmz*gamz**2)*
-     &              (-(qi*pfpis*mmi/kpi)**2-(qis*pfspi*mmis/kpis)**2+
-     &              (pfspi**2+pfpis**2)*(qi**2/kpi+qis**2/kpis-
-     &              (qi-qis)**2/kq)*(shat/2d0/kq-1d0))
-            else if (wopt.eq.2) then
-               mat = alpha0/pi/((dz-2d0*kq)**2+
-     &              ((shat-2d0*kq)/mz*gamz)**2)*
-     &              (-(qi*pfpis*mmi/kpi)**2-(qis*pfspi*mmis/kpis)**2+
-     &              (pfspi**2+pfpis**2)*(qi**2/kpi+qis**2/kpis-
-     $              (qi-qis)**2/kq)*(shat/2d0/kq-1d0))
-            end if
-
-         end if
-
-c final state:
-
-         if (i.eq.2) then 
-
-            if (wopt.eq.1) then
-               mat = alpha0/pi/(dw**2+xmw*gamw**2)*
-     $              (-(qf*pfspi*mmf/kpf)**2-(qfs*pfpis*mmfs/kpfs)**2+
-     $              (pfspi**2+pfpis**2)*shat/2d0/kq*(qf**2/kpf+
-     $              qfs**2/kpfs-(qf-qfs)**2/kq))
-            else if (wopt.eq.2) then
-               mat = alpha0/pi/(dw**2+(shat/mw*gamw)**2)*
-     $              (-(qf*pfspi*mmf/kpf)**2-(qfs*pfpis*mmfs/kpfs)**2+
-     $              (pfspi**2+pfpis**2)*shat/2d0/kq*(qf**2/kpf+
-     $              qfs**2/kpfs-(qf-qfs)**2/kq))
-            end if
-
-         end if
-     
-c interference:
-
-         if (i.eq.3) then
-
-            if (wopt.eq.1) then
-               mat = alpha0/pi/2d0/(dw**2+xmw*gamw**2)*
-     $              (dw*(dw-2d0*kq)+xmw*gamw**2)/
-     $              ((dw-2d0*kq)**2+xmw*gamw**2)*(pfspi**2+pfpis**2)*
-     $              ((pfpi+pfspis)*(qi*qf/kpi/kpf+qis*qfs/kpis/kpfs)-
-     $              (pfspi+pfpis)*(qi*qfs/kpfs/kpi+qis*qf/kpf/kpis)-
-     $              (shat/kq-1d0)*(qi*(qf-qfs)/kpi-qis*(qf-qfs)/kpis+
-     $              qf*(qi-qis)/kpf-qfs*(qi-qis)/kpfs-
-     $              2d0*(qi-qis)*(qf-qfs)/kq))
-            else if (wopt.eq.2) then
-               mat = alpha0/pi/2d0/(dw**2+(shat/mw*gamw)**2)*
-     $              (dw*(dw-2d0*kq)+shat*(shat-2d0*kq)/xmw*gamw**2)/
-     $              ((dw-2d0*kq)**2+((shat-2d0*kq)/mw*gamw)**2)*
-     $              (pfspi**2+pfpis**2)*
-     $              ((pfpi+pfspis)*(qi*qf/kpi/kpf+qis*qfs/kpis/kpfs)-
-     $              (pfspi+pfpis)*(qi*qfs/kpfs/kpi+qis*qf/kpf/kpis)-
-     $              (shat/kq-1d0)*(qi*(qf-qfs)/kpi-qis*(qf-qfs)/kpis+
-     $              qf*(qi-qis)/kpf-qfs*(qi-qis)/kpfs-
-     $              2d0*(qi-qis)*(qf-qfs)/kq))
-            end if
-         end if
-
-         matri(j) = sig0s*mat
-
       end do
       return
       end
@@ -438,80 +316,6 @@ c interference:
          fqed(j) = betif*(le+lws)
          end if
       end do
-      return
-      end
-c***********************************************************************
-      real*8 function a2qqz_qed(xs,xt,xu,xvf,xaf,xqf,xvi,xai,xqi)
-
-c     QED box diagrams to NC process 
-c     IR singularity has been subtracted
-c     all fermion masses are set to zero
- 
-      implicit none
-      integer i,j
-      real*8 xs,xt,xu,pi,pi2
-      real*8 shat,that,uhat,dz,lzz,ldz
-      real*8 xvi,xai,xqi,xvf,xaf,xqf
-      real*8 vi,ai,vf,af,kapp,kapm,lp,lm
-      real*8 cpgz,cmgz,cpgg,cmgg
-      complex*16 spence
-
-      real*8 den
-      common/par_prop/den
-    
-      include 'pwhg_wzgrad.h'
-
-      pi=4d0*datan(1d0)
-      pi2=pi**2
-
-      shat=xs
-      that=xt
-      uhat=xu
-      vi=xvi
-      ai=xai
-      vf=xvf
-      af=xaf
-c     couplings
-      kapp=(af**2+vf**2)*(ai**2+vi**2)+4d0*af*ai*vf*vi
-      kapm=(af**2+vf**2)*(ai**2+vi**2)-4d0*af*ai*vf*vi
-      lp=af*ai+vf*vi
-      lm=vf*vi-af*ai
-
-      dz = shat-xmz
-      if (dz.eq.0d0) then
-      ldz=0d0
-      lzz=dlog(xmz/gamz/gamz)
-      else
-      ldz=dreal(dz*cdlog(1d0-shat/xmz-ieps))
-      lzz=dlog(shat*xmz/(dz**2+(mz*gamz)**2))
-      endif
-
-c     gg, gz and zg box diagrams (IR singularity subtracted)
-      cpgz=(dz+2d0*uhat)*(dlog(that**2/shat**2)*lzz/2d0+
-     $     dlog(that**2/shat**2)**2/8d0-dlog(shat/xmz)**2/2d0-
-     $     dreal(spence(1d0+that/xmz+ieps))+
-     $     dreal(spence(1d0+xmz/that+ieps))-
-     $     2d0*dreal(spence(1d0-xmz/shat+ieps)))-
-     $     2d0*uhat*(dlog(that**2/xmz/xmz)/2d0-ldz/shat)
-      cmgz=-(dz+2d0*that)*(dlog(uhat**2/shat**2)*lzz/2d0+
-     $     dlog(uhat**2/shat**2)**2/8d0-dlog(shat/xmz)**2/2d0-
-     $     dreal(spence(1d0+uhat/xmz+ieps))+
-     $     dreal(spence(1d0+xmz/uhat+ieps))-
-     $     2d0*dreal(spence(1d0-xmz/shat+ieps)))+
-     $     2d0*that*(dlog(uhat**2/xmz/xmz)/2d0-ldz/shat)
-      cpgg=(shat+2d0*uhat)*(dlog(that**2/shat**2)**2/8d0-
-     $     dreal(spence(1d0+that/xmz+ieps))+pi2/3d0)-
-     $     uhat*dlog(that**2/shat**2)
-      cmgg=-(shat+2d0*that)*(dlog(uhat**2/shat**2)**2/8d0-
-     $     dreal(spence(1d0+uhat/xmz+ieps))+pi2/3d0)+
-     $     that*dlog(uhat**2/shat**2)
-      
-      a2qqz_qed=8d0*16d0*alpha0**3/pi*xqi*xqf*
-     $     (dz/den*(kapp*cpgz+kapm*cmgz)+
-     $     xqi*xqf/shat*(lp*cpgz+lm*cmgz)+
-     $     dz/den*xqi*xqf/2d0*(lp*cpgg+lm*cmgg)+
-     $     (xqi*xqf)**2/shat/2d0*(cpgg+cmgg))
-
       return
       end
 c*********************************************************************
@@ -909,48 +713,6 @@ c subtract delta_interf._v+s:
      $     2d0*dreal(spence(1d0+s/u+ieps)))-6d0-7d0/6d0*pi2)
 c      write(6,*)mue,form
       enddo
-      return
-      end
-
-
-c********************************************************************
-      subroutine softcollqed_nc(xs,xt,xqq,xmq,fqed)
-
-c soft photon contribution, eps = upper limit on photon energy
-c including final-state collinear photon radiation
-c sig(0+1) = sig0*(1+fqed)
-c from nutev code - needs to be adjusted
-
-      implicit none
-      integer i,j
-      real*8 xqq,xmq,fqed,fvps,fqedsoft,fqedcoll,fqedpdf
-      real*8 xs,xt,shat,that,eps,le,lds
-      complex*16 spence
-      real*8 pi,pi2
-    
-      include 'pwhg_wzgrad.h'
-
-      pi = 4d0*datan(1d0)
-      pi2 = pi2
-      shat = xs
-      that = xt
-      eps = deltas*dsqrt(shat)/2d0
-      le=dlog(2d0*eps/lambda)
-      lds=dlog(deltas)
-c soft photon radiation:
-      fqedsoft=2d0*le*(dlog(-that/xmq**2)-1d0)+
-     $     dlog(shat/xmq**2)+dlog(-that/xmq**2)*dlog(-that/shat)-
-     $     dlog(-that/xmq**2)**2/2d0-dreal(spence(1d0+shat/that+ieps))-
-     $     dlog(-that/shat)**2/2d0-pi2/3d0
-c soft part of PDF CT:
-      fvps=9d0+2d0/3d0*pi2+3d0*lds-2d0*lds**2
-      fqedpdf=(lds+3d0/4d0)*dlog(xmq**2/mu_f**2)-1d0+lds+lds**2+
-     $     lfc/4d0*fvps
-c add final-state collinear part (hadronic):
-      fqedcoll=9d0/4d0-pi2/3d0+lds-
-     $     (lds+3d0/4d0)*dlog(shat/xmq**2*deltac/2d0)
-
-      fqed=alpha0/pi*xqq**2*((fqedsoft+fqedpdf)+fqedcoll)
       return
       end
 c*******************************************************************

@@ -21,9 +21,6 @@ c pdfb: born pdf's, pdfs: pdfs with scaled x->x/z
       integer j,jb,fl1,fl2
       logical pwhg_isfinite
       external pwhg_isfinite,powheginput
-      real*8 ptl,ptn,etal
-      common/observsLO/ptl,ptn,etal
-      real*8 lcut,ncut,etlcut
 
 c Statement Functions
 c omz:(1-z)*pgg(z), 2.106 of FNO2007
@@ -139,16 +136,8 @@ c gq remnant
             if(powheginput('ewonly').eq.1)then 
             rescoll(jb) = rescoll_EW_CC(jb) !WZGRAD EDIT
             endif
-
-         if(powheginput('bare').eq.1.or.powheginput('calo').eq.1)then 
-         call LO_observables
-         lcut=powheginput('cut1')
-         ncut=powheginput('cut2')
-         etlcut=powheginput('cut3')
-            if(ptl.lt.lcut.or.ptn.lt.ncut.or.dabs(etal).gt.etlcut)then
-            rescoll(jb)=0d0
-            endif
-         endif
+c test
+c         rescoll(jb)=0d0
 
          tot=tot+rescoll(jb)
       enddo

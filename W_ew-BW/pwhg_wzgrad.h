@@ -46,8 +46,8 @@
 	complex*16 ieps
 	common/cc/ieps
 
-	integer flg_wgrad2,flg_zgrad2
-	common/flags/flg_wgrad2,flg_zgrad2
+	real*8 flg_wgrad2
+	common/flags/flg_wgrad2
 
 	real*8 br_sinv(4,4),rl_sinv(5,5)
 	common/invariants/br_sinv,rl_sinv

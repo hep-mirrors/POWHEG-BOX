@@ -123,7 +123,8 @@ c     q g -> W- qp
       endif
 
 c     begin WZGRAD EDIT
-      if(.not.flg_inequiv.and.flg_inbtilde.and.flg_wgrad2.eq.1)then
+      if(.not.flg_inequiv.and.flg_inbtilde.and.flg_wgrad2.eq.1
+     $.and.i.ne.0.and.j.ne.0)then
       call real_EW(fermion_flav,amp2_EW)
 c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq
       amp2=(amp2+amp2_EW)/(st_alpha/(2d0*pi))

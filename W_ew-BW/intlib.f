@@ -2047,9 +2047,7 @@ c      write(6,*)'                                       ---'
 c     wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 c new C0 function added on Aug.21 2004
 c      c1(0) = dreal(cscal(q3,0d0,m1,m3,m2))
-c      write(6,*)'1',q3,m1,m2,m3,c1(0)
       c1(0)=dreal(C0_(0d0,q3,0d0,m2,m1,m3,0))
-c      write(6,*)'2',c1(0)
       goto 100
  240  qq2 = q2
       qq1 = q1
@@ -3793,7 +3791,6 @@ c..summation of the 3 integrals ....................................
 c..error message for complex alpha................................
       write(6,21)
 21    format(1h ,'  i cannot handle a complex alpha!')
-      write(6,*)s,mf,m1,m2,m3
       stop
 501   return
       end

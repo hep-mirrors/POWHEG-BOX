@@ -17,11 +17,7 @@
 c     begin WZGRAD EDIT----------------
       logical flg_insigreal
       common/caloflags/flg_insigreal
-      real*8 ptl_nlo,ptn_nlo,etal_nlo
-      common/observsNLO/ptl_nlo,ptn_nlo,etal_nlo
-      real*8 ptl,ptn,etal
-      common/observsLO/ptl,ptn,etal
-      real*8 powheginput,lcut,ncut,etlcut
+      real*8 powheginput
       external powheginput
 c     end WZGRAD EDIT------------------
       flg_insigreal=.true.
@@ -88,68 +84,19 @@ c     zero rm (rp).
                call gen_real_phsp_isr
      #(xrad,jac_over_csi,jac_over_csi_p,jac_over_csi_m,
      #jac_over_csi_soft)
+
                call sigreal_btl(r0)
-c              begin WZGRAD EDIT========================================
-               if(powheginput('bare').eq.1.or.powheginput('calo')
-     $         .eq.1)then
-               call NLO_observables !change if lep/nu ever need difft cuts
-                                    !it's the w+/w- issue..
-               call LO_observables
-               lcut=powheginput('cut1')
-               ncut=powheginput('cut2')
-               etlcut=powheginput('cut3')
-                  if(ptl_nlo.lt.lcut.or.ptn_nlo.lt.ncut.or.
-     $            dabs(etal_nlo).gt.etlcut)then
-                     do j=1,flst_nalr
-                     r0(j)=0d0
-                     enddo
-                  endif
-               endif
-c              end WZGRAD EDIT==========================================
+
                if(flg_withsubtr) then
                call soft(r0s)
-c                 begin WZGRAD EDIT========================================
-                  if(powheginput('bare').eq.1.or.powheginput('calo')
-     $            .eq.1)then
-                  if(ptl.lt.lcut.or.ptn.lt.ncut.or.dabs(etal).gt.etlcut)
-     $            then
-                     do j=1,flst_nalr
-                     r0s(j)=0d0
-                     enddo
-                  endif
-               endif
-c              end WZGRAD EDIT==========================================
+
                   if(kn_emitter.ne.2) then
                   call collisrp(rp)
                   call softcollisrp(rps)
-c                    begin WZGRAD EDIT========================================
-                     if(powheginput('bare').eq.1.or.powheginput('calo')
-     $               .eq.1)then
-                        if(ptl.lt.lcut.or.ptn.lt.ncut.or.dabs(etal).gt.
-     $                  etlcut)then
-                           do j=1,flst_nalr
-                           rp(j)=0d0
-                           rps(j)=0d0
-                           enddo
-                        endif
-                     endif
-c                    end WZGRAD EDIT==========================================
                   endif
                   if(kn_emitter.ne.1) then
                   call collisrm(rm)
                   call softcollisrm(rms)
-c                    begin WZGRAD EDIT========================================
-                     if(powheginput('bare').eq.1.or.powheginput('calo')
-     $               .eq.1)then
-                        if(ptl.lt.lcut.or.ptn.lt.ncut.or.dabs(etal).gt.
-     $                  etlcut)then
-                           do j=1,flst_nalr
-                           rm(j)=0d0
-                           rms(j)=0d0
-                           enddo
-                        endif
-                     endif
-c                    end WZGRAD EDIT==========================================
                   endif
 c              remnants (see xscaled.pdf in docs directory)
                xl =log(kn_csimax/par_csicut)
@@ -198,9 +145,10 @@ c                    begin WZGRAD TEST EDIT--------------
                      resreal(iuborn)= resreal(iuborn)+rrr0
      #               -rrr0s-rrrp-rrrm+rrrps+rrrms+remnant
                      endif
+c test
+c                     resreal(iuborn)=0d0
+
 c                    end WZGRAD TEST EDIT----------------
-
-
 
                   else
 c     provide a damping factor for the singular region,
@@ -211,6 +159,9 @@ c     to avoid divergent integral (25 is an ad hoc value)
                   endif
                   if(flg_nlotest) then
                   out1=out1+rrr0
+c test
+c                  out1=0d0
+
                      if(flg_withsubtr) then
                      out0=out0-rrr0s-rrrp-rrrm+rrrps+rrrms+remnant
                         if(powheginput('ewonly').eq.1)then
@@ -1023,24 +974,43 @@ c     check if amp2 is finite
 
 c***********************************************************************
       subroutine NLO_observables
-
       implicit none
       include 'nlegborn.h'
       include 'pwhg_kn.h'
-
+      
+      integer calocuts
+      real*8 p1(4),p2(4),p3(4)
+      real*8 sp1(4),sp2(4),sp3(4),dR
       real*8 thetal,thetan,etan_nlo
       real*8 ptl_nlo,ptn_nlo,etal_nlo
       common/observsNLO/ptl_nlo,ptn_nlo,etal_nlo
+      real*8 powheginput
+      external powheginput
+c smearing and recombination
+      calocuts = powheginput('calo')
+      if(calocuts.eq.1)then
+         call momentumprep_MES(p1,p2,p3)
+         call smear(p1,p2,p3,sp1,sp2,sp3)
+c dR cut is applied in delR, if dR< 0.1 recombine
+         if(powheginput('wgrad2').eq.1)call delR(sp1,sp2,sp3,dR)
+         ptl_nlo = dsqrt(sp1(1)**2+sp1(2)**2)
+         ptn_nlo = dsqrt(sp2(1)**2+sp2(2)**2)
 
-      ptl_nlo = dsqrt(kn_preal(1,3)**2+kn_preal(2,3)**2)
-      ptn_nlo = dsqrt(kn_preal(1,4)**2+kn_preal(2,4)**2)
+         thetal=atan2(ptl_nlo,sp1(3))
+         thetan=atan2(ptn_nlo,sp2(3))
 
-      thetal=atan2(ptl_nlo,kn_preal(3,3))
-      thetan=atan2(ptn_nlo,kn_preal(3,4))
+         etal_nlo=-dlog(dtan(thetal/2d0))
+         etan_nlo=-dlog(dtan(thetan/2d0))
+      else
+         ptl_nlo = dsqrt(kn_preal(1,3)**2+kn_preal(2,3)**2)
+         ptn_nlo = dsqrt(kn_preal(1,4)**2+kn_preal(2,4)**2)
 
-      etal_nlo=-dlog(dtan(thetal/2d0))
-      etan_nlo=-dlog(dtan(thetan/2d0))
-  
+         thetal=atan2(ptl_nlo,kn_preal(3,3))
+         thetan=atan2(ptn_nlo,kn_preal(3,4))
+
+         etal_nlo=-dlog(dtan(thetal/2d0))
+         etan_nlo=-dlog(dtan(thetan/2d0))
+      endif            
       end
 c***********************************************************************
 

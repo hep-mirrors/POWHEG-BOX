@@ -88,6 +88,10 @@ C---CALL HWUSTA TO MAKE ANY PARTICLE STABLE
 c     check parameters
       logical verbose
       parameter (verbose=.false.)
+c WZGRAD edit begin
+      logical flg_saverand
+      common/pwhg_flg_saverand/flg_saverand
+c WZGRAD edit end
 
       if (ierror.ne.0) then
          if(verbose) then
@@ -99,6 +103,9 @@ c     check parameters
          return
       endif
       if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
+c WZGRAD edit begin
+      flg_saverand=.true.
+c WZGRAD edit end
       call analysis(xwgtup)
       call pwhgaccumup 
       end

@@ -132,7 +132,10 @@ c***********************************************************************
 c     check parameters
       logical verbose
       parameter (verbose=.false.)
-      
+c WZGRAD edit begin
+      logical flg_saverand
+      common/pwhg_flg_saverand/flg_saverand
+c WZGRAD edit end
       if(mint(51).ne.0) then
          if(verbose) then
             write(*,*) 'Killed event'
@@ -144,6 +147,9 @@ c     check parameters
       endif
       nevhep=nevhep+1
       if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
+c WZGRAD edit begin
+      flg_saverand=.true.
+c WZGRAD edit end
       call analysis(xwgtup)
       call pwhgaccumup 
       end

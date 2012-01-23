@@ -346,7 +346,6 @@ c     process:  i(p4)+i'(p3)->gamma,z(s=q^2)->f(p2)+f'(p1).
       implicit none
       include 'pwhg_wzgrad.h'
       integer i,mix
-      real*8 test1,test2
       real*8 boxq,box_ww,boxt_zz,boxu_zz
       real*8 boxt_v1v2,boxu_v1v2
       real*8 t1,t2,sp,den,denz,mmff,mmii,xs,xt,xu
@@ -489,10 +488,6 @@ c      fvgf=0d0
 *
       sigq_weak_all=16d0*alpha0**2*(sigz_weak/den+sigg_weak/sp**2+
      $     (sp-mz**2)/den/sp*siggz_weak)
-c
-c      born=a2qqz(sp,t1,t2,xvf,xaf,xqf,xvi,xai,xqi,alpha0,alpha0)
-c      write(6,*)'1',born+sigq_weak_all
-c      test1=born+sigq_weak_all
  90   continue
 c      if(mz.gt.0d0) goto 99
 *
@@ -544,12 +539,6 @@ c conjugate complex:
      $     sigg_weak/sp**2/(1d0+dreal(piggs))**2+
      $     1d0/den/sp/(1d0+dreal(pizs))/(1d0+dreal(piggs))*siggz_weak)
  99   continue
-c      write(6,*)'2:',sigq_weak_all
-c      test2=sigq_weak_all
-c      if (dabs(test1-test2).gt.1d1) then
-c         write(6,*)test1,test2
-c         write(6,*)denz,pizs
-c      endif
 c      if (mz.gt.0d0) goto 9999
 c-------------------------------------------------------------
 c matrix element squared for weak boxes to Z,gamma production:
@@ -2010,25 +1999,6 @@ c      c0=cscal(s,1d-1,mw,mw,0d0)
       factor=-3d0*dlog(xmw/mue2)+2d0*w+4d0-(2d0*w+1d0)*b0+
      $     2d0*xmw*(2d0+w)*c0
       vfww=alpha0/4d0/pi*factor
-c checks
-c      write(6,*)'factor (DW)',factor*2d0*cw/4d0/sw**3*(2d0*cw*sw*a)*
-c     $     alpha0/4d0/pi
-c Kwangwoo's factor
-c      c1=3.865d-5
-c      c2=c1
-c      c00=-2.06867d0
-c      c12=-9.63669d-6
-c      factor=-(4d0+4d0*s*(c1+c2+c12)-24d0*c00)
-c      write(6,*)'factor (KP)',factor*cw/16d0/sw**3*(2d0*cw*sw*a)*
-c     $     alpha0/pi
-*
-c for comparison with Kwangwoo:
-c      vfws=dcmplx(0d0,0d0)
-c      vfz=dcmplx(0d0,0d0)
-c      vfw=dcmplx(0d0,0d0)
-c      vfww=dcmplx(0d0,0d0)
-c      sgz0=0d0
-      
       t3f=2d0*cw*sw*a
       fvz=(v*(v**2+a**2)+a*2d0*v*a)*vfz+
      $     (vs+as)/4d0/sw**2*vfw+(v+a)/4d0/sw**2*vfws-
@@ -2142,8 +2112,6 @@ c     $     c0,c11,c12,c21,c22,c20,c23)
 c      factor=b01-2d0-xmz*(c11+c12)-2d0*s*(c0+c11+c12)
 c
       fv(1) = alpha0/4d0/pi*(v+a)*(vs+as)*factor
-c      write(6,*)'Z exch, DW:',c0/t,factor
-c      write(6,*)'Z exch, KP:',-2d0-2d0*t*(c0+c12)-t*(c1+c2)+4d0*c00
 *
 c wzw-vertex:
 c      c0 = cscal(t,1d-1,mz,mw,0d0)
@@ -2260,7 +2228,6 @@ c pure photonic contribution to the formfactors:
 c******************************************************************
       subroutine fvboxwg_new(iqqbar,xt,xs,xqi,xqis,xqfs,xmi,xmis,
      &                                                  xmfs,form)
-
 c     pure photonic contribution to W exchange box diagrams:
       implicit none
       include 'pwhg_wzgrad.h'
@@ -2348,13 +2315,6 @@ c      stop
       if(iqqbar.eq.2) factor(2)=128d0*qqi*qqfs*u**2*(u*d0-c0234-c0134)
 *
       form = alpha0/4d0/pi*(factor(1)+factor(2))
-c comparison with Kwangwoo:
-      write(6,*)'Wg box',alpha0/4d0/pi*
-     $     (w2*gfermi*xmw*sw2)**2/2d0/(t-xmw)/(t-xmw)*
-     $     4d0*(t-xmw)*dreal(factor(1))/8d0/sw2/sw2
-      write(6,*)'Wg crossed box',alpha0/4d0/pi*
-     $     (w2*gfermi*xmw*sw2)**2/2d0/(t-xmw)/(t-xmw)*
-     $     4d0*(t-xmw)*dreal(factor(2))/8d0/sw2/sw2
       return
       end
 c******************************************************************
@@ -2563,7 +2523,6 @@ c photon-self energy (has been checked by comparison with Wolf)
       pi = 4d0*datan(1d0)
       pi2 = pi**2
       s=xs
-c      s=150d0
       agferm = dcmplx(0d0,0d0)
       do ff=4,12
          call prop(ff,m,q,v,a,nc)
@@ -2577,9 +2536,6 @@ c      s=150d0
       agboson = 3d0*s*dlog(xmw/mue2)-(4d0*xmw+3d0*s)*cfw
 *
       siggg2 = alpha0/4d0/pi*(agferm+agboson)
-*
-c      write(6,*)siggg,alpha0/4d0/pi*agferm,alpha0/4d0/pi*agboson
-c      stop
 *
       end
 c******************************************************************

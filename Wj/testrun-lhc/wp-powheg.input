@@ -39,7 +39,7 @@ xupbound 2d0   ! increase upper bound for radiation generation
 #bornonly   1      ! (default 0) if 1 do Born only
 #smartsig   0      ! (default 1) remember equal amplitudes (0 do not remember)
 #withsubtr  0      ! (default 1) subtract real counterterms (0 do not subtract)
-#withdamp    1      ! (default 0, do not use) use Born-zero damping factor
+withdamp    1      ! (default 0, do not use) use Born-zero damping factor
 #ptsqmin    0.8    ! (default 0.8 GeV) minimum pt for generation of radiation
 #charmthr   1.5    ! (default 1.5 GeV) charm treshold for gluon splitting 
 #bottomthr  5.0    ! (default 5.0 GeV) bottom treshold for gluon splitting

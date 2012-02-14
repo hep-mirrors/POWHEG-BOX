@@ -66,17 +66,38 @@ c  cant have srdiags if zerowidth is true
       endif
 
       if ((abs(vdecaymodeWp).ne.11).and.(abs(vdecaymodeWp).ne.13)
-     .     .and.(abs(vdecaymodeWp).ne.15)) then
+     .     .and.(abs(vdecaymodeWp).ne.15)
+     .     .and.(abs(vdecaymodeWp).ne.1)   ! down quark
+     .     .and.(abs(vdecaymodeWp).ne.3)   ! strange quark
+     .     .and.(abs(vdecaymodeWp).ne.7)   ! all hadrons
+     .                     ) then
          stop 'W decay mode should be put in terms of the charged 
-     .   leptons: +/- 11, +/-13, +/-15 only'
+     .   leptons: +/- 11, +/-13, +/-15 only, '//
+     .   'or hsdrons : +/-1, +/-3, +/-7 for either +-1 or +-3'
       endif
 
       if ((abs(vdecaymodeWm).ne.11).and.(abs(vdecaymodeWm).ne.13)
-     .     .and.(abs(vdecaymodeWm).ne.15)) then
+     .     .and.(abs(vdecaymodeWm).ne.15)
+     .     .and.(abs(vdecaymodeWm).ne.1)   ! down quark
+     .     .and.(abs(vdecaymodeWm).ne.3)   ! strange quark
+     .     .and.(abs(vdecaymodeWm).ne.7)   ! all hadrons
+     .                     ) then
          stop 'W decay mode should be put in terms of the charged 
-     .   leptons: ±11,±13,±15 only'
+     .   leptons: +/- 11, +/-13, +/-15 only, '//
+     .   'or hadrons : +/-1, +/-3, +/-7 for either +-1 or +-3'
       endif
 
+c     change the LHUPI id of the process according to vector boson id
+c     and decay
+c     10000+idup of first decay product of W1 + decay product of W2
+      lprup(1)=10000-100*vdecaymodeWp+vdecaymodeWm 
+
+c we pretend that quarks are not quarks, otherwise POWHEG
+c makes them radiate
+      if(abs(vdecaymodeWm).le.7)
+     . vdecaymodeWm = sign(1,vdecaymodeWm)*(abs(vdecaymodeWm) + 100)
+      if(abs(vdecaymodeWp).le.7)
+     . vdecaymodeWp = sign(1,vdecaymodeWp)*(abs(vdecaymodeWp) + 100)
 
       if (vdecaymodeWp.gt.0) then
          stop 'W+ decays inconsistent' 
@@ -100,15 +121,17 @@ c -- are these even used?
       if (vdecaymodeWp.eq.-11) write(*,*) '         to e+ ve  '
       if (vdecaymodeWp.eq.-13) write(*,*) '         to mu+ vm '
       if (vdecaymodeWp.eq.-15) write(*,*) '         to tau+ vt'
+      if (vdecaymodeWp.eq.-101) write(*,*) '         to u dbar'
+      if (vdecaymodeWp.eq.-103) write(*,*) '         to c sbar'
+      if (vdecaymodeWm.eq.-107) write(*,*) '        to u dbar or c sbar'
       write(*,*)'            and'
       if (vdecaymodeWm.eq.11) write(*,*) '         to e- ve~  '
       if (vdecaymodeWm.eq.13) write(*,*) '         to mu- vm~ '
       if (vdecaymodeWm.eq.15) write(*,*) '         to tau- vt~'
+      if (vdecaymodeWm.eq.101) write(*,*) '         to ubar d'
+      if (vdecaymodeWm.eq.103) write(*,*) '         to cbar s'
+      if (vdecaymodeWm.eq.107) write(*,*) '         to ubar d or cbar s'
 
-c     change the LHUPI id of the process according to vector boson id
-c     and decay
-c     10000+idup of first decay product of W1 + decay product of W2
-      lprup(1)=10000+100*vdecaymodeWp+vdecaymodeWm 
       
 
 c     index of the first coloured particle in the final state

@@ -1,7 +1,9 @@
 ! ZZ boson production parameters
 
-vdecaymodeWp -11 ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
-vdecaymodeWm 13  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
+vdecaymodeWp -11 ! PDG code for charged decay product of the vector boson
+                 ! (1:dbar; 3: sbar; 7: dbar or sbar; -11:e+; -13:mu+; -15:tau+)  
+vdecaymodeWm 13  ! PDG code for charged decay product of the vector boson
+                 ! (1:d; 3: s; 7: d or s; 11:e-; 13:mu-; 15:tau-)
 mllmin 20d0      ! Minimum invariant mass of lepton pairs from Z decay
 #dronly 0        ! default 0; if 1 only double resonant diagrams
 #zerowidth 1     ! default 0 (offshell Zs); if 1 generate Z's on shell

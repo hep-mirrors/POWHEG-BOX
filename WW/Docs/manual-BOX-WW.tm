@@ -1,4 +1,4 @@
-<TeXmacs|1.0.7.2>
+<TeXmacs|1.0.7.3>
 
 <style|article>
 
@@ -10,11 +10,17 @@
   The POWHEG-BOX-WW program <cite|noi> can be used to generate the QCD
   production of <math|W<with|math-level|2|<rsup|+>>
   W<rsup|<with|math-level|1|->>> events in hadronic collisions, with the
-  <math|W>-bosons decaying into leptons, to NLO accuracy in QCD, in such a
-  way that matching with a full shower program is possible. It is based upon
-  the calculation of refs. <cite|Dixon:1998py>, <cite|Campbell:1999ah>,
-  <cite|Campbell:2011bn>. The effect of off-shell singly resonant graphs, is
-  fully included in the calculation. Anomalous coupling can also be included.\ 
+  <math|W>-bosons decaying into leptons or hadrons, to NLO accuracy in QCD,
+  in such a way that matching with a full shower program is possible. In case
+  of decays into hadrons, NLO corrections to the decay processes are not
+  included. This is unlikely to be necessary: most shower Monte Carlo do
+  already a good job in dressing the <math|W> decay with QCD radiation, since
+  they have been fit to LEP2 data.
+
+  This generator is based upon the calculation of refs. <cite|Dixon:1998py>,
+  <cite|Campbell:1999ah>, <cite|Campbell:2011bn>. The effect of off-shell
+  singly resonant graphs is fully included in the calculation. Anomalous
+  coupling can also be included.\ 
 
   \ If the <math|W >-bosons decay into a leptons of the same flavour (e.g.
   <math|e<rsup|+> e<rsup|->>), then the <math|ZZ > production of this signal
@@ -42,24 +48,41 @@
 
   Parameters in <with|font-family|tt|powheg.input> that are specific to
   <math|W W> pair production:<next-line><with|font-family|tt|vdecaymodeWp -11
-  \ \ \ ! decay mode to charged lepton of W+
-  (-11=e+,-13=mu+,etc.)><next-line><with|font-family|tt|vdecaymodeWm 13
-  \ \ \ \ ! decay mode to charged lepton of W-
-  (11=e-,13=mu-,etc.)><next-line>Only leptonic decay modes are implemented at
-  this stage. <with|font-family|tt|<next-line><with|font-family|tt|dronly
-  \ \ \ \ \ \ 0 \ \ \ \ \ ! (default 0), if 1 include only double resonant
-  contributions> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ zerowidth
-  \ \ \ 0 \ \ \ \ \ ! (default 0), if 1 use on-shell
-  <with|mode|math|W>-bosons only> <next-line><with|font-family|tt|runningwidth
-  0 \ \ \ \ \ ! (default 0), if 1 use running width>
-  \ \ <next-line><with|font-family|tt|fixedscale \ \ -1 \ \ \ \ ! (default
-  -1) if \<gtr\>= 0, use fixed scale mu = M_W
+  \ \ \ ! decay mode of W+ (-1=dbar, -3=sbar, -7=dbar or sbar,<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -11=e+, -13=mu+,
+  -15=tau+.)><next-line><with|font-family|tt|vdecaymodeWm 13 \ \ \ \ ! decay
+  mode \ of W- (1=d, 3=s, 7=d or s, <next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 11=e-,13=mu-,15=tau-.)><with|font-family|tt|<next-line><with|font-family|tt|dronly
+  \ \ \ \ \ \ 0 \ \ \ \ \ ! (default 0), if 1 include only double<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! resonant
+  contributions><next-line>zerowidth \ \ \ 0 \ \ \ \ \ ! (default 0), if 1
+  use on-shell <with|mode|math|W>-bosons only>
+  <next-line><with|font-family|tt|runningwidth 0 \ \ \ \ \ ! (default 0), if
+  1 use running width> \ \ <next-line><with|font-family|tt|fixedscale \ \ -1
+  \ \ \ \ ! (default -1) if \<gtr\>= 0, use fixed scale mu = M_W
   \ \ \ \ \ \ \ \ ><with|font-family|tt|btlscalereal 0 \ \ \ \ \ ! (default
   0) if 1, changes scale for real emission>
   <next-line><with|font-family|tt|btlscalect \ \ 0 \ \ \ \ \ ! (default 0) if
-  1, sets scale in counterterm same as Born scale>
+  1, sets scale in counterterm<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! \ same as Born scale>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <next-line><with|font-family|tt|withdamp
   \ \ \ \ 1 \ \ \ \ \ ! (default 1) use Born-zero damping factor >
+
+  \;
+
+  The CKM matrix is assumed diagonal. As an
+  example<next-line><with|font-family|tt|vdecaymodeWp -7 \ \ \ \ ! decay mode
+  of W+ (-1=dbar, -3=sbar, -7=dbar or sbar,<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -11=e+, -13=mu+,
+  -15=tau+.)><next-line><with|font-family|tt|vdecaymodeWm 13 \ \ \ \ ! decay
+  mode \ of W- (1=d, 3=s, 7=d or s, <next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 11=e-,13=mu-,15=tau-.)><next-line>is
+  the semileptonic decay <math|\<mu\> <wide|\<nu\>|\<bar\>><rsub|><rsub|\<mu\>>
+  + hadrons>.
 
   \;
 

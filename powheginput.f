@@ -117,6 +117,15 @@ c skip blanks
          close(33)
          ini=1
       endif
+      if(stringa.eq.'print unused tokens') then
+         do j=1,numvalues
+            if(.not.used(j)) then
+               write(*,*)'powheginput WARNING: unused variable ',
+     1              keywords(j)
+            endif
+         enddo
+         return
+      endif
       if(string(1:1).eq.'#') then
          string=string(2:)
          imode=0

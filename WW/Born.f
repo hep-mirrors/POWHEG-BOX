@@ -96,7 +96,7 @@ C     -- here the bornjk is very simple B_i j = B C_i
          icolup(1,m2)=0
          icolup(2,m2)=ic
 c strong correctino to hadronic width
-         xwgtup = xwgtup*(1+ph_deltas)
+         xwgtup = xwgtup*(1+ph_deltas)*3
 c in this case it is any hadron
          if(idup(m1).eq.7) then
             if(random().gt.0.5d0) then

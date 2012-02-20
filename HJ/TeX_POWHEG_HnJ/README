@@ -1,0 +1,15 @@
+To build the paper, you need a recent version
+of gnuplot.
+
+do:
+
+./rebin.sh
+
+cd plots
+
+./make_figures
+
+cd ../
+
+make pdf
+

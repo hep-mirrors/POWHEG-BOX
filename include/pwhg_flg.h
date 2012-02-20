@@ -12,11 +12,14 @@ c                     that there are no coloured light partons before flst_light
       logical flg_nlotest,flg_withsubtr,flg_withdamp,flg_withreg,
      1     flg_smartsig,flg_bornonly,flg_debug,flg_withnegweights,
      2     flg_jacsing,flg_weightedev,flg_pdfreweight,flg_collremnsamp,
-     3     flg_lightpart_check,flg_btlscalereal,flg_btlscalect
+     3     flg_lightpart_check,flg_btlscalereal,flg_btlscalect,
+     4     flg_ckkwscalup
       character * 1 flg_btildepart
+      character * 20 flg_processid
       common/pwhg_flg/flg_nlotest,flg_withsubtr,flg_withdamp,
      2     flg_withreg,flg_smartsig,flg_bornonly,flg_debug,
      3     flg_withnegweights,flg_jacsing,flg_weightedev,
      4     flg_pdfreweight,flg_collremnsamp,flg_lightpart_check,
-     5     flg_btlscalereal,flg_btlscalect,flg_btildepart
+     5     flg_btlscalereal,flg_btlscalect,flg_ckkwscalup,
+     6     flg_btildepart,flg_processid
       save /pwhg_flg/

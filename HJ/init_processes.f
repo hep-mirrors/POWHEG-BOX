@@ -18,7 +18,7 @@ c defaults for powheg running
       par_2gsupp=powheginput("#par_2gsupp")
       if(par_2gsupp.lt.0) par_2gsupp=2d0
 
-      flg_bornzerodamp=.true.
+      flg_withdamp=.true.
 
       flg_weightedev=.true.
 

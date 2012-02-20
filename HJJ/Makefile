@@ -17,7 +17,7 @@ ifeq ("$(COMPILER)","gfortran")
 F77=gfortran -fno-automatic 	
 ## -fbounds-check sometimes causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
-FFLAGS= -Wall -Wimplicit-interface -fbounds-check
+#FFLAGS= -Wall -Wimplicit-interface -fbounds-check
 ## For floating point exception trapping  uncomment the following 
 #FPE=-ffpe-trap=invalid,zero,overflow
 #,underflow 
@@ -134,7 +134,6 @@ H2JVFILES= A0HAQgg.o A0phiAQgg.o A0phiggggpppp.o A1phiAQggmpmm.o A1phiAgQgmppp.o
 MCFMFILES=i2mcfm_2_POWHEG.o set_interface_MCFM.o i2mcfm_fill.o \
 	dotem.o set_epinv.o coupling.o
 
-MADLIBS=libmadgraph.a libmodel.a libdhelas3.a
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	LesHouches.o LesHouchesreg.o gen_Born_phsp.o find_regions.o	\
@@ -150,6 +149,8 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 
 LIBDIRMG=.
 LINKMGLIBS =  -L$(LIBDIRMG)  -lmadgraph -lmodel -ldhelas3 
+
+MADLIBS=libdhelas3.a libmadgraph.a libmodel.a
 
 # target to generate LHEF output
 pwhg_main:$(PWHG)  $(MADLIBS)
@@ -183,7 +184,7 @@ main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to cleanup
-.PHONY: clean
+.PHONY: clean libdhelas3.a libmadgraph.a libmodel.a
 clean:
 	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef	\
 	main-PYTHIA-lhef

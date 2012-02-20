@@ -1,1 +1,0 @@
-../MadGraphStuff/BuildMad.sh

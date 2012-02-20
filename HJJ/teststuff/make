@@ -1,0 +1,6 @@
+
+
+gfortran -ffpe-trap=invalid,zero,overflow,underflow -fbounds-check\
+ -ggdb -I ../ -I ../../include/ testint.f vegas_p.f ../../boostrot.f ../Born_phsp.f\
+ bbbmap.f Born_phsp-vbf.f ../../random.f ../../cernroutines.f\
+ ../../powheginput.f ../../bra_ket_subroutines.f bornvbfh.f initcoup.f

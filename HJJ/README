@@ -1,0 +1,22 @@
+In order to build the program, first all MadGraph routines must
+be built. Do the following:
+
+$ sh ./MakeMad.sh
+
+In order to build a version for debugging,
+do
+
+$ sh ./MakeMad.sh -g
+
+and all MadGraph subroutines will have no optimization and debug information.
+
+Then do
+
+$ make
+
+to build the pwhg_main executable.
+
+$ cd  testrun-lhc
+$ ../pwhg_main
+
+to run.

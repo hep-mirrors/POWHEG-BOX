@@ -64,11 +64,11 @@ c the only parameters relevant for this process are set
 c via powheginput. All others are needed for the
 c madgraph routines not to blow.
       alpha=1/128.9d0
-      alpha=1/1.32506980E+02
-      gfermi = 0.1166390d-4
+      alpha=1/1.32506980d+02
+      gfermi = 1.16639000d-05
       alfas = 0.119d0
-      zmass = 91.188d0
-      tmass = 174.3d0
+      zmass = 9.11880000d+01
+      tmass = 1.74300000d+02
       lmass = 0d0
       mcMS = 0d0
       mbMS = 0d0
@@ -78,13 +78,13 @@ c madgraph routines not to blow.
       cmass = 0d0
       bmass = 0d0
       lmass=0d0
-      hmass = powheginput('#hmass')
+      hmass = powheginput('hmass')
       wmass=sqrt(zmass**2/Two+
      $     sqrt(zmass**4/Four-Pi/Rt2*alpha/gfermi*zmass**2))
-      twidth=1.5083d0
-      hwidth = powheginput('#hwidth')
-      zwidth=2.441d0
-      wwidth=2.0476d0
+      twidth=1.50833649d+00
+      hwidth = powheginput('hwidth')
+      zwidth=2.44140351d+00
+      wwidth=2.04759951d+00
       end
 
       subroutine set_ebe_couplings

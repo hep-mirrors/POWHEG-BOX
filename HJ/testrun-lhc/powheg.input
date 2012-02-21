@@ -1,4 +1,4 @@
-numevts 20000     ! number of events to be generated
+numevts 1500000   ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)
 ebeam1 3500d0     ! energy of beam 1
@@ -20,14 +20,14 @@ hmass 120
 hwidth 5.75308848E-03
 
 
-ncall1   100000   ! number of calls for initializing the integration grid
+ncall1   30000    ! number of calls for initializing the integration grid
 itmx1    5      ! number of iterations for initializing the integration grid
 ncall2   200000     ! number of calls for computing the integral and finding upper bound
 itmx2    5  ! number of iterations for computing the integral and finding upper bound
 foldcsi   1    ! number of folds on csi integration
 foldy     1     ! number of folds on  y  integration
 foldphi   1      ! number of folds on phi integration
-nubound  200000    ! number of bbarra calls to setup norm of upper bounding function
+nubound 200000    ! number of bbarra calls to setup norm of upper bounding function
 
 ! OPTIONAL PARAMETERS
 
@@ -36,11 +36,11 @@ nubound  200000    ! number of bbarra calls to setup norm of upper bounding func
 #bornonly   0      ! (default 0) if 1 do Born only
 #testplots  1      ! (default 0, do not) do NLO and PWHG distributions
 
-#iseed    12345    ! initialize random number sequence 
-#rand1     -1      ! initialize random number sequence 
+iseed    12    ! initialize random number sequence 
+rand1     3      ! initialize random number sequence 
 #rand2     -1      ! initialize random number sequence 
 
-manyseeds  1       ! Used to perform multiple runs with different random
+#manyseeds  1       ! Used to perform multiple runs with different random
                    ! seeds in the same directory.
                    ! If set to 1, the program asks for an integer j;
                    ! The file pwgseeds.dat at line j is read, and the
@@ -52,8 +52,5 @@ manyseeds  1       ! Used to perform multiple runs with different random
 withnegweights 1
 
 bwcutoff 15
-
-# fullphsp 1         ! use ISR/FSR phase space parametrization, default 0, do not
-
 
 

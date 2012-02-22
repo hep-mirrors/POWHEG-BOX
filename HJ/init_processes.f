@@ -20,7 +20,11 @@ c defaults for powheg running
 
       flg_withdamp=.true.
 
-      flg_weightedev=.true.
+      if(powheginput("#bornsuppfact").ne.0) then
+         flg_weightedev=.true.
+      else
+         flg_weightedev=.false.
+      endif
 
       flg_ckkwscalup=.true.
       if(powheginput("#ckkwscalup").eq.0) then

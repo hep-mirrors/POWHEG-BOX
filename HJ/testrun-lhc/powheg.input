@@ -19,6 +19,8 @@ use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound
 hmass 120
 hwidth 5.75308848E-03
 
+higgsfixedwidth 1 ! (default 0) If 1 use fixed width Breith-Wigner formula
+                  ! if 0 use the running width Breit-Wigner
 
 ncall1   30000    ! number of calls for initializing the integration grid
 itmx1    5      ! number of iterations for initializing the integration grid

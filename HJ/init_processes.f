@@ -7,6 +7,7 @@
       include "pwhg_st.h"
       include "coupl.inc"
       integer i
+      real * 8 tmp
       real * 8 powheginput
       external powheginput
 c defaults for powheg running

@@ -23,6 +23,12 @@ c defaults for powheg running
       if(powheginput("#bornsuppfact").ne.0) then
          flg_weightedev=.true.
       else
+         tmp=powheginput("#bornktmin")
+         if(tmp.le.0) then
+            write(*,*) "If bornsuppfact=0 you must specify"//
+     1  " a generation cut bornktmin>0"
+            call exit(-1)
+         endif
          flg_weightedev=.false.
       endif
 

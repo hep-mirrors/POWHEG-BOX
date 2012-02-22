@@ -18,6 +18,8 @@ c     set initial- and final-state masses for Born and real
          kn_masses(nlegreal)=0
          kn_masses(3)=hmass
          ph_HmHw=hmass*hwidth
+         ph_Hmass=hmass
+         ph_Hwidth=hwidth
          ph_Hmass2=hmass**2
          bwcutoff=powheginput("bwcutoff")
          ph_Hmass2low=max(hmass-bwcutoff*hwidth,0d0)**2
@@ -104,14 +106,20 @@ c     kn_minmass=sqrt(ph_Hmass2low)
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-4)
       real * 8 m2,xjac,taumin,tau,y,beta,vec(3),cth,cthdec,phidec,s,
-     # z,zhigh,zlow,dir(3),khiggs,cthmax
+     # z,zhigh,zlow,dir(3),khiggs,cthmax,BW_fixed,BW_running
+      real * 8 powheginput
       integer mu,k,j
-      logical ini
+      logical ini,higgsfixedwidth
       data ini/.true./
-      save ini
+      save ini,higgsfixedwidth
+      external powheginput
 c Phase space:
 c d m2/(2 pi) d omega /(8*(2 pi)^2)  (s-m2)/2
 c omega: 3d angle in CM system
+      if(ini) then
+         higgsfixedwidth=powheginput("#higgsfixedwidth").gt.0
+         ini=.false.
+      endif
       zlow=atan((ph_Hmass2low  - ph_Hmass2)/ph_HmHw)
       zhigh=atan((min(ph_Hmass2high,kn_sbeams)  - ph_Hmass2)/ph_HmHw)
       z=zlow+(zhigh-zlow)*xborn(1)
@@ -119,6 +127,18 @@ c omega: 3d angle in CM system
       m2=ph_HmHw*tan(z)+ph_Hmass2
 c     The BW integrates to Pi ==> divide by Pi
       xjac=xjac/pi
+
+      if(.not.higgsfixedwidth) then
+c     running width
+         BW_fixed=ph_HmHw/((m2-ph_Hmass2)**2 + ph_HmHw**2)
+         BW_running= (m2*ph_Hwidth/ph_Hmass) /
+     $        ((m2-ph_Hmass2)**2+(m2*ph_Hwidth/ph_Hmass)**2)
+         xjac = xjac * BW_running/BW_fixed
+      endif
+
+c     assign the Higgs boson mass
+      kn_masses(3)=sqrt(m2)
+
 c d x1 d x2 = d tau d y;
       taumin=( sqrt(m2+brkn_ktmin**2) + brkn_ktmin )**2/kn_sbeams
       tau=exp(log(taumin)*(1-xborn(2)**2))

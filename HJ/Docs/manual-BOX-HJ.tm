@@ -37,19 +37,26 @@
   Higgs transverse momentum in the <next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! underlying Born
   kinematics<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner is
-  probed between hmass +- 15*hwidth<next-line>#bornktmin \ 5 \ \ \ \ \ \ !
-  (default 0), generation cut: minimum transverse momentum <next-line>
+  probed between hmass +- 15*hwidth<next-line>higgsfixedwidth 1 \ \ !
+  (default 0), If 1 uses standard, fixed width Breith-Wigner<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! formula, if 0 it uses the running
+  width Breit-Wigner<next-line>#bornktmin \ 5 \ \ \ \ \ \ ! (default 0),
+  generation cut: minimum transverse momentum <next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! of the Higgs at the underlying Born
-  level.<next-line>#bornsuppfact 1 \ \ \ \ ! (default 1), Born suppression
-  factor. Weighted events<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
-  are generated<next-line>#ckkwscalup 1 \ \ \ \ \ \ ! (default 1), compute
-  the scalup scale for subsequent<next-line>
+  level.<next-line>#bornsuppfact 1 \ \ \ \ ! (default 1), If 1 the Born
+  suppression factor is included.<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! Weighted events are generated. If 0
+  no suppression<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! factor is
+  included, and events are unweighted. A <next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! generation cut bornktmin\<gtr\>0
+  must be supplied in this case<next-line>#ckkwscalup 1 \ \ \ \ \ \ !
+  (default 1), If 1 compute the scalup scale for subsequent<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! shower using the smallest kt in the
   final state;<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! If 0, use
   the standard POWHEG BOX scalup (see section 5.3<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! of ref <cite|noi> for
-  details)<next-line>withnegweights 1 \ \ \ ! Default 0; include negative
-  weighted events>
+  details)<next-line>withnegweights 1 \ \ \ ! Default 0; If 1 include
+  negative weighted events>
 
   For the use of the <with|font-family|tt|bornktmin> and of the
   <with|font-family|tt|bornsuppfact>, consult the general
@@ -92,6 +99,8 @@
 <\auxiliary>
   <\collection>
     <\associate|bib>
+      noi
+
       noi
     </associate>
     <\associate|toc>

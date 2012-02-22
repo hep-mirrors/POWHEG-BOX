@@ -36,8 +36,11 @@
   scale;<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! if 1 use the hat
   Ht scale (see eq. (5.1) in<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
   ref. <cite|noi>)<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner
-  is probed between hmass +- 15*hwidth<next-line>#ckkwscalup 1 \ \ \ \ \ \ !
-  (default 1), compute the scalup scale for subsequent<next-line>
+  is probed between hmass +- 15*hwidth<next-line>higgsfixedwidth 1 \ \ !
+  (default 0), If 1 uses standard, fixed width Breith-Wigner<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! formula, if 0 it uses the running
+  width Breit-Wigner<next-line>#ckkwscalup 1 \ \ \ \ \ \ ! (default 1),
+  compute the scalup scale for subsequent<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! shower using the smallest kt in the
   final state;<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! If 0, use
   the standard POWHEG BOX scalup (see section 5.3<next-line>
@@ -48,13 +51,19 @@
   In this program, at variance with the <with|font-family|tt|HJ> generator,
   there is no option for the generation of unweighted events. One must
   therefore use a Born suppression factor. Generation cuts may be introduced
-  by suitably modifying the suppression factor. We will introduce this
+  by suitably modifying the suppression factor. We may introduce this
   possibility in the future depending upon user's requests.
 
   The Born suppression factor can be modified by editing the
   <with|font-family|tt|born_suppression><with|font-family|tt|> routine in the
   <with|font-family|tt|Born_phsp.f> file. Its default form is given in
   formula (4.6) of ref. <cite|noi>.
+
+  In the directory <with|font-family|tt|POWHEG-BOX/HJJ/testparallel-lhc> a
+  simple setup for a parallel run of the generator can be found. On a
+  many-cpu machine, one can execute the parallel runs by executing the shell
+  script <with|font-family|tt|run>. This scripted can be adapted for more
+  complex batch machines.
 
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>
@@ -63,6 +72,12 @@
     </bib-list>
   </bibliography>
 </body>
+
+<\initial>
+  <\collection>
+    <associate|sfactor|5>
+  </collection>
+</initial>
 
 <\references>
   <\collection>
@@ -80,6 +95,10 @@
 <\auxiliary>
   <\collection>
     <\associate|bib>
+      noi
+
+      noi
+
       noi
 
       noi

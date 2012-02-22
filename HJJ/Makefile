@@ -78,16 +78,6 @@ PWHGANAL=pwhg_bookhist-new.o pwhg_analysis.o fastjetfortran.o
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 endif
 
-ifeq ("$(ANALYSIS)","HJJ")
-##To include Fastjet configuration uncomment the following lines. 
-FASTJET_CONFIG=$(shell which fastjet-config)
-#FASTJET_CONFIG=~/lib/fastjet242/bin/fastjet-config
-LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
-FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HJJ.o fastjetfortran.o
-## Also add required Fastjet drivers to PWHGANAL (examples are reported)#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
-endif
-
 ifeq ("$(ANALYSIS)","HnJ")
 ##To include Fastjet configuration uncomment the following lines. 
 FASTJET_CONFIG=$(shell which fastjet-config)

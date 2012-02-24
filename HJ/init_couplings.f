@@ -81,6 +81,7 @@ c madgraph routines not to blow.
       hmass = powheginput('hmass')
       wmass=sqrt(zmass**2/Two+
      $     sqrt(zmass**4/Four-Pi/Rt2*alpha/gfermi*zmass**2))
+      wmass=8.04190000d+01
       twidth=1.50833649d+00
       hwidth = powheginput('hwidth')
       zwidth=2.44140351d+00

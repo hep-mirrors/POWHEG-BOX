@@ -19,8 +19,6 @@ use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound
 hmass  120             ! Higgs mass
 hwidth 5.75308848E-03  ! Higgs width
 
-#higgsfixedwidth 1 ! (default 0) If 1 use fixed width Breith-Wigner formula
-                  ! if 0 use the running width Breit-Wigner
 bwcutoff 15       ! Mass window is hmass +- bwcutoff*hwidth
 
 #higgsfixedwidth 1 ! (default 0), If 1 uses standard, fixed width Breith-Wigner

@@ -25,7 +25,7 @@ C     Modified by overall factors
       logical rem_dec
       parameter(iglue=5)
       double precision oldss,oldtt,olduu
-      save oldss,oldtt,olduu
+      save oldss,oldtt,olduu,virtgg,virtqa,virtaq,virtqg,virtgq
       data oldss/0d0/
       data oldtt/0d0/
       data olduu/0d0/

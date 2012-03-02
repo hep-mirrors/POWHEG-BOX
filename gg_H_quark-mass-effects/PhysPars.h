@@ -28,7 +28,7 @@ c     Simulation parameters used in the calculations
 
 
 c     Array with EW corrections for fast evaluation
-      real * 8 cached_ew_corr(50:820)
+      real * 8 cached_ew_corr(0:5000)
       integer ewbins
       common /ewcorrs/cached_ew_corr,ewbins
 

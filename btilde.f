@@ -245,7 +245,7 @@ c j contributions
      1     etotpos,etotneg,totj,totabsj,totposj,totnegj,
      1         etotj,etotabsj,etotposj,etotnegj,nentries
       integer n,j,k
-      character * 40 format
+      character * 80 format
       real * 8 tmp_totbtlj,tmp_etotbtlj,tmp_totabsbtlj,
      1     tmp_etotabsbtlj,tmp_totposbtlj,tmp_etotposbtlj,
      2     tmp_totnegbtlj,tmp_etotnegbtlj
@@ -273,17 +273,17 @@ c
       if(powheginput('#ubsigmadetails').eq.1) then
          call newunit(iun)
          open(iun,file=pwgprefix(1:lprefix)//'ubsigma.dat')
-         format='(      (i2,1x),4(a,1x,d10.4,a,d7.1))'
-         write(format(2:4),'(i3)')nlegborn
+         format='(      (i8,1x),4(a,1x,d10.4,a,d7.1))'
+         write(format(2:4),'(i3)') nlegborn
          tmp=0
          do j=1,flst_nborn
             tmp_totbtlj=totj(j)/n
             tmp_etotbtlj=sqrt((etotj(j)/n-(totj(j)/n)**2)/n)
             tmp_totabsbtlj=totabsj(j)/n
             tmp_etotabsbtlj=sqrt((etotabsj(j)/n-(totabsj(j)/n)**2)/n)
-            tmp_totposbtlj=totpos/n
+            tmp_totposbtlj=totposj(j)/n
             tmp_etotposbtlj=sqrt((etotposj(j)/n-(totposj(j)/n)**2)/n)
-            tmp_totnegbtlj=totneg/n
+            tmp_totnegbtlj=totnegj(j)/n
             tmp_etotnegbtlj=sqrt((etotnegj(j)/n-(totnegj(j)/n)**2)/n)
             write(iun,format) (flst_born(k,j),k=1,nlegborn),
      1           'tot:',tmp_totbtlj,' +- ',tmp_etotbtlj,

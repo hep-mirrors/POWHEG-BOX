@@ -276,7 +276,7 @@ c     the default vale is 10
          masswindow = powheginput("#masswindow")
          if(masswindow.lt.0d0) masswindow=10d0
 c     ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)^2
-         ph_Hmass2low=max(0d0,ph_Hmass-masswindow*ph_Hwidth)
+         ph_Hmass2low=max(0.5d0,ph_Hmass-masswindow*ph_Hwidth)
          ph_Hmass2low= ph_Hmass2low**2
 c     ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)^2
          ph_Hmass2high=min(kn_sbeams,(ph_Hmass+masswindow*ph_Hwidth)**2)

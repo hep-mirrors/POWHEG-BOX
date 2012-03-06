@@ -21,9 +21,12 @@ c Interface to mlmpdf package.
 
 c This subroutine is in LHAPDF, and is invoked in
 c setstrongcoupl.f in case the lhapdfif.f (and LHAPDF) is linked in
-c If not, like now, it should be set to a dummy function to avoid
+c If not, like now, it should be set to a dummy function with the same (dummy) arguments as in LHAPDF, to avoid
 c link errors. It is never invoked in the present case.
-      subroutine getq2min()
+      subroutine getq2min(dum1,dum2)
+      implicit none
+      integer dum1
+      real * 8 dum2
       end
 
       subroutine genericpdfpar(ndns,ih,xlam,scheme,iorder,iret)

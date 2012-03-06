@@ -50,6 +50,12 @@
             return
          endif
       enddo
+      write(*,*) ' ***********************************'
+      write(*,*) ' POWHEGBOX:pick_random: could not pick a value'
+      write(*,*) ' set choice to 1'
+      write(*,*) ' ***********************************'
+      jret=1
+c      call exit(-1)
       end
       
 

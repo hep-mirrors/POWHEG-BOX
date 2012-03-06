@@ -10,7 +10,7 @@
       external deltaew
 
       if (flg_fast_ew.eq.1) then
-         ewbin = nint(mh)
+         ewbin = int(mh)
          getdeltaew = cached_ew_corr(ewbin)
       else
          if (flg_passarino.eq.1) then

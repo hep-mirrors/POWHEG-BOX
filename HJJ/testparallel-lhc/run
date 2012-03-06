@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# example of a run script for a parallel run on a 48 core framework
+
 function runthem {
 for i in {1..48}
 do

@@ -6858,7 +6858,7 @@ C                                        Adapted from "Numerical Recipes"
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN
@@ -7268,7 +7268,7 @@ C                                        Adapted from "Numerical Recipes"
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN
@@ -8479,7 +8479,7 @@ C
       DIMENSION AF(3),AS(3)
       N=3
       IS=S/DELTA+1
-      IF(IS.GE.19)PAUSE
+c      IF(IS.GE.19)PAUSE
       IF(IS.GE.17) IS=17
       IS1=IS+1
       IS2=IS1+1
@@ -8630,7 +8630,7 @@ C      ENDIF
           H=XA(I+M)-X
           T=(XA(I)-X)*D(I)/H
           DD=T-C(I+1)
-          IF(DD.EQ.0.)PAUSE
+c          IF(DD.EQ.0.)PAUSE
           DD=W/DD
           D(I)=C(I+1)*DD
           C(I)=T*DD
@@ -8668,7 +8668,7 @@ C      ENDIF
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN
@@ -9084,7 +9084,7 @@ C      ENDIF
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN
@@ -9879,7 +9879,7 @@ C                                        Adapted from "Numerical Recipes"
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN
@@ -10440,7 +10440,7 @@ C                                        Adapted from "Numerical Recipes"
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN

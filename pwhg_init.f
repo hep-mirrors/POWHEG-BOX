@@ -22,7 +22,7 @@ c See if we have weighted events
       if(powheginput("#ptsupp").gt.0) then
          write(*,*) ' ******** WARNING: ptsupp is deprecated'
          write(*,*) ' ******** Replace it with bornsuppfact'
-         call flush
+         call flush(6)
          call exit(-1)
       endif
 c     Set to true to remember and use identical values of the computed 
@@ -32,12 +32,31 @@ c     amplitudes, for Born, real and virtual contributions
 c     if true also counterterm are output in NLO tests (default)
       flg_withsubtr=.true.
       if(powheginput("#withsubtr").eq.0) flg_withsubtr=.false.
-c     if true use Born zero damping factor and include remnants
-c     set flg_withdamp to true also if the damping of real radiation
-c     is required
+c     The following turns on mechanism to deal with Born zeroes
+      flg_bornzerodamp=.false.
+c If the damp function has to be called, the following must be on
       flg_withdamp=.false.
-      if((powheginput("#withdamp").eq.1).or.
-     $  (powheginput("#hfact").gt.0d0))   flg_withdamp=.true.
+c Traditional mechanism: either withdamp 1 or hfact >0 turn on
+c remnant calculation. This mechanism is prone to error, since one may
+c want hfact without bornzerodamp. We keep it for backward compatibility.
+c In the future, we should use the flags listed below
+      if(powheginput("#hfact").gt.0d0) then
+         flg_withdamp=.true.
+         flg_bornzerodamp=.true.
+      endif
+      if(powheginput("#withdamp").eq.1) then
+         flg_withdamp=.true.
+         flg_bornzerodamp=.true.
+      endif
+c Modern mechanism;
+      if(powheginput("#bornzerodamp").eq.1) then
+         flg_withdamp=.true.
+         flg_bornzerodamp=.true.
+      endif
+c hdamp will replace the old hfact in new implementations
+      if(powheginput("#hdamp").gt.0) then
+         flg_withdamp=.true.
+      endif
 c     If set do only the Born term
       flg_bornonly=.false.
       if (powheginput("#bornonly").eq.1) flg_bornonly=.true.

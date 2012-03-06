@@ -1,17 +1,17 @@
-<TeXmacs|1.0.7.3>
+<TeXmacs|1.0.7.9>
 
 <style|generic>
 
 <\body>
   <doc-data|<\doc-title>
-    The <with|font-family|tt|POWHEG-BOX-HJ> manual
+    The <with|font-family|tt|POWHEG BOX> manual for Higgs + 1 jet\ 
   </doc-title>|>
 
   <section|1 \ Introduction>
 
-  The <with|font-family|tt|POWHEG-BOX-HJ> program generates Higgs plus jet
-  production in hadronic collisions, and is described in ref. <cite|noi>.
-  Here we document its usage.
+  The part of the <with|font-family|tt|POWHEG BOX >program that generates
+  Higgs boson plus 1 jet in hadronic collisions is described in ref.
+  <cite|noi>. Here we document its usage.
 
   <section|2 Generation of events>
 
@@ -19,11 +19,11 @@
   make pwhg_main><next-line>Then do (for example)<next-line><with|font-family|tt|$
   cd testrun-lhc><next-line><with|font-family|tt|$ ../pwhg_main><next-line>At
   the end of the run, the file <with|font-family|tt|pwgevents.lhe> will
-  contain events for <math|H+jet > production in the Les Houches format. In
+  contain events for <math|H+1 jet > production in the Les Houches format. In
   order to shower them with <with|font-family|tt|PYTHIA>:<next-line><with|font-family|tt|$
-  cd POWHEG-BOX/HJ><next-line><with|font-family|tt|><with|font-family|tt|$
-  make main-PYTHIA-lhef><next-line><with|font-family|tt|$ cd
-  test><next-line><with|font-family|tt|$ ../main-PYTHIA-lhef>
+  cd POWHEG-BOX/HJ><next-line><with|font-family|tt|$ make
+  main-PYTHIA-lhef><next-line><with|font-family|tt|$ cd
+  testrun-lhc><next-line><with|font-family|tt|$ ../main-PYTHIA-lhef>
 
   <section|Input parameters>
 
@@ -37,8 +37,9 @@
   Higgs transverse momentum in the <next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! underlying Born
   kinematics<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner is
-  probed between hmass +- 15*hwidth<next-line>higgsfixedwidth 1 \ \ !
-  (default 0), If 1 uses standard, fixed width Breith-Wigner<next-line>
+  probed between hmass +- \ <next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  bwcutoff*hwidth <next-line>higgsfixedwidth 1 \ \ ! (default 0), If 1 uses
+  standard, fixed width Breit-Wigner<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! formula, if 0 it uses the running
   width Breit-Wigner<next-line>#bornktmin \ 5 \ \ \ \ \ \ ! (default 0),
   generation cut: minimum transverse momentum <next-line>
@@ -62,7 +63,7 @@
   <with|font-family|tt|bornsuppfact>, consult the general
   <with|font-family|tt|POWHEG BOX> manual in the
   <with|font-family|tt|POWHEG-BOX/Docs> directory. By default, the program
-  uses a Born suppression factor and no generation cuts, and it thus produces
+  uses a Born suppression factor and no generation cut, and it thus produces
   weighted (possibly signed) events. By setting
   <with|font-family|tt|bornsuppfact> to 0 and <with|font-family|tt|bornktmin>
   to a value larger than zero, unweighted events are generated, but one
@@ -70,18 +71,25 @@
   <with|font-family|tt|bornktmin>.
 
   The Born suppression factor can be modified by editing the
-  <with|font-family|tt|born_suppression><with|font-family|tt|> routine in the
+  <with|font-family|tt|born_suppression> routine in the
   <with|font-family|tt|Born_phsp.f> file. At the moment it is given by
-  <math|p<rsub|\<Tau\>><rsup|2>/(><with|mode|math|p<rsub|\<Tau\>><rsup|2>+p<rsub|min><rsup|2>)>,
+  <math|p<rsub|\<Tau\>><rsup|2>/<around|(|p<rsub|\<Tau\>><rsup|2>+p<rsub|min><rsup|2>|)>>,
   with <math|p<rsub|min>=20 GeV>.
 
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>
-      <bibitem*|1><label|bib-noi>J.<nbsp>Campbell, R.<nbsp>K. Ellis,
-      R.<nbsp>Frederix, P.<nbsp>Nason, C.<nbsp>Oleari, and C.<nbsp>Williams.
+      <bibitem*|1><label|bib-noi>J.<nbsp>M. Campbell, R.<nbsp>K. Ellis,
+      R.<nbsp>Frederix, P.<nbsp>Nason, C.<nbsp>Oleari, and C.<nbsp>Williams,
+      arXiv:1202.5475
     </bib-list>
   </bibliography>
 </body>
+
+<\initial>
+  <\collection>
+    <associate|par-hyphen|normal>
+  </collection>
+</initial>
 
 <\references>
   <\collection>

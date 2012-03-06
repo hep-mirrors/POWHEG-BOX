@@ -1,17 +1,17 @@
-<TeXmacs|1.0.7.3>
+<TeXmacs|1.0.7.9>
 
 <style|generic>
 
 <\body>
   <doc-data|<\doc-title>
-    The <with|font-family|tt|POWHEG-BOX-HJJ> manual
+    The <with|font-family|tt|POWHEG BOX> manual: Higgs boson + 2 jets
   </doc-title>|>
 
   <section|1 \ Introduction>
 
-  The <with|font-family|tt|POWHEG-BOX-HJ> program generates Higgs plus jet
-  production in hadronic collisions, and is described in ref. <cite|noi>.
-  Here we document its usage.
+  The part of the <with|font-family|tt|POWHEG BOX> program that generates
+  Higgs boson plus 2 jets in hadronic collisions is described in ref.
+  <cite|noi>. Here we document its usage.
 
   <section|2 Generation of events>
 
@@ -19,11 +19,11 @@
   make pwhg_main><next-line>Then do (for example)<next-line><with|font-family|tt|$
   cd testrun-lhc><next-line><with|font-family|tt|$ ../pwhg_main><next-line>At
   the end of the run, the file <with|font-family|tt|pwgevents.lhe> will
-  contain events for <math|H+jet > production in the Les Houches format. In
-  order to shower them with <with|font-family|tt|PYTHIA>:<next-line><with|font-family|tt|$
-  cd POWHEG-BOX/HJJ><next-line><with|font-family|tt|><with|font-family|tt|$
-  make main-PYTHIA-lhef><next-line><with|font-family|tt|$ cd
-  test><next-line><with|font-family|tt|$ ../main-PYTHIA-lhef>
+  contain events for <math|H+2 jets >in the Les Houches format. In order to
+  shower them with <with|font-family|tt|PYTHIA>:<next-line><with|font-family|tt|$
+  cd POWHEG-BOX/HJJ><next-line><with|font-family|tt|$ make
+  main-PYTHIA-lhef><next-line><with|font-family|tt|$ cd
+  testrun-lhc><next-line><with|font-family|tt|$ ../main-PYTHIA-lhef>
 
   <section|Input parameters>
 
@@ -34,10 +34,11 @@
   (default 0), if 0 use hmass as central<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! factorization and renormalization
   scale;<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! if 1 use the hat
-  Ht scale (see eq. (5.1) in<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
-  ref. <cite|noi>)<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner
-  is probed between hmass +- 15*hwidth<next-line>higgsfixedwidth 1 \ \ !
-  (default 0), If 1 uses standard, fixed width Breith-Wigner<next-line>
+  Ht scale (see eq.(5.1) in<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  ref.<cite|noi>)<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner
+  is probed between hmass +-<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  bwcutoff*hwidth<next-line>higgsfixedwidth 1 \ \ ! (default 0), If 1 uses
+  standard, fixed width Breit-Wigner<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! formula, if 0 it uses the running
   width Breit-Wigner<next-line>#ckkwscalup 1 \ \ \ \ \ \ ! (default 1),
   compute the scalup scale for subsequent<next-line>
@@ -52,29 +53,31 @@
   there is no option for the generation of unweighted events. One must
   therefore use a Born suppression factor. Generation cuts may be introduced
   by suitably modifying the suppression factor. We may introduce this
-  possibility in the future depending upon user's requests.
+  possibility in the future, depending upon user's requests.
 
   The Born suppression factor can be modified by editing the
-  <with|font-family|tt|born_suppression><with|font-family|tt|> routine in the
+  <with|font-family|tt|born_suppression> routine in the
   <with|font-family|tt|Born_phsp.f> file. Its default form is given in
   formula (4.6) of ref. <cite|noi>.
 
   In the directory <with|font-family|tt|POWHEG-BOX/HJJ/testparallel-lhc> a
   simple setup for a parallel run of the generator can be found. On a
   many-cpu machine, one can execute the parallel runs by executing the shell
-  script <with|font-family|tt|run>. This scripted can be adapted for more
+  script <with|font-family|tt|run>. This script can be adapted for more
   complex batch machines.
 
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>
-      <bibitem*|1><label|bib-noi>J.<nbsp>Campbell, R.<nbsp>K. Ellis,
-      R.<nbsp>Frederix, P.<nbsp>Nason, C.<nbsp>Oleari, and C.<nbsp>Williams.
+      <bibitem*|1><label|bib-noi>J.<nbsp>M. Campbell, R.<nbsp>K. Ellis,
+      R.<nbsp>Frederix, P.<nbsp>Nason, C.<nbsp>Oleari, and C.<nbsp>Williams,
+      arXiv:1202.5475.
     </bib-list>
   </bibliography>
 </body>
 
 <\initial>
   <\collection>
+    <associate|par-hyphen|normal>
     <associate|sfactor|5>
   </collection>
 </initial>

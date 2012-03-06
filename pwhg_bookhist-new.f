@@ -10,7 +10,7 @@
          xx(k)=xx(k-1)+binsize
          if(xx(k)-(xhigh-binsize/1e4).gt.0) goto 10
       enddo
-      write(*,*) 'bookupeqbins: too mani bins!'
+      write(*,*) 'bookupeqbins: too many bins in hist ',string
       call exit(-1)
  10   continue
       if((xx(k)-xhigh)/binsize.gt.1e-4) then
@@ -136,7 +136,7 @@ c overflow
       parameter (iun=99)
       do j=1,jhist
 
-         write(iun,'(a,i2,a,a)')'# index ',j-1,' ',stringhist(j)
+         write(iun,'(a,i3,a,a)')'# index ',j-1,' ',stringhist(j)
          do k=1,nbins(j)
             write(iun,'(4(1x,e14.8))') xhistarr(k,j), xhistarr(k+1,j),
      1           yhistarr2(k,j),errhistarr2(k,j)

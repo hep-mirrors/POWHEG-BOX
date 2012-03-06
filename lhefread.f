@@ -31,7 +31,7 @@ c...reads event information from a les houches events file on unit nlf.
       include 'LesHouches.h'
       integer i,j
  1    continue
-c      string=' '
+      string=' '
       read(nlf,fmt='(a)',err=777,end=666) string
       if(string.eq.'</LesHouchesEvents>') then
          goto 998
@@ -45,19 +45,20 @@ c truncated event files. On EOF return with no event found
      &           mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      &           vtimup(i),spinup(i)
          enddo
+         call lhefreadextra(nlf)
          goto 999
       else
          goto 1
       endif
 c no event found:
- 777   continue
-       print *,"Error in reading"
-       print *,string
-       stop
- 666   continue
-       print *,"reached EOF"
-       print *,string
-       stop
+ 777  continue
+      print *,"Error in reading"
+      print *,string
+      stop
+ 666  continue
+      print *,"reached EOF"
+      print *,string
+      stop
  998  continue
       print *,"read </LesHouchesEvents>"
       nup=0      
@@ -81,10 +82,11 @@ c no event found:
          backspace nlf
          return
       endif
-      read(nlf,'(a)') string
-      if(string(2:28).eq.'<extra-info-previous-event>') then
-         read(nlf,*) rad_kinreg
-c         read(nlf,*) rad_type
+      if(string.eq.'# Start extra-info-previous-event') then
+         read(nlf,'(a)') string
+         read(string(3:),*) rad_kinreg
+         read(nlf,'(a)') string
+         read(string(3:),*) rad_type
          return
       else
          goto 1

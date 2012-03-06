@@ -56,6 +56,7 @@ c rad_type=1 for btilde events (used only for debugging purposes)
             endif
             xwgtup=xwgtup/suppfact
          endif
+         call increasecnt("btilde event")
       else
 c generate remnant n+1 body cross section
          call gen_sigremnant
@@ -89,6 +90,7 @@ c     set st_muren2 equal to pt2 for scalup value
             xwgtup=xwgtup/suppfact
 c     rad_type=2 for remnants
             rad_type=2
+            call increasecnt("remnant event")
          else
 c     set st_muren2 for scalup value for regular contributions
             rad_pt2max=max(rad_ptsqmin,pt2max_regular())
@@ -96,6 +98,7 @@ c     set st_muren2 for scalup value for regular contributions
             call gen_leshouches_reg
 c rad_type=3 for regular contributions
             rad_type=3
+            call increasecnt("regular event")
          endif         
       endif
       end

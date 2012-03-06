@@ -79,7 +79,12 @@ c Flavour thresholds:
          ofx(-4,irec)=0
       endif
       do k=-6,6
+         if (ofx(k,irec).lt.0) then
+            call increasecnt("negative pdf values");
+            ofx(k,irec)=0
+         endif
          fx(k)=ofx(k,irec)
       enddo
       end
+
 

@@ -43,11 +43,12 @@ c$$$      physpar_mq(5)=4.80d0     ! bottom
       end
 
 
-      subroutine lh_readin
+      subroutine lh_readin(param_name)
 c overrides the lh_readin subroutine in MODEL/couplings.f;
 c to make it work, rename or delete
 c the lh_readin routine in MODEL/couplings.f
       implicit none
+      character*(*) param_name
       include 'coupl.inc'
       double precision  Two, Four, Rt2, Pi
       parameter( Two = 2.0d0, Four = 4.0d0 )

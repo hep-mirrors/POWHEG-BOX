@@ -32,7 +32,10 @@ c Set up initial parameter
       nevhep=0
       do iev=1,maxev
          call pyevnt
-         if(nup.eq.0) goto 111
+         if(nup.eq.0) then
+            write(*,*) ' no event generated; skipping'
+            goto 111
+         endif
 c     Convert from PYJETS event record to HEPEVT event record
          temp=nevhep
          call pyhepc(1)
@@ -49,7 +52,8 @@ c            call PYLIST(1)      ! as PYLIST(2) but with less information
          
          call PYANAL
           IF(nevhep.gt.0.and.MOD(nevhep,20000).EQ.0) THEN
-            WRITE(*,*)'# of events processed=',NEVHEP
+            WRITE(*,*)'# of events processed=',iev
+            WRITE(*,*)'# of events generated=',NEVHEP
             CALL PYAEND
          ENDIF 
       enddo

@@ -574,14 +574,14 @@ c There are remnants! set up the appropriate flag:
          endif
          do l=1,nregions
             iflregl=iflregl+1
+            if(iflregl.ge.maxalr) then
+               write(*,*)' genflavreglist: increase maxalr'
+               call exit(-1)
+            endif
             if(iregions(1,l).le.2) then
                flst_emitter(iflregl)=iregions(1,l)
             else
                flst_emitter(iflregl)=nlegreal-1
-            endif
-            if(iflregl.ge.maxalr) then
-               write(*,*)' genflavreglist: increase maxalr'
-               stop
             endif
             ipart=0
 c final state singularity
@@ -634,7 +634,7 @@ c bunch together identical elements, increasing their multiplicities
 c Previously was:
 c               if(flst_emitter(j).eq.flst_emitter(k).and.
 c     #  equalintlists(nlegreal,flst_alr(1,j),flst_alr(1,k))) then
-c now accounts for equivalece by permutation of final state lines.
+c now accounts for equivalence by permutation of final state lines.
 c Notice: identity of emitter and radiated parton must be valid
 c  without permutations
                if(flst_mult(k).ne.0) then
@@ -790,7 +790,7 @@ c     debug information
       do j=len(string)-7,2*nsp+1,-1
          string(j+7:j+7)=string(j:j)
       enddo
-      string(2*nsp+3:2*nsp+10)='  ==>  '
+      string(2*nsp+3:2*nsp+9)='  ==>  '
       end
 
       subroutine pretty_print_flst

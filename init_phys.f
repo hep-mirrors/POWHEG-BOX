@@ -18,9 +18,18 @@
 c Initialization of default values for common block
 c variables. These may be overridden by the user program
 c init_processes.
-      par_diexp=1
-      par_dijexp=1
-      par_2gsupp=1
+
+      par_diexp=powheginput("#par_diexp")
+      par_dijexp=powheginput("#par_dijexp")
+      par_2gsupp=powheginput("#par_2gsupp")
+      if(par_diexp.lt.0) par_diexp=1
+      if(par_dijexp.lt.0) par_dijexp=1
+      if(par_2gsupp.lt.0) par_2gsupp=1
+      if(par_diexp.ne.par_dijexp) then
+         write(*,*) 'par_dijexp not equal to par_diexp;'
+         write(*,*) 'not possible at present!!! Program exits'
+         call exit(-1)
+      endif
 c
       par_isrtinycsi = 1d-6
       par_isrtinyy = 1d-6
@@ -113,11 +122,12 @@ c initialize number of singular regions
       dbg_softtest=.true.
       dbg_colltest=.true.
       if(flg_withdamp) then
-         write(*,*) ' no soft tests if withdamp is set'
+         write(*,*) ' POWHEG: no soft tests if withdamp is set'
          dbg_softtest=.false.
       endif
       if(flg_bornonly) then
-         write(*,*) ' no soft and coll. tests if bornonly is set'
+         write(*,*)
+     $        ' POWHEG: no soft and coll. tests if bornonly is set'
          dbg_softtest=.false.
          dbg_colltest=.false.
       endif
@@ -126,6 +136,9 @@ c initialize number of singular regions
          open(unit=iun,file='pwhg_checklimits')
          call checklims(iun)
          call flush(iun)
+         write(*,*) ' POWHEG:  '
+         write(*,*) ' Check of soft/collinear limits performed'
+         write(*,*) ' Results in file pwhg_checklimits'
       endif
       end
 

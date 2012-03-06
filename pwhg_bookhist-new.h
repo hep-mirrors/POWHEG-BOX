@@ -1,6 +1,6 @@
 c -*- Fortran -*-
       integer nhist,maxbins
-      parameter (nhist=200,maxbins=500)
+      parameter (nhist=400,maxbins=500)
       character * 50 stringhist(nhist)
       real * 8 xhistarr(maxbins+1,nhist),yhistarr(0:maxbins+1,nhist)
       integer nhits(0:maxbins+1,nhist),nbins(nhist),jhist,ient1(nhist)

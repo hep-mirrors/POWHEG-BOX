@@ -35,6 +35,7 @@
       if(rad_normfact.lt.0) rad_normfact=2
       if(nubound.eq.0) then
          write(*,*) ' ubound set =0, cannot proceed'
+         call write_counters
          call exit(1)
       endif
       call newunit(iun)

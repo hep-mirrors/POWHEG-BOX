@@ -61,8 +61,10 @@ c  cant have srdiags if zerowidth is true
 
       if(powheginput("#withdamp").ne.0) then
          flg_withdamp = .true.
+         flg_bornzerodamp = .true.
       else
          flg_withdamp = .false.
+         flg_bornzerodamp = .false.
       endif
 
       if ((abs(vdecaymodeWp).ne.11).and.(abs(vdecaymodeWp).ne.13)

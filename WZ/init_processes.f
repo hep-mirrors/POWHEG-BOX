@@ -84,8 +84,10 @@ c no interference if zerowidth is true
 
       if(powheginput("#withdamp").ne.0) then
          flg_withdamp = .true.
+         flg_bornzerodamp = .true.
       else
          flg_withdamp = .false.
+         flg_bornzerodamp = .false.
       endif
 
 

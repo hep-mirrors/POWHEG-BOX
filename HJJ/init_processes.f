@@ -19,6 +19,7 @@ c defaults for powheg running
       if(par_2gsupp.lt.0) par_2gsupp=2d0
 
       flg_withdamp=.true.
+      flg_bornzerodamp=.true.
 
       flg_weightedev=.true.
 

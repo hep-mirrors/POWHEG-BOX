@@ -7,6 +7,7 @@
       include 'pwhg_physpar.h'
       real * 8 masswindow_low,masswindow_high
       flg_withdamp=.true.
+      flg_bornzerodamp=.true.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

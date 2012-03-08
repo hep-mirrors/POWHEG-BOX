@@ -141,7 +141,7 @@ main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,obj/%,$(HERWIG))  $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o pdfdummies.o \
+PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o \
 	pwhg_bookhist.o $(PWHGANAL) lhefread.o newunit.o pdfdummies.o		\
 	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
 	$(FPEOBJ)

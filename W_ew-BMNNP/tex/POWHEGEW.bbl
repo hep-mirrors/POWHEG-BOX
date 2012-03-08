@@ -1,0 +1,252 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{10}
+
+\bibitem{Altarelli:1979ub}
+G.~Altarelli, R.~Ellis, and G.~Martinelli, {\it {Large Perturbative Corrections
+  to the Drell-Yan Process in QCD}},  {\em Nucl.Phys.} {\bf B157} (1979) 461.
+
+\bibitem{Hamberg:1990np}
+R.~Hamberg, W.~L. van Neerven, and T.~Matsuura, {\it {A Complete calculation of
+  the order $\alpha_s^2$ correction to the Drell-Yan K factor}},  {\em Nucl.
+  Phys.} {\bf B359} (1991) 343--405.
+
+\bibitem{Anastasiou:2003yy}
+C.~Anastasiou, L.~J. Dixon, K.~Melnikov, and F.~Petriello, {\it {Dilepton
+  rapidity distribution in the Drell-Yan process at NNLO in QCD}},  {\em
+  Phys.Rev.Lett.} {\bf 91} (2003) 182002,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0306192}{{\tt hep-ph/0306192}}].
+
+\bibitem{melnikov:2006kv}
+K.~Melnikov and F.~Petriello, {\it {Electroweak gauge boson production at
+  hadron colliders through $\mathcal{O}(\alpha_s^2)$}},  {\em Phys.Rev.} {\bf
+  D74} (2006) 114017, [\href{http://xxx.lanl.gov/abs/hep-ph/0609070}{{\tt
+  hep-ph/0609070}}].
+
+\bibitem{Catani:2009sm}
+S.~Catani, L.~Cieri, G.~Ferrera, D.~de~Florian, and M.~Grazzini, {\it {Vector
+  boson production at hadron colliders: A Fully exclusive QCD calculation at
+  NNLO}},  {\em Phys.Rev.Lett.} {\bf 103} (2009) 082001,
+  [\href{http://xxx.lanl.gov/abs/0903.2120}{{\tt arXiv:0903.2120}}].
+
+\bibitem{Dittmaier:2001ay}
+S.~Dittmaier and M.~Kramer, {\it {Electroweak radiative corrections to $W$
+  boson production at hadron colliders}},  {\em Phys.Rev.} {\bf D65} (2002)
+  073007, [\href{http://xxx.lanl.gov/abs/hep-ph/0109062}{{\tt
+  hep-ph/0109062}}].
+
+\bibitem{Zykunov:2006yb}
+V.~A. Zykunov, {\it {Radiative corrections to the Drell-Yan process at large
+  dilepton invariant masses}},  {\em Phys.Atom.Nucl.} {\bf 69} (2006) 1522.
+
+\bibitem{Baur:2004ig}
+U.~Baur and D.~Wackeroth, {\it {Electroweak radiative corrections to $p \bar{p}
+  \to W^\pm \to \ell^\pm \nu$ beyond the pole approximation}},  {\em Phys.Rev.}
+  {\bf D70} (2004) 073015, [\href{http://xxx.lanl.gov/abs/hep-ph/0405191}{{\tt
+  hep-ph/0405191}}].
+
+\bibitem{Arbuzov:2005dd}
+A.~B. Arbuzov, D.~Y. Bardin, S.~Bondarenko, P.~Christova, L.~Kalinovskaya,
+  G.~Nanava, and R.~Sadykov, {\it {One-loop corrections to the Drell-Yan
+  process in {\tt SANC}. I. The Charged current case}},  {\em Eur.Phys.J.} {\bf
+  C46} (2006) 407--412, [\href{http://xxx.lanl.gov/abs/hep-ph/0506110}{{\tt
+  hep-ph/0506110}}].
+
+\bibitem{CarloniCalame:2006zq}
+C.~M. Carloni~Calame, G.~Montagna, O.~Nicrosini, and A.~Vicini, {\it {Precision
+  electroweak calculation of the charged current Drell-Yan process}},  {\em
+  JHEP} {\bf 0612} (2006) 016,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0609170}{{\tt hep-ph/0609170}}].
+
+\bibitem{CarloniCalame:2003ux}
+C.~M. Carloni~Calame, G.~Montagna, O.~Nicrosini, and M.~Treccani, {\it {Higher
+  order QED corrections to $W$ boson mass determination at hadron colliders}},
+  {\em Phys.Rev.} {\bf D69} (2004) 037301,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0303102}{{\tt hep-ph/0303102}}].
+
+\bibitem{Corcella:2002jc}
+G.~Corcella, I.~G. Knowles, G.~Marchesini, S.~Moretti, K.~Odagiri,
+  P.~Richardson, M.~H. Seymour, and B.~R. Webber, {\it {{\tt HERWIG} 6.5
+  release note}},  \href{http://xxx.lanl.gov/abs/hep-ph/0210213}{{\tt
+  hep-ph/0210213}}.
+
+\bibitem{Sjostrand:2007gs}
+T.~Sjostrand, S.~Mrenna, and P.~Z. Skands, {\it {A Brief Introduction to {\tt
+  PYTHIA 8.1}}},  {\em Comput.Phys.Commun.} {\bf 178} (2008) 852--867,
+  [\href{http://xxx.lanl.gov/abs/0710.3820}{{\tt arXiv:0710.3820}}].
+
+\bibitem{Gleisberg:2008ta}
+T.~Gleisberg, S.~Hoeche, F.~Krauss, M.~Schonherr, S.~Schumann, {\em et.~al.},
+  {\it {Event generation with {\tt SHERPA 1.1}}},  {\em JHEP} {\bf 0902} (2009)
+  007, [\href{http://xxx.lanl.gov/abs/0811.4622}{{\tt arXiv:0811.4622}}].
+
+\bibitem{Nason:2004rx}
+P.~Nason, {\it {A New method for combining NLO QCD with shower Monte Carlo
+  algorithms}},  {\em JHEP} {\bf 0411} (2004) 040,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0409146}{{\tt hep-ph/0409146}}].
+
+\bibitem{Frixione:2007vw}
+S.~Frixione, P.~Nason, and C.~Oleari, {\it {Matching NLO QCD computations with
+  Parton Shower simulations: the {\tt POWHEG} method}},  {\em JHEP} {\bf 0711}
+  (2007) 070, [\href{http://xxx.lanl.gov/abs/0709.2092}{{\tt
+  arXiv:0709.2092}}].
+
+\bibitem{Frixione:2002ik}
+S.~Frixione and B.~R. Webber, {\it {Matching NLO QCD computations and parton
+  shower simulations}},  {\em JHEP} {\bf 0206} (2002) 029,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0204244}{{\tt hep-ph/0204244}}].
+
+\bibitem{Giele:1993dj}
+W.~T. Giele, E.~Glover, and D.~A. Kosower, {\it {Higher order corrections to
+  jet cross-sections in hadron colliders}},  {\em Nucl.Phys.} {\bf B403} (1993)
+  633--670, [\href{http://xxx.lanl.gov/abs/hep-ph/9302225}{{\tt
+  hep-ph/9302225}}].
+
+\bibitem{Campbell:2002tg}
+J.~M. Campbell and R.~Ellis, {\it {Next-to-leading order corrections to $W + 2$
+  jet and $Z + 2$ jet production at hadron colliders}},  {\em Phys.Rev.} {\bf
+  D65} (2002) 113007, [\href{http://xxx.lanl.gov/abs/hep-ph/0202176}{{\tt
+  hep-ph/0202176}}].
+
+\bibitem{Gavin:2012kw}
+R.~Gavin, Y.~Li, F.~Petriello, and S.~Quackenbush, {\it {W physics at the LHC
+  with FEWZ 2.1}},  \href{http://xxx.lanl.gov/abs/1201.5896}{{\tt
+  arXiv:1201.5896}}.
+
+\bibitem{Balazs:1997xd}
+C.~Balazs and C.-P. Yuan, {\it {Soft gluon effects on lepton pairs at hadron
+  colliders}},  {\em Phys.Rev.} {\bf D56} (1997) 5558--5583,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/9704258}{{\tt hep-ph/9704258}}].
+
+\bibitem{Alioli:2010xd}
+S.~Alioli, P.~Nason, C.~Oleari, and E.~Re, {\it {A general framework for
+  implementing NLO calculations in shower Monte Carlo programs: the {\tt POWHEG
+  BOX}}},  {\em JHEP} {\bf 1006} (2010) 043,
+  [\href{http://xxx.lanl.gov/abs/1002.2581}{{\tt arXiv:1002.2581}}].
+
+\bibitem{Placzek:2003zg}
+W.~Placzek and S.~Jadach, {\it {Multiphoton radiation in leptonic $W$ boson
+  decays}},  {\em Eur.Phys.J.} {\bf C29} (2003) 325--339,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0302065}{{\tt hep-ph/0302065}}].
+
+\bibitem{Bardin:2008fn}
+D.~Bardin, S.~Bondarenko, S.~Jadach, L.~Kalinovskaya, and W.~Placzek, {\it
+  {Implementation of SANC EW corrections in {\tt WINHAC} Monte Carlo
+  generator}},  {\em Acta Phys.Polon.} {\bf B40} (2009) 75--92,
+  [\href{http://xxx.lanl.gov/abs/0806.3822}{{\tt arXiv:0806.3822}}].
+
+\bibitem{Golonka:2005pn}
+P.~Golonka and Z.~Was, {\it {{\tt PHOTOS} Monte Carlo: A Precision tool for QED
+  corrections in $Z$ and $W$ decays}},  {\em Eur.Phys.J.} {\bf C45} (2006)
+  97--107, [\href{http://xxx.lanl.gov/abs/hep-ph/0506026}{{\tt
+  hep-ph/0506026}}].
+
+\bibitem{Cao:2004yy}
+Q.-H. Cao and C.~P. Yuan, {\it {Combined effect of QCD resummation and QED
+  radiative correction to $W$ boson observables at the Tevatron}},  {\em Phys.
+  Rev. Lett.} {\bf 93} (2004) 042001,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0401026}{{\tt hep-ph/0401026}}].
+
+\bibitem{Balossini:2009sa}
+G.~Balossini, G.~Montagna, C.~M. Carloni~Calame, M.~Moretti, O.~Nicrosini,
+  F.~Piccinini, M.~Treccani, and A.~Vicini, {\it {Combination of electroweak
+  and QCD corrections to single $W$ production at the Fermilab Tevatron and the
+  CERN LHC}},  {\em JHEP} {\bf 1001} (2010) 013,
+  [\href{http://xxx.lanl.gov/abs/0907.0276}{{\tt arXiv:0907.0276}}].
+
+\bibitem{Richardson:2010gz}
+P.~Richardson, R.~R. Sadykov, A.~A. Sapronov, M.~H. Seymour, and P.~Z. Skands,
+  {\it {QCD parton showers and NLO EW corrections to Drell-Yan}},
+  \href{http://xxx.lanl.gov/abs/1011.5444}{{\tt arXiv:1011.5444}}.
+
+\bibitem{Yost:2012mf}
+S.~Yost, V.~Halyo, M.~Hejna, and B.~Ward, {\it {HERWIRI2: CEEX Electroweak
+  Corrections in a Hadronic MC}},
+  \href{http://xxx.lanl.gov/abs/1201.5906}{{\tt arXiv:1201.5906}}.
+
+\bibitem{'tHooft:1978xw}
+G.~'t~Hooft and M.~J. Veltman, {\it {Scalar One Loop Integrals}},  {\em
+  Nucl.Phys.} {\bf B153} (1979) 365--401.
+
+\bibitem{Dittmaier:2003bc}
+S.~Dittmaier, {\it {Separation of soft and collinear singularities from one
+  loop N point integrals}},  {\em Nucl.Phys.} {\bf B675} (2003) 447--466,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0308246}{{\tt hep-ph/0308246}}].
+
+\bibitem{Denner:2010tr}
+A.~Denner and S.~Dittmaier, {\it {Scalar one-loop 4-point integrals}},  {\em
+  Nucl.Phys.} {\bf B844} (2011) 199--242,
+  [\href{http://xxx.lanl.gov/abs/1005.2076}{{\tt arXiv:1005.2076}}].
+
+\bibitem{Frixione:1995ms}
+S.~Frixione, Z.~Kunszt, and A.~Signer, {\it {Three jet cross-sections to
+  next-to-leading order}},  {\em Nucl.Phys.} {\bf B467} (1996) 399--442,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/9512328}{{\tt hep-ph/9512328}}].
+
+\bibitem{Hahn:2000jm}
+T.~Hahn, {\it {Automatic loop calculations with FeynArts, FormCalc, and
+  LoopTools}},  {\em Nucl.Phys.Proc.Suppl.} {\bf 89} (2000) 231--236,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0005029}{{\tt hep-ph/0005029}}].
+
+\bibitem{Cullen:2011kv}
+G.~Cullen, J.~Guillet, G.~Heinrich, T.~Kleinschmidt, E.~Pilon, {\em et.~al.},
+  {\it {Golem95C: A library for one-loop integrals with complex masses}},  {\em
+  Comput.Phys.Commun.} {\bf 182} (2011) 2276--2284,
+  [\href{http://xxx.lanl.gov/abs/1101.5595}{{\tt arXiv:1101.5595}}].
+
+\bibitem{Binoth:2008uq}
+T.~Binoth, J.-P. Guillet, G.~Heinrich, E.~Pilon, and T.~Reiter, {\it {Golem95:
+  A Numerical program to calculate one-loop tensor integrals with up to six
+  external legs}},  {\em Comput.Phys.Commun.} {\bf 180} (2009) 2317--2330,
+  [\href{http://xxx.lanl.gov/abs/0810.0992}{{\tt arXiv:0810.0992}}].
+
+\bibitem{Catani:2002hc}
+S.~Catani, S.~Dittmaier, M.~H. Seymour, and Z.~Trocsanyi, {\it {The Dipole
+  formalism for next-to-leading order QCD calculations with massive partons}},
+  {\em Nucl.Phys.} {\bf B627} (2002) 189--265,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0201036}{{\tt hep-ph/0201036}}].
+
+\bibitem{Catani:1996jh}
+S.~Catani and M.~H. Seymour, {\it {The Dipole formalism for the calculation of
+  QCD jet cross-sections at next-to-leading order}},  {\em Phys.Lett.} {\bf
+  B378} (1996) 287--301, [\href{http://xxx.lanl.gov/abs/hep-ph/9602277}{{\tt
+  hep-ph/9602277}}].
+
+\bibitem{Denner:2005fg}
+A.~Denner, S.~Dittmaier, M.~Roth, and L.~Wieders, {\it {Electroweak corrections
+  to charged-current e$^+$ e$^-$ $\rightarrow$ 4 fermion processes: Technical
+  details and further results}},  {\em Nucl.Phys.} {\bf B724} (2005) 247--294,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/0505042}{{\tt hep-ph/0505042}}].
+
+\bibitem{Denner:2006ic}
+A.~Denner and S.~Dittmaier, {\it {The Complex-mass scheme for perturbative
+  calculations with unstable particles}},  {\em Nucl.Phys.Proc.Suppl.} {\bf
+  160} (2006) 22--26, [\href{http://xxx.lanl.gov/abs/hep-ph/0605312}{{\tt
+  hep-ph/0605312}}].
+
+\bibitem{Alwall:2011uj}
+J.~Alwall, M.~Herquet, F.~Maltoni, O.~Mattelaer, and T.~Stelzer, {\it {{\tt
+  MadGraph 5}: Going Beyond}},  {\em JHEP} {\bf 1106} (2011) 128,
+  [\href{http://xxx.lanl.gov/abs/1106.0522}{{\tt arXiv:1106.0522}}].
+
+\bibitem{Dittmaier:1999mb}
+S.~Dittmaier, {\it {A General approach to photon radiation off fermions}},
+  {\em Nucl.Phys.} {\bf B565} (2000) 69--122,
+  [\href{http://xxx.lanl.gov/abs/hep-ph/9904440}{{\tt hep-ph/9904440}}].
+
+\bibitem{Martin:2004dh}
+A.~Martin, R.~Roberts, W.~Stirling, and R.~Thorne, {\it {Parton distributions
+  incorporating QED contributions}},  {\em Eur.Phys.J.} {\bf C39} (2005)
+  155--161, [\href{http://xxx.lanl.gov/abs/hep-ph/0411040}{{\tt
+  hep-ph/0411040}}].
+
+\bibitem{Kilgore:2011pa}
+W.~B. Kilgore and C.~Sturm, {\it {Two-Loop Virtual Corrections to Drell-Yan
+  Production at order $\alpha_s \alpha^3$}},
+  \href{http://xxx.lanl.gov/abs/1107.4798}{{\tt arXiv:1107.4798}}.
+
+\bibitem{Bernaciak:2012hj}
+C.~Bernaciak and D.~Wackeroth, {\it {Combining NLO QCD and Electroweak
+  Radiative Corrections to $W$-boson Production at Hadron Colliders in the {\tt
+  POWHEG} Framework}},  \href{http://xxx.lanl.gov/abs/1201.4804}{{\tt
+  arXiv:1201.4804}}.
+
+\end{thebibliography}\endgroup

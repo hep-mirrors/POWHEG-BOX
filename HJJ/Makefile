@@ -23,7 +23,7 @@ F77=gfortran -fno-automatic
 #,underflow 
 ## gfortran 4.4.1 optimized with -O3 yields erroneous results
 ## Use -O2 to be on the safe side
-OPT=-O2 -p
+OPT=-O2
 ## For debugging uncomment the following
 #DEBUG= -ggdb
 ifdef DEBUG

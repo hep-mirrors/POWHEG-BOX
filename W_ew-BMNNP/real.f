@@ -540,25 +540,20 @@ c     exchance particle 1 and 2
       real*8 pdpe,pdpn,pdk
       real*8 pnpe,pnk
       real*8 pek
-      real*8 pupn2,pdpn2,pdpe2
-      real*8 pupe2,pupd2
-      real*8 pnpe2
       complex*16 mw2m1,mw2m2,mw2dm1
       complex*16 epupdpek,epupdpnk,epupnpek,epdpnpek,epupdpnpe
-      real*8 ml2,ml4
+      real*8 ml2
 
-      complex*16 c1,c2,c3,c4,c1d,c2d,c3d,c4d
-      complex*16 pukc1,pdkc2,pukc1d,pdkc2d
+      complex*16 dens,densc,densp,denspc,dens2,densp2
 *
       integer ifirst
       data ifirst/0/
-      save ifirst,ml2,ml4,mw2m1,mw2dm1,mw2m2
+      save ifirst,ml2,mw2m1,mw2dm1,mw2m2
 
       if (ifirst.eq.0) then
           ifirst = 1
 
           ml2 = mlep2
-          ml4 = ml2*ml2
     
           mw2m1 = 1d0/mw2
           mw2dm1= conjg(mw2m1)
@@ -600,13 +595,6 @@ c     exchance particle 1 and 2
 *
       pek  = dotp(pl,k)
 *
-      pupn2 = pupn*pupn
-      pdpn2 = pdpn*pdpn
-      pdpe2 = pdpe*pdpe
-      pnpe2 = pnpe*pnpe
-      pupe2 = pupe*pupe
-      pupd2 = pupd*pupd
-*
       epupdpek  = e_(pu,pd,pl,k)
       epupdpnk  = e_(pu,pd,pn,k)
       epupnpek  = e_(pu,pn,pl,k)
@@ -616,740 +604,715 @@ c     exchance particle 1 and 2
       s  = 2.d0*pupd
       sp = 2.d0*pnpe + ml2
 
-      c1 =  ii*qu/(2.d0*puk)/(sp*cone - ph_Wmass2 + ii*ph_WmWw)
-      c2 =  ii*qd/(2.d0*pdk)/(sp*cone - ph_Wmass2 + ii*ph_WmWw)
-      c3 = -ii/(sp*cone - ph_Wmass2 + ii*ph_WmWw)
-     +        /(s*cone -  ph_Wmass2 + ii*ph_WmWw)
-      c4 =  ii/(2.d0*pek)/(s*cone - ph_Wmass2 + ii*ph_WmWw)
-
-      pukc1 =  ii*qu/2.d0/(sp*cone - ph_Wmass2 + ii*ph_WmWw)
-      pdkc2 =  ii*qd/2.d0/(sp*cone - ph_Wmass2 + ii*ph_WmWw)
+      dens   = 1d0/(s*cone - ph_Wmass2 + ii*ph_WmWw)
+      densc  = dconjg(dens)
+      densp  = 1d0/(sp*cone - ph_Wmass2 + ii*ph_WmWw)
+      denspc = dconjg(densp)
+      dens2  = dens*densc
+      densp2 = densp*denspc
 *
-      c1d = conjg(c1)
-      c2d = conjg(c2)
-      c3d = conjg(c3)
-      c4d = conjg(c4)
+      amp2 =        (-4*epupnpek*(densp*puk*qd*
+     -        (densc*(2*pdpe - 
+     -             ml2*(denspc*mw2dm1*pek*(pdk + pupd) + 
+     -                mw2m1*(pdpn - denspc*pek*(pdk + pupd))))
+     -            + denspc*ml2*(-mw2dm1 + mw2m1)*pek*qd) + 
+     -       dens*puk*(2*densc*(densp - denspc)*pdk*pdpe + 
+     -          denspc*ml2*
+     -           (densp*mw2m1*pek*(pdk + pupd) + 
+     -             mw2dm1*(pdpn - densp*pek*(pdk + pupd)))*qd)
+     -         + dens*denspc*pdk*
+     -        (ml2*mw2dm1*(pdpe + pdpn) + 
+     -          densp*ml2*
+     -           (mw2m1*pdk + mw2dm1*(-pdk + pdpe + pdpn))*pek
+     -            + 2*densp*pek*(pdpn + pupd))*qu - 
+     -       densp*(densc*pdk*
+     -           (ml2*mw2m1*(pdpe + pdpn) + 
+     -             denspc*ml2*
+     -              (mw2dm1*pdk + mw2m1*(-pdk + pdpe + pdpn))*
+     -              pek + 2*denspc*pek*(pdpn + pupd)) + 
+     -          2*denspc*ml2*(-mw2dm1 + mw2m1)*pek*pupd*qd)*qu
+     -       ))/(pdk*pek*puk) + 
+     -  (4*epdpnpek*(dens*densc*pdk*puk*
+     -        (-(denspc*ml2*mw2dm1*puk) + 
+     -          densp*ml2*mw2m1*puk - 2*densp*pupe + 
+     -          2*denspc*pupe) + 
+     -       denspc*puk*(densc*densp*pek*
+     -           ((-2 + ml2*mw2m1)*pupe + ml2*mw2m1*pupn) - 
+     -          dens*((-2 + densp*(-2 + ml2*mw2dm1)*pek)*
+     -              pupe + densp*ml2*mw2dm1*pek*pupn))*qd + 
+     -       ml2*(dens*denspc*mw2dm1 - densc*densp*mw2m1)*pdk*
+     -        (puk + pupe)*qu + 
+     -       densp*denspc*ml2*(-mw2dm1 + mw2m1)*pdk*pek*qu**2)
+     -     )/(pdk*pek*puk) + 
+     -  (4*epupdpek*(densc*densp*
+     -        (-((-2 + ml2*mw2m1)*pdpn*(1 + 2*denspc*pek)) + 
+     -          2*(1 + denspc*ml2*mw2m2*(pdpe + pdpn)*pek)*
+     -           pnpe)*puk*qd - 
+     -       densp*(densc*pdk*
+     -           (ml2*mw2m1*pnpe + 
+     -             denspc*pek*
+     -              (2*pupn + 
+     -                ml2*
+     -                 (mw2dm1*(pdpn + pnk) + 
+     -                   2*mw2m2*pnpe*(pupe + pupn) - 
+     -                   mw2m1*(pdpn + pnk + 2*pupn)))) + 
+     -          denspc*ml2*(mw2dm1 - mw2m1)*pek*(pdpn - pupn)*
+     -           qd)*qu + 
+     -       dens*(densc*pdk*puk*
+     -           (denspc*((-2 + ml2*mw2dm1)*pdpn - 2*pnpe) + 
+     -             densp*
+     -              (pdpn*
+     -                 (2 - ml2*mw2m1 + 
+     -                   2*denspc*ml2*(mw2dm1 - mw2m1)*pek) + 
+     -                2*pnpe + 
+     -                denspc*ml2*(mw2dm1 - mw2m1)*pek*
+     -                 (pnk + pnpe + 2*pupn))) + 
+     -          denspc*((-2 + ml2*mw2dm1)*pdpn*
+     -              (1 + 2*densp*pek) - 
+     -             2*densp*ml2*mw2m2*(pdpe + pdpn)*pek*pnpe)*
+     -           puk*qd + 
+     -          denspc*pdk*
+     -           (ml2*mw2dm1*pnpe + 
+     -             densp*pek*
+     -              (2*pupn + 
+     -                ml2*
+     -                 (mw2m1*(pdpn + pnk) + 
+     -                   2*mw2m2*pnpe*(pupe + pupn) - 
+     -                   mw2dm1*(pdpn + pnk + 2*pupn))))*qu)))
+     -    /(pdk*pek*puk) + 
+     -  (4*epupdpnpe*(dens*
+     -        (densc*pdk*puk*
+     -           (denspc*
+     -              (-2*(puk + pupe) + 
+     -                ml2*
+     -                 (-1 + 
+     -                   mw2dm1*
+     -                    (pdpn + pek + pnk - puk + pupn))) + 
+     -             densp*
+     -              (2*(puk + pupe) - 
+     -                ml2*
+     -                 (-1 - 
+     -                   denspc*mw2dm1*pek*
+     -                    (pdpe + pdpn + 2*pek + 2*pnk - 
+     -                     2*pupd + pupe + pupn) + 
+     -                   mw2m1*
+     -                    (pdpn + denspc*pdpn*pek + pnk - 
+     -                     puk + pupn + 
+     -                     pek*
+     -                     (1 + 
+     -                     denspc*
+     -                     (pdpe + 2*pek + 2*pnk - 2*pupd + 
+     -                     pupe + pupn)))))) + 
+     -          denspc*puk*
+     -           (-2*densp*pek*(pdk + pdpn - pnk) + 
+     -             ml2*mw2dm1*
+     -              (pek - pdpe*(1 + densp*pek) + pnk + 
+     -                densp*pek*(-pdpn + pek + pnk)) + 
+     -             densp*ml2*(-mw2dm1 + mw2m1)*pek*pupd)*qd + 
+     -          denspc*pdk*
+     -           (ml2*mw2dm1*(puk + pupe) + 
+     -             densp*pek*
+     -              (2*(pek - pupe) + 
+     -                ml2*
+     -                 (mw2m1*(pdk - pupd) + 
+     -                   mw2dm1*
+     -                    (-pdk - pek - pnk + pupd + pupe + 
+     -                     pupn))))*qu) + 
+     -       densp*(densc*puk*
+     -           (2*pek*(1 + denspc*(pdk + pdpn - pnk)) + 
+     -             ml2*mw2m1*
+     -              (pdpe + denspc*pdpe*pek - pnk - 
+     -                pek*(1 + denspc*(-pdpn + pek + pnk))) + 
+     -             denspc*ml2*(-mw2dm1 + mw2m1)*pek*pupd)*qd
+     -           - (densc*pdk*
+     -              (ml2*mw2m1*(puk + pupe) + 
+     -                denspc*pek*
+     -                 (2*(pek - pupe) + 
+     -                   ml2*
+     -                    (mw2dm1*(pdk - pupd) + 
+     -                     mw2m1*
+     -                     (-pdk - pek - pnk + pupd + pupe + 
+     -                     pupn)))) + 
+     -             2*denspc*ml2*(mw2dm1 - mw2m1)*pek*
+     -              (pdk - pupd)*qd)*qu)))/(pdk*pek*puk) + 
+     -  (8*densp*(densc*(-(denspc*pdpn**2*pek*puk*pupe*qd) + 
+     -          pdpn*puk*
+     -           (-(pdk*pupe) + 
+     -             pek*((1 + 2*denspc*pek - denspc*pnpe)*
+     -                 pupd + pupe + 
+     -                denspc*(-pdk + pek + pnk - 2*pupd)*pupe)
+     -             )*qd - 
+     -          puk*(pdk*pnpe*pupe + 
+     -             denspc*pek*
+     -              (-(pnk*pupd*(pnpe + 2*pupe)) + 
+     -                pdk*(-2*pnk*pupe + pnpe*(pupd + pupe))))
+     -            *qd - pdpe*puk*
+     -           (pdpn*puk + 2*denspc*pdpn*pek*puk + 
+     -             2*pdpn*pupe - pnk*pupe + 
+     -             denspc*pek*pnk*pupe - 
+     -             denspc*pek*(pdk + pdpn - pnk)*pupn)*qd + 
+     -          pdk*pdpn*
+     -           (2*pupe*(puk + pupe) + 
+     -             pek*(puk*(-2 + denspc*(pnpe + pupe)) + 
+     -                pupe*
+     -                 (-2 + denspc*(-pnk + 2*pupd + pupe)))
+     -              - denspc*pek**2*
+     -              (2*puk + 2*pupd + pupe - pupn))*qu - 
+     -          denspc*pdk*pdpe*pek*(-pek + puk + pupe)*pupn*
+     -           qu + denspc*pdk*pek*
+     -           (-(pek*pnpe*pupd) - 2*pnk*pupd*pupe + 
+     -             pnpe*pupd*(puk + pupe) + 2*pdk*pupe*pupn)*
+     -           qu) + 2*denspc*pek*
+     -        (qu*((pdpe*pdpn*puk - 
+     -                pdpn*
+     -                 (pek*pupd + (pdk + puk - 2*pupd)*pupe)
+     -                 + pdk*pupe*pupn)*qd + pdk*pdpn*pek*qu)
+     -           + pnk*pupe*qd*(puk*qd - pupd*qu))))/
+     -   (pdk*pek*puk) + 
+     -  dens*((8*densc*(pdpn*
+     -           (puk*(2 + 
+     -                denspc*(pdpe + 2*pek - 2*pnpe - pupe))
+     -              + denspc*
+     -              (-(pupe*(pdk + 2*pnpe + pupe)) + 
+     -                pek*(pupd + pupe))) + 
+     -          denspc*(2*pdpe*pnk*pupe - 
+     -             pnpe*(2*pdk*pupe + 
+     -                pupd*(-pek + puk + pupe)) + 
+     -             pdpe*(-pek + puk + pupe)*pupn)))/pek + 
+     -     (-8*denspc*puk*
+     -         (pdpn*(pdpe*puk - pek*pupd) + 
+     -           (2*pdpe*pdpn - pdpn*pek - pdpe*pnk + 
+     -              pdk*(pdpn + pnpe))*pupe)*qd - 
+     -        16*denspc*pdk*pdpn*(pek - pupe)*(puk + pupe)*qu)
+     -       /(pdk*pek*puk) + 
+     -     densp*(8*densc*
+     -         (pnpe*pupd - (pdk*(pdpn + 2*pnpe)*pupe)/pek + 
+     -           pdpn*(pupd + pupe) - pdpe*pupn + 
+     -           2*denspc*
+     -            (-(pdk*pnpe*pupd) + pdpe*pnpe*pupd + 
+     -              pek*pnpe*pupd + pnk*pnpe*pupd - 
+     -              pnpe**2*pupd - pnpe*puk*pupd - 
+     -              pnpe*pupd**2 + pdk*pnk*pupe - 
+     -              2*pdk*pnpe*pupe + pdpe*pnpe*pupe + 
+     -              2*pnk*pupd*pupe - 2*pnpe*pupd*pupe + 
+     -              pdpn*
+     -               (pdpe*pupd + (-pdk + pdpe + pnk)*pupe + 
+     -                 pek*(puk + 2*pupd + pupe) - 
+     -                 pupe*(puk + pupd - pupn) - 
+     -                 pnpe*(2*puk + 2*pupd + pupe - pupn)) + 
+     -              (pdk*pdpe - pdpe**2 + 
+     -                 pdpe*
+     -                  (-pek - pnk + pnpe + puk + pupd) + 
+     -                 pupd*(pnpe + pupe))*pupn - pdpe*pupn**2
+     -              ) + (puk*
+     -              (-(pnpe*pupd) - 
+     -                pdpn*(-2*pek + 2*pnpe + pupe) + 
+     -                pdpe*(pdpn + pupn)))/pek - 
+     -           (pupe*(pnpe*pupd + pdpn*(2*pnpe + pupe) - 
+     -                pdpe*(2*pnk + pupn)))/pek) + 
+     -        (8*denspc*(-(puk*
+     -                ((-2*pdpn*pek + 
+     -                     (pdk + pdpn - pnk)*pnpe)*pupd + 
+     -                  (pdpn**2 + 
+     -                     pdk*(pdpn - 2*pnk + pnpe) - 
+     -                     pdpn*(pek + pnk - 2*pupd) - 
+     -                     2*pnk*pupd)*pupe + 
+     -                  pdpe*
+     -                   (2*pdpn*puk + pnk*pupe - 
+     -                     (pdk + pdpn - pnk)*pupn))*qd) + 
+     -             pdk*(pupd*
+     -                 (-2*pnk*pupe + pnpe*(puk + pupe)) + 
+     -                pdpn*
+     -                 (pnpe*puk + 
+     -                   pupe*(-pnk + puk + 2*pupd + pupe) - 
+     -                   pek*(2*puk + 2*pupd + pupe - pupn))
+     -                 - (-2*pdk*pupe + pdpe*(puk + pupe))*
+     -                 pupn + pek*(-(pnpe*pupd) + pdpe*pupn))*
+     -              qu))/(pdk*puk))) - 
+     -  (2*epupdpnk*(dens*
+     -        (2*densc*ml2*pdk*puk*
+     -           (denspc*(-1 + mw2dm1*(ml2 - pdpn + pnpe)) + 
+     -             densp*
+     -              (1 - 
+     -                ml2*
+     -                 (mw2m1 + denspc*(-mw2dm1 + mw2m1)*pek)
+     -                 + denspc*mw2dm1*pek*
+     -                 (2*pdpe + pek + pnpe + 2*pupe) + 
+     -                mw2m1*
+     -                 (pdpn - pnpe - 
+     -                   denspc*pek*
+     -                    (2*pdpe + pek + pnpe + 2*pupe)))) + 
+     -          denspc*ml2*
+     -           (ml2*mw2dm1 - 
+     -             2*mw2dm1*
+     -              (pdpn + 2*densp*pdpn*pek - pnpe) - 
+     -             4*densp*(pdpe + pdpn)*pek*
+     -              (mw2m1 - mw2m2*pnpe))*puk*qd + 
+     -          denspc*pdk*
+     -           (ml2**2*mw2dm1 - 4*densp*pek*pupe + 
+     -             2*densp*ml2*pek*
+     -              (-(mw2dm1*(pdpe + pek - 2*pupn)) - 
+     -                2*mw2m2*pnpe*(pupe + pupn) + 
+     -                mw2m1*(pdpe + pek + 2*(pupe + pupn))))*
+     -           qu) - densp*
+     -        (2*denspc*ml2*(mw2dm1 - mw2m1)*pek*
+     -           (pdpe - pupe)*qd*qu + 
+     -          densc*(ml2*
+     -              (-4 + ml2*mw2m1 - 
+     -                2*mw2m1*
+     -                 (pdpn + 2*denspc*pdpn*pek - pnpe) - 
+     -                4*denspc*(pdpe + pdpn)*pek*
+     -                 (mw2dm1 - mw2m2*pnpe))*puk*qd + 
+     -             pdk*(ml2**2*mw2m1 - 4*denspc*pek*pupe + 
+     -                2*denspc*ml2*pek*
+     -                 (-(mw2m1*(pdpe + pek - 2*pupn)) - 
+     -                   2*mw2m2*pnpe*(pupe + pupn) + 
+     -                   mw2dm1*(pdpe + pek + 2*(pupe + pupn))
+     -                   ))*qu))))/(pdk*pek*puk) + 
+     -  (2*ml2**2*(dens*(2*densc*pdk*puk*
+     -           (densp*mw2m1*
+     -              (pdpn*puk - pnk*pupd + pdk*pupn) + 
+     -             denspc*
+     -              (mw2dm1*
+     -                 (-((1 + densp*pek)*pnk*pupd) + 
+     -                   pdpn*
+     -                    (puk + densp*pek*puk + 
+     -                     densp*pek*pupd) + pdk*pupn + 
+     -                   densp*pek*(pdk + pupd)*pupn) + 
+     -                densp*pek*
+     -                 (2*mw2m2*pnpe*(-(pdk*puk) + pupd**2) + 
+     -                   mw2m1*
+     -                    (-(pnk*pupd) + pdpn*(puk + pupd) + 
+     -                     (pdk + pupd)*pupn)))) + 
+     -          denspc*puk*
+     -           (-2*densp*mw2m2*pek*pnpe*
+     -              (pdk*puk + (puk - pupd)*pupd) + 
+     -             mw2dm1*
+     -              (pdpn*(puk + 2*densp*pek*pupd) - 
+     -                (1 + 2*densp*pek)*(pnk*pupd - pdk*pupn))
+     -             )*qd - 
+     -          denspc*pdk*
+     -           (mw2dm1*(1 + 2*densp*pek)*
+     -              (pdpn*puk - pnk*pupd) - 
+     -             2*densp*mw2m2*pek*pnpe*
+     -              (-pupd**2 + pdk*(puk + pupd)) + 
+     -             mw2dm1*(pdk + 2*densp*pek*pupd)*pupn)*qu)
+     -        + densp*(densc*puk*
+     -           (-2*denspc*mw2m2*pek*pnpe*
+     -              (pdk*puk + (puk - pupd)*pupd) + 
+     -             mw2m1*
+     -              (pdpn*(puk + 2*denspc*pek*pupd) - 
+     -                (1 + 2*denspc*pek)*(pnk*pupd - pdk*pupn)
+     -                ))*qd - 
+     -          densc*pdk*
+     -           (mw2m1*(1 + 2*denspc*pek)*
+     -              (pdpn*puk - pnk*pupd) - 
+     -             2*denspc*mw2m2*pek*pnpe*
+     -              (-pupd**2 + pdk*(puk + pupd)) + 
+     -             mw2m1*(pdk + 2*denspc*pek*pupd)*pupn)*qu - 
+     -          2*denspc*mw2m2*pek*pnpe*
+     -           (puk**2*qd**2 - 
+     -             2*(pdk + puk - pupd)*pupd*qd*qu + 
+     -             pdk**2*qu**2))))/(pdk*pek*puk) + 
+     -  ml2*(densp*((4*denspc*
+     -           (-(puk*(mw2dm1*
+     -                   (-(pnpe*puk) + pnk*pupe + pek*pupn + 
+     -                     2*pnk*pupn) + 
+     -                  mw2m1*
+     -                   (-(pnpe*puk) + pnk*pupe + pek*pupn + 
+     -                     2*pnk*pupn) + 
+     -                  2*mw2m2*pnpe*
+     -                   (pnpe*puk - 
+     -                     (pek + pnk)*(pupe + pupn)))*qd**2)
+     -              + (mw2dm1*
+     -                 (-2*pdpn**2*puk - 2*pdk*pnpe*pupd - 
+     -                   2*pnpe*puk*pupd + 2*pnpe*pupd**2 + 
+     -                   pnk*pupd*pupe + pek*pupd*pupn + 
+     -                   2*pnk*pupd*pupn - 2*pdk*pupe*pupn - 
+     -                   2*pdk*pupn**2 + 
+     -                   pdpe*
+     -                    (-2*pdpn*puk + pnk*pupd + 
+     -                     (pdk + puk - 2*pupd)*pupn) + 
+     -                   pdpn*
+     -                    (pek*pupd + 2*pnk*pupd + 
+     -                     (pdk + puk - 2*pupd)*
+     -                     (pupe + 2*pupn))) + 
+     -                mw2m1*
+     -                 (-2*pdpn**2*puk - 2*pdk*pnpe*pupd - 
+     -                   2*pnpe*puk*pupd + 2*pnpe*pupd**2 + 
+     -                   pnk*pupd*pupe + pek*pupd*pupn + 
+     -                   2*pnk*pupd*pupn - 2*pdk*pupe*pupn - 
+     -                   2*pdk*pupn**2 + 
+     -                   pdpe*
+     -                    (-2*pdpn*puk + pnk*pupd + 
+     -                     (pdk + puk - 2*pupd)*pupn) + 
+     -                   pdpn*
+     -                    (pek*pupd + 2*pnk*pupd + 
+     -                     (pdk + puk - 2*pupd)*
+     -                     (pupe + 2*pupn))) - 
+     -                2*mw2m2*pnpe*
+     -                 (-(pdpe**2*puk) - pdpn**2*puk - 
+     -                   2*pdk*pnpe*pupd - 2*pnpe*puk*pupd + 
+     -                   2*pnpe*pupd**2 + pek*pupd*pupe + 
+     -                   pnk*pupd*pupe - pdk*pupe**2 + 
+     -                   pek*pupd*pupn + pnk*pupd*pupn - 
+     -                   2*pdk*pupe*pupn - pdk*pupn**2 + 
+     -                   pdpn*
+     -                    (pek*pupd + pnk*pupd + 
+     -                     (pdk + puk - 2*pupd)*(pupe + pupn))
+     -                     + pdpe*
+     -                    (-2*pdpn*puk + 
+     -                     (pdk + puk)*(pupe + pupn) + 
+     -                     pupd*(pek + pnk - 2*(pupe + pupn)))
+     -                   ))*qd*qu - 
+     -             pdk*((mw2dm1 + mw2m1)*
+     -                 (pdpe*pnk + pdpn*(pek + 2*pnk)) - 
+     -                ((mw2dm1 + mw2m1)*pdk + 
+     -                   2*mw2m2*(pdpe + pdpn)*(pek + pnk))*
+     -                 pnpe + 2*mw2m2*pdk*pnpe**2)*qu**2))/
+     -         (pdk*puk) + 
+     -        densc*((8*pdpn*qu)/pek + 
+     -           (4*mw2m1*
+     -              (puk*
+     -                 (pdpn**2*puk + pdpe**2*pupn + 
+     -                   pnpe*(pek*pupd + pdk*pupn) - 
+     -                   pdpn*
+     -                    (pnk*pupd - pdk*(pupe + pupn) + 
+     -                     pek*(pupd + pupe + pupn)) + 
+     -                   pdpe*
+     -                    (-(pnpe*pupd) - (pek + pnk)*pupn + 
+     -                     pdpn*(puk + pupe + 2*pupn)))*qd + 
+     -                pdk*
+     -                 (pdpe*pnk*puk + 
+     -                   pnpe*
+     -                    (-(pdk*puk) + 
+     -                     pupd*(-pek + puk + pupe)) - 
+     -                   pdpe*(-pek + puk + pupe)*pupn + 
+     -                   pdpn*
+     -                    (2*pnk*puk - pnpe*puk + pnk*pupe - 
+     -                     puk*pupe - pupe**2 - 
+     -                     2*(puk + pupe)*pupn + 
+     -                     pek*(puk + pupe + pupn)))*qu))/
+     -            (pdk*pek*puk) + 
+     -           (4*denspc*
+     -              (mw2m1*
+     -                 (pdpn**2*puk*(2*puk - pupe)*qd + 
+     -                   pdpe**2*puk*pupn*qd + 
+     -                   pdpe*puk*
+     -                    (2*pdpn*puk - pnpe*pupd - 
+     -                     pdpn*pupe + pnk*pupe + 
+     -                     (pdpn - pek + pupd)*pupn)*qd + 
+     -                   pdpn*puk*
+     -                    (pnk*(-2*pupd + pupe) - 
+     -                     pek*(2*pupd + pupn) + 
+     -                     pupd*(pnpe + pupe + 2*pupn))*qd + 
+     -                   puk*
+     -                    (pdk*
+     -                     (-(pnk*pupe) - pek*pupn - 
+     -                     2*pnk*pupn + 
+     -                     pnpe*(puk - pupe + pupn)) - 
+     -                     pupd*
+     -                     (pnpe*(-puk + pupd) + 
+     -                     pek*(-pnpe + pupn) + 
+     -                     pnk*(pnpe + pupe + 2*pupn)))*qd + 
+     -                   pdk*pdpe*
+     -                    (pnpe*puk + 
+     -                     pnk*(puk + pupd - pupe - pupn) + 
+     -                     pupn*(-pupd + pupe + pupn))*qu + 
+     -                   pdk*pdpn*
+     -                    (-(pnpe*puk) + 2*pnk*(puk + pupd) - 
+     -                     pupe*(pupd + pupe) - 
+     -                     (2*pupd + pupe)*pupn + 
+     -                     pek*(puk + pupd + pupe + pupn))*qu
+     -                    - pdk*
+     -                    (-(pnpe*pupd*
+     -                     (-pek + pnk + pupd + pupe)) + 
+     -                     (-2*(pek + pnk) + pnpe)*pupd*
+     -                    pupn + 
+     -                     pdk*
+     -                     (pnpe*(puk + pupd) + 
+     -                     2*pupn*(pupe + pupn)))*qu) + 
+     -                mw2dm1*
+     -                 (puk*
+     -                    (2*pdpn**2*puk + pdk*pnpe*puk + 
+     -                     pnpe*puk*pupd - pnpe*pupd**2 - 
+     -                     pdk*pnk*pupe - pnk*pupd*pupe - 
+     -                     (pek + 2*pnk)*(pdk + pupd)*pupn + 
+     -                     pdpn*pupd*
+     -                     (-2*pnk + pupe + 2*pupn) + 
+     -                     pdpe*
+     -                     (2*pdpn*puk + pupd*(-2*pnk + pupn))
+     -                     )*qd + 
+     -                   pdk*
+     -                    (-(pdk*pnpe*puk) - pdk*pnpe*pupd + 
+     -                     pnpe*pupd**2 + 
+     -                     pdpe*pnk*(puk + pupd) + 
+     -                     2*pnk*pupd*pupe - pdpe*pupd*pupn + 
+     -                     2*pnk*pupd*pupn - 
+     -                     2*pdk*pupe*pupn - 2*pdk*pupn**2 + 
+     -                     pdpn*
+     -                     (pek*(puk + pupd) + 
+     -                     2*pnk*(puk + pupd) - 
+     -                     pupd*(pupe + 2*pupn)))*qu) + 
+     -                2*(puk*
+     -                    (-(pdpn*pupd*qd) + pnk*pupd*qd + 
+     -                     pdk*pdpn*qu) + 
+     -                   mw2m2*pnpe*
+     -                    (-(pdpe**2*puk**2*qd) + 
+     -                     pdpe*puk*
+     -                     (-2*pdpn*puk + 
+     -                     pupd*(pek + pnk - pupe - pupn))*qd
+     -                     + puk*
+     -                     (-(pdpn**2*puk) + 
+     -                     pdpn*pupd*
+     -                     (pek + pnk - pupe - pupn) + 
+     -                     pdk*
+     -                     (-(pnpe*puk) + 
+     -                     (pek + pnk)*(pupe + pupn)) + 
+     -                     pupd*
+     -                     (pnpe*(-puk + pupd) + 
+     -                     (pek + pnk)*(pupe + pupn)))*qd - 
+     -                     pdk*pdpe*
+     -                     (pek*(puk + pupd) + 
+     -                     pnk*(puk + pupd) - 
+     -                     pupd*(pupe + pupn))*qu + 
+     -                     pdk*
+     -                     (-(pupd*
+     -                     (pnpe*pupd + 
+     -                     (pek + pnk)*(pupe + pupn))) - 
+     -                     pdpn*
+     -                     (pek*(puk + pupd) + 
+     -                     pnk*(puk + pupd) - 
+     -                     pupd*(pupe + pupn)) + 
+     -                     pdk*
+     -                     (pnpe*(puk + pupd) + 
+     -                     (pupe + pupn)**2))*qu))))/(pdk*puk)
+     -           )) + dens*
+     -      ((-4*densc*(denspc*mw2dm1*pdpn**2*pek*
+     -              (puk + pupe) + 
+     -             pdpn*(4*pupe + 
+     -                puk*
+     -                 (4 + 
+     -                   denspc*pek*
+     -                    (5 + 
+     -                     mw2dm1*
+     -                     (pdpe + pek + 2*pnk - pnpe + pupe))
+     -                   ) + 
+     -                denspc*pek*
+     -                 ((2 + mw2dm1*(pek + pnk - pnpe))*
+     -                    pupd + 
+     -                   (3 + mw2dm1*(-pdk + pek + pnk))*
+     -                    pupe - 
+     -                   (2 + mw2dm1*(pdk + pdpe + pupe))*pupn
+     -                   )) + 
+     -             denspc*pek*
+     -              ((pnk + pnpe)*pupd - (pdk + pdpe)*pupn + 
+     -                mw2dm1*
+     -                 (-(pnpe*
+     -                     (pupd*(pek - puk + pupn) + 
+     -                     pdk*(puk + pupn))) + 
+     -                   pdpe*
+     -                    (pupn*(pek - puk + pupn) + 
+     -                     pnk*(puk + pupn))))))/pek**2 + 
+     -        (4*denspc*(2*pdk*pdpn*puk*qu + 
+     -             mw2dm1*
+     -              (puk*
+     -                 (pdpn**2*puk + pdpe**2*pupn + 
+     -                   pnpe*(pek*pupd + pdk*pupn) - 
+     -                   pdpn*
+     -                    (pnk*pupd - pdk*(pupe + pupn) + 
+     -                     pek*(pupd + pupe + pupn)) + 
+     -                   pdpe*
+     -                    (-(pnpe*pupd) - (pek + pnk)*pupn + 
+     -                     pdpn*(puk + pupe + 2*pupn)))*qd + 
+     -                pdk*
+     -                 (pdpe*pnk*puk + 
+     -                   pnpe*
+     -                    (-(pdk*puk) + 
+     -                     pupd*(-pek + puk + pupe)) - 
+     -                   pdpe*(-pek + puk + pupe)*pupn + 
+     -                   pdpn*
+     -                    (2*pnk*puk - pnpe*puk + pnk*pupe - 
+     -                     puk*pupe - pupe**2 - 
+     -                     2*(puk + pupe)*pupn + 
+     -                     pek*(puk + pupe + pupn)))*qu)))/
+     -         (pdk*pek*puk) + 
+     -        densp*(densc*
+     -            ((-20*pdpn*puk)/pek + (4*pdk*pupn)/pek + 
+     -              (-4*(2*pdpn + pnk + pnpe)*pupd - 
+     -                 12*pdpn*pupe + 4*(pdpe + 2*pdpn)*pupn)/
+     -               pek + 
+     -              (4*mw2m1*
+     -                 (-(pdpn**2*(puk + pupe)) - 
+     -                   pdpn*
+     -                    (-(pnpe*(puk + pupd)) + 
+     -                     (-pdk + puk)*pupe + 
+     -                     pek*(puk + pupd + pupe) + 
+     -                     pnk*(2*puk + pupd + pupe)) + 
+     -                   pdpn*(pdk + pupe)*pupn - 
+     -                   pdpe*
+     -                    ((pdpn + pnk)*puk + 
+     -                     (-pdpn + pek + pnk - puk)*pupn + 
+     -                     pupn**2) + 
+     -                   pnpe*
+     -                    (pupd*(pek - puk + pupn) + 
+     -                     pdk*(puk + pupn))))/pek + 
+     -              4*denspc*
+     -               (-6*pdpn*puk + 2*pdk*pupn + 
+     -                 2*
+     -                  (-(pdpn*(4*pupd + pupe - 2*pupn)) + 
+     -                    pdpe*pupn + 
+     -                    pupd*(pnk - 2*pnpe + 2*pupn)) + 
+     -                 2*mw2m2*pnpe*
+     -                  (((pdpe + pdpn)*(pek + pnk) - 
+     -                     2*pdk*pnpe)*puk + 
+     -                    pdk*(pek + pnk)*(pupe + pupn) + 
+     -                    2*pek*pupd*
+     -                     (pdpe + pdpn + pupe + pupn) + 
+     -                    pupd*
+     -                     (pdpe**2 + pdpn**2 + 2*pdpn*pnk + 
+     -                     2*pdpe*(pdpn + pnk) + 
+     -                     2*pnpe*pupd + 
+     -                     (pupe + pupn)*(2*pnk + pupe + pupn)
+     -                     )) + 
+     -                 mw2dm1*
+     -                  (-((pdpn*(pek + 2*pnk - pnpe) - 
+     -                     2*pdk*pnpe + pdpe*(pnk + pnpe))*puk
+     -                     ) - pdpn**2*(2*pupd + pupe) + 
+     -                    pek*pupd*
+     -                    (-2*pdpn + pnpe - 2*pupn) + 
+     -                    pdpe**2*pupn - 
+     -                    pdk*
+     -                     ((pnk + pnpe)*pupe + 
+     -                     (pek + 2*pnk - pnpe)*pupn) + 
+     -                    pdpn*
+     -                     (-4*pnk*pupd + pnpe*pupd + 
+     -                     pupe*(pupe + pupn)) - 
+     -                    pdpe*
+     -                     (2*pnk*pupd + pnpe*pupd + 
+     -                     pdpn*(2*pupd + pupe - pupn) + 
+     -                     pupn*(pupe + pupn)) - 
+     -                    pupd*
+     -                     (pnpe*(2*pupd + pupe - pupn) + 
+     -                     2*pupn*(pupe + pupn) + 
+     -                     pnk*(pnpe + 2*pupe + 4*pupn))) + 
+     -                 mw2m1*
+     -                  (-((pdpn*(pek + 2*pnk - pnpe) - 
+     -                     2*pdk*pnpe + pdpe*(pnk + pnpe))*puk
+     -                     ) - pdpn**2*(2*pupd + pupe) + 
+     -                    pek*pupd*
+     -                    (-2*pdpn + pnpe - 2*pupn) + 
+     -                    pdpe**2*pupn - 
+     -                    pdk*
+     -                     ((pnk + pnpe)*pupe + 
+     -                     (pek + 2*pnk - pnpe)*pupn) + 
+     -                    pdpn*
+     -                     (-4*pnk*pupd + pnpe*pupd + 
+     -                     pupe*(pupe + pupn)) - 
+     -                    pdpe*
+     -                     (2*pnk*pupd + pnpe*pupd + 
+     -                     pdpn*(2*pupd + pupe - pupn) + 
+     -                     pupn*(pupe + pupn)) - 
+     -                    pupd*
+     -                     (pnpe*(2*pupd + pupe - pupn) + 
+     -                     2*pupn*(pupe + pupn) + 
+     -                     pnk*(pnpe + 2*pupe + 4*pupn))))) + 
+     -           (4*denspc*
+     -              (mw2dm1*
+     -                 (pdpn**2*puk*(2*puk - pupe)*qd + 
+     -                   pdpe**2*puk*pupn*qd + 
+     -                   pdpe*puk*
+     -                    (2*pdpn*puk - pnpe*pupd - 
+     -                     pdpn*pupe + pnk*pupe + 
+     -                     (pdpn - pek + pupd)*pupn)*qd + 
+     -                   pdpn*puk*
+     -                    (pnk*(-2*pupd + pupe) - 
+     -                     pek*(2*pupd + pupn) + 
+     -                     pupd*(pnpe + pupe + 2*pupn))*qd + 
+     -                   puk*
+     -                    (pdk*
+     -                     (-(pnk*pupe) - pek*pupn - 
+     -                     2*pnk*pupn + 
+     -                     pnpe*(puk - pupe + pupn)) - 
+     -                     pupd*
+     -                     (pnpe*(-puk + pupd) + 
+     -                     pek*(-pnpe + pupn) + 
+     -                     pnk*(pnpe + pupe + 2*pupn)))*qd + 
+     -                   pdk*pdpe*
+     -                    (pnpe*puk + 
+     -                     pnk*(puk + pupd - pupe - pupn) + 
+     -                     pupn*(-pupd + pupe + pupn))*qu + 
+     -                   pdk*pdpn*
+     -                    (-(pnpe*puk) + 2*pnk*(puk + pupd) - 
+     -                     pupe*(pupd + pupe) - 
+     -                     (2*pupd + pupe)*pupn + 
+     -                     pek*(puk + pupd + pupe + pupn))*qu
+     -                    - pdk*
+     -                    (-(pnpe*pupd*
+     -                     (-pek + pnk + pupd + pupe)) + 
+     -                     (-2*(pek + pnk) + pnpe)*pupd*
+     -                    pupn + 
+     -                     pdk*
+     -                     (pnpe*(puk + pupd) + 
+     -                     2*pupn*(pupe + pupn)))*qu) + 
+     -                mw2m1*
+     -                 (puk*
+     -                    (2*pdpn**2*puk + pdk*pnpe*puk + 
+     -                     pnpe*puk*pupd - pnpe*pupd**2 - 
+     -                     pdk*pnk*pupe - pnk*pupd*pupe - 
+     -                     (pek + 2*pnk)*(pdk + pupd)*pupn + 
+     -                     pdpn*pupd*
+     -                     (-2*pnk + pupe + 2*pupn) + 
+     -                     pdpe*
+     -                     (2*pdpn*puk + pupd*(-2*pnk + pupn))
+     -                     )*qd + 
+     -                   pdk*
+     -                    (-(pdk*pnpe*puk) - pdk*pnpe*pupd + 
+     -                     pnpe*pupd**2 + 
+     -                     pdpe*pnk*(puk + pupd) + 
+     -                     2*pnk*pupd*pupe - pdpe*pupd*pupn + 
+     -                     2*pnk*pupd*pupn - 
+     -                     2*pdk*pupe*pupn - 2*pdk*pupn**2 + 
+     -                     pdpn*
+     -                     (pek*(puk + pupd) + 
+     -                     2*pnk*(puk + pupd) - 
+     -                     pupd*(pupe + 2*pupn)))*qu) + 
+     -                2*(puk*
+     -                    (-(pdpn*pupd*qd) + pnk*pupd*qd + 
+     -                     pdk*pdpn*qu) + 
+     -                   mw2m2*pnpe*
+     -                    (-(pdpe**2*puk**2*qd) + 
+     -                     pdpe*puk*
+     -                     (-2*pdpn*puk + 
+     -                     pupd*(pek + pnk - pupe - pupn))*qd
+     -                     + puk*
+     -                     (-(pdpn**2*puk) + 
+     -                     pdpn*pupd*
+     -                     (pek + pnk - pupe - pupn) + 
+     -                     pdk*
+     -                     (-(pnpe*puk) + 
+     -                     (pek + pnk)*(pupe + pupn)) + 
+     -                     pupd*
+     -                     (pnpe*(-puk + pupd) + 
+     -                     (pek + pnk)*(pupe + pupn)))*qd - 
+     -                     pdk*pdpe*
+     -                     (pek*(puk + pupd) + 
+     -                     pnk*(puk + pupd) - 
+     -                     pupd*(pupe + pupn))*qu + 
+     -                     pdk*
+     -                     (-(pupd*
+     -                     (pnpe*pupd + 
+     -                     (pek + pnk)*(pupe + pupn))) - 
+     -                     pdpn*
+     -                     (pek*(puk + pupd) + 
+     -                     pnk*(puk + pupd) - 
+     -                     pupd*(pupe + pupn)) + 
+     -                     pdk*
+     -                     (pnpe*(puk + pupd) + 
+     -                     (pupe + pupn)**2))*qu))))/(pdk*puk)
+     -           )))
 
-      pukc1d = conjg(pukc1)
-      pdkc2d = conjg(pdkc2)
-*
-      amp2 =
-     &  + pukc1d * (  - 16*c3*ml2*mw2m2*pnpe2*pdk - 16*c2*ml2*mw2dm1*
-     &    pdpn2 - 16*c2*ml2*mw2m1*pdpn2 - 16*pupd*pnpe*c3 + 16*pupd*
-     &    pnpe*c2*ml4*mw2m2 - 16*pupd*pnpe*c2*ml2*mw2dm1 - 16*pupd*
-     &    pnpe*c2*ml2*mw2m1 + 32*pupd*c2*ml2*mw2m2*pnpe2 - 16*pupn*
-     &    pdpn*pnpe*c2*ml2*mw2m2 + 16*pupn*pdpn*c2*ml2*mw2dm1 + 16*
-     &    pupn*pdpn*c2*ml2*mw2m1 - 16*pupn*pdpe*pnpe*c2*ml2*mw2m2
-     &     + 16*pupn*pdpe*c3 + 16*pupn*pdpe*c2*ml2*mw2m1 - 16*pupe
-     &    *pdpn*pnpe*c2*ml2*mw2m2 - 16*pupe*pdpn*c3 - 32*pupe*
-     &    pdpn*c2 + 16*pupe*pdpn*c2*ml2*mw2dm1 - 16*pupe*pdpe*
-     &    pnpe*c2*ml2*mw2m2 + 32*pdpn*pdpe*pnpe*c2*ml2*mw2m2 + 32*
-     &    pdpn*pdpe*c2 - 16*pdpn*pdpe*c2*ml2*mw2dm1 - 16*pdpn*
-     &    pdpe*c2*ml2*mw2m1 - 16*pdpn*pnpe*c3 + 16*pdpn*pnpe*c3*
-     &    ml2*mw2m2*pek + 16*pdpn*pnpe*c3*ml2*mw2m2*pnk + 8*pdpn*
-     &    pnpe*c3*ml2*mw2dm1 + 32*pdpn*c3*pek + 8*pdpn*c3*ml4*mw2dm1
-     &     - 16*pdpn*c3*ml2 - 8*pdpn*c3*ml2*mw2dm1*pek - 16*pdpn*c3*
-     &    ml2*mw2dm1*pnk )
-      amp2 = amp2 + pukc1d * (  - 8*pdpn*c3*ml2*mw2m1*pek - 16*
-     &    pdpn*c3*ml2*mw2m1*pnk + 16*pdpe*pnpe*c3*ml2*mw2m2*pek + 16
-     &    *pdpe*pnpe*c3*ml2*mw2m2*pnk - 8*pdpe*pnpe*c3*ml2*mw2dm1
-     &     - 8*pdpe*c3*ml2*mw2dm1*pnk - 8*pdpe*c3*ml2*mw2m1*pnk - 8*
-     &    pnpe*c3*ml4*mw2m2*pdk + 8*pnpe*c3*ml2*mw2dm1*pdk + 8*pnpe*
-     &    c3*ml2*mw2m1*pdk + 16*pnpe*c2*ml2*mw2m2*pdpe2 + 16*pnpe*c2*
-     &    ml2*mw2m2*pdpn2 + 16*pnpe*c2*ml2*mw2m2*epupdpnpe )
-      amp2 = amp2 + pdkc2d * ( 16*c3*epupdpnpe + 16*c3*ml2*mw2m2*
-     &    pnpe2*puk - 8*c3*ml2*mw2dm1*epupnpek + 8*c3*ml2*mw2m1*
-     &    epupnpek - 16*c1*ml2*mw2dm1*pupn2 - 16*c1*ml2*mw2dm1*
-     &    epupdpnpe - 16*c1*ml2*mw2m1*pupn2 + 16*c1*ml2*mw2m1*epupdpnpe
-     &     + 16*pupd*pnpe*c3 + 16*pupd*pnpe*c1*ml4*mw2m2 - 16*pupd
-     &    *pnpe*c1*ml2*mw2dm1 - 16*pupd*pnpe*c1*ml2*mw2m1 + 32*pupd
-     &    *c1*ml2*mw2m2*pnpe2 + 32*pupn*pupe*pnpe*c1*ml2*mw2m2 + 32*
-     &    pupn*pupe*c1 - 16*pupn*pupe*c1*ml2*mw2dm1 - 16*pupn*
-     &    pupe*c1*ml2*mw2m1 - 16*pupn*pdpn*pnpe*c1*ml2*mw2m2 + 16*
-     &    pupn*pdpn*c1*ml2*mw2dm1 + 16*pupn*pdpn*c1*ml2*mw2m1 - 16*
-     &    pupn*pdpe*pnpe*c1*ml2*mw2m2 - 16*pupn*pdpe*c3 + 16*pupn
-     &    *pdpe*c1*ml2*mw2dm1 - 16*pupn*pnpe*c3*ml2*mw2m2*pek - 16*
-     &    pupn*pnpe*c3*ml2*mw2m2*pnk - 8*pupn*pnpe*c3*ml2*mw2dm1 - 
-     &    8*pupn*c3*ml4*mw2dm1 + 8*pupn*c3*ml2*mw2dm1*pek + 16*pupn*
-     &    c3*ml2*mw2dm1*pnk + 8*pupn*c3*ml2*mw2m1*pek + 16*pupn*c3*
-     &    ml2*mw2m1*pnk )
-      amp2 = amp2 + pdkc2d * (  - 16*pupe*pdpn*pnpe*c1*ml2*mw2m2
-     &     + 16*pupe*pdpn*c3 - 32*pupe*pdpn*c1 + 16*pupe*pdpn*c1*
-     &    ml2*mw2m1 - 16*pupe*pdpe*pnpe*c1*ml2*mw2m2 + 16*pupe*
-     &    pnpe*c3 - 16*pupe*pnpe*c3*ml2*mw2m2*pek - 16*pupe*pnpe*
-     &    c3*ml2*mw2m2*pnk + 8*pupe*pnpe*c3*ml2*mw2dm1 - 32*pupe*c3*
-     &    pnk + 8*pupe*c3*ml2*mw2dm1*pnk + 8*pupe*c3*ml2*mw2m1*pnk + 
-     &    8*pnpe*c3*ml4*mw2m2*puk - 8*pnpe*c3*ml2*mw2dm1*puk - 8*
-     &    pnpe*c3*ml2*mw2m1*puk + 16*pnpe*c1*ml2*mw2m2*pupe2 + 16*
-     &    pnpe*c1*ml2*mw2m2*pupn2 )
-      amp2 = amp2 + pukc1 * (  - 16*c3d*ml2*mw2m2*pnpe2*pdk - 16*
-     &    c2d*ml2*mw2dm1*pdpn2 - 16*c2d*ml2*mw2m1*pdpn2 - 32*c1d*ml2*
-     &    mw2m2*pnpe2*pdk - 16*c1d*ml2*mw2dm1*epdpnpek + 16*c1d*ml2*
-     &    mw2m1*epdpnpek - 16*pupd*pnpe*c3d + 16*pupd*pnpe*c2d*ml4*
-     &    mw2m2 - 16*pupd*pnpe*c2d*ml2*mw2dm1 - 16*pupd*pnpe*c2d*
-     &    ml2*mw2m1 + 32*pupd*c2d*ml2*mw2m2*pnpe2 - 16*pupn*pdpn*
-     &    pnpe*c2d*ml2*mw2m2 + 16*pupn*pdpn*c2d*ml2*mw2dm1 + 16*
-     &    pupn*pdpn*c2d*ml2*mw2m1 - 16*pupn*pdpe*pnpe*c2d*ml2*
-     &    mw2m2 + 16*pupn*pdpe*c3d + 16*pupn*pdpe*c2d*ml2*mw2dm1 - 
-     &    16*pupe*pdpn*pnpe*c2d*ml2*mw2m2 - 16*pupe*pdpn*c3d - 32*
-     &    pupe*pdpn*c2d + 16*pupe*pdpn*c2d*ml2*mw2m1 - 16*pupe*
-     &    pdpe*pnpe*c2d*ml2*mw2m2 + 32*pdpn*pdpe*pnpe*c2d*ml2*
-     &    mw2m2 + 32*pdpn*pdpe*c2d - 16*pdpn*pdpe*c2d*ml2*mw2dm1 - 
-     &    16*pdpn*pdpe*c2d*ml2*mw2m1 - 16*pdpn*pnpe*c3d + 16*pdpn*
-     &    pnpe*c3d*ml2*mw2m2*pek + 16*pdpn*pnpe*c3d*ml2*mw2m2*pnk + 
-     &    8*pdpn*pnpe*c3d*ml2*mw2m1 )
-      amp2 = amp2 + pukc1 * ( 32*pdpn*pnpe*c1d*ml2*mw2m2*pek + 32
-     &    *pdpn*pnpe*c1d*ml2*mw2m2*pnk + 32*pdpn*c3d*pek + 8*pdpn*
-     &    c3d*ml4*mw2m1 - 16*pdpn*c3d*ml2 - 8*pdpn*c3d*ml2*mw2dm1*pek
-     &     - 16*pdpn*c3d*ml2*mw2dm1*pnk - 8*pdpn*c3d*ml2*mw2m1*pek - 
-     &    16*pdpn*c3d*ml2*mw2m1*pnk + 64*pdpn*c1d*pek - 16*pdpn*c1d*
-     &    ml2*mw2dm1*pek - 32*pdpn*c1d*ml2*mw2dm1*pnk - 16*pdpn*c1d*
-     &    ml2*mw2m1*pek - 32*pdpn*c1d*ml2*mw2m1*pnk + 16*pdpe*pnpe*
-     &    c3d*ml2*mw2m2*pek + 16*pdpe*pnpe*c3d*ml2*mw2m2*pnk - 8*
-     &    pdpe*pnpe*c3d*ml2*mw2m1 + 32*pdpe*pnpe*c1d*ml2*mw2m2*pek
-     &     + 32*pdpe*pnpe*c1d*ml2*mw2m2*pnk - 8*pdpe*c3d*ml2*mw2dm1*
-     &    pnk - 8*pdpe*c3d*ml2*mw2m1*pnk - 16*pdpe*c1d*ml2*mw2dm1*pnk
-     &     - 16*pdpe*c1d*ml2*mw2m1*pnk - 8*pnpe*c3d*ml4*mw2m2*pdk + 8
-     &    *pnpe*c3d*ml2*mw2dm1*pdk + 8*pnpe*c3d*ml2*mw2m1*pdk + 16*
-     &    pnpe*c2d*ml2*mw2m2*pdpe2 + 16*pnpe*c2d*ml2*mw2m2*pdpn2 - 16
-     &    *pnpe*c2d*ml2*mw2m2*epupdpnpe - 16*pnpe*c1d*ml4*mw2m2*pdk
-     &     + 16*pnpe*c1d*ml2*mw2dm1*pdk )
-      amp2 = amp2 + pukc1 * ( 16*pnpe*c1d*ml2*mw2m1*pdk )
-      amp2 = amp2 + pdkc2 * (  - 16*c3d*epupdpnpe + 16*c3d*ml2*
-     &    mw2m2*pnpe2*puk - 8*c3d*ml2*mw2dm1*epupnpek + 8*c3d*ml2*mw2m1
-     &    *epupnpek - 32*c2d*ml2*mw2m2*pnpe2*puk + 16*c2d*ml2*mw2dm1*
-     &    epupnpek - 16*c2d*ml2*mw2m1*epupnpek - 16*c1d*ml2*mw2dm1*
-     &    pupn2 - 16*c1d*ml2*mw2dm1*epupdpnpe - 16*c1d*ml2*mw2m1*pupn2
-     &     + 16*c1d*ml2*mw2m1*epupdpnpe + 16*pupd*pnpe*c3d + 16*pupd
-     &    *pnpe*c1d*ml4*mw2m2 - 16*pupd*pnpe*c1d*ml2*mw2dm1 - 16*
-     &    pupd*pnpe*c1d*ml2*mw2m1 + 32*pupd*c1d*ml2*mw2m2*pnpe2 + 32
-     &    *pupn*pupe*pnpe*c1d*ml2*mw2m2 + 32*pupn*pupe*c1d - 16*
-     &    pupn*pupe*c1d*ml2*mw2dm1 - 16*pupn*pupe*c1d*ml2*mw2m1 - 
-     &    16*pupn*pdpn*pnpe*c1d*ml2*mw2m2 + 16*pupn*pdpn*c1d*ml2*
-     &    mw2dm1 + 16*pupn*pdpn*c1d*ml2*mw2m1 - 16*pupn*pdpe*pnpe*
-     &    c1d*ml2*mw2m2 - 16*pupn*pdpe*c3d + 16*pupn*pdpe*c1d*ml2*
-     &    mw2m1 - 16*pupn*pnpe*c3d*ml2*mw2m2*pek - 16*pupn*pnpe*c3d
-     &    *ml2*mw2m2*pnk - 8*pupn*pnpe*c3d*ml2*mw2m1 + 32*pupn*pnpe
-     &    *c2d*ml2*mw2m2*pek )
-      amp2 = amp2 + pdkc2 * ( 32*pupn*pnpe*c2d*ml2*mw2m2*pnk - 8*
-     &    pupn*c3d*ml4*mw2m1 + 8*pupn*c3d*ml2*mw2dm1*pek + 16*pupn*
-     &    c3d*ml2*mw2dm1*pnk + 8*pupn*c3d*ml2*mw2m1*pek + 16*pupn*c3d
-     &    *ml2*mw2m1*pnk - 16*pupn*c2d*ml2*mw2dm1*pek - 32*pupn*c2d*
-     &    ml2*mw2dm1*pnk - 16*pupn*c2d*ml2*mw2m1*pek - 32*pupn*c2d*
-     &    ml2*mw2m1*pnk - 16*pupe*pdpn*pnpe*c1d*ml2*mw2m2 + 16*pupe
-     &    *pdpn*c3d - 32*pupe*pdpn*c1d + 16*pupe*pdpn*c1d*ml2*
-     &    mw2dm1 - 16*pupe*pdpe*pnpe*c1d*ml2*mw2m2 + 16*pupe*pnpe*
-     &    c3d - 16*pupe*pnpe*c3d*ml2*mw2m2*pek - 16*pupe*pnpe*c3d*
-     &    ml2*mw2m2*pnk + 8*pupe*pnpe*c3d*ml2*mw2m1 + 32*pupe*pnpe*
-     &    c2d*ml2*mw2m2*pek + 32*pupe*pnpe*c2d*ml2*mw2m2*pnk - 32*
-     &    pupe*c3d*pnk + 8*pupe*c3d*ml2*mw2dm1*pnk + 8*pupe*c3d*ml2*
-     &    mw2m1*pnk + 64*pupe*c2d*pnk - 16*pupe*c2d*ml2*mw2dm1*pnk - 
-     &    16*pupe*c2d*ml2*mw2m1*pnk + 8*pnpe*c3d*ml4*mw2m2*puk - 8*
-     &    pnpe*c3d*ml2*mw2dm1*puk - 8*pnpe*c3d*ml2*mw2m1*puk - 16*
-     &    pnpe*c2d*ml4*mw2m2*puk )
-      amp2 = amp2 + pdkc2 * ( 16*pnpe*c2d*ml2*mw2dm1*puk + 16*
-     &    pnpe*c2d*ml2*mw2m1*puk + 16*pnpe*c1d*ml2*mw2m2*pupe2 + 16*
-     &    pnpe*c1d*ml2*mw2m2*pupn2 )
-      amp2 = amp2 + c4d * (  - 16*c3*epupdpnpe*puk - 8*c3*ml4*mw2m1
-     &    *epupdpnk - 8*c3*ml2*epupdpnpe + 8*c3*ml2*epupdpnk + 8*c3*ml2
-     &    *mw2m1*pdpn2*puk + 8*c3*ml2*mw2m1*epupdpnpe*pek + 8*c3*ml2*
-     &    mw2m1*epupdpnpe*pnk - 8*c3*ml2*mw2m1*epupdpnpe*puk - 8*c3*ml2
-     &    *mw2m1*epdpnpek*puk + 32*c2*epupdpnpe*pek + 8*c2*ml4*mw2m1*
-     &    epupdpnk - 32*c2*ml2*epupdpnk + 16*c2*ml2*mw2m1*pdpn2*puk - 
-     &    16*c2*ml2*mw2m1*epupdpnpe*pek - 16*c2*ml2*mw2m1*epupdpnpe*pnk
-     &     + 8*c1*ml4*mw2m1*epupdpnk - 8*pupd*pupn*pnpe*c3*ml2*mw2m1
-     &     + 16*pupd*pupe*pnpe*c3 + 16*pupd*pupe*pnpe*c1*ml2*
-     &    mw2m1 - 8*pupd*pdpn*pnpe*c3*ml2*mw2m1 - 16*pupd*pdpn*c3*
-     &    pek + 16*pupd*pdpn*c3*ml2 + 8*pupd*pdpn*c3*ml2*mw2m1*pek
-     &     + 8*pupd*pdpn*c3*ml2*mw2m1*pnk + 32*pupd*pdpn*c2*pek - 
-     &    16*pupd*pdpn*c2*ml2*mw2m1*pek - 16*pupd*pdpn*c2*ml2*mw2m1
-     &    *pnk - 16*pupd*pdpe*pnpe*c2*ml2*mw2m1 - 16*pupd*pnpe*c3*
-     &    pek + 16*pupd*pnpe*c3*puk + 8*pupd*pnpe*c3*ml2 - 8*pupd*
-     &    pnpe*c3*ml2*mw2m1*pek )
-      amp2 = amp2 + c4d * ( 8*pupd*pnpe*c3*ml2*mw2m1*puk + 16*
-     &    pupd*pnpe*c2*ml2*mw2m1*pek - 16*pupd*pnpe*c1*ml2*mw2m1*
-     &    pek + 8*pupd*c3*ml4*mw2m1*pnk + 8*pupd*c3*ml2*pnk - 8*pupd
-     &    *c2*ml4*mw2m1*pnk + 8*pupd*c1*ml4*mw2m1*pnk - 8*pupn*pupe*
-     &    pdpn*c3*ml2*mw2m1 - 32*pupn*pupe*pdpn*c1*ml2*mw2m1 - 16*
-     &    pupn*pupe*pdpe*c3 - 16*pupn*pupe*pdpe*c1*ml2*mw2m1 - 8*
-     &    pupn*pdpn*pdpe*c3*ml2*mw2m1 + 32*pupn*pdpn*pdpe*c2*ml2*
-     &    mw2m1 - 16*pupn*pdpn*c3*ml2 - 8*pupn*pdpn*c3*ml2*mw2m1*
-     &    pdk - 16*pupn*pdpn*c2*ml2*mw2m1*pek + 16*pupn*pdpn*c1*ml2
-     &    *mw2m1*pek + 16*pupn*pdpe*c3*pek - 16*pupn*pdpe*c3*puk - 
-     &    8*pupn*pdpe*c3*ml2 + 8*pupn*pdpe*c3*ml2*mw2m1*pek + 8*
-     &    pupn*pdpe*c3*ml2*mw2m1*pnk - 8*pupn*pdpe*c3*ml2*mw2m1*puk
-     &     - 16*pupn*pdpe*c2*ml2*mw2m1*pek - 16*pupn*pdpe*c2*ml2*
-     &    mw2m1*pnk + 16*pupn*pdpe*c1*ml2*mw2m1*pek - 8*pupn*pnpe*
-     &    c3*ml2*mw2m1*pdk - 8*pupn*c3*ml4*mw2m1*pdk - 8*pupn*c3*ml2*
-     &    pdk )
-      amp2 = amp2 + c4d * ( 8*pupn*c3*ml2*mw2m1*epupdpnpe + 16*
-     &    pupn*c2*ml2*mw2m1*pdpe2 - 8*pupn*c1*ml4*mw2m1*pdk - 64*
-     &    pupe*pdpn*pdpe*c2 + 16*pupe*pdpn*pdpe*c2*ml2*mw2m1 + 32
-     &    *pupe*pdpn*pnpe*c3 - 16*pupe*pdpn*c3*pek + 16*pupe*
-     &    pdpn*c3*puk + 16*pupe*pdpn*c3*pdk + 24*pupe*pdpn*c3*ml2
-     &     + 8*pupe*pdpn*c3*ml2*mw2m1*pek + 8*pupe*pdpn*c3*ml2*
-     &    mw2m1*pnk + 8*pupe*pdpn*c3*ml2*mw2m1*puk - 8*pupe*pdpn*c3
-     &    *ml2*mw2m1*pdk + 32*pupe*pdpn*c2*pek - 16*pupe*pdpn*c2*
-     &    ml2*mw2m1*pek - 64*pupe*pdpn*c1*pek + 16*pupe*pdpn*c1*ml2
-     &    *mw2m1*pek + 16*pupe*pdpn*c1*ml2*mw2m1*pnk - 32*pupe*pdpe
-     &    *c3*pnk + 32*pupe*pdpe*c2*pnk + 32*pupe*pnpe*c3*pdk - 16*
-     &    pupe*c3*epupdpnpe + 16*pupe*c3*epdpnpek + 8*pupe*c3*ml2*
-     &    mw2m1*pdpn2 - 16*pupe*c1*ml2*mw2m1*epupdpnpe - 16*pupe*c1*
-     &    ml2*mw2m1*epdpnpek - 16*pdpn*pdpe*c3*puk + 8*pdpn*pdpe*c3
-     &    *ml2*mw2m1*puk - 32*pdpn*pdpe*c2*puk + 16*pdpn*pdpe*c2*
-     &    ml2*mw2m1*puk )
-      amp2 = amp2 + c4d * ( 32*pdpn*pnpe*c3*puk - 8*pdpn*pnpe*
-     &    c3*ml2*mw2m1*puk - 32*pdpn*c3*puk*pek + 16*pdpn*c3*pupe2 - 
-     &    16*pdpn*c3*epupdpek - 8*pdpn*c3*ml4*mw2m1*puk + 40*pdpn*c3
-     &    *ml2*puk + 8*pdpn*c3*ml2*mw2m1*puk*pek + 16*pdpn*c3*ml2*
-     &    mw2m1*puk*pnk + 8*pdpn*c3*ml2*mw2m1*epupdpnpe + 8*pdpn*c3*
-     &    ml2*mw2m1*epupdpnk + 8*pdpn*c3*ml2*mw2m1*epupdpek + 32*pdpn
-     &    *c2*epupdpek + 8*pdpn*c2*ml4*mw2m1*puk - 16*pdpn*c2*ml2*
-     &    mw2m1*epupdpnk - 16*pdpn*c2*ml2*mw2m1*epupdpek + 16*pdpn*c2
-     &    *ml2*mw2m1*epupnpek + 64*pdpn*c1*pupe2 - 16*pdpn*c1*ml2*
-     &    mw2m1*pupe2 + 16*pdpn*c1*ml2*mw2m1*epupnpek + 16*pdpe*c3*
-     &    epupnpek + 8*pdpe*c3*ml2*mw2m1*puk*pnk + 8*pdpe*c3*ml2*
-     &    mw2m1*pupn2 - 32*pdpe*c2*epupnpek + 16*pdpe*c2*ml2*mw2m1*
-     &    epupdpnpe + 16*pdpe*c1*ml2*mw2m1*epupnpek - 16*pnpe*c3*
-     &    epupdpek - 8*pnpe*c3*ml2*mw2m1*pdk*puk - 8*pnpe*c3*ml2*
-     &    mw2m1*epupdpnk + 32*pnpe*c2*epupdpek + 16*pnpe*c2*ml2*mw2m1
-     &    *epupdpnk )
-      amp2 = amp2 + c4d * (  - 16*pnpe*c1*ml2*mw2m1*epupdpek )
-      amp2 = amp2 + c4d*pukc1 * (  - 16*ml2*mw2m1*epupdpnpe - 16*
-     &    ml2*mw2m1*epdpnpek + 16*pupd*pnpe*ml2*mw2m1 - 32*pupn*
-     &    pdpn*ml2*mw2m1 - 16*pupn*pdpe*ml2*mw2m1 + 64*pupe*pdpn
-     &     - 16*pupe*pdpn*ml2*mw2m1 - 16*pdpn*pnpe*ml2*mw2m1 - 64*
-     &    pdpn*pek - 8*pdpn*ml4*mw2m1 + 32*pdpn*ml2 + 16*pdpn*ml2*
-     &    mw2m1*pek + 32*pdpn*ml2*mw2m1*pnk + 16*pdpe*ml2*mw2m1*pnk
-     &     - 16*pnpe*ml2*mw2m1*pdk )
-      amp2 = amp2 + c4d*pdkc2 * ( 16*pupn*pdpn*ml2*mw2m1 + 16*
-     &    pupn*pnpe*ml2*mw2m1 + 8*pupn*ml4*mw2m1 - 32*pupe*pdpn + 
-     &    16*pupe*pdpn*ml2*mw2m1 - 32*pupe*pnpe )
-      amp2 = amp2 + c4 * ( 16*c3d*epupdpnpe*puk + 8*c3d*ml4*mw2dm1*
-     &    epupdpnk + 8*c3d*ml2*epupdpnpe - 8*c3d*ml2*epupdpnk + 8*c3d*
-     &    ml2*mw2dm1*pdpn2*puk - 8*c3d*ml2*mw2dm1*epupdpnpe*pek - 8*c3d
-     &    *ml2*mw2dm1*epupdpnpe*pnk + 8*c3d*ml2*mw2dm1*epupdpnpe*puk + 
-     &    8*c3d*ml2*mw2dm1*epdpnpek*puk - 8*c2d*ml4*mw2dm1*epupdpnk + 
-     &    16*c2d*ml2*mw2dm1*pdpn2*puk + 16*c2d*ml2*mw2dm1*epupdpnpe*pek
-     &     + 16*c2d*ml2*mw2dm1*epupdpnpe*pnk - 8*c1d*ml4*mw2dm1*
-     &    epupdpnk - 8*pupd*pupn*pnpe*c3d*ml2*mw2dm1 + 16*pupd*
-     &    pupe*pnpe*c3d + 16*pupd*pupe*pnpe*c1d*ml2*mw2dm1 - 8*
-     &    pupd*pdpn*pnpe*c3d*ml2*mw2dm1 - 16*pupd*pdpn*c3d*pek + 
-     &    16*pupd*pdpn*c3d*ml2 + 8*pupd*pdpn*c3d*ml2*mw2dm1*pek + 8
-     &    *pupd*pdpn*c3d*ml2*mw2dm1*pnk + 32*pupd*pdpn*c2d*pek - 16
-     &    *pupd*pdpn*c2d*ml2*mw2dm1*pek - 16*pupd*pdpn*c2d*ml2*
-     &    mw2dm1*pnk - 16*pupd*pdpe*pnpe*c2d*ml2*mw2dm1 - 16*pupd*
-     &    pnpe*c3d*pek + 16*pupd*pnpe*c3d*puk + 8*pupd*pnpe*c3d*
-     &    ml2 )
-      amp2 = amp2 + c4 * (  - 8*pupd*pnpe*c3d*ml2*mw2dm1*pek + 8*
-     &    pupd*pnpe*c3d*ml2*mw2dm1*puk + 16*pupd*pnpe*c2d*ml2*
-     &    mw2dm1*pek - 16*pupd*pnpe*c1d*ml2*mw2dm1*pek + 8*pupd*c3d*
-     &    ml4*mw2dm1*pnk + 8*pupd*c3d*ml2*pnk - 8*pupd*c2d*ml4*mw2dm1
-     &    *pnk + 8*pupd*c1d*ml4*mw2dm1*pnk - 8*pupn*pupe*pdpn*c3d*
-     &    ml2*mw2dm1 - 32*pupn*pupe*pdpn*c1d*ml2*mw2dm1 - 16*pupn*
-     &    pupe*pdpe*c3d - 16*pupn*pupe*pdpe*c1d*ml2*mw2dm1 - 8*
-     &    pupn*pdpn*pdpe*c3d*ml2*mw2dm1 + 32*pupn*pdpn*pdpe*c2d*
-     &    ml2*mw2dm1 - 16*pupn*pdpn*c3d*ml2 - 8*pupn*pdpn*c3d*ml2*
-     &    mw2dm1*pdk - 16*pupn*pdpn*c2d*ml2*mw2dm1*pek + 16*pupn*
-     &    pdpn*c1d*ml2*mw2dm1*pek + 16*pupn*pdpe*c3d*pek - 16*pupn*
-     &    pdpe*c3d*puk - 8*pupn*pdpe*c3d*ml2 + 8*pupn*pdpe*c3d*ml2
-     &    *mw2dm1*pek + 8*pupn*pdpe*c3d*ml2*mw2dm1*pnk - 8*pupn*
-     &    pdpe*c3d*ml2*mw2dm1*puk - 16*pupn*pdpe*c2d*ml2*mw2dm1*pek
-     &     - 16*pupn*pdpe*c2d*ml2*mw2dm1*pnk + 16*pupn*pdpe*c1d*ml2
-     &    *mw2dm1*pek )
-      amp2 = amp2 + c4 * (  - 8*pupn*pnpe*c3d*ml2*mw2dm1*pdk - 8*
-     &    pupn*c3d*ml4*mw2dm1*pdk - 8*pupn*c3d*ml2*pdk - 8*pupn*c3d*
-     &    ml2*mw2dm1*epupdpnpe + 16*pupn*c2d*ml2*mw2dm1*pdpe2 - 8*
-     &    pupn*c1d*ml4*mw2dm1*pdk - 64*pupe*pdpn*pdpe*c2d + 16*
-     &    pupe*pdpn*pdpe*c2d*ml2*mw2dm1 + 32*pupe*pdpn*pnpe*c3d
-     &     - 16*pupe*pdpn*c3d*pek + 16*pupe*pdpn*c3d*puk + 16*pupe
-     &    *pdpn*c3d*pdk + 24*pupe*pdpn*c3d*ml2 + 8*pupe*pdpn*c3d*
-     &    ml2*mw2dm1*pek + 8*pupe*pdpn*c3d*ml2*mw2dm1*pnk + 8*pupe*
-     &    pdpn*c3d*ml2*mw2dm1*puk - 8*pupe*pdpn*c3d*ml2*mw2dm1*pdk
-     &     + 32*pupe*pdpn*c2d*pek - 16*pupe*pdpn*c2d*ml2*mw2dm1*pek
-     &     - 64*pupe*pdpn*c1d*pek + 16*pupe*pdpn*c1d*ml2*mw2dm1*pek
-     &     + 16*pupe*pdpn*c1d*ml2*mw2dm1*pnk - 32*pupe*pdpe*c3d*pnk
-     &     + 32*pupe*pdpe*c2d*pnk + 32*pupe*pnpe*c3d*pdk + 16*pupe
-     &    *c3d*epupdpnpe - 16*pupe*c3d*epdpnpek + 8*pupe*c3d*ml2*
-     &    mw2dm1*pdpn2 + 32*pupe*c2d*epdpnpek + 16*pupe*c1d*ml2*
-     &    mw2dm1*epupdpnpe )
-      amp2 = amp2 + c4 * ( 16*pupe*c1d*ml2*mw2dm1*epdpnpek - 16*
-     &    pdpn*pdpe*c3d*puk + 8*pdpn*pdpe*c3d*ml2*mw2dm1*puk - 32*
-     &    pdpn*pdpe*c2d*puk + 16*pdpn*pdpe*c2d*ml2*mw2dm1*puk + 32*
-     &    pdpn*pnpe*c3d*puk - 8*pdpn*pnpe*c3d*ml2*mw2dm1*puk - 32*
-     &    pdpn*c3d*puk*pek + 16*pdpn*c3d*pupe2 + 16*pdpn*c3d*
-     &    epupdpek - 8*pdpn*c3d*ml4*mw2dm1*puk + 40*pdpn*c3d*ml2*puk
-     &     + 8*pdpn*c3d*ml2*mw2dm1*puk*pek + 16*pdpn*c3d*ml2*mw2dm1*
-     &    puk*pnk - 8*pdpn*c3d*ml2*mw2dm1*epupdpnpe - 8*pdpn*c3d*ml2*
-     &    mw2dm1*epupdpnk - 8*pdpn*c3d*ml2*mw2dm1*epupdpek - 32*pdpn*
-     &    c2d*epupdpek + 8*pdpn*c2d*ml4*mw2dm1*puk + 16*pdpn*c2d*ml2*
-     &    mw2dm1*epupdpnk + 16*pdpn*c2d*ml2*mw2dm1*epupdpek - 16*pdpn
-     &    *c2d*ml2*mw2dm1*epupnpek + 64*pdpn*c1d*pupe2 - 16*pdpn*c1d*
-     &    ml2*mw2dm1*pupe2 - 16*pdpn*c1d*ml2*mw2dm1*epupnpek - 16*
-     &    pdpe*c3d*epupnpek + 8*pdpe*c3d*ml2*mw2dm1*puk*pnk + 8*pdpe
-     &    *c3d*ml2*mw2dm1*pupn2 - 16*pdpe*c2d*ml2*mw2dm1*epupdpnpe - 
-     &    16*pdpe*c1d*ml2*mw2dm1*epupnpek )
-      amp2 = amp2 + c4 * ( 16*pnpe*c3d*epupdpek - 8*pnpe*c3d*ml2*
-     &    mw2dm1*pdk*puk + 8*pnpe*c3d*ml2*mw2dm1*epupdpnk - 16*pnpe*
-     &    c2d*ml2*mw2dm1*epupdpnk + 16*pnpe*c1d*ml2*mw2dm1*epupdpek )
-      amp2 = amp2 + c4*pukc1d * ( 16*ml2*mw2dm1*epupdpnpe + 16*ml2*
-     &    mw2dm1*epdpnpek + 16*pupd*pnpe*ml2*mw2dm1 - 32*pupn*pdpn*
-     &    ml2*mw2dm1 - 16*pupn*pdpe*ml2*mw2dm1 + 64*pupe*pdpn - 16*
-     &    pupe*pdpn*ml2*mw2dm1 - 16*pdpn*pnpe*ml2*mw2dm1 - 64*pdpn
-     &    *pek - 8*pdpn*ml4*mw2dm1 + 32*pdpn*ml2 + 16*pdpn*ml2*
-     &    mw2dm1*pek + 32*pdpn*ml2*mw2dm1*pnk + 16*pdpe*ml2*mw2dm1*
-     &    pnk - 16*pnpe*ml2*mw2dm1*pdk )
-      amp2 = amp2 + c4*pdkc2d * ( 16*pupn*pdpn*ml2*mw2dm1 + 16*
-     &    pupn*pnpe*ml2*mw2dm1 + 8*pupn*ml4*mw2dm1 - 32*pupe*pdpn
-     &     + 16*pupe*pdpn*ml2*mw2dm1 - 32*pupe*pnpe )
-      amp2 = amp2 + c4*c4d * (  - 64*pupe*pdpn*ml2 + 64*pdpn*puk
-     &    *pek - 64*pdpn*ml2*puk )
-      amp2 = amp2 - 4*c3*c3d*ml4*mw2dm1*epupdpnk + 4*c3*c3d*ml4*
-     &    mw2m1*epupdpnk - 16*c3*c3d*ml2*mw2m2*pnpe2*pdk*puk + 16*c3*
-     &    c3d*ml2*mw2m2*pnpe2*pupd2 + 8*c3*c3d*ml2*mw2dm1*epupdpnpe*pek
-     &     + 8*c3*c3d*ml2*mw2dm1*epupdpnpe*pnk - 4*c3*c3d*ml2*mw2dm1*
-     &    epupdpnk*pek + 4*c3*c3d*ml2*mw2dm1*epupdpek*pnk - 8*c3*c3d*
-     &    ml2*mw2m1*epupdpnpe*pek - 8*c3*c3d*ml2*mw2m1*epupdpnpe*pnk + 
-     &    4*c3*c3d*ml2*mw2m1*epupdpnk*pek - 4*c3*c3d*ml2*mw2m1*epupdpek
-     &    *pnk - 16*c2d*c3*epupdpnpe*pnk - 16*c2d*c3*ml2*mw2m2*pnpe2*
-     &    pupd2 - 16*c2d*c3*ml2*mw2dm1*pdpn2*puk - 8*c2d*c3*ml2*mw2dm1*
-     &    epupdpnpe*pek - 8*c2d*c3*ml2*mw2dm1*epupdpnpe*pnk - 16*c2d*c3
-     &    *ml2*mw2m1*pdpn2*puk + 16*c2*c3d*epupdpnpe*pnk - 16*c2*c3d*
-     &    ml2*mw2m2*pnpe2*pupd2 - 16*c2*c3d*ml2*mw2dm1*pdpn2*puk - 16*
-     &    c2*c3d*ml2*mw2m1*pdpn2*puk + 8*c2*c3d*ml2*mw2m1*epupdpnpe*pek
-     &     + 8*c2*c3d*ml2*mw2m1*epupdpnpe*pnk - 16*c1d*c3*epupdpnpe*pek
-     &     + 16*c1d*c3*ml2*mw2m2*pnpe2*pupd2 + 16*c1d*c3*ml2*mw2dm1*
-     &    pupn2*pdk
-      amp2 = amp2 + 8*c1d*c3*ml2*mw2dm1*epupdpnpe*pek + 8*c1d*c3*
-     &    ml2*mw2dm1*epupdpnpe*pnk + 8*c1d*c3*ml2*mw2dm1*epupdpnpe*pdk
-     &     - 8*c1d*c3*ml2*mw2dm1*epupdpnk*pek + 8*c1d*c3*ml2*mw2dm1*
-     &    epupdpek*pnk - 8*c1d*c3*ml2*mw2dm1*epupnpek*pdk + 16*c1d*c3*
-     &    ml2*mw2m1*pupn2*pdk - 8*c1d*c3*ml2*mw2m1*epupdpnpe*pdk + 8*
-     &    c1d*c3*ml2*mw2m1*epupdpnk*pek - 8*c1d*c3*ml2*mw2m1*epupdpek*
-     &    pnk + 8*c1d*c3*ml2*mw2m1*epupnpek*pdk - 32*c1d*c2*ml2*mw2m2*
-     &    pnpe2*pupd2 + 16*c1*c3d*epupdpnpe*pek + 16*c1*c3d*ml2*mw2m2*
-     &    pnpe2*pupd2 + 16*c1*c3d*ml2*mw2dm1*pupn2*pdk + 8*c1*c3d*ml2*
-     &    mw2dm1*epupdpnpe*pdk - 8*c1*c3d*ml2*mw2dm1*epupdpnk*pek + 8*
-     &    c1*c3d*ml2*mw2dm1*epupdpek*pnk - 8*c1*c3d*ml2*mw2dm1*epupnpek
-     &    *pdk + 16*c1*c3d*ml2*mw2m1*pupn2*pdk - 8*c1*c3d*ml2*mw2m1*
-     &    epupdpnpe*pek - 8*c1*c3d*ml2*mw2m1*epupdpnpe*pnk - 8*c1*c3d*
-     &    ml2*mw2m1*epupdpnpe*pdk + 8*c1*c3d*ml2*mw2m1*epupdpnk*pek - 8
-     &    *c1*c3d*ml2*mw2m1*epupdpek*pnk + 8*c1*c3d*ml2*mw2m1*epupnpek*
-     &    pdk
-      amp2 = amp2 - 32*c1*c2d*ml2*mw2m2*pnpe2*pupd2 + 16*pupd*
-     &    pupn*pupe*pnpe*c3*c3d*ml2*mw2m2 + 16*pupd*pupn*pupe*c3*
-     &    c3d - 8*pupd*pupn*pupe*c3*c3d*ml2*mw2dm1 - 8*pupd*pupn*
-     &    pupe*c3*c3d*ml2*mw2m1 + 16*pupd*pupn*pdpn*pnpe*c2d*c3*
-     &    ml2*mw2m2 + 16*pupd*pupn*pdpn*pnpe*c2*c3d*ml2*mw2m2 - 16*
-     &    pupd*pupn*pdpn*pnpe*c1d*c3*ml2*mw2m2 + 32*pupd*pupn*
-     &    pdpn*pnpe*c1d*c2*ml2*mw2m2 - 16*pupd*pupn*pdpn*pnpe*c1*
-     &    c3d*ml2*mw2m2 + 32*pupd*pupn*pdpn*pnpe*c1*c2d*ml2*mw2m2
-     &     - 16*pupd*pupn*pdpn*c2d*c3*ml2*mw2dm1 - 16*pupd*pupn*
-     &    pdpn*c2d*c3*ml2*mw2m1 - 16*pupd*pupn*pdpn*c2*c3d*ml2*
-     &    mw2dm1 - 16*pupd*pupn*pdpn*c2*c3d*ml2*mw2m1 + 16*pupd*
-     &    pupn*pdpn*c1d*c3*ml2*mw2dm1 + 16*pupd*pupn*pdpn*c1d*c3*
-     &    ml2*mw2m1 - 32*pupd*pupn*pdpn*c1d*c2*ml2*mw2dm1 - 32*pupd
-     &    *pupn*pdpn*c1d*c2*ml2*mw2m1 + 16*pupd*pupn*pdpn*c1*c3d*
-     &    ml2*mw2dm1 + 16*pupd*pupn*pdpn*c1*c3d*ml2*mw2m1 - 32*pupd
-     &    *pupn*pdpn*c1*c2d*ml2*mw2dm1
-      amp2 = amp2 - 32*pupd*pupn*pdpn*c1*c2d*ml2*mw2m1 + 16*
-     &    pupd*pupn*pdpe*pnpe*c2d*c3*ml2*mw2m2 + 16*pupd*pupn*
-     &    pdpe*pnpe*c2*c3d*ml2*mw2m2 - 16*pupd*pupn*pdpe*pnpe*c1d
-     &    *c3*ml2*mw2m2 + 32*pupd*pupn*pdpe*pnpe*c1d*c2*ml2*mw2m2
-     &     - 16*pupd*pupn*pdpe*pnpe*c1*c3d*ml2*mw2m2 + 32*pupd*
-     &    pupn*pdpe*pnpe*c1*c2d*ml2*mw2m2 + 16*pupd*pupn*pdpe*c3*
-     &    c3d - 8*pupd*pupn*pdpe*c2d*c3*ml2*mw2dm1 - 8*pupd*pupn*
-     &    pdpe*c2d*c3*ml2*mw2m1 - 8*pupd*pupn*pdpe*c2*c3d*ml2*
-     &    mw2dm1 - 8*pupd*pupn*pdpe*c2*c3d*ml2*mw2m1 + 8*pupd*pupn
-     &    *pdpe*c1d*c3*ml2*mw2dm1 + 8*pupd*pupn*pdpe*c1d*c3*ml2*
-     &    mw2m1 - 16*pupd*pupn*pdpe*c1d*c2*ml2*mw2dm1 - 16*pupd*
-     &    pupn*pdpe*c1d*c2*ml2*mw2m1 + 8*pupd*pupn*pdpe*c1*c3d*ml2
-     &    *mw2dm1 + 8*pupd*pupn*pdpe*c1*c3d*ml2*mw2m1 - 16*pupd*
-     &    pupn*pdpe*c1*c2d*ml2*mw2dm1 - 16*pupd*pupn*pdpe*c1*c2d*
-     &    ml2*mw2m1 + 16*pupd*pupn*pnpe*c3*c3d + 16*pupd*pupn*
-     &    pnpe*c3*c3d*ml2*mw2m2*pek
-      amp2 = amp2 + 16*pupd*pupn*pnpe*c3*c3d*ml2*mw2m2*pnk + 4*
-     &    pupd*pupn*pnpe*c3*c3d*ml2*mw2dm1 + 4*pupd*pupn*pnpe*c3*
-     &    c3d*ml2*mw2m1 - 16*pupd*pupn*pnpe*c2d*c3*ml2*mw2m2*pek - 
-     &    16*pupd*pupn*pnpe*c2d*c3*ml2*mw2m2*pnk - 16*pupd*pupn*
-     &    pnpe*c2*c3d*ml2*mw2m2*pek - 16*pupd*pupn*pnpe*c2*c3d*ml2*
-     &    mw2m2*pnk + 16*pupd*pupn*pnpe*c1d*c3*ml2*mw2m2*pek + 16*
-     &    pupd*pupn*pnpe*c1d*c3*ml2*mw2m2*pnk + 8*pupd*pupn*pnpe*
-     &    c1d*c3*ml2*mw2dm1 - 16*pupd*pupn*pnpe*c1d*c2*ml2*mw2m2*pek
-     &     - 16*pupd*pupn*pnpe*c1d*c2*ml2*mw2m2*pnk + 16*pupd*pupn
-     &    *pnpe*c1*c3d*ml2*mw2m2*pek + 16*pupd*pupn*pnpe*c1*c3d*ml2
-     &    *mw2m2*pnk + 8*pupd*pupn*pnpe*c1*c3d*ml2*mw2m1 - 16*pupd*
-     &    pupn*pnpe*c1*c2d*ml2*mw2m2*pek - 16*pupd*pupn*pnpe*c1*
-     &    c2d*ml2*mw2m2*pnk + 4*pupd*pupn*c3*c3d*ml4*mw2dm1 + 4*pupd
-     &    *pupn*c3*c3d*ml4*mw2m1 + 16*pupd*pupn*c3*c3d*ml2 - 8*pupd
-     &    *pupn*c3*c3d*ml2*mw2dm1*pek - 16*pupd*pupn*c3*c3d*ml2*
-     &    mw2dm1*pnk
-      amp2 = amp2 - 8*pupd*pupn*c3*c3d*ml2*mw2m1*pek - 16*pupd*
-     &    pupn*c3*c3d*ml2*mw2m1*pnk + 8*pupd*pupn*c2d*c3*ml2*mw2dm1*
-     &    pek + 16*pupd*pupn*c2d*c3*ml2*mw2dm1*pnk + 8*pupd*pupn*
-     &    c2d*c3*ml2*mw2m1*pek + 16*pupd*pupn*c2d*c3*ml2*mw2m1*pnk + 
-     &    8*pupd*pupn*c2*c3d*ml2*mw2dm1*pek + 16*pupd*pupn*c2*c3d*
-     &    ml2*mw2dm1*pnk + 8*pupd*pupn*c2*c3d*ml2*mw2m1*pek + 16*
-     &    pupd*pupn*c2*c3d*ml2*mw2m1*pnk + 8*pupd*pupn*c1d*c3*ml4*
-     &    mw2dm1 - 16*pupd*pupn*c1d*c3*ml2*mw2dm1*pek - 16*pupd*
-     &    pupn*c1d*c3*ml2*mw2dm1*pnk - 16*pupd*pupn*c1d*c3*ml2*mw2m1
-     &    *pnk + 16*pupd*pupn*c1d*c2*ml2*mw2dm1*pek + 16*pupd*pupn*
-     &    c1d*c2*ml2*mw2dm1*pnk + 16*pupd*pupn*c1d*c2*ml2*mw2m1*pnk
-     &     + 8*pupd*pupn*c1*c3d*ml4*mw2m1 - 16*pupd*pupn*c1*c3d*ml2
-     &    *mw2dm1*pnk - 16*pupd*pupn*c1*c3d*ml2*mw2m1*pek - 16*pupd*
-     &    pupn*c1*c3d*ml2*mw2m1*pnk + 16*pupd*pupn*c1*c2d*ml2*mw2dm1
-     &    *pnk + 16*pupd*pupn*c1*c2d*ml2*mw2m1*pek + 16*pupd*pupn*
-     &    c1*c2d*ml2*mw2m1*pnk
-      amp2 = amp2 + 16*pupd*pupe*pdpn*pnpe*c2d*c3*ml2*mw2m2 + 
-     &    16*pupd*pupe*pdpn*pnpe*c2*c3d*ml2*mw2m2 - 16*pupd*pupe*
-     &    pdpn*pnpe*c1d*c3*ml2*mw2m2 + 32*pupd*pupe*pdpn*pnpe*c1d
-     &    *c2*ml2*mw2m2 - 16*pupd*pupe*pdpn*pnpe*c1*c3d*ml2*mw2m2
-     &     + 32*pupd*pupe*pdpn*pnpe*c1*c2d*ml2*mw2m2 - 16*pupd*
-     &    pupe*pdpn*c3*c3d + 32*pupd*pupe*pdpn*c2d*c3 - 8*pupd*
-     &    pupe*pdpn*c2d*c3*ml2*mw2dm1 - 8*pupd*pupe*pdpn*c2d*c3*
-     &    ml2*mw2m1 + 32*pupd*pupe*pdpn*c2*c3d - 8*pupd*pupe*pdpn
-     &    *c2*c3d*ml2*mw2dm1 - 8*pupd*pupe*pdpn*c2*c3d*ml2*mw2m1 - 
-     &    32*pupd*pupe*pdpn*c1d*c3 + 8*pupd*pupe*pdpn*c1d*c3*ml2*
-     &    mw2dm1 + 8*pupd*pupe*pdpn*c1d*c3*ml2*mw2m1 + 64*pupd*
-     &    pupe*pdpn*c1d*c2 - 16*pupd*pupe*pdpn*c1d*c2*ml2*mw2dm1
-     &     - 16*pupd*pupe*pdpn*c1d*c2*ml2*mw2m1 - 32*pupd*pupe*
-     &    pdpn*c1*c3d + 8*pupd*pupe*pdpn*c1*c3d*ml2*mw2dm1 + 8*
-     &    pupd*pupe*pdpn*c1*c3d*ml2*mw2m1 + 64*pupd*pupe*pdpn*c1*
-     &    c2d
-      amp2 = amp2 - 16*pupd*pupe*pdpn*c1*c2d*ml2*mw2dm1 - 16*
-     &    pupd*pupe*pdpn*c1*c2d*ml2*mw2m1 + 16*pupd*pupe*pdpe*
-     &    pnpe*c2d*c3*ml2*mw2m2 + 16*pupd*pupe*pdpe*pnpe*c2*c3d*
-     &    ml2*mw2m2 - 16*pupd*pupe*pdpe*pnpe*c1d*c3*ml2*mw2m2 + 32*
-     &    pupd*pupe*pdpe*pnpe*c1d*c2*ml2*mw2m2 - 16*pupd*pupe*
-     &    pdpe*pnpe*c1*c3d*ml2*mw2m2 + 32*pupd*pupe*pdpe*pnpe*c1*
-     &    c2d*ml2*mw2m2 - 32*pupd*pupe*pnpe*c3*c3d + 16*pupd*pupe*
-     &    pnpe*c3*c3d*ml2*mw2m2*pek + 16*pupd*pupe*pnpe*c3*c3d*ml2*
-     &    mw2m2*pnk - 4*pupd*pupe*pnpe*c3*c3d*ml2*mw2dm1 - 4*pupd*
-     &    pupe*pnpe*c3*c3d*ml2*mw2m1 - 16*pupd*pupe*pnpe*c2d*c3*
-     &    ml2*mw2m2*pek - 16*pupd*pupe*pnpe*c2d*c3*ml2*mw2m2*pnk - 
-     &    16*pupd*pupe*pnpe*c2*c3d*ml2*mw2m2*pek - 16*pupd*pupe*
-     &    pnpe*c2*c3d*ml2*mw2m2*pnk - 16*pupd*pupe*pnpe*c1d*c3 + 16
-     &    *pupd*pupe*pnpe*c1d*c3*ml2*mw2m2*pek + 16*pupd*pupe*
-     &    pnpe*c1d*c3*ml2*mw2m2*pnk - 8*pupd*pupe*pnpe*c1d*c3*ml2*
-     &    mw2dm1
-      amp2 = amp2 - 16*pupd*pupe*pnpe*c1d*c2*ml2*mw2m2*pek - 16*
-     &    pupd*pupe*pnpe*c1d*c2*ml2*mw2m2*pnk - 16*pupd*pupe*pnpe
-     &    *c1*c3d + 16*pupd*pupe*pnpe*c1*c3d*ml2*mw2m2*pek + 16*
-     &    pupd*pupe*pnpe*c1*c3d*ml2*mw2m2*pnk - 8*pupd*pupe*pnpe*
-     &    c1*c3d*ml2*mw2m1 - 16*pupd*pupe*pnpe*c1*c2d*ml2*mw2m2*pek
-     &     - 16*pupd*pupe*pnpe*c1*c2d*ml2*mw2m2*pnk + 32*pupd*pupe
-     &    *c3*c3d*pnk - 8*pupd*pupe*c3*c3d*ml2*mw2dm1*pnk - 8*pupd*
-     &    pupe*c3*c3d*ml2*mw2m1*pnk - 32*pupd*pupe*c2d*c3*pnk + 8*
-     &    pupd*pupe*c2d*c3*ml2*mw2dm1*pnk + 8*pupd*pupe*c2d*c3*ml2*
-     &    mw2m1*pnk - 32*pupd*pupe*c2*c3d*pnk + 8*pupd*pupe*c2*c3d*
-     &    ml2*mw2dm1*pnk + 8*pupd*pupe*c2*c3d*ml2*mw2m1*pnk + 32*
-     &    pupd*pupe*c1d*c3*pnk - 16*pupd*pupe*c1d*c3*ml2*mw2m1*pnk
-     &     - 32*pupd*pupe*c1d*c2*pnk + 16*pupd*pupe*c1d*c2*ml2*
-     &    mw2m1*pnk + 32*pupd*pupe*c1*c3d*pnk - 16*pupd*pupe*c1*c3d
-     &    *ml2*mw2dm1*pnk - 32*pupd*pupe*c1*c2d*pnk + 16*pupd*pupe*
-     &    c1*c2d*ml2*mw2dm1*pnk
-      amp2 = amp2 + 16*pupd*pdpn*pdpe*pnpe*c3*c3d*ml2*mw2m2 + 
-     &    16*pupd*pdpn*pdpe*c3*c3d - 8*pupd*pdpn*pdpe*c3*c3d*ml2*
-     &    mw2dm1 - 8*pupd*pdpn*pdpe*c3*c3d*ml2*mw2m1 - 32*pupd*
-     &    pdpn*pnpe*c3*c3d + 16*pupd*pdpn*pnpe*c3*c3d*ml2*mw2m2*
-     &    pek + 16*pupd*pdpn*pnpe*c3*c3d*ml2*mw2m2*pnk + 4*pupd*
-     &    pdpn*pnpe*c3*c3d*ml2*mw2dm1 + 4*pupd*pdpn*pnpe*c3*c3d*
-     &    ml2*mw2m1 + 16*pupd*pdpn*pnpe*c2d*c3 - 16*pupd*pdpn*
-     &    pnpe*c2d*c3*ml2*mw2m2*pek - 16*pupd*pdpn*pnpe*c2d*c3*ml2*
-     &    mw2m2*pnk - 8*pupd*pdpn*pnpe*c2d*c3*ml2*mw2dm1 + 16*pupd*
-     &    pdpn*pnpe*c2*c3d - 16*pupd*pdpn*pnpe*c2*c3d*ml2*mw2m2*
-     &    pek - 16*pupd*pdpn*pnpe*c2*c3d*ml2*mw2m2*pnk - 8*pupd*
-     &    pdpn*pnpe*c2*c3d*ml2*mw2m1 + 16*pupd*pdpn*pnpe*c1d*c3*
-     &    ml2*mw2m2*pek + 16*pupd*pdpn*pnpe*c1d*c3*ml2*mw2m2*pnk - 
-     &    16*pupd*pdpn*pnpe*c1d*c2*ml2*mw2m2*pek - 16*pupd*pdpn*
-     &    pnpe*c1d*c2*ml2*mw2m2*pnk + 16*pupd*pdpn*pnpe*c1*c3d*ml2*
-     &    mw2m2*pek
-      amp2 = amp2 + 16*pupd*pdpn*pnpe*c1*c3d*ml2*mw2m2*pnk - 16*
-     &    pupd*pdpn*pnpe*c1*c2d*ml2*mw2m2*pek - 16*pupd*pdpn*pnpe
-     &    *c1*c2d*ml2*mw2m2*pnk + 32*pupd*pdpn*c3*c3d*pek + 4*pupd*
-     &    pdpn*c3*c3d*ml4*mw2dm1 + 4*pupd*pdpn*c3*c3d*ml4*mw2m1 - 32
-     &    *pupd*pdpn*c3*c3d*ml2 - 8*pupd*pdpn*c3*c3d*ml2*mw2dm1*pek
-     &     - 16*pupd*pdpn*c3*c3d*ml2*mw2dm1*pnk - 8*pupd*pdpn*c3*
-     &    c3d*ml2*mw2m1*pek - 16*pupd*pdpn*c3*c3d*ml2*mw2m1*pnk - 32*
-     &    pupd*pdpn*c2d*c3*pek - 8*pupd*pdpn*c2d*c3*ml4*mw2dm1 + 16
-     &    *pupd*pdpn*c2d*c3*ml2 + 16*pupd*pdpn*c2d*c3*ml2*mw2dm1*
-     &    pek + 16*pupd*pdpn*c2d*c3*ml2*mw2dm1*pnk + 16*pupd*pdpn*
-     &    c2d*c3*ml2*mw2m1*pnk - 32*pupd*pdpn*c2*c3d*pek - 8*pupd*
-     &    pdpn*c2*c3d*ml4*mw2m1 + 16*pupd*pdpn*c2*c3d*ml2 + 16*pupd
-     &    *pdpn*c2*c3d*ml2*mw2dm1*pnk + 16*pupd*pdpn*c2*c3d*ml2*
-     &    mw2m1*pek + 16*pupd*pdpn*c2*c3d*ml2*mw2m1*pnk + 32*pupd*
-     &    pdpn*c1d*c3*pek - 8*pupd*pdpn*c1d*c3*ml2*mw2dm1*pek - 16*
-     &    pupd*pdpn*c1d*c3*ml2*mw2dm1*pnk
-      amp2 = amp2 - 8*pupd*pdpn*c1d*c3*ml2*mw2m1*pek - 16*pupd*
-     &    pdpn*c1d*c3*ml2*mw2m1*pnk - 32*pupd*pdpn*c1d*c2*pek + 16*
-     &    pupd*pdpn*c1d*c2*ml2*mw2dm1*pnk + 16*pupd*pdpn*c1d*c2*ml2
-     &    *mw2m1*pek + 16*pupd*pdpn*c1d*c2*ml2*mw2m1*pnk + 32*pupd*
-     &    pdpn*c1*c3d*pek - 8*pupd*pdpn*c1*c3d*ml2*mw2dm1*pek - 16*
-     &    pupd*pdpn*c1*c3d*ml2*mw2dm1*pnk - 8*pupd*pdpn*c1*c3d*ml2*
-     &    mw2m1*pek - 16*pupd*pdpn*c1*c3d*ml2*mw2m1*pnk - 32*pupd*
-     &    pdpn*c1*c2d*pek + 16*pupd*pdpn*c1*c2d*ml2*mw2dm1*pek + 16*
-     &    pupd*pdpn*c1*c2d*ml2*mw2dm1*pnk + 16*pupd*pdpn*c1*c2d*ml2
-     &    *mw2m1*pnk + 16*pupd*pdpe*pnpe*c3*c3d + 16*pupd*pdpe*
-     &    pnpe*c3*c3d*ml2*mw2m2*pek + 16*pupd*pdpe*pnpe*c3*c3d*ml2*
-     &    mw2m2*pnk - 4*pupd*pdpe*pnpe*c3*c3d*ml2*mw2dm1 - 4*pupd*
-     &    pdpe*pnpe*c3*c3d*ml2*mw2m1 - 16*pupd*pdpe*pnpe*c2d*c3*
-     &    ml2*mw2m2*pek - 16*pupd*pdpe*pnpe*c2d*c3*ml2*mw2m2*pnk + 8
-     &    *pupd*pdpe*pnpe*c2d*c3*ml2*mw2dm1 - 16*pupd*pdpe*pnpe*
-     &    c2*c3d*ml2*mw2m2*pek
-      amp2 = amp2 - 16*pupd*pdpe*pnpe*c2*c3d*ml2*mw2m2*pnk + 8*
-     &    pupd*pdpe*pnpe*c2*c3d*ml2*mw2m1 + 16*pupd*pdpe*pnpe*c1d
-     &    *c3*ml2*mw2m2*pek + 16*pupd*pdpe*pnpe*c1d*c3*ml2*mw2m2*pnk
-     &     - 16*pupd*pdpe*pnpe*c1d*c2*ml2*mw2m2*pek - 16*pupd*pdpe
-     &    *pnpe*c1d*c2*ml2*mw2m2*pnk + 16*pupd*pdpe*pnpe*c1*c3d*ml2
-     &    *mw2m2*pek + 16*pupd*pdpe*pnpe*c1*c3d*ml2*mw2m2*pnk - 16*
-     &    pupd*pdpe*pnpe*c1*c2d*ml2*mw2m2*pek - 16*pupd*pdpe*pnpe
-     &    *c1*c2d*ml2*mw2m2*pnk - 8*pupd*pdpe*c3*c3d*ml2*mw2dm1*pnk
-     &     - 8*pupd*pdpe*c3*c3d*ml2*mw2m1*pnk + 16*pupd*pdpe*c2d*c3
-     &    *ml2*mw2m1*pnk + 16*pupd*pdpe*c2*c3d*ml2*mw2dm1*pnk - 8*
-     &    pupd*pdpe*c1d*c3*ml2*mw2dm1*pnk - 8*pupd*pdpe*c1d*c3*ml2*
-     &    mw2m1*pnk + 16*pupd*pdpe*c1d*c2*ml2*mw2dm1*pnk - 8*pupd*
-     &    pdpe*c1*c3d*ml2*mw2dm1*pnk - 8*pupd*pdpe*c1*c3d*ml2*mw2m1*
-     &    pnk + 16*pupd*pdpe*c1*c2d*ml2*mw2m1*pnk + 16*pupd*pnpe*c3
-     &    *c3d*pek + 16*pupd*pnpe*c3*c3d*pnk - 16*pupd*pnpe*c3*c3d*
-     &    puk
-      amp2 = amp2 - 16*pupd*pnpe*c3*c3d*pdk - 16*pupd*pnpe*c3*
-     &    c3d*ml2 + 8*pupd*pnpe*c3*c3d*ml2*mw2m2*pdpe2 + 8*pupd*
-     &    pnpe*c3*c3d*ml2*mw2m2*pdpn2 + 8*pupd*pnpe*c3*c3d*ml2*mw2m2
-     &    *pupe2 + 8*pupd*pnpe*c3*c3d*ml2*mw2m2*pupn2 + 4*pupd*pnpe
-     &    *c3*c3d*ml2*mw2dm1*pek - 4*pupd*pnpe*c3*c3d*ml2*mw2dm1*pnk
-     &     + 4*pupd*pnpe*c3*c3d*ml2*mw2m1*pek - 4*pupd*pnpe*c3*c3d*
-     &    ml2*mw2m1*pnk - 16*pupd*pnpe*c2d*c3*pnk + 8*pupd*pnpe*c2d
-     &    *c3*ml4*mw2m2*puk - 8*pupd*pnpe*c2d*c3*ml2*mw2dm1*pek + 8*
-     &    pupd*pnpe*c2d*c3*ml2*mw2dm1*pnk - 8*pupd*pnpe*c2d*c3*ml2*
-     &    mw2dm1*puk - 8*pupd*pnpe*c2d*c3*ml2*mw2m1*puk - 16*pupd*
-     &    pnpe*c2*c3d*pnk + 8*pupd*pnpe*c2*c3d*ml4*mw2m2*puk - 8*
-     &    pupd*pnpe*c2*c3d*ml2*mw2dm1*puk - 8*pupd*pnpe*c2*c3d*ml2*
-     &    mw2m1*pek + 8*pupd*pnpe*c2*c3d*ml2*mw2m1*pnk - 8*pupd*
-     &    pnpe*c2*c3d*ml2*mw2m1*puk + 16*pupd*pnpe*c1d*c3*pek - 8*
-     &    pupd*pnpe*c1d*c3*ml4*mw2m2*pdk + 8*pupd*pnpe*c1d*c3*ml2*
-     &    mw2dm1*pek
-      amp2 = amp2 - 8*pupd*pnpe*c1d*c3*ml2*mw2dm1*pnk + 8*pupd*
-     &    pnpe*c1d*c3*ml2*mw2dm1*pdk + 8*pupd*pnpe*c1d*c3*ml2*mw2m1*
-     &    pdk - 16*pupd*pnpe*c1d*c2*ml2*mw2m2*epupnpek + 16*pupd*
-     &    pnpe*c1*c3d*pek - 8*pupd*pnpe*c1*c3d*ml4*mw2m2*pdk + 8*
-     &    pupd*pnpe*c1*c3d*ml2*mw2dm1*pdk + 8*pupd*pnpe*c1*c3d*ml2*
-     &    mw2m1*pek - 8*pupd*pnpe*c1*c3d*ml2*mw2m1*pnk + 8*pupd*
-     &    pnpe*c1*c3d*ml2*mw2m1*pdk + 16*pupd*pnpe*c1*c2d*ml2*mw2m2*
-     &    epupnpek - 16*pupd*c3*c3d*pnpe2 - 4*pupd*c3*c3d*ml4*mw2dm1*
-     &    pnk - 4*pupd*c3*c3d*ml4*mw2m1*pnk + 8*pupd*c3*c3d*ml2*pnk
-     &     - 8*pupd*c3*c3d*ml2*mw2dm1*pdpn2 - 8*pupd*c3*c3d*ml2*
-     &    mw2dm1*pupn2 - 8*pupd*c3*c3d*ml2*mw2dm1*epupdpnpe - 8*pupd*
-     &    c3*c3d*ml2*mw2m1*pdpn2 - 8*pupd*c3*c3d*ml2*mw2m1*pupn2 + 8*
-     &    pupd*c3*c3d*ml2*mw2m1*epupdpnpe + 8*pupd*c2d*c3*ml4*mw2dm1*
-     &    pnk - 16*pupd*c2d*c3*ml2*pnk + 16*pupd*c2d*c3*ml2*mw2m2*
-     &    pnpe2*puk + 8*pupd*c2d*c3*ml2*mw2dm1*epupdpnpe - 8*pupd*c2d
-     &    *c3*ml2*mw2dm1*epupnpek
-      amp2 = amp2 - 8*pupd*c2d*c3*ml2*mw2m1*epupdpnpe + 8*pupd*
-     &    c2d*c3*ml2*mw2m1*epupnpek + 8*pupd*c2*c3d*ml4*mw2m1*pnk - 16
-     &    *pupd*c2*c3d*ml2*pnk + 16*pupd*c2*c3d*ml2*mw2m2*pnpe2*puk
-     &     + 8*pupd*c2*c3d*ml2*mw2dm1*epupdpnpe - 8*pupd*c2*c3d*ml2*
-     &    mw2dm1*epupnpek - 8*pupd*c2*c3d*ml2*mw2m1*epupdpnpe + 8*
-     &    pupd*c2*c3d*ml2*mw2m1*epupnpek + 16*pupd*c1d*c3*epupnpek - 
-     &    8*pupd*c1d*c3*ml4*mw2dm1*pnk - 16*pupd*c1d*c3*ml2*mw2m2*
-     &    pnpe2*pdk - 8*pupd*c1d*c3*ml2*mw2dm1*epupdpnpe + 8*pupd*c1d
-     &    *c3*ml2*mw2m1*epupdpnpe + 16*pupd*c1d*c2*ml2*mw2dm1*
-     &    epupdpnpe - 16*pupd*c1d*c2*ml2*mw2dm1*epupnpek - 16*pupd*
-     &    c1d*c2*ml2*mw2m1*epupdpnpe + 16*pupd*c1d*c2*ml2*mw2m1*
-     &    epupnpek - 16*pupd*c1*c3d*epupnpek - 8*pupd*c1*c3d*ml4*
-     &    mw2m1*pnk - 16*pupd*c1*c3d*ml2*mw2m2*pnpe2*pdk - 8*pupd*c1*
-     &    c3d*ml2*mw2dm1*epupdpnpe + 8*pupd*c1*c3d*ml2*mw2m1*epupdpnpe
-     &     + 16*pupd*c1*c2d*ml2*mw2dm1*epupdpnpe - 16*pupd*c1*c2d*ml2
-     &    *mw2dm1*epupnpek
-      amp2 = amp2 - 16*pupd*c1*c2d*ml2*mw2m1*epupdpnpe + 16*pupd*
-     &    c1*c2d*ml2*mw2m1*epupnpek + 16*pupn*pupe*pdpn*c3*c3d + 4*
-     &    pupn*pupe*pdpn*c3*c3d*ml2*mw2dm1 + 4*pupn*pupe*pdpn*c3*
-     &    c3d*ml2*mw2m1 + 8*pupn*pupe*pdpn*c1d*c3*ml2*mw2dm1 + 8*
-     &    pupn*pupe*pdpn*c1*c3d*ml2*mw2m1 - 4*pupn*pupe*pdpe*c3*
-     &    c3d*ml2*mw2dm1 - 4*pupn*pupe*pdpe*c3*c3d*ml2*mw2m1 + 16*
-     &    pupn*pupe*pdpe*c1d*c3 - 8*pupn*pupe*pdpe*c1d*c3*ml2*
-     &    mw2dm1 + 16*pupn*pupe*pdpe*c1*c3d - 8*pupn*pupe*pdpe*c1
-     &    *c3d*ml2*mw2m1 - 32*pupn*pupe*pnpe*c1d*c3*ml2*mw2m2*pdk - 
-     &    32*pupn*pupe*pnpe*c1*c3d*ml2*mw2m2*pdk - 32*pupn*pupe*
-     &    c1d*c3*pdk + 16*pupn*pupe*c1d*c3*ml2*mw2dm1*pdk + 16*pupn*
-     &    pupe*c1d*c3*ml2*mw2m1*pdk - 32*pupn*pupe*c1*c3d*pdk + 16*
-     &    pupn*pupe*c1*c3d*ml2*mw2dm1*pdk + 16*pupn*pupe*c1*c3d*ml2
-     &    *mw2m1*pdk + 4*pupn*pdpn*pdpe*c3*c3d*ml2*mw2dm1 + 4*pupn*
-     &    pdpn*pdpe*c3*c3d*ml2*mw2m1 - 16*pupn*pdpn*pdpe*c2d*c3 - 
-     &    8*pupn*pdpn*pdpe*c2d*c3*ml2*mw2dm1
-      amp2 = amp2 - 16*pupn*pdpn*pdpe*c2*c3d - 8*pupn*pdpn*
-     &    pdpe*c2*c3d*ml2*mw2m1 + 16*pupn*pdpn*pnpe*c3*c3d + 16*
-     &    pupn*pdpn*c3*c3d*ml2 + 8*pupn*pdpn*c2d*c3*ml2*mw2dm1*pek
-     &     + 8*pupn*pdpn*c2*c3d*ml2*mw2m1*pek - 16*pupn*pdpn*c1d*c3
-     &    *pek - 8*pupn*pdpn*c1d*c3*ml2*mw2dm1*pek - 16*pupn*pdpn*
-     &    c1*c3d*pek - 8*pupn*pdpn*c1*c3d*ml2*mw2m1*pek + 16*pupn*
-     &    pdpe*pnpe*c3*c3d - 16*pupn*pdpe*c3*c3d*pek - 16*pupn*
-     &    pdpe*c3*c3d*pnk + 16*pupn*pdpe*c3*c3d*puk + 16*pupn*pdpe
-     &    *c3*c3d*pdk + 8*pupn*pdpe*c3*c3d*ml2 + 16*pupn*pdpe*c2d*
-     &    c3*pnk + 8*pupn*pdpe*c2d*c3*ml2*mw2dm1*pek + 16*pupn*pdpe
-     &    *c2*c3d*pnk + 8*pupn*pdpe*c2*c3d*ml2*mw2m1*pek - 16*pupn*
-     &    pdpe*c1d*c3*pek + 8*pupn*pdpe*c1d*c3*ml2*mw2dm1*pnk - 16*
-     &    pupn*pdpe*c1*c3d*pek + 8*pupn*pdpe*c1*c3d*ml2*mw2m1*pnk
-     &     + 8*pupn*pnpe*c3*c3d*ml2*mw2m2*pdk*pek + 8*pupn*pnpe*c3*
-     &    c3d*ml2*mw2m2*pdk*pnk + 4*pupn*pnpe*c3*c3d*ml2*mw2dm1*pdk
-     &     + 4*pupn*pnpe*c3*c3d*ml2*mw2m1*pdk
-      amp2 = amp2 - 16*pupn*pnpe*c1d*c3*ml2*mw2m2*epupdpnk - 16*
-     &    pupn*pnpe*c1d*c3*ml2*mw2m2*epupdpek + 16*pupn*pnpe*c1d*c2
-     &    *ml2*mw2m2*epupdpnk + 32*pupn*pnpe*c1d*c2*ml2*mw2m2*
-     &    epupdpek + 16*pupn*pnpe*c1*c3d*ml2*mw2m2*epupdpnk + 16*
-     &    pupn*pnpe*c1*c3d*ml2*mw2m2*epupdpek - 16*pupn*pnpe*c1*c2d
-     &    *ml2*mw2m2*epupdpnk - 32*pupn*pnpe*c1*c2d*ml2*mw2m2*
-     &    epupdpek - 16*pupn*c3*c3d*pdpe2 + 4*pupn*c3*c3d*ml4*mw2dm1*
-     &    pdk + 4*pupn*c3*c3d*ml4*mw2m1*pdk + 8*pupn*c3*c3d*ml2*pdk
-     &     - 4*pupn*c3*c3d*ml2*mw2dm1*pdk*pek - 8*pupn*c3*c3d*ml2*
-     &    mw2dm1*pdk*pnk + 4*pupn*c3*c3d*ml2*mw2dm1*pdpe2 + 4*pupn*c3
-     &    *c3d*ml2*mw2dm1*epupdpnpe + 8*pupn*c3*c3d*ml2*mw2dm1*
-     &    epupdpek - 4*pupn*c3*c3d*ml2*mw2m1*pdk*pek - 8*pupn*c3*c3d*
-     &    ml2*mw2m1*pdk*pnk + 4*pupn*c3*c3d*ml2*mw2m1*pdpe2 - 4*pupn*
-     &    c3*c3d*ml2*mw2m1*epupdpnpe - 8*pupn*c3*c3d*ml2*mw2m1*
-     &    epupdpek - 8*pupn*c2d*c3*ml2*mw2dm1*pdpe2 + 8*pupn*c2d*c3*
-     &    ml2*mw2dm1*epdpnpek
-      amp2 = amp2 - 8*pupn*c2*c3d*ml2*mw2m1*pdpe2 - 8*pupn*c2*c3d
-     &    *ml2*mw2m1*epdpnpek - 16*pupn*c1d*c3*epupdpek - 8*pupn*c1d*
-     &    c3*ml2*mw2dm1*epupdpnpe + 16*pupn*c1d*c3*ml2*mw2dm1*epupdpnk
-     &     + 16*pupn*c1d*c3*ml2*mw2dm1*epupdpek + 16*pupn*c1d*c3*ml2*
-     &    mw2m1*epupdpnk - 16*pupn*c1d*c2*ml2*mw2dm1*epupdpnk - 16*
-     &    pupn*c1d*c2*ml2*mw2m1*epupdpnk - 16*pupn*c1d*c2*ml2*mw2m1*
-     &    epupdpek + 16*pupn*c1*c3d*epupdpek - 16*pupn*c1*c3d*ml2*
-     &    mw2dm1*epupdpnk + 8*pupn*c1*c3d*ml2*mw2m1*epupdpnpe - 16*
-     &    pupn*c1*c3d*ml2*mw2m1*epupdpnk - 16*pupn*c1*c3d*ml2*mw2m1*
-     &    epupdpek + 16*pupn*c1*c2d*ml2*mw2dm1*epupdpnk + 16*pupn*c1*
-     &    c2d*ml2*mw2dm1*epupdpek + 16*pupn*c1*c2d*ml2*mw2m1*epupdpnk
-     &     + 16*pupe*pdpn*pdpe*c3*c3d - 4*pupe*pdpn*pdpe*c3*c3d*
-     &    ml2*mw2dm1 - 4*pupe*pdpn*pdpe*c3*c3d*ml2*mw2m1 + 8*pupe*
-     &    pdpn*pdpe*c2d*c3*ml2*mw2dm1 + 8*pupe*pdpn*pdpe*c2*c3d*
-     &    ml2*mw2m1 - 16*pupe*pdpn*pnpe*c3*c3d + 16*pupe*pdpn*c3*
-     &    c3d*pek
-      amp2 = amp2 + 16*pupe*pdpn*c3*c3d*pnk - 16*pupe*pdpn*c3*
-     &    c3d*puk - 16*pupe*pdpn*c3*c3d*pdk - 8*pupe*pdpn*c3*c3d*
-     &    ml2 - 16*pupe*pdpn*c2d*c3*pek - 16*pupe*pdpn*c2d*c3*pnk
-     &     - 8*pupe*pdpn*c2d*c3*ml2*mw2dm1*pnk - 16*pupe*pdpn*c2*
-     &    c3d*pek - 16*pupe*pdpn*c2*c3d*pnk - 8*pupe*pdpn*c2*c3d*
-     &    ml2*mw2m1*pnk + 16*pupe*pdpn*c1d*c3*pek + 16*pupe*pdpn*
-     &    c1d*c3*pnk - 8*pupe*pdpn*c1d*c3*ml2*mw2dm1*pek + 16*pupe*
-     &    pdpn*c1*c3d*pek + 16*pupe*pdpn*c1*c3d*pnk - 8*pupe*pdpn*
-     &    c1*c3d*ml2*mw2m1*pek + 16*pupe*pdpe*pnpe*c3*c3d + 16*pupe
-     &    *pdpe*c2d*c3*pnk - 8*pupe*pdpe*c2d*c3*ml2*mw2dm1*pnk + 16*
-     &    pupe*pdpe*c2*c3d*pnk - 8*pupe*pdpe*c2*c3d*ml2*mw2m1*pnk
-     &     + 8*pupe*pdpe*c1d*c3*ml2*mw2dm1*pnk + 8*pupe*pdpe*c1*c3d
-     &    *ml2*mw2m1*pnk - 32*pupe*pnpe*c3*c3d*pdk + 8*pupe*pnpe*c3
-     &    *c3d*ml2*mw2m2*pdk*pek + 8*pupe*pnpe*c3*c3d*ml2*mw2m2*pdk*
-     &    pnk - 4*pupe*pnpe*c3*c3d*ml2*mw2dm1*pdk - 4*pupe*pnpe*c3*
-     &    c3d*ml2*mw2m1*pdk
-      amp2 = amp2 - 16*pupe*pnpe*c1d*c3*ml2*mw2m2*epupdpnk - 16*
-     &    pupe*pnpe*c1d*c3*ml2*mw2m2*epupdpek + 16*pupe*pnpe*c1d*c2
-     &    *ml2*mw2m2*epupdpek + 16*pupe*pnpe*c1*c3d*ml2*mw2m2*
-     &    epupdpnk + 16*pupe*pnpe*c1*c3d*ml2*mw2m2*epupdpek - 16*
-     &    pupe*pnpe*c1*c2d*ml2*mw2m2*epupdpek + 16*pupe*c3*c3d*pdk*
-     &    pnk - 4*pupe*c3*c3d*ml2*mw2dm1*pdk*pnk - 4*pupe*c3*c3d*ml2*
-     &    mw2dm1*pdpn2 + 4*pupe*c3*c3d*ml2*mw2dm1*epupdpnpe - 8*pupe*
-     &    c3*c3d*ml2*mw2dm1*epupdpnk - 4*pupe*c3*c3d*ml2*mw2m1*pdk*pnk
-     &     - 4*pupe*c3*c3d*ml2*mw2m1*pdpn2 - 4*pupe*c3*c3d*ml2*mw2m1*
-     &    epupdpnpe + 8*pupe*c3*c3d*ml2*mw2m1*epupdpnk + 16*pupe*c2d*
-     &    c3*pdpn2 - 16*pupe*c2d*c3*epdpnpek + 8*pupe*c2d*c3*ml2*
-     &    mw2dm1*pdpn2 + 8*pupe*c2d*c3*ml2*mw2dm1*epdpnpek + 16*pupe*
-     &    c2*c3d*pdpn2 + 16*pupe*c2*c3d*epdpnpek + 8*pupe*c2*c3d*ml2*
-     &    mw2m1*pdpn2 - 8*pupe*c2*c3d*ml2*mw2m1*epdpnpek + 16*pupe*
-     &    c1d*c3*epupdpnpe - 16*pupe*c1d*c3*epupdpnk - 8*pupe*c1d*c3*
-     &    ml2*mw2dm1*epupdpnpe
-      amp2 = amp2 + 16*pupe*c1d*c3*ml2*mw2m1*epupdpnk + 32*pupe*
-     &    c1d*c2*epupdpnk - 16*pupe*c1d*c2*ml2*mw2dm1*epupdpnk - 16*
-     &    pupe*c1*c3d*epupdpnpe + 16*pupe*c1*c3d*epupdpnk - 16*pupe*
-     &    c1*c3d*ml2*mw2dm1*epupdpnk + 8*pupe*c1*c3d*ml2*mw2m1*
-     &    epupdpnpe - 32*pupe*c1*c2d*epupdpnk + 16*pupe*c1*c2d*ml2*
-     &    mw2m1*epupdpnk + 32*pdpn*pdpe*pnpe*c2d*c3*ml2*mw2m2*puk + 
-     &    32*pdpn*pdpe*pnpe*c2*c3d*ml2*mw2m2*puk + 32*pdpn*pdpe*
-     &    c2d*c3*puk - 16*pdpn*pdpe*c2d*c3*ml2*mw2dm1*puk - 16*pdpn*
-     &    pdpe*c2d*c3*ml2*mw2m1*puk + 32*pdpn*pdpe*c2*c3d*puk - 16*
-     &    pdpn*pdpe*c2*c3d*ml2*mw2dm1*puk - 16*pdpn*pdpe*c2*c3d*ml2
-     &    *mw2m1*puk - 32*pdpn*pnpe*c3*c3d*puk + 8*pdpn*pnpe*c3*c3d
-     &    *ml2*mw2m2*puk*pek + 8*pdpn*pnpe*c3*c3d*ml2*mw2m2*puk*pnk
-     &     + 4*pdpn*pnpe*c3*c3d*ml2*mw2dm1*puk + 4*pdpn*pnpe*c3*c3d
-     &    *ml2*mw2m1*puk + 16*pdpn*pnpe*c2d*c3*ml2*mw2m2*epupdpnk + 
-     &    16*pdpn*pnpe*c2d*c3*ml2*mw2m2*epupdpek - 16*pdpn*pnpe*c2*
-     &    c3d*ml2*mw2m2*epupdpnk
-      amp2 = amp2 - 16*pdpn*pnpe*c2*c3d*ml2*mw2m2*epupdpek - 16*
-     &    pdpn*pnpe*c1d*c2*ml2*mw2m2*epupdpnk - 16*pdpn*pnpe*c1d*c2
-     &    *ml2*mw2m2*epupdpek + 16*pdpn*pnpe*c1*c2d*ml2*mw2m2*
-     &    epupdpnk + 16*pdpn*pnpe*c1*c2d*ml2*mw2m2*epupdpek + 16*
-     &    pdpn*c3*c3d*puk*pek + 4*pdpn*c3*c3d*ml4*mw2dm1*puk + 4*
-     &    pdpn*c3*c3d*ml4*mw2m1*puk - 24*pdpn*c3*c3d*ml2*puk - 4*
-     &    pdpn*c3*c3d*ml2*mw2dm1*puk*pek - 8*pdpn*c3*c3d*ml2*mw2dm1*
-     &    puk*pnk + 4*pdpn*c3*c3d*ml2*mw2dm1*pupe2 + 4*pdpn*c3*c3d*
-     &    ml2*mw2dm1*epupdpnpe + 8*pdpn*c3*c3d*ml2*mw2dm1*epupdpek - 4
-     &    *pdpn*c3*c3d*ml2*mw2m1*puk*pek - 8*pdpn*c3*c3d*ml2*mw2m1*
-     &    puk*pnk + 4*pdpn*c3*c3d*ml2*mw2m1*pupe2 - 4*pdpn*c3*c3d*ml2
-     &    *mw2m1*epupdpnpe - 8*pdpn*c3*c3d*ml2*mw2m1*epupdpek + 16*
-     &    pdpn*c2d*c3*epupdpnpe + 32*pdpn*c2d*c3*epupdpek + 8*pdpn*
-     &    c2d*c3*ml2*mw2dm1*epupdpnpe - 16*pdpn*c2d*c3*ml2*mw2dm1*
-     &    epupdpnk - 16*pdpn*c2d*c3*ml2*mw2dm1*epupdpek - 16*pdpn*c2d
-     &    *c3*ml2*mw2m1*epupdpnk
-      amp2 = amp2 - 16*pdpn*c2*c3d*epupdpnpe - 32*pdpn*c2*c3d*
-     &    epupdpek + 16*pdpn*c2*c3d*ml2*mw2dm1*epupdpnk - 8*pdpn*c2*
-     &    c3d*ml2*mw2m1*epupdpnpe + 16*pdpn*c2*c3d*ml2*mw2m1*epupdpnk
-     &     + 16*pdpn*c2*c3d*ml2*mw2m1*epupdpek - 16*pdpn*c1d*c3*pupe2
-     &     + 16*pdpn*c1d*c3*epupnpek + 8*pdpn*c1d*c3*ml2*mw2dm1*pupe2
-     &     + 8*pdpn*c1d*c3*ml2*mw2dm1*epupdpek + 8*pdpn*c1d*c3*ml2*
-     &    mw2dm1*epupnpek - 8*pdpn*c1d*c3*ml2*mw2m1*epupdpek - 32*
-     &    pdpn*c1d*c2*epupdpek + 16*pdpn*c1d*c2*ml2*mw2dm1*epupdpnk
-     &     + 16*pdpn*c1d*c2*ml2*mw2m1*epupdpnk + 16*pdpn*c1d*c2*ml2*
-     &    mw2m1*epupdpek - 16*pdpn*c1*c3d*pupe2 - 16*pdpn*c1*c3d*
-     &    epupnpek + 8*pdpn*c1*c3d*ml2*mw2dm1*epupdpek + 8*pdpn*c1*
-     &    c3d*ml2*mw2m1*pupe2 - 8*pdpn*c1*c3d*ml2*mw2m1*epupdpek - 8*
-     &    pdpn*c1*c3d*ml2*mw2m1*epupnpek + 32*pdpn*c1*c2d*epupdpek - 
-     &    16*pdpn*c1*c2d*ml2*mw2dm1*epupdpnk - 16*pdpn*c1*c2d*ml2*
-     &    mw2dm1*epupdpek - 16*pdpn*c1*c2d*ml2*mw2m1*epupdpnk + 8*
-     &    pdpe*pnpe*c3*c3d*ml2*mw2m2*puk*pek
-      amp2 = amp2 + 8*pdpe*pnpe*c3*c3d*ml2*mw2m2*puk*pnk - 4*
-     &    pdpe*pnpe*c3*c3d*ml2*mw2dm1*puk - 4*pdpe*pnpe*c3*c3d*ml2*
-     &    mw2m1*puk + 16*pdpe*pnpe*c2d*c3*ml2*mw2m2*epupdpnk + 16*
-     &    pdpe*pnpe*c2d*c3*ml2*mw2m2*epupdpek - 16*pdpe*pnpe*c2*c3d
-     &    *ml2*mw2m2*epupdpnk - 16*pdpe*pnpe*c2*c3d*ml2*mw2m2*
-     &    epupdpek - 16*pdpe*pnpe*c1d*c2*ml2*mw2m2*epupdpnk - 16*
-     &    pdpe*pnpe*c1d*c2*ml2*mw2m2*epupdpek + 16*pdpe*pnpe*c1*c2d
-     &    *ml2*mw2m2*epupdpnk + 16*pdpe*pnpe*c1*c2d*ml2*mw2m2*
-     &    epupdpek - 16*pdpe*c3*c3d*pupn2 - 4*pdpe*c3*c3d*ml2*mw2dm1*
-     &    puk*pnk - 4*pdpe*c3*c3d*ml2*mw2dm1*pupn2 + 4*pdpe*c3*c3d*
-     &    ml2*mw2dm1*epupdpnpe - 8*pdpe*c3*c3d*ml2*mw2dm1*epupdpnk - 4
-     &    *pdpe*c3*c3d*ml2*mw2m1*puk*pnk - 4*pdpe*c3*c3d*ml2*mw2m1*
-     &    pupn2 - 4*pdpe*c3*c3d*ml2*mw2m1*epupdpnpe + 8*pdpe*c3*c3d*
-     &    ml2*mw2m1*epupdpnk + 8*pdpe*c2d*c3*ml2*mw2dm1*epupdpnpe - 16
-     &    *pdpe*c2d*c3*ml2*mw2m1*epupdpnk + 16*pdpe*c2*c3d*ml2*mw2dm1
-     &    *epupdpnk
-      amp2 = amp2 - 8*pdpe*c2*c3d*ml2*mw2m1*epupdpnpe - 8*pdpe*
-     &    c1d*c3*ml2*mw2dm1*pupn2 - 8*pdpe*c1d*c3*ml2*mw2dm1*epupdpnk
-     &     + 8*pdpe*c1d*c3*ml2*mw2dm1*epupnpek + 8*pdpe*c1d*c3*ml2*
-     &    mw2m1*epupdpnk + 16*pdpe*c1d*c2*ml2*mw2dm1*epupdpnk - 8*
-     &    pdpe*c1*c3d*ml2*mw2dm1*epupdpnk - 8*pdpe*c1*c3d*ml2*mw2m1*
-     &    pupn2 + 8*pdpe*c1*c3d*ml2*mw2m1*epupdpnk - 8*pdpe*c1*c3d*
-     &    ml2*mw2m1*epupnpek - 16*pdpe*c1*c2d*ml2*mw2m1*epupdpnk - 16*
-     &    pnpe*c3*c3d*pupd2 - 8*pnpe*c3*c3d*ml4*mw2m2*pdk*puk + 8*
-     &    pnpe*c3*c3d*ml4*mw2m2*pupd2 + 8*pnpe*c3*c3d*ml2*mw2dm1*pdk*
-     &    puk - 8*pnpe*c3*c3d*ml2*mw2dm1*pupd2 - 4*pnpe*c3*c3d*ml2*
-     &    mw2dm1*epupdpnk + 4*pnpe*c3*c3d*ml2*mw2dm1*epupdpek + 8*
-     &    pnpe*c3*c3d*ml2*mw2m1*pdk*puk - 8*pnpe*c3*c3d*ml2*mw2m1*
-     &    pupd2 + 4*pnpe*c3*c3d*ml2*mw2m1*epupdpnk - 4*pnpe*c3*c3d*
-     &    ml2*mw2m1*epupdpek - 8*pnpe*c2d*c3*ml4*mw2m2*pupd2 + 16*
-     &    pnpe*c2d*c3*ml2*mw2m2*pdpe2*puk + 16*pnpe*c2d*c3*ml2*mw2m2*
-     &    pdpn2*puk
-      amp2 = amp2 + 8*pnpe*c2d*c3*ml2*mw2dm1*pupd2 + 8*pnpe*c2d*
-     &    c3*ml2*mw2m1*pupd2 - 8*pnpe*c2*c3d*ml4*mw2m2*pupd2 + 16*
-     &    pnpe*c2*c3d*ml2*mw2m2*pdpe2*puk + 16*pnpe*c2*c3d*ml2*mw2m2*
-     &    pdpn2*puk + 8*pnpe*c2*c3d*ml2*mw2dm1*pupd2 + 8*pnpe*c2*c3d*
-     &    ml2*mw2m1*pupd2 + 8*pnpe*c1d*c3*ml4*mw2m2*pupd2 - 16*pnpe*
-     &    c1d*c3*ml2*mw2m2*pupe2*pdk - 16*pnpe*c1d*c3*ml2*mw2m2*pupn2*
-     &    pdk - 8*pnpe*c1d*c3*ml2*mw2dm1*pupd2 - 8*pnpe*c1d*c3*ml2*
-     &    mw2m1*pupd2 - 16*pnpe*c1d*c2*ml4*mw2m2*pupd2 + 16*pnpe*c1d*
-     &    c2*ml2*mw2dm1*pupd2 + 16*pnpe*c1d*c2*ml2*mw2m1*pupd2 + 8*
-     &    pnpe*c1*c3d*ml4*mw2m2*pupd2 - 16*pnpe*c1*c3d*ml2*mw2m2*
-     &    pupe2*pdk - 16*pnpe*c1*c3d*ml2*mw2m2*pupn2*pdk - 8*pnpe*c1*
-     &    c3d*ml2*mw2dm1*pupd2 - 8*pnpe*c1*c3d*ml2*mw2m1*pupd2 - 16*
-     &    pnpe*c1*c2d*ml4*mw2m2*pupd2 + 16*pnpe*c1*c2d*ml2*mw2dm1*
-     &    pupd2 + 16*pnpe*c1*c2d*ml2*mw2m1*pupd2
+
 
       amp2 = amp2*
      +       g2*conjg(g2)*el2/4d0
@@ -1364,6 +1327,8 @@ c     exchance particle 1 and 2
 
       return
       end 
+*
+**
 *
       complex*16 function e_(q1,q2,q3,q4)
       implicit none

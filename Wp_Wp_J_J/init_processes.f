@@ -24,8 +24,7 @@
       real * 8 powheginput
       external powheginput
 c     vector boson id and decay
-      integer idvecbos,vdecaymode
-      common/cvecbos/idvecbos,vdecaymode
+      include 'cvecbos.h'
 c     lepton masses
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
@@ -41,9 +40,19 @@ c******************************************************
 c     Choose the process to be implemented
 c******************************************************
 c    ID of vector boson produced
-      idvecbos=powheginput('idvecbos')
 c   decay products of the vector boson
-      vdecaymode=powheginput('vdecaymode')
+      vdecaymodeW1=powheginput('vdecaymodeW1')
+      vdecaymodeW2=powheginput('vdecaymodeW2')
+      if(vdecaymodeW1*vdecaymodeW2.lt.0) then
+         write(*,*) ' incompatible decay modes for W1 and W2;'
+         write(*,*) ' Must have the same sign! Aborting'
+         call exit(-1)
+      endif
+      if(vdecaymodeW1.gt.0) then
+         idvecbos=-24
+      else
+         idvecbos=24
+      endif
 
       if (lepmass(1).ne.0.51099891d-3) then
          write(*,*) 'block data lepmass not loaded. stop running' 
@@ -51,30 +60,52 @@ c   decay products of the vector boson
       endif
       
       if(idvecbos.eq.24) then
-         if ((vdecaymode.ne.-11).and.(vdecaymode.ne.-13)
-     $        .and.(vdecaymode.ne.-15)) then
-            write(*,*) 'ERROR: The decay mode you selected' /
+         if ((vdecaymodeW1.ne.-11).and.(vdecaymodeW1.ne.-13)
+     $        .and.(vdecaymodeW1.ne.-15)) then
+            write(*,*) 'ERROR: The decay mode for W1 you selected' /
      $           /' is not allowed '
+            stop 
+         endif 
+         if ((vdecaymodeW2.ne.-11).and.(vdecaymodeW2.ne.-13)
+     $        .and.(vdecaymodeW2.ne.-15)) then
+            write(*,*) 'ERROR: The decay mode for W2 you selected' /
+     $           /' is not allowed '
+            
             stop
          endif
          write(*,*) 
          write(*,*) ' POWHEG: W+ W+ + 2j production and decay ' 
-         if (vdecaymode.eq.-11) write(*,*) '         to e+ ve '
-         if (vdecaymode.eq.-13) write(*,*) '         to mu+ vmu'
-         if (vdecaymode.eq.-15) write(*,*) '         to tau+ vtau'
+         if (vdecaymodeW1.eq.-11) write(*,*) '         to e+ ve '
+         if (vdecaymodeW1.eq.-13) write(*,*) '         to mu+ vmu'
+         if (vdecaymodeW1.eq.-15) write(*,*) '         to tau+ vtau'
+         write(*,*)                          '            and'
+         if (vdecaymodeW2.eq.-11) write(*,*) '         to e+ ve '
+         if (vdecaymodeW2.eq.-13) write(*,*) '         to mu+ vmu'
+         if (vdecaymodeW2.eq.-15) write(*,*) '         to tau+ vtau'
          write(*,*) 
       elseif(idvecbos.eq.-24) then
-         if ((vdecaymode.ne.11).and.(vdecaymode.ne.13)
-     $        .and.(vdecaymode.ne.15)) then
-            write(*,*) 'ERROR: The decay mode you selected' /
+         if ((vdecaymodeW1.ne.11).and.(vdecaymodeW1.ne.13)
+     $        .and.(vdecaymodeW1.ne.15)) then
+            write(*,*) 'ERROR: The decay mode for W1 you selected' /
      $           /' is not allowed '
             stop
          endif
+         if ((vdecaymodeW2.ne.11).and.(vdecaymodeW2.ne.13)
+     $        .and.(vdecaymodeW2.ne.15)) then
+            write(*,*) 'ERROR: The decay mode for W2 you selected' /
+     $           /' is not allowed '
+            stop
+         endif
+
          write(*,*) 
          write(*,*) ' POWHEG: W- W- + 2j production and decay '
-         if (vdecaymode.eq.11) write(*,*) '         to e- ve~ '
-         if (vdecaymode.eq.13) write(*,*) '         to mu- vmu~'
-         if (vdecaymode.eq.15) write(*,*) '         to tau- vtau~'
+         if (vdecaymodeW1.eq.11) write(*,*) '         to e- ve~ '
+         if (vdecaymodeW1.eq.13) write(*,*) '         to mu- vmu~'
+         if (vdecaymodeW1.eq.15) write(*,*) '         to tau- vtau~'
+         write(*,*)                          '            and'
+         if (vdecaymodeW2.eq.11) write(*,*) '         to e- ve~ '
+         if (vdecaymodeW2.eq.13) write(*,*) '         to mu- vmu~'
+         if (vdecaymodeW2.eq.15) write(*,*) '         to tau- vtau~'
          write(*,*)    
       else
          write(*,*) 'ERROR: The ID of vector boson you selected' 
@@ -84,7 +115,8 @@ c   decay products of the vector boson
 
 c     change the LHUPI id of the process according to vector boson id
 c     and decay
-      lprup(1)=10000+vdecaymode ! 10000+idup of charged decay product of the W
+      lprup(1)=10000+vdecaymodeW1 ! 10000+idup of charged decay product of the W
+      lprup(2)=10000+vdecaymodeW2 ! 10000+idup of charged decay product of the W
       
       if(lprup(1).eq.10011) then
          decmass=lepmass(1)
@@ -110,19 +142,59 @@ c     not yet implemented
      #        'not yet implemented'
          stop
       endif   
+
+      if(lprup(2).eq.10011) then
+         decmass=lepmass(1)
+         
+      elseif(lprup(2).eq.(10000-11)) then
+         decmass=lepmass(1)
+        
+      elseif(lprup(2).eq.10013) then
+         decmass=lepmass(2)
+         
+      elseif(lprup(2).eq.(10000-13)) then
+         decmass=lepmass(2)
+
+      elseif(lprup(2).eq.10015) then
+         decmass=lepmass(3)
+         
+      elseif(lprup(2).eq.(10000-15)) then
+         decmass=lepmass(3) 
+  
+      else
+c     not yet implemented
+         write(*,*) 'non leptonic W decays '//
+     #        'not yet implemented'
+         stop
+      endif   
 c*********************************************************     
 c
 c     index of the first coloured particle in the final state
 c     (all subsequent particles are coloured)
       flst_lightpart=7
-      i4=vdecaymode
-      if ((idvecbos.eq.24).and.(vdecaymode.lt.0)) then
-         i3=-vdecaymode+1
-      elseif ((idvecbos.eq.-24).and.(vdecaymode.gt.0)) then
-         i3=-(vdecaymode+1)
+      i4=vdecaymodeW1
+      if ((idvecbos.eq.24).and.(vdecaymodeW1.lt.0)) then
+         i3=-vdecaymodeW1+1
+      elseif ((idvecbos.eq.-24).and.(vdecaymodeW1.gt.0)) then
+         i3=-(vdecaymodeW1+1)
       endif
-      i5 = i3 
-      i6 = i4 
+
+      i6=vdecaymodeW2
+      if ((idvecbos.eq.24).and.(vdecaymodeW2.lt.0)) then
+         i5=-vdecaymodeW2+1
+      elseif ((idvecbos.eq.-24).and.(vdecaymodeW2.gt.0)) then
+         i5=-(vdecaymodeW2+1)
+      endif
+
+!      i5 = i3 
+!      i6 = i4 
+
+
+      if(vdecaymodeW1.eq.vdecaymodeW2) then
+         vsymfact=0.5d0
+      else
+         vsymfact=1d0
+      endif
 
 c     Born graphs
       flst_nborn=0
@@ -132,12 +204,6 @@ c     Born graphs
       do i2=-4,4
       do i7=-4,4
       do i8=i7,4
-C
-C GZ DEBUG 
-c      do i1=-1,-1 ! no b in initial state 
-c      do i2=-3,-3
-c      do i7=-4,-4
-c      do i8=-2,-2
 
 C     charge conservation 
                   condition=(charge3(i1)+charge3(i2))
@@ -174,13 +240,6 @@ c     Real graphs
       do i7=-4,4
       do i8=i7,4
       do i9=i8,4
-
-C GZ DEBUG 
-c      do i1=-1,-1 ! no b in initial state 
-c      do i2=-3,-3
-c      do i7=-4,-4
-c      do i8=-2,-2
-c      do i9=0,0
 
 
 C     charge conservation 

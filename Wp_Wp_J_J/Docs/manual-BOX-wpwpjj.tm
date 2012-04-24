@@ -1,20 +1,28 @@
-<TeXmacs|1.0.7.3>
+<TeXmacs|1.0.7.9>
 
 <style|generic>
 
 <\body>
-  <doc-data|<doc-title|The <math|<with|mode|math|W<rsup|+>><with|mode|math|W<rsup|+>>
-  j j> <with|font-family|tt|POWHEG BOX> manual>>
+  <doc-data|<doc-title|The <math|W<rsup|+>W<rsup|+> j j> and
+  <with|mode|math|W<rsup|->W<rsup|-> j j ><with|font-family|tt|POWHEG BOX>
+  manual>>
 
   The <with|font-family|tt|Wp_Wp_j_j> program is an implementation of the
-  <math|<with|mode|math|W<rsup|+>><with|mode|math|W<rsup|+>> j j> production
-  cross section within the <with|font-family|tt|POWHEG BOX> framework.
+  <math|W<rsup|+>W<rsup|+> j j> and <with|mode|math|W<rsup|->W<rsup|-> j j
+  >production cross section within the <with|font-family|tt|POWHEG BOX>
+  framework with the <with|mode|math|W<rsup|> >bosons decaying to leptons.
 
   This document describes the input parameters that are specific to this
   implementation. The parameters that are common to all
   <with|font-family|tt|POWHEG BOX> implementation are given in the
   <with|font-family|tt|manual-BOX.pdf> document, in the
-  <with|font-family|tt|POWHEG-BOX/Docs> directory.
+  <with|font-family|tt|POWHEG-BOX/Docs> directory. The decay mode of the
+  <with|mode|math|W<rsup|> >bosons can be fixed by setting vdecaymode1 and
+  vdecaymode2 in the powheg.input file. These flags spacify the charged
+  leptons the bosons decay to (-11 e-; -13 mu-; -15 tau-; 11 e+; 13 mu+; 15
+  tau+). vdecaymode1 and vdecaymode2 must have the same sign. In the case of
+  identical leptons in the final state interference effects are neglected, so
+  that the cross-section is exactly half that of distinct leptons. \ 
 
   If you use this program, please quote <cite|Melia:2011gk>,
   <cite|Melia:2010bm>, <cite|Alioli:2010xd>.
@@ -232,7 +240,7 @@
       <bibitem*|2><label|bib-Melia:2010bm>T.<nbsp>Melia, K.<nbsp>Melnikov,
       R.<nbsp>Rontsch, and G.<nbsp>Zanderighi,
       <with|font-shape|italic|Next-to-leading order QCD predictions for
-      <with|mode|math|W<rsup|+>W<rsup|+>j*j> production at the LHC>,
+      <math|W<rsup|+>W<rsup|+>j*j> production at the LHC>,
       <with|font-shape|italic|JHEP> <with|font-series|bold|1012> (2010) 053,
       [<hlink|<with|font-family|tt|1007.5313>|http://xxx.lanl.gov/abs/1007.5313>].
 
@@ -248,6 +256,7 @@
 
 <\initial>
   <\collection>
+    <associate|par-hyphen|normal>
     <associate|sfactor|5>
   </collection>
 </initial>

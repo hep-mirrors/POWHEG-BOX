@@ -32,7 +32,7 @@ C     --------------------------
       integer fakevirt
       integer, save :: countampl  = 0 
       save fakevirt 
-
+      include 'cvecbos.h'
 
       if (firsttime) then 
          call dpinitialize(6)
@@ -126,6 +126,7 @@ C     now make sure that routines are called with momenta in the right order
       endif
       call qqb_wpwp_qqb(p1,msqB,chn,identical)
       born = msqB(vflav(1),vflav(2))
+
       if(fakevirt.ne.1) then
 C     -- now compute virtual 
          call qqb_wpwp_qqb_v(p1,msq,chn,polesonly,identical)
@@ -138,6 +139,8 @@ C     see p.10 of 1002.2581
       else
          virtual = 0.2d0*born     ! -- FAKE constant K factor 
       endif
+      virtual = virtual * vsymfact 
+
       countampl = countampl +1 
 c      if ((countampl/100000)*100000 == countampl) 
 c     1  write(*,*) 'Done', counampl, 'virtual squared amplitudes'  

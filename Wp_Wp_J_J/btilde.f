@@ -1,6 +1,6 @@
       function btilde(xx,www0,ifirst)
       implicit none
-      include '../nlegborn.h'
+      include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       include 'pwhg_flg.h'
@@ -163,7 +163,7 @@ c     flavour of the event
 
       subroutine adduptotals(results,n)
       implicit none
-      include '../nlegborn.h'
+      include 'nlegborn.h'
       integer n
       real * 8 results(n)
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
@@ -221,7 +221,7 @@ c j contributions
 
       subroutine resettotals
       implicit none
-      include '../nlegborn.h'
+      include 'nlegborn.h'
       include 'pwhg_flst.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg
       real * 8 totj(maxprocborn),totabsj(maxprocborn),
@@ -256,7 +256,7 @@ c j contributions
 
       subroutine finaltotals
       implicit none
-      include '../nlegborn.h'
+      include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       real * 8 tot,totabs,totpos,totneg,etot,etotabs,etotpos,etotneg

@@ -289,18 +289,22 @@ c     we need to tell to this analysis file which program is running it
       data WHCPRG/'NLO   '/
       integer nelectrons,nnue,nmuons,nnumu
       integer ielectrons(100),inue(100),imuons(100),inumu(100)
+      integer ntaus,nnutau
+      integer itaus(100),inutau(100)
+
       integer   maxjet
       parameter (maxjet=2048)
       real * 8  kt(maxjet),eta(maxjet),rap(maxjet),
      1    phi(maxjet),pj(4,maxjet),ptrel(maxjet)
       real * 8 ptel1,ptel2,etael1,etael2,ptmiss,httot
+      real * 8 pmiss_sum1,pmiss_sum2
       real * 8 pj12(4),eta12, pel12(4),etael12
       real * 8 mll, mtww, rj1l, rj2l, phill, Etmisstilde, Etll,invmass 
       real * 8 r,fphi
       integer ihep,j,mjets
       real * 8 etafromp,ptfromp
       logical passcuts 
-      integer ikinreg,iuborn,ialr
+      integer ikinreg,iuborn,ialr,lept1,lept2,il
       common/iargs/ikinreg,iuborn,ialr
 c      if(ikinreg.gt.0) then
 c         if(rad_kinreg.ne.ikinreg) return
@@ -337,6 +341,9 @@ c find electrons and muons
       nnue=0
       nmuons=0
       nnumu=0
+      ntaus=0
+      nnutau=0
+
       do ihep=1,nhep
          if(isthep(ihep).eq.1) then
             if(abs(idhep(ihep)).eq.11) then
@@ -351,15 +358,23 @@ c find electrons and muons
             elseif(abs(idhep(ihep)).eq.14) then
                nnumu=nnumu+1
                inumu(nnumu)=ihep
+            elseif(abs(idhep(ihep)).eq.15) then
+               ntaus=ntaus+1
+               itaus(ntaus)=ihep
+            elseif(abs(idhep(ihep)).eq.16) then
+               nnutau=nnutau+1
+               inutau(nnutau)=ihep
+
             endif
          endif
       enddo
       if(nelectrons.gt.100.or.nnue.gt.100
-     1     .or.nmuons.gt.100.or.nnumu.gt.100) then
+     1     .or.nmuons.gt.100.or.nnumu.gt.100 
+     1     .or.ntaus.gt.100.or.nnutau.gt.100) then
          write(*,*) ' crazy event, too many leptons'
          return
       endif
-      if(nelectrons.lt.2.or.nnue.lt.2) then
+      if(nelectrons+nmuons+ntaus.lt.2 .or. nnue+nnumu+nnutau.lt.2) then
          write(*,*) ' crazy event, missing leptons'
          return
       endif
@@ -368,6 +383,33 @@ c sort by pt
       call sortbypt(nnue,inue)
       call sortbypt(nmuons,imuons)
       call sortbypt(nnumu,inumu)
+      call sortbypt(ntaus,itaus)
+      call sortbypt(nnutau,inutau)
+
+
+      if (nelectrons >= 2) then 
+         lept1 = ielectrons(1)
+         lept2 = ielectrons(2)
+      elseif (nmuons >= 2) then 
+         lept1 = imuons(1)
+         lept2 = imuons(2)
+      elseif (ntaus >= 2) then 
+         lept1 = itaus(1)
+         lept2 = itaus(2)
+      elseif (nmuons == 1 .and. nelectrons == 1) then 
+         lept1 = ielectrons(1)
+         lept2 = imuons(1)
+      elseif (ntaus == 1 .and. nelectrons == 1) then 
+         lept1 = ielectrons(1)
+         lept2 = itaus(1)
+      elseif (ntaus == 1 .and. nmuons == 1) then 
+         lept1 = itaus(1)
+         lept2 = imuons(1)
+      else
+         stop 'can not find two charged leptons' 
+      endif 
+
+
 
       mjets=10
       call buildjets(mjets,kt,eta,rap,phi,pj,ptrel)
@@ -376,13 +418,7 @@ c sort by pt
 c avoid configurations with light partons in underlying Born configuration
 c with too low pt, or too low invariant mass
       call pwhgfill(diag,0.5d0,dsig)
-c      if(smin.gt.0.001d0) call pwhgfill(diag,1.5d0,dsig)
-c      if(smin.gt.0.01d0 ) call pwhgfill(diag,2.5d0,dsig)
-c      if(smin.gt.0.1d0  ) call pwhgfill(diag,3.5d0,dsig)
-c      if(smin.gt.1d0    ) call pwhgfill(diag,4.5d0,dsig)
-c      if(smin.gt.10d0   ) call pwhgfill(diag,5.5d0,dsig)
 
-c      if(smin.lt.0.1d0) return
 
 c********** CUTS
 C      if(mjets.lt.2) return
@@ -390,24 +426,40 @@ C      if(mjets.lt.2) return
       diag = diag+1
       if (kt(2) .ge.30d0) call pwhgfill(diag,0.5d0,dsig)
 
-      ptmiss=sqrt((phep(1,inue(1))+phep(1,inue(2)))**2+
-     1            (phep(2,inue(1))+phep(2,inue(2)))**2)
+      pmiss_sum1 = 0d0
+      pmiss_sum2 = 0d0
+      do il = 1,nnue !electron neutrinos
+         pmiss_sum1 = pmiss_sum1 + phep(1,inue(il))
+         pmiss_sum2 = pmiss_sum2 + phep(2,inue(il))
+      enddo  
+      do il = 1,nnumu !muon neutrinos
+         pmiss_sum1 = pmiss_sum1 + phep(1,inumu(il))
+         pmiss_sum2 = pmiss_sum2 + phep(2,inumu(il))
+      enddo   
+      do il = 1,nnutau !tau neutrinos
+         pmiss_sum1 = pmiss_sum1 + phep(1,inutau(il))
+         pmiss_sum2 = pmiss_sum2 + phep(2,inutau(il))
+      enddo   
+
+      ptmiss = sqrt((pmiss_sum1)**2+
+     1              (pmiss_sum2)**2)
+
 C      if(ptmiss.lt.30) return
       if(ptmiss.lt.30) passcuts = .false. 
       
-      etael1=etafromp(phep(1,ielectrons(1)))
+      etael1=etafromp(phep(1,lept1))
 C      if(abs(etael1).gt.2.4) return
       if(abs(etael1).gt.2.4d0) passcuts = .false. 
 
-      etael2=etafromp(phep(1,ielectrons(2)))
+      etael2=etafromp(phep(1,lept2))
 C      if(abs(etael2).gt.2.4) return
       if(abs(etael2).gt.2.4d0)  passcuts = .false. 
 
-      ptel1=ptfromp(phep(1,ielectrons(1)))
+      ptel1=ptfromp(phep(1,lept1))
 C      if(ptel1.lt.20) return
       if(ptel1.lt.20)  passcuts = .false. 
 
-      ptel2=ptfromp(phep(1,ielectrons(2)))
+      ptel2=ptfromp(phep(1,lept2))
 C      if(ptel2.lt.20) return
       if(ptel2.lt.20)  passcuts = .false. 
       
@@ -492,7 +544,7 @@ C     Eta lept
 
 C     eta(l1)- eta(l2) 
       diag=diag+1
-      pel12 = phep(:4,ielectrons(1))+phep(:4,ielectrons(2))
+      pel12 = phep(:4,lept1)+phep(:4,lept2)
       etael12 = etafromp(pel12)
       call pwhgfill(diag,etael12,dsig/binsize(diag))
 
@@ -514,24 +566,24 @@ C     MT_WW
 C     Delta R(j1 lept) 
       diag=diag+1
       if (mjets .ge. 2) then 
-      Rj1l = r(pj(1:4,1),phep(1:4,ielectrons(1)))
+      Rj1l = r(pj(1:4,1),phep(1:4,lept1))
       call pwhgfill(diag,Rj1l,dsig/binsize(diag)/2d0)
-      Rj1l = r(pj(1:4,1),phep(1:4,ielectrons(2)))
+      Rj1l = r(pj(1:4,1),phep(1:4,lept2))
       call pwhgfill(diag,Rj1l,dsig/binsize(diag)/2d0)
       endif
 
 C     Delta R(j2 lept) 
       diag=diag+1
       if (mjets .ge. 2) then 
-      Rj2l = r(pj(1:4,2),phep(1:4,ielectrons(1)))
+      Rj2l = r(pj(1:4,2),phep(1:4,lept1))
       call pwhgfill(diag,Rj2l,dsig/binsize(diag)/2d0)
-      Rj2l = r(pj(1:4,2),phep(1:4,ielectrons(2)))
+      Rj2l = r(pj(1:4,2),phep(1:4,lept2))
       call pwhgfill(diag,Rj2l,dsig/binsize(diag)/2d0)
       endif
 
 c     Phi(l1l2) 
       diag=diag+1 
-      phill=fphi(phep(1,ielectrons(1)),phep(1,ielectrons(2)))
+      phill=fphi(phep(1,lept1),phep(1,lept2))
       call pwhgfill(diag,phill,dsig/binsize(diag))
 
 c     pt of third jet
@@ -632,7 +684,7 @@ C     Eta lept
 
 C     eta(l1)- eta(l2) 
       diag=diag+1
-      pel12 = phep(:4,ielectrons(1))+phep(:4,ielectrons(2))
+      pel12 = phep(:4,lept1)+phep(:4,lept2)
       etael12 = etafromp(pel12)
       call pwhgfill(diag,etael12,dsig/binsize(diag))
 
@@ -654,24 +706,24 @@ C     MT_WW
 C     Delta R(j1 lept) 
       diag=diag+1
       if (mjets .ge. 2) then 
-      Rj1l = r(pj(1:4,1),phep(1:4,ielectrons(1)))
+      Rj1l = r(pj(1:4,1),phep(1:4,lept1))
       call pwhgfill(diag,Rj1l,dsig/binsize(diag)/2d0)
-      Rj1l = r(pj(1:4,1),phep(1:4,ielectrons(2)))
+      Rj1l = r(pj(1:4,1),phep(1:4,lept2))
       call pwhgfill(diag,Rj1l,dsig/binsize(diag)/2d0)
       endif
 
 C     Delta R(j2 lept) 
       diag=diag+1
       if (mjets .ge. 2) then 
-      Rj2l = r(pj(1:4,2),phep(1:4,ielectrons(1)))
+      Rj2l = r(pj(1:4,2),phep(1:4,lept1))
       call pwhgfill(diag,Rj2l,dsig/binsize(diag)/2d0)
-      Rj2l = r(pj(1:4,2),phep(1:4,ielectrons(2)))
+      Rj2l = r(pj(1:4,2),phep(1:4,lept2))
       call pwhgfill(diag,Rj2l,dsig/binsize(diag)/2d0)
       endif
 
 c     Phi(l1l2) 
       diag=diag+1 
-      phill=fphi(phep(1,ielectrons(1)),phep(1,ielectrons(2)))
+      phill=fphi(phep(1,lept1),phep(1,lept2))
       call pwhgfill(diag,phill,dsig/binsize(diag))
 
 c     pt of third jet

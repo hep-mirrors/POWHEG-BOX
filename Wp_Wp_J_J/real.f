@@ -37,6 +37,7 @@
       logical :: identical, set  
       logical, save :: firsttime = .true. 
       character(len=3) :: chn 
+      include 'cvecbos.h'
 
       if (firsttime) then 
          call dpinitialize(7) 
@@ -204,10 +205,9 @@ C     want 0 -> qb g l l l l qb' q' q (1&7 same family, 2&8 same family)
 
 C     now compute msq 
       call qqb_wpwp_qqb_g(p1,msq,chn,identical) 
-
-
-
+      
       realamp2 = msq(rflav(1),rflav(2))
+      realamp2 = realamp2 * vsymfact 
 
 C     divide out ason2pi as this in included by MCFM file
 C     but is included later on in PowHeg 

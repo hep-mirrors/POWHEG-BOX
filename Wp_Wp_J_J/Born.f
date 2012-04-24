@@ -54,6 +54,7 @@ C      enddo
       logical :: identical, iswap  
       logical, save :: firsttime = .true. 
       character(len=3) :: chn 
+      include 'cvecbos.h'
 
       if (firsttime) then 
          call dpinitialize(6) 
@@ -137,6 +138,8 @@ C     in the right order
 
       call qqb_wpwp_qqb(p1,msq,chn,identical) 
       call qqb_wpwp_qqb_str(p1,msqB_str,chn,identical) 
+      msq = msq * vsymfact 
+      msqB_str = msqB_str * vsymfact 
       born = msq(bflav(1),bflav(2))
 
 C     -- no gluons, so no spin correlated Born  
@@ -506,13 +509,11 @@ c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     
 c     vector boson id and decay
-      integer idvecbos,vdecaymode
-      common/cvecbos/idvecbos,vdecaymode
+      include 'cvecbos.h'
 c     lepton masses
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
-c W+ id:
-      idvecbos=24
+
       call add_resonance(idvecbos,3,4)
 C     need to shift (56) to (67) since previous res adds a label 
       call add_resonance(idvecbos,6,7)

@@ -528,6 +528,10 @@ c     exchance particle 1 and 2
 *
       real*8 mlep2
       common/leptmass/mlep2
+
+      integer idvecbos,vdecaymode
+      common/cvecbos/idvecbos,vdecaymode
+
 *
       real*8 qu2,qd2
 
@@ -580,6 +584,16 @@ c     exchance particle 1 and 2
           pn(nu) = p(nu,4)
           k (nu) = p(nu,5)
       enddo
+*
+      ! CP symmetry for W-
+      if (idvecbos.lt.0) then
+          call invertspace(pu,pu)
+          call invertspace(pd,pd)
+          call invertspace(pl,pl)
+          call invertspace(pn,pn)
+          call invertspace(k,k)
+      endif
+
 *
       pupd = dotp(pu,pd)
       pupe = dotp(pu,pl)
@@ -1355,5 +1369,17 @@ c     exchance particle 1 and 2
 
       return
       end function e_
+*
+**
+*
+      subroutine invertspace(p,pp)
+      implicit none
+      real*8 p(0:3),pp(0:3)
+      integer nu
 
+      pp(0)=p(0)
+      do nu=1,3
+          pp(nu)=-p(nu)
+      enddo
 
+      end

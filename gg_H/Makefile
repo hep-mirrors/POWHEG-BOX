@@ -116,7 +116,8 @@ sigremnants.o: ../sigremnants.f $(INCLUDE)
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-        real.o btilde.o pt2maxreg.o LesHouchesreg.o $(PWHGANAL)
+        real.o btilde.o pt2maxreg.o LesHouchesreg.o pwhg_cpHTO_reweight.o \
+	$(PWHGANAL)
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o lhefwrite.o LesHouches.o		\
 	gen_Born_phsp.o find_regions.o test_Sudakov.o sigborn.o		\

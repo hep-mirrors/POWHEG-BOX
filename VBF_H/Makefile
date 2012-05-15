@@ -102,7 +102,7 @@ endif
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
-		      real.o $(PWHGANAL)
+		      real.o pwhg_cpHTO_reweight.o $(PWHGANAL)
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	LesHouches.o LesHouchesreg.o gen_Born_phsp.o find_regions.o	\

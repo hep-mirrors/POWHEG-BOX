@@ -20,6 +20,8 @@
       logical BW
       integer BWshape
       save BW,BWshape
+      integer BWflag
+      real * 8 weight,m
       if(ini) then
 c     set initial- and final-state masses for Born and real
          do k=1,nlegborn
@@ -31,10 +33,17 @@ c     set initial- and final-state masses for Born and real
          else
             BW=.true.
          endif
-         if (powheginput("#bwshape").eq.2) then
-            BWshape=2
-         else
+         if (powheginput("#bwshape").eq.1) then
             BWshape=1
+         elseif (powheginput("#bwshape").eq.2) then
+            BWshape=2
+         elseif (powheginput("#bwshape").eq.3) then
+            BWshape=3
+         else
+            write(*,*) 'Unsupported value for bwshape in the '//
+     $           'powheg.input file: ',powheginput("#bwshape")
+            write(*,*) 'The POWHEG BOX aborts'
+            call exit(1)
          endif
          ini=.false.
       endif
@@ -77,7 +86,19 @@ C     MC@NLO and MCFM use instead:
 c     BW(M,M0,Ga)=M0 Ga/pi * 1/((M^2-M0^2)^2+M0^2 Ga^2
          elseif (bwshape.eq.2) then   
             bwfactor=HmHw/pi/
+     $        ((m2-Hmass2)**2+HmHw**2)    
+         elseif (bwshape.eq.3) then   
+c     Passarino complex-pole scheme
+c     first: attach the fixed-width BW. the 1/pi factor is attached together to 
+c     the weight
+            bwfactor=HmHw/
      $        ((m2-Hmass2)**2+HmHw**2)          
+c     second: compute the rescale factor
+            m=sqrt(m2)
+            BWflag=0
+            call pwhg_cpHTO_reweight(ph_Hmass,ph_Hwidth,ph_topmass,
+     $           BWflag,m,weight)
+            xjac = xjac * weight/pi
          else 
             write(*,*) 'ERROR in bwshape'
             call exit(1)

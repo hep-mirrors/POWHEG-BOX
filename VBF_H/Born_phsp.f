@@ -7,7 +7,7 @@
       include 'PhysPars.h'
       real * 8 xborn(ndiminteg-3)
       real * 8 m2,xjac,taumin,tau,y,beta,betaCM,vec(3),cth,s,
-     #     z,zhigh,zlow
+     #     z,zhigh,zlow,m
       integer mu,k,j
       logical ini
       data ini/.true./
@@ -29,6 +29,10 @@
       save higgsfixedwidth
       real * 8 powheginput
       external powheginput
+      logical complexpole
+      save complexpole
+      real * 8 weight
+      integer BWflag
       if(ini) then
 c     set initial- and final-state masses for Born and real
          do k=1,nlegborn
@@ -36,6 +40,25 @@ c     set initial- and final-state masses for Born and real
          enddo
          kn_masses(nlegreal)=0
          higgsfixedwidth=powheginput("#higgsfixedwidth").gt.0
+         complexpole=powheginput("#complexpolescheme").gt.0
+         if (complexpole) then
+            if (higgsfixedwidth) then
+               write(*,*) ' '
+               write(*,*) '*******************************************'
+               write(*,*) 'The higgsfixedwidth and complexpolescheme '//
+     $              'flags are both set to true.'
+               write(*,*) 'The two flags are incompatible.'
+               write(*,*) 'The POWHEG BOX exits.'
+               write(*,*) '*******************************************'
+               call exit(1)
+            endif
+            write(*,*) '*******************************************'
+            write(*,*) '*******************************************'
+            write(*,*) '****        COMPLEX-POLE SCHEME        ****'
+            write(*,*) '****          Passarino et al          ****'
+            write(*,*) '*******************************************'
+            write(*,*) '*******************************************'
+         endif
          ini=.false.
          pt1cut = 0d0
          pt2cut = 0d0
@@ -61,13 +84,19 @@ c         m2jjmin = 0.1d0**2
          m2=VmVw*tan(z)+Vmass2
 c     The BW integrates to Pi ==> divide by Pi
          xjac=xjac/pi
-
-         if(.not.higgsfixedwidth) then
+         if(.not.higgsfixedwidth.and..not.complexpole) then
 c     running width
             BW_fixed=ph_HmHw/((m2-ph_Hmass2)**2 + ph_HmHw**2)
             BW_running= (m2*ph_Hwidth/ph_Hmass) /
      $           ((m2-ph_Hmass2)**2+(m2*ph_Hwidth/ph_Hmass)**2)
             xjac = xjac * BW_running/BW_fixed
+         endif
+         if (complexpole) then
+            m=sqrt(m2)
+            BWflag=0
+            call pwhg_cpHTO_reweight(ph_Hmass,ph_Hwidth,ph_topmass,
+     $           BWflag,m,weight)
+            xjac = xjac * weight
          endif
       else
          xjac = 1

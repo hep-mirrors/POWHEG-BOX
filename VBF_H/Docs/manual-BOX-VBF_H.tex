@@ -104,6 +104,26 @@ should be the following line in the input file \tmtexttt{powheg.input}
 \\
 
 \noindent
+The dafault invariant Higgs boson mass is distributed according to a
+Breit-Wigner~(BW) with a running width. In case one is interested in the
+generation of a Higgs boson invariant mass with a fixed width, the following
+line should be present in the \tmtexttt{powheg.input} file
+
+\tmtexttt{
+whiggsfixedwidth    1  ! if 1, use old behaviour with fixed width Breit-Wigner
+\mbox{}\hspace{44mm} ! default is running width
+}
+
+\noindent
+The complex-pole scheme according to Passarino et al. is activated by the
+flag
+
+\tmtexttt{ complexpolescheme    1   ! complex-pole scheme according to
+  Passarino et al.}\\ \\
+
+
+
+\noindent
 In case the \POWHEGBOX{} is interfaced to \PYTHIA{} or \HERWIG{}, it is
 possible to select the Higgs boson decay products by setting the optional
 parameter \tmtexttt{hdecaymode} to one of the allowed values

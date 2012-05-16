@@ -16,9 +16,12 @@ c     w : the reweighting factor
       real * 8 mhsave,ghsave, mtsave
       data mhsave,ghsave, mtsave/-1d30,-1d30,-1d30/
       save mhsave,ghsave, mtsave 
-      save mhb,ghb
+      save mhb,ghb,muh,gah
       if (mhsave.ne.mh.or.ghsave.ne.gh.or.mtsave.ne.mt) then
          call powheg_HTO(mh,mt,mhb,ghb)
+c     complex pole parameters
+         muh=sqrt(mhb**2/(1+(ghb/mhb)**2))
+         gah = muh/mhb*ghb
          mhsave=mh
          ghsave=gh
          mtsave=mt
@@ -38,9 +41,6 @@ c     running width
       call HTO_gridHt(m,gamma_m)
 c     BW_passarino= (1+(ghb/mhb)**2) * m2 * gamma_m/m /
 c     $           ((m2-mhb**2)**2+(m2*ghb/mhb)**2)
-c     complex pole parameters
-      muh=sqrt(mhb**2/(1+(ghb/mhb)**2))
-      gah = muh/mhb*ghb
       BW_passarino=m*gamma_m/((m2-muh**2)**2+(muh*gah)**2)
       w = BW_passarino/BW
       end

@@ -5274,7 +5274,7 @@ c      REAL*8 HTO_SSHH,rgh,muc,scalc,x
 *
       muhcp= muh
 *
-      IF(muhcp.gt.900.d0) THEN
+      IF(muhcp.ge.900.d0) THEN
        x2= 1.d3/muh
       ELSEIF((muhcp.gt.600.d0).and.(muhcp.lt.900.d0)) THEN
        x2= 4.d2/muh

@@ -33,19 +33,17 @@ c     set initial- and final-state masses for Born and real
          else
             BW=.true.
          endif
-         if (powheginput("#bwshape").eq.1) then
-            BWshape=1
-         elseif (powheginput("#bwshape").eq.2) then
-            BWshape=2
-         elseif (powheginput("#bwshape").eq.3) then
-            BWshape=3
-         else
-            write(*,*) 'Unsupported value for bwshape in the '//
-     $           'powheg.input file: ',powheginput("#bwshape")
-            write(*,*) 'The POWHEG BOX aborts'
-            call exit(1)
+         if (BW) then 
+            BWshape=powheginput("#bwshape") 
+            if (BWshape.lt.0) BWshape=1
+            if ((BWshape.le.0).and.(BWshape.gt.3)) then 
+               write(*,*) 'Unsupported value for bwshape in the '//
+     $              'powheg.input file: ',powheginput("#bwshape")
+               write(*,*) 'The POWHEG BOX aborts'
+               call exit(1)
+            endif
+            ini=.false.
          endif
-         ini=.false.
       endif
 
       Hmass2 = ph_Hmass2

@@ -21,7 +21,7 @@ c     Skip the first lines
 c      write(*,*) higgsmass,ggwidth,gammagammawidth,zgammawidth
 c     $            ,wwwidth,zzwidth,totalwidth
 c     Find the best possible approximation for the total width
-      if (higgsmass.gt.in_higgs_mass) then
+      if (higgsmass.ge.in_higgs_mass) then
          if (abs(higgsmass-in_higgs_mass).lt.
      $       abs(tmp_mass-in_higgs_mass)) then
             higgs_width = totalwidth

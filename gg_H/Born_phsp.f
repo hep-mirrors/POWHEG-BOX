@@ -42,8 +42,8 @@ c     set initial- and final-state masses for Born and real
                write(*,*) 'The POWHEG BOX aborts'
                call exit(1)
             endif
-            ini=.false.
          endif
+         ini=.false.
       endif
 
       Hmass2 = ph_Hmass2

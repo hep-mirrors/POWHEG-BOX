@@ -56,8 +56,12 @@ c     squared momentum of the weak boson connected with the lower line
 c upper-line correction 
       r = st_muren2/(-q2_up)
       if (r.lt.0d0) then
-         write(*,*) 'Error in setvirtual: q2_up should be < 0!!'
-         stop
+         write(*,*) 'Error in setvirtual: q2_up should be < 0'
+         write(*,*) 'st_muren2=',st_muren2
+         write(*,*) 'q2_up=',q2_up
+         write(*,*) 'RETURN 0 '
+         virtual=0d0
+         return
       endif      
       lr = log(r)
 c     1/2 i front comes from (as/(4*Pi))/(as/(2*Pi))
@@ -66,8 +70,12 @@ c     1/2 i front comes from (as/(4*Pi))/(as/(2*Pi))
 c lower-line correction 
       r = st_muren2/(-q2_down)
       if (r.lt.0d0) then
-         write(*,*) 'Error in setvirtual: q2_down should be < 0!!'
-         stop
+         write(*,*) 'Error in setvirtual: q2_down should be < 0'
+         write(*,*) 'st_muren2=',st_muren2
+         write(*,*) 'q2_down=',q2_down
+         write(*,*) 'RETURN 0 '
+         virtual=0d0
+         return
       endif      
       lr = log(r)
 c     1/2 i front comes from (as/(4*Pi))/(as/(2*Pi))

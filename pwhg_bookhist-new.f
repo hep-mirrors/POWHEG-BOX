@@ -135,8 +135,8 @@ c overflow
       character * 50 outfile
       parameter (iun=99)
       do j=1,jhist
-
-         write(iun,'(a,i3,a,a)')'# index ',j-1,' ',stringhist(j)
+         l = lnblnk(stringhist(j))
+         write(iun,'(a,i3)')'# '//stringhist(j)(1:l)//' index ',j-1
          do k=1,nbins(j)
             write(iun,'(4(1x,e14.8))') xhistarr(k,j), xhistarr(k+1,j),
      1           yhistarr2(k,j),errhistarr2(k,j)

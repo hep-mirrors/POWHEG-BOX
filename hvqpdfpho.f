@@ -10148,7 +10148,7 @@ C----- START CTEQ6 FITS ------------------------------
 C Cteq61, added by P. Nason on 13-11-2003
       SUBROUTINE  CTEQ61(ISET,IH,Q2,X,FX,NF)
       REAL FX(-NF:NF)  
-      REAL*8 DX,DQ,CTQ6PDF,PDFS(-10:10)
+      REAL*8 DX,DQ,CTQ6PDF,CTQ61PDF,PDFS(-10:10)
       DATA INIT/0/ 
 C
       Q=SQRT(Q2)

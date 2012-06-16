@@ -134,8 +134,10 @@ c overflow
       integer k,j,iun,l
       character * 50 outfile
       parameter (iun=99)
+      integer lenocc
+      external lenocc
       do j=1,jhist
-         l = lnblnk(stringhist(j))
+         l = lenocc(stringhist(j))
          write(iun,'(a,i3)')'# '//stringhist(j)(1:l)//' index ',j-1
          do k=1,nbins(j)
             write(iun,'(4(1x,e14.8))') xhistarr(k,j), xhistarr(k+1,j),

@@ -93,6 +93,4 @@ c no event found:
       endif
       return
  998  continue
-      write(*,*) ' end of event file'
-      call exit(1)
       end

@@ -6,7 +6,7 @@
       include 'nlegborn.h'
       include 'pwhg_kn.h'
       real * 8 masswindow_low,masswindow_high
-      real * 8powheginput
+      real * 8 powheginput
       external powheginput
       logical verbose
       parameter(verbose=.true.)
@@ -58,6 +58,9 @@ c     mass window
       masswindow_high = powheginput("#masswindow_high")
       if (masswindow_high.le.0d0) masswindow_high=30d0
 
+c     running width
+      ph_runwidth = powheginput("#running_width").eq.1d0
+
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   DEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -85,6 +88,7 @@ c     It is used in the generation of the Born phase space
       write(*,*) 'sthw2 = ',ph_sthw2
       write(*,*) '(unit_e)^2 = ',ph_unit_e**2   
       write(*,*) '(g_w)^2 = ',ph_unit_e*ph_unit_e/ph_sthw2   
+      if(ph_runwidth) write(*,*) 'using running W width'
       write(*,*) 'CKM matrix' 
       do i=1,3
          write(*,*) (ph_CKM(i,j),j=1,3)

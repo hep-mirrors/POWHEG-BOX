@@ -38,7 +38,7 @@ c     mass window
       masswindow_high = powheginput("#masswindow_high")
       if (masswindow_high.le.0d0) masswindow_high=30d0
 
-      ph_runwidth = powheginput("#running_width").eq.1
+      ph_runwidth = powheginput("#running_width").eq.1d0
       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   DEPENDENT QUANTITIES       
@@ -71,7 +71,7 @@ c     It is used in the generation of the Born phase space
       write(*,*) 'W width = ',ph_Wwidth
       write(*,*) '1/alphaem = ',1d0/ph_alphaem
       write(*,*) 'sthw2 = ',ph_sthw2
-      if(ph_runwidth) write(*,*) 'running Z width switched on'
+      if(ph_runwidth) write(*,*) 'using running Z width'
       write(*,*) '*************************************'
       write(*,*)
       write(*,*) '*************************************'

@@ -577,6 +577,9 @@ c     ... now we have the jets
          if (njets.gt.0) then
 c     find the first 2 hardest jets, if any
             call find_hardest_jets(njets,pjet,2,nfoundjets,njj)
+         else
+            dsig=0
+            return 
          endif
       endif
 

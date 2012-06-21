@@ -217,8 +217,11 @@ c     for fermions along fermionic current
       p34=dotp(p(0,3),p(0,4))
       
 c     W propagator
-      prop34w=1d0/dcmplx(2d0*p34-ph_Wmass2,ph_WmWw)
-     
+      if(ph_runwidth) then
+         prop34w=1d0/dcmplx(2d0*p34-ph_Wmass2,ph_WmWw*2d0*p34/ph_Wmass2)
+      else
+         prop34w=1d0/dcmplx(2d0*p34-ph_Wmass2,ph_WmWw)
+      endif
 c     bra and ket are built with physical momenta 
 
 c     q

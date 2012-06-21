@@ -32,8 +32,14 @@ c integer at line j is used to initialize the random
 c sequence for the generation of the event.
 c The event file is called 'pwgprefix'events-'j'.lhe
       if(powheginput("#manyseeds").eq.1) then
-         open(unit=iun,status='old',
+         open(unit=iun,status='old',iostat=ios,
      1        file=pwgprefix(1:lprefix)//'seeds.dat')
+          if(ios.ne.0) then
+             write(*,*) 'option manyseeds required but '
+             write(*,*) 'file ',pwgprefix(1:lprefix)/
+     $            /'seeds.dat not found'
+            call exit(-1)
+         endif 
          do j=1,1000000
             read(iun,*,iostat=ios)  rnd_initialseed
             if(ios.ne.0) goto 10
@@ -52,7 +58,7 @@ c The event file is called 'pwgprefix'events-'j'.lhe
 c Commented line to be used instead, for testing that manyseed runs
 c yield the same results as single seed runs, provided the total number
 c of calls is the same.
-c            read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
+c     read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
             read(iun,*) rnd_initialseed
             rnd_i1=0
             rnd_i2=0

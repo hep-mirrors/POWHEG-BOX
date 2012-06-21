@@ -360,7 +360,9 @@ c     Z propagator (see eq 2.13 in Nason-Webber,Nucl.Phys B421 pp.473-517)
 c     Here, simply use teo_fact=1
       teo_fact=1
 
-      prop34zeta=teo_fact/dcmplx(2d0*p34-ph_Zmass2,ph_ZmZw)!*2d0*p34/ph_Zmass2)
+      prop34zeta=teo_fact/dcmplx(2d0*p34-ph_Zmass2,ph_ZmZw)
+      if(ph_runwidth) prop34zeta=teo_fact/dcmplx(2d0*p34-ph_Zmass2
+     $     ,ph_ZmZw*2d0*p34/ph_Zmass2)
 c     teo_fact is the square root of the ratio between the experimental
 c     width of the Z boson and the theoretical one.  This last is
 c     evaluated by summing over species and flavours the quantity

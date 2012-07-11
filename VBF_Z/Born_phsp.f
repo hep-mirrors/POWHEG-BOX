@@ -43,9 +43,6 @@ c extra stuff for Zjj:
       real*8 phil,costhl,sinthl,cphil,sphil
       real*8 plmod,pl1_cm(4),pl(0:3,2),pl1(4),pl2(4)
 
-      real * 8 powheginput
-      external powheginput
-c
 c------------------------------------
 c
       if(ini) then

@@ -99,12 +99,12 @@ $Z jj$ production in hadronic collisions within the \pbox{} framework.
 %
 Special measures have been taken in order to avoid numerical instabilities due to singular configurations of the Born contributions (see Ref.~\cite{JSZ} for a detailed description). We recommend running the code with the flag {\tt withdamp} set to {\tt 1} and using a so-called Born-suppression factor that vanishes whenever a singular region of the Born phase space is approached. To this end, the flag {\tt bornsuppfact} should be set to {\tt 1} in the file {\tt powheg.input}. Collinear $\gamma^\star\to \ell^+\ell^-$ splittings are avoided by requiring a non-vanishing value of the invariant di-lepton mass $m_{\ell\ell}$. This value can be set by the user via the variable {\tt mll\_gencut} in the input file. We recommend a value larger than $10$~GeV. 
 %
-Please note that, because of these measures, the code is not expected to provide reliable results for observables analyzed with very inclusive cuts, in particular $m_{\ell\ell}<10$~GeV and tagging jets with transverse momenta below 20~GeV. 
+Please note that, because of these measures, the code is not expected to provide reliable results for observables analyzed with very inclusive cuts. 
 %
 \\[2ex]
 %
 This document describes the input parameters that are specific to the
-implementation of this channel. 
+implementation of $Zjj$ production via VBF. 
 %
 The parameters that are common to all {\tt POWHEG BOX} implementations are given in
 the {\tt manual-BOX.pdf} document, in the {\tt POWHEG-BOX/Docs}
@@ -310,11 +310,11 @@ performed as in the previous step.
 Set {\tt numevts} to the number of events you want to generate per
 process, for example
 \\[2ex]
-{\tt numevts 5000}
+{\tt numevts 1000}
 \\[2ex]
 and run in parallel. Again, the number of processes must not be larger than
 the one used in the previous step. Generating the specified number of
-events takes about 20 hours per process.
+events takes about 65 hours per process.
 \\[2ex]
 At this point, files of the form {\tt pwgevents-[index].lhe} are
 present in the run directory.

@@ -9,8 +9,8 @@ OBJECTS =  ./li2.o \
 	  ./help.o \
 	  ./braket_vbf.o \
 	  ./init_tensors_z.o \
-          ./qqzqq-qsqcut.o \
-          ./qqzqqj-qsqcut.o \
+          ./qqzqq.o \
+          ./qqzqqj.o \
           ./dhelas/ixxxxx.o \
           ./dhelas/oxxxxx.o \
           ./dhelas/fvixxx.o \

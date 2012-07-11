@@ -44,7 +44,7 @@ C     -- HISTOGRAMS WITH VBF CUTS
      .     binsize(diag),5d0,75d0)
 
       diag = 5
-      binsize(diag) = 40d0
+      binsize(diag) = 20d0
       call pwhgbookup(diag,'PT jet 1- VBF CUTS','LOG',
      .     binsize(diag),0d0,880d0)
 

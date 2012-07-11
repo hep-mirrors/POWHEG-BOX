@@ -552,11 +552,6 @@ C ----------
       
       
       wll(mu,nu) = +AMP(   1)+AMP(   2)+AMP(   3)
-
-c test only wwa-graph: 
-c      wll(mu,nu) = AMP(   2)
-c test only wwz-graph: 
-c      wll(mu,nu) = AMP(   3)
                
 	 enddo !nu
       enddo !mu

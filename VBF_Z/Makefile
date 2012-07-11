@@ -23,7 +23,7 @@ VPATH= ./:../:obj/:mg_zfiles:
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
 INCLUDE2=$(shell dirname $(PWD))/include
-FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) -I vbfnlo-zfiles
+FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) -I nlo_files
 
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
@@ -57,7 +57,7 @@ else
 PWHGANAL=pwhg_analysis-dummy.o
 endif
 
-LIBS+=$(LHAPDFLIB) -Lvbfnlo-zfiles -lvbfnlo 
+LIBS+=$(LHAPDFLIB) -Lnlo_files -lnlo 
 
 %.o: %.f $(INCLUDE)
 	$(FF) -c -o obj/$@ $<
@@ -85,13 +85,13 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o            \
 	$(PDFPACK) $(USER) $(SYSOBJ)
 
 # target to generate LHEF output
-pwhg_main:$(PWHG) vbfnlo-zfiles/libvbfnlo.a 
-	(cd vbfnlo-zfiles; make;)
+pwhg_main:$(PWHG) nlo_files/libnlo.a 
+	(cd nlo_files; make;)
 	$(FF) $(patsubst %,obj/%, $(PWHG)) $(LIBS) $(LIBSFASTJET) -o $@
 
 
-vbfnlo-zfiles/libvbfnlo.a: vbfnlo-zfiles/*f 
-	cd vbfnlo-zfiles ; make
+nlo_files/libnlo.a: nlo_files/*f 
+	cd nlo_files ; make
 
 LHEFANAL=lhef_analysis.o boostrot.o random.o cernroutines.o         \
 	 opencount.o powheginput.o pwhg_bookhist.o  \
@@ -128,7 +128,7 @@ main-PYTHIA-lhef: $(PYTHIA)
 
 clean:
 	rm -f *.o *~ obj_ew/*.o obj/*.o \
-        vbfnlo-zfiles/*.o vbfnlo-zfiles/libvbfnlo.a \
-        vbfnlo-zfiles/*/*.o \
+        nlo_files/*.o nlo_files/libnlo.a \
+        nlo_files/*/*.o \
         pwhg_main lhef_analysis main-HERWIG-lhef \
 	main-PYTHIA-lhef

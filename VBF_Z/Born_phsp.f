@@ -6,8 +6,6 @@
       include 'pwhg_math.h'
       include 'PhysPars.h'
 
-      include 'global.inc'
-
       real * 8 xborn(ndiminteg-3)
       real * 8 m2,xjac,taumin,tau,y,beta,betaCM,vec(3),cth,s,
      #     z,zhigh,zlow
@@ -30,11 +28,9 @@ c      parameter(check=.true.)
 
 c generation cuts:
       real*8 mllmin
-      real * 8 pt1cut,pt2cut,pt1,pt2,m2jjmin
-      real * 8 ptl1cut,ptl2cut,ptl1,ptl2,m2ll,m2llmin
+      real * 8 pt1cut,pt2cut,pt1,pt2
+      real * 8 m2ll,m2llmin
       logical generation_cuts
-      real*8 q12(0:3),q34(0:3),q12sq,q34sq
-      real*8 qsqmin
 
       real * 8 BW_fixed
       real * 8 powheginput
@@ -47,6 +43,8 @@ c extra stuff for Zjj:
       real*8 phil,costhl,sinthl,cphil,sphil
       real*8 plmod,pl1_cm(4),pl(0:3,2),pl1(4),pl2(4)
 
+      real * 8 powheginput
+      external powheginput
 c
 c------------------------------------
 c
@@ -71,17 +69,11 @@ c read generation cut for mll from input:
 c code allows for additional generation cuts 
 c     (to be used instead of Born_suppression factor)
 c     (disabled by default):
-         pt1cut = 0d0 !10d0
-         pt2cut = 0d0 !10d0
-         qsqmin = 0d0 !qsqAmin ! read from global.inc
-         m2jjmin = 0d0 !10d0
-         ptl1cut = 0d0
-         ptl2cut = 0d0
+         pt1cut = 0d0 
+         pt2cut = 0d0 
 
-         if ((pt1cut.ne.0d0).or.(pt2cut.ne.0d0).or.
-     &       (qsqmin.ne.0d0).or.
-     &       (m2jjmin.ne.0d0).or.(m2llmin.ne.0d0).or.
-     &       (ptl1cut.ne.0d0).or.(ptl2cut.ne.0d0)) then
+         if ((pt1cut.ne.0d0).or.(pt2cut.ne.0d0)
+     &       .or.(m2llmin.ne.0d0)) then
             generation_cuts = .true.
             write(*,*) '*************************************'
             write(*,*) '****    PS-CUTS IN PLACE!!!      ****' 
@@ -90,12 +82,8 @@ c     (disabled by default):
             write(*,*) 'jet cuts:'
             write(*,*) 'ptj1_min = ',pt1cut
             write(*,*) 'ptj2_min = ',pt2cut
-            write(*,*) 'qsq_min = ',qsqmin
-            write(*,*) 'mjj_min = ',dsqrt(m2jjmin)
             write(*,*) ''
             write(*,*) 'lepton cuts:'
-            write(*,*) 'ptl1_min    = ',ptl1cut
-            write(*,*) 'ptl2_min    = ',ptl2cut 
             write(*,*) 'mll_min    = ',dsqrt(m2llmin)
             write(*,*) ''
          endif
@@ -268,29 +256,16 @@ c      write(*,*) '1 ===========> ',(pcmjj(0)**2-pcmjjmod**2)/m2jj
 c     jet cuts:
       pt1 = sqrt(kn_pborn(1,5)**2+kn_pborn(2,5)**2)
       pt2 = sqrt(kn_pborn(1,6)**2+kn_pborn(2,6)**2) 
-      if ((pt1.lt.pt1cut).or.(pt2.lt.pt2cut).or.
-     &    (m2jj.lt.m2jjmin)) then      
-         kn_jacborn=0d0
-      endif
-
-c     qsq cut:
-      q12(:) = kn_pborn(:,5)-kn_pborn(:,1) 
-      q34(:) = kn_pborn(:,6)-kn_pborn(:,2) 
-      q12sq  = q12(0)**2 - q12(1)**2 - q12(2)**2 - q12(3)**2
-      q34sq  = q34(0)**2 - q34(1)**2 - q34(2)**2 - q34(3)**2 
-      if ((abs(q12sq).lt.qsqmin).or.(abs(q34sq).lt.qsqmin)) then      
+      if ((pt1.lt.pt1cut).or.(pt2.lt.pt2cut)) then      
          kn_jacborn=0d0
       endif
 c
 c     lepton cuts:
-      ptL1 = sqrt(kn_pborn(1,3)**2+kn_pborn(2,3)**2)
-      ptL2 = sqrt(kn_pborn(1,4)**2+kn_pborn(2,4)**2)           
       m2ll = (kn_pborn(0,3)+kn_pborn(0,4))**2-
      &       (kn_pborn(1,3)+kn_pborn(1,4))**2-
      &       (kn_pborn(2,3)+kn_pborn(2,4))**2-
      &       (kn_pborn(3,3)+kn_pborn(3,4))**2
-      if ((ptl1.lt.ptl1cut).or.(ptl2.lt.ptl2cut).or.
-     &    (m2ll.lt.m2llmin)) then  
+      if (m2ll.lt.m2llmin) then  
          kn_jacborn=0d0
       endif
 
@@ -333,8 +308,6 @@ c================
       real * 8 p(0:3),mass
       mass = sqrt(abs(p(0)**2-p(1)**2-p(2)**2-p(3)**2))
       end
-
-
 
 c================
     
@@ -390,7 +363,7 @@ c================
             write(*,*) '*************************************'
             write(*,*) '    Factorization and renormalization '
             write(*,*) '    scales (mur, muf) set to '
-            write(*,*) '    (sum_{i=1,2,3}(ptj_i)+pt(l+)+pt(l-))/2'
+            write(*,*) '    (sum_{i=1,npartfin}(pt_i)+pt(l+)+pt(l-))/2'
             if (renscfact .gt. 0d0) 
      .        write(*,*) 'Renormalization scale rescaled by', renscfact
             if (facscfact .gt. 0d0) 
@@ -400,8 +373,8 @@ c================
          endif
          
 c default is Born kinematics:
-         ptj1 = sqrt(kn_pborn(1,5)**2+kn_pborn(2,5)**2) ! pt_j1
-         ptj2 = sqrt(kn_pborn(1,6)**2+kn_pborn(2,6)**2) ! pt_j2
+         ptj1 = sqrt(kn_pborn(1,5)**2+kn_pborn(2,5)**2) ! pt_i1
+         ptj2 = sqrt(kn_pborn(1,6)**2+kn_pborn(2,6)**2) ! pt_i2
 
          etp = dsqrt(kn_pborn(1,3)**2*kn_pborn(2,3)**2) !pt_l+
          etm = dsqrt(kn_pborn(1,4)**2*kn_pborn(2,4)**2) !pt_l-
@@ -410,8 +383,8 @@ c default is Born kinematics:
 
          muref = htot/2d0
          if(flg_btildepart.eq.'c') then         
-            ptj1 = sqrt(kn_pborn(1,5)**2+kn_pborn(2,5)**2) ! pt_j1
-            ptj2 = sqrt(kn_pborn(1,6)**2+kn_pborn(2,6)**2) ! pt_j2
+            ptj1 = sqrt(kn_pborn(1,5)**2+kn_pborn(2,5)**2) ! pt_i1
+            ptj2 = sqrt(kn_pborn(1,6)**2+kn_pborn(2,6)**2) ! pt_i2
 
             etp = dsqrt(kn_pborn(1,3)**2*kn_pborn(2,3)**2) !pt_l+
             etm = dsqrt(kn_pborn(1,4)**2*kn_pborn(2,4)**2) !pt_l-
@@ -421,9 +394,9 @@ c default is Born kinematics:
             muref = htot/2d0
          endif
          if(flg_btildepart.eq.'r') then
-            ptj1 = sqrt(kn_preal(1,5)**2+kn_preal(2,5)**2) ! pt_j1
-            ptj2 = sqrt(kn_preal(1,6)**2+kn_preal(2,6)**2) ! pt_j2
-            ptj3 = sqrt(kn_preal(1,7)**2+kn_preal(2,7)**2) ! pt_j3
+            ptj1 = sqrt(kn_preal(1,5)**2+kn_preal(2,5)**2) ! pt_i1
+            ptj2 = sqrt(kn_preal(1,6)**2+kn_preal(2,6)**2) ! pt_i2
+            ptj3 = sqrt(kn_preal(1,7)**2+kn_preal(2,7)**2) ! pt_i3
 
             etp = dsqrt(kn_preal(1,3)**2*kn_preal(2,3)**2) !pt_l+
             etm = dsqrt(kn_preal(1,4)**2*kn_preal(2,4)**2) !pt_l-
@@ -531,24 +504,18 @@ cccccc
 
       real * 8 fact,ptmin
       real * 8 pt6,pt5,pt56,dotp
-      real * 8 mjjmin
-      real * 8 kp,km
-      real * 8 mjj2, p56(0:3)
+      real * 8 kp
+      real * 8 p56(0:3)
       logical, save :: ini = .true.  
 
       ptmin=10d0 
-      mjjmin=5d0 
-      
       kp = 2d0
-      km = 2d0 
 
       if (ini) then 
          if (flg_weightedev) then 
             write(*,*) 'Using Born suppression' 
             write(*,*) 'with ptmin[GeV]=',ptmin 
-            write(*,*) 'with mjjmin[GeV]=',mjjmin 
-            write(*,*) 'exponents: kp = ',kp,',km = ',km 
-            write(*,*) 'with mjjmin[GeV]=',mjjmin 
+            write(*,*) 'exponents: kp = ',kp 
          else
             write(*,*) 'Using no Born suppression' 
          endif
@@ -558,13 +525,8 @@ cccccc
       if(flg_weightedev) then
          pt6=kn_cmpborn(1,6)**2+kn_cmpborn(2,6)**2
          pt5=kn_cmpborn(1,5)**2+kn_cmpborn(2,5)**2
-
      	 p56(:) = kn_cmpborn(:,5)+kn_cmpborn(:,6)
-     	 mjj2 = p56(0)**2-p56(1)**2-p56(2)**2-p56(3)**2
-
-         fact=(pt5/(pt5+ptmin**2))**kp*(pt6/(pt6+ptmin**2))**kp*
-     &     (mjj2/(mjj2+mjjmin**2))**km
-
+         fact=(pt5/(pt5+ptmin**2))**kp*(pt6/(pt6+ptmin**2))**kp
       else
          fact=1
       endif

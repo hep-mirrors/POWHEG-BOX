@@ -28,7 +28,6 @@ C     -- HISTOGRAMS WITH VBF CUTS
       call pwhgbookup(diag,'sig(all VBF cuts)','LIN',
      &                binsize(diag),0d0,1d0)
       
-c     total cross section sanity check
       diag = 2
       binsize(diag) = 10d0
       call pwhgbookup(diag,'3 jet incl.- VBF CUTS','LIN',
@@ -1030,8 +1029,6 @@ c check consistency
       if(tmp.gt.1d-4) then
          write(*,*) ' bug!'
       endif
-
-c      print*,'mjets =',mjets
 
 c end check consistency
 c

@@ -3,36 +3,35 @@
 *     this subroutine gives coefficients of the various Lorentz structures
 *     contributing to selfenergy+vertex+box corrections to 
 *     quark line which emits two massive/virtual vector bosons
-*     (note: the order V2, V1 is important! )
 *
-*     q(p1)->V2(q2) V1(q1)  q(p2)
+*     q(p1)->V1(q1) V2(q2) q(p2)
 c
 c
 *******************************************************************
 
-      subroutine boxcorr_cross(p1,q1,q2,p2,musq,c1,c2,c3,c4)
+      subroutine boxcorr(p1,q1,q2,p2,musq,c1,c2,c3,c4)
       
 c       IN:
-c	p1,q1,q2,p2: "external" momenta (p1->q2+q1+p2)
+c	p1,q1,q2,p2: "external" momenta (p1->q1+q2+p2)
 c	musq: regularization scale squared
 c
 c	OUT:
 c	c1(si),c2(rho),c3(si,rho,om),c4(om): 
 c		coefficients of the various Lorentz structres	
 c
-c	ATTENTION: Born-type contribution is subtracted;
+c	ATTENTION: Born-type contributions are subtracted;
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
+
       implicit none
       
       double precision p1(0:3),q1(0:3),q2(0:3),p2(0:3),musq
-      double precision mq1(0:3),mp2(0:3),mq2(0:3)
-      double precision mq1mq2(0:3),p1mq1(0:3),p1mq2(0:3)
+      double precision mq1(0:3),mp2(0:3),mq2(0:3),mq1mq2(0:3),p1mq1(0:3)
       integer mu,nu,si,rho,om,i,j
       double precision gmnr(0:3,0:3)
 
-      double precision p12,p1q2,p2q2,p2q1,q2s,q1s,q12
+      double precision p12,p1q2,p2q2,q2s,q1s,q12
       double precision p12sq,q2ssq,p2q2sq,p1q2sq
       double precision p12tr,q2str,p2q2tr,p1q2tr
       double precision mp12
@@ -45,7 +44,7 @@ c
       double complex C0fin,B0fin,D0fin
       external C0fin,B0fin,D0fin
       
-      double complex B0q1,B0q2,B0pq2,B0pq1 
+      double complex B0q1,B0q2,B0pq 
       
       double complex C0123,C0124,C0134,C0234,D00       
       double complex Cij_123(0:2,4),Cij_124(0:2,4),
@@ -72,15 +71,13 @@ c
       
       logical box_type,vtx_type
       parameter (box_type = .true.,vtx_type=.true.)
-c      parameter (box_type = .false.,vtx_type=.true.)
-c      parameter (box_type = .true.,vtx_type=.false.)
       
       ! take from global.inc later:
       double precision pi,pi2o3
       parameter (pi = 3.141592653589793d0, pi2o3= pi**2/3d0)
 c local parameter (don't mix with cvirt!)
-      double precision bvirt
-      parameter (bvirt = -7d0+pi2o3)
+      double precision bvirt 
+      parameter (bvirt = -7d0+pi2o3) 
       double precision fpi
       parameter (fpi=4d0*pi)
 
@@ -92,7 +89,6 @@ c need to check momentum conservation here (test sign of momenta)
 	p12  = dotrr(p1(0),p2(0))
 	p1q2 = dotrr(p1(0),q2(0))
 	p2q2 = dotrr(p2(0),q2(0))
-	p2q1 = dotrr(p2(0),q1(0))
 	q2s  = dotrr(q2(0),q2(0))
 	q1s  = dotrr(q1(0),q1(0))
 	q12  = dotrr(q1(0),q2(0))
@@ -103,7 +99,6 @@ c need to check momentum conservation here (test sign of momenta)
 	   mp2(mu) = -p2(mu)
 	   mq1mq2(mu) = -q1(mu)-q2(mu)
 	   p1mq1(mu) = p1(mu)-q1(mu)
-	   p1mq2(mu) = p1(mu)-q2(mu)
 	enddo 
 	mp12 = -p12
 	
@@ -127,10 +122,10 @@ c adjust scale to comply with normalization of integrals:
 	if (box_type) then 
 	 ! D00 = D0((l1+l2)^2,(l2+l3)^2,l1s,l2s,l3s,l4s,musq)
 	 ! for p1 -> q1+q2+p2
-c	 D00 = D0fin(-2d0*p1q2+q2s,q1s+q2s+2d0*q12,0d0,q2s,q1s,0d0,musq)
+c        D00 = D0fin(2d0*p2q2+q2s,q1s+q2s+2d0*q12,0d0,q1s,q2s,0d0,musq)	
 	
-	call tens_box(p1,mq2,mq1,musq,Dij)
-			
+	call tens_box(p1,mq1,mq2,musq,Dij)
+		
 	D00   = Dij(0,1)	
 	Dij11 = Dij(1,1)
 	Dij12 = Dij(1,2)
@@ -160,9 +155,8 @@ c	 D00 = D0fin(-2d0*p1q2+q2s,q1s+q2s+2d0*q12,0d0,q2s,q1s,0d0,musq)
 	
 	endif !box_type
      	
-	call tens_tri(p1,mq2,musq,Cij_123)		!l1 = p1,l2 = -q2
-	 ! C0(l1s,l2s,l3s=(l1+l2)^2,musq)
-c	C0123 = C0fin(0d0,q2s,-2d0*p1q2+q2s,musq)
+	call tens_tri(p1,mq1,musq,Cij_123)		!l1 = p1,l2 = -q1
+c	C0123 = C0fin(0d0,q1s,2d0*p2q2+q2s,musq)
 
 	C0123    = Cij_123(0,1)
 	Cij12311 = Cij_123(1,1)
@@ -185,8 +179,8 @@ c	C0124 = C0fin(0d0,q1s+q2s+2d0*q12,0d0,musq)
 	Cij12424 = Cij_124(2,4)
 	
 
-	call tens_tri(p1mq2,mq1,musq,Cij_134)		!l1 = p1-q2,l2 = -q1
-c	C0134 = C0fin(-2d0*p1q2+q2s,q1s,0d0,musq)
+	call tens_tri(p1mq1,mq2,musq,Cij_134)		!l1 = p1-q1,l2 = -q2
+c	C0134 = C0fin(2d0*p2q2+q2s,q2s,0d0,musq)
 	
 	C0134    = Cij_134(0,1)
 	Cij13411 = Cij_134(1,1)
@@ -196,8 +190,8 @@ c	C0134 = C0fin(-2d0*p1q2+q2s,q1s,0d0,musq)
 	Cij13423 = Cij_134(2,3)
 	Cij13424 = Cij_134(2,4)
 
-	call tens_tri(mq2,mq1,musq,Cij_234)		!l1 = -q2,l2 = -q1
-c	C0234 = C0fin(q2s,q1s,2d0*mp12,musq)
+	call tens_tri(mq1,mq2,musq,Cij_234)		!l1 = -q1,l2 = -q2
+c	C0234 = C0fin(q1s,q2s,2d0*mp12,musq)
 	
 	C0234    = Cij_234(0,1)
 	Cij23411 = Cij_234(1,1)
@@ -208,8 +202,8 @@ c	C0234 = C0fin(q2s,q1s,2d0*mp12,musq)
 	Cij23424 = Cij_234(2,4)
 	
 	
-	call tens_tri(mp2,mq1,musq,Cijcr)		!l1 = -p2,l2 = -q1
-c	C0cr = C0fin(0d0,q1s,2d0*p2q1+q1s,musq)
+	call tens_tri(mp2,mq2,musq,Cijcr)		!l1 = -p2,l2 = -q2
+c	C0cr = C0fin(0d0,q2s,2d0*p2q2+q2s,musq)
 	
 	C0cr    = Cijcr(0,1)
 	Cijcr11 = Cijcr(1,1)
@@ -221,8 +215,7 @@ c	C0cr = C0fin(0d0,q1s,2d0*p2q1+q1s,musq)
 		
 	B0q1 = B0fin(q1s,musq)
         B0q2 = B0fin(q2s,musq) 
-	B0pq2 = B0fin( 2*p2q2 + q2s,musq)
-	B0pq1 = B0fin(-2*p1q2 + q2s,musq)
+	B0pq = B0fin(2*p2q2 + q2s,musq)
 
 c initialize:
 	do i = 1,4
@@ -236,37 +229,43 @@ c comes with coefficient
 c	C1.{si} = p1.{si}*c(1,1) + p2.{si}*c(1,2) + q2.{si}*c(1,3)	
 c
       if (vtx_type) then
-      c(1,1) =(2*(4*Cij12324 + 4*Cijcr24 - 4*C0cr*p12 - 4*Cijcr11*p12 -
-     &  4*Cij12323*p1q2 + 4*Cijcr12*p1q2 + 4*C0cr*p2q2 + 4*Cijcr11*p2q2 +
-     &  2*C0123*q2s + 2*Cij12311*q2s + 2*Cij12323*q2s - 2*Cijcr12*q2s - 
-     &  2*B0q1 - 2*B0q2 + B0pq1))/(2*p1q2 - q2s)+
-     &  (-2*bvirt)/(-2*p1q2 + q2s)
+      c(1,1) = 0d0
 
-      c(1,2) = 0d0
+      c(1,2) = ((-2*(4*Cij12324 + 4*Cijcr24 - 4*C0123*p12 - 
+     &  4*Cij12311*p12 - 4*C0123*p1q2 - 4*Cij12311*p1q2 -
+     &  4*Cij12312*p2q2 + 4*Cijcr23*p2q2 + 2*C0cr*q2s - 
+     &  2*Cij12312*q2s + 2*Cijcr11*q2s + 2*Cijcr23*q2s - 2*B0q1 - 
+     &  2*B0q2 + B0pq))/(2*p2q2 + q2s)+
+     &  (-2*bvirt)/(2*p2q2 + q2s))
 
-      c(1,3) = 0d0
+      c(1,3) = -4*(Cijcr12 + Cijcr22)
      
       endif !vtx-type
       
       if (box_type) then
 c"p1-coeff:"
 	c(1,1) = c(1,1) + (
-     & 	  -4*(Cij23412 + 2*Dij311 - 2*Dij313 - 2*D00*p12 - 
-     &    4*Dij11*p12 + 2*Dij13*p12 - 2*Dij21*p12 + 2*Dij25*p12 + 
-     &    2*Dij12*p1q2 - 2*Dij13*p1q2 + 2*Dij23*p1q2 + 
-     &    2*Dij24*p1q2 - 2*Dij25*p1q2 - 2*Dij26*p1q2 + 2*Dij12*p2q2 - 
-     &    2*Dij13*p2q2 + 2*Dij24*p2q2 - 2*Dij26*p2q2 - Dij12*q2s + 
-     &    Dij13*q2s - Dij23*q2s - Dij24*q2s + Dij25*q2s + Dij26*q2s))
+     &   -4*(C0234 - 2*Dij27 + 2*Dij311 - 2*Dij312 + 2*Dij22*p12 - 
+     &   2*Dij24*p12 + 2*Dij22*p1q2 - 
+     &   2*Dij24*p1q2 + 2*Dij25*p1q2 - 2*Dij26*p1q2 + 2*Dij12*p2q2 - 
+     &   2*Dij13*p2q2 - 2*Dij22*p2q2 + 2*Dij24*p2q2 + Dij12*q2s - 
+     &   Dij13*q2s - Dij22*q2s + Dij24*q2s - Dij25*q2s + Dij26*q2s))
     
 c"p2-coeff:"
 	c(1,2) = c(1,2) + (
-     &	 -4*(C0234 - 2*Dij27 + 2*Dij313 + 2*Dij23*p12 - 2*Dij25*p12 - 
-     &   2*Dij12*p1q2 + 2*Dij13*p1q2 + 2*Dij23*p1q2 - 2*Dij25*p1q2 - 
-     &   2*Dij23*p2q2 + 2*Dij26*p2q2 + Dij12*q2s - Dij13*q2s - 
-     &   Dij23*q2s + Dij26*q2s))
+     &  -4*(-C0234 - Cij23411 + 2*Dij312 - 2*D00*p12 - 2*Dij11*p12 - 
+     &  2*Dij12*p12 - 2*Dij24*p12 -  
+     &  2*Dij12*p1q2 + 2*Dij13*p1q2 - 2*Dij24*p1q2 + 
+     &  2*Dij26*p1q2 - 2*Dij12*p2q2 + 2*Dij13*p2q2 - 2*Dij22*p2q2 + 
+     &  2*Dij26*p2q2 - Dij12*q2s + Dij13*q2s - Dij22*q2s + Dij26*q2s))
     
 c"q2-coeff: "
-	c(1,3) = c(1,3) 
+	c(1,3) = c(1,3) + (
+     &  -4*(-C0234 + 4*Dij27 + 2*Dij312 - 2*Dij313 - 2*Dij12*p12 + 
+     &  2*Dij13*p12 - 2*Dij22*p12 + 2*Dij26*p12 - 
+     &  2*Dij12*p1q2 + 2*Dij13*p1q2 - 2*Dij22*p1q2 - 2*Dij23*p1q2 + 
+     &  4*Dij26*p1q2 + 2*Dij22*p2q2 - 2*Dij26*p2q2 + Dij22*q2s + 
+     &  Dij23*q2s - 2*Dij26*q2s))
       
       
       endif!box-type
@@ -283,37 +282,33 @@ c comes with coefficient
 c	C2.{rho} = p1.{rho}*c21 + p2.{rho}*c22 + q2.{rho}*c23	
 c
       if (vtx_type) then
-      c(2,1) = -4*(Cijcr12 + Cijcr22)
+      c(2,1) = -4*(C0123 + Cij12311 - Cij12322 + Cij12323)
   
-      c(2,2) = -4*(C0cr + Cijcr11 - Cijcr22 + Cijcr23)
+      c(2,2) = -4*(Cij12312 + Cij12322)
 
-      c(2,3) = (-2*(4*Cij12324 + 4*Cijcr24 - 4*C0cr*p12 - 4*Cijcr11*p12 +
-     &  4*C0123*p1q2 + 4*Cij12311*p1q2 + 
-     &  4*Cij12312*p1q2 - 4*Cijcr22*p1q2 + 4*C0cr*p2q2 + 
-     &  4*Cijcr11*p2q2 - 2*Cij12312*q2s + 2*Cijcr22*q2s - 2*B0q1 - 
-     &  2*B0q2 + B0pq1))/(2*p1q2 - q2s)+
-     &  (2*bvirt)/(-2*p1q2 + q2s)
-
+      c(2,3) = -4*(Cij12312 + Cij12322)
       endif ! vtx-type
       
       if (box_type) then
 c  "p1-coeff:"
-	c(2,1) = c(2,1) + (-4*(2*Dij27 + 2*Dij311 - 2*Dij313 + 
-     &    2*Dij23*p2q2 - 2*Dij25*p2q2 + Dij12*q2s - Dij13*q2s + 
-     &    Dij23*q2s + Dij24*q2s - Dij25*q2s - Dij26*q2s))
+	c(2,1) = c(2,1) + (
+     &   -4*(Cij23411 + 2*Dij27 + 2*Dij311 - 2*Dij312 - 
+     &   2*Dij11*p12 + 2*Dij12*p12 - 2*Dij21*p12 - 2*Dij22*p12 + 
+     &   4*Dij24*p12 - 2*Dij12*p2q2 + 2*Dij13*p2q2 + 4*Dij22*p2q2 - 
+     &   4*Dij24*p2q2 + 2*Dij25*p2q2 - 2*Dij26*p2q2 - Dij12*q2s + 
+     &   Dij13*q2s + Dij22*q2s - Dij24*q2s + Dij25*q2s - Dij26*q2s))
     
 c"p2-coeff:"
-	c(2,2) = c(2,2) + (-4*(-C0234 - Cij23412 + 2*Dij27 + 2*Dij313 -
-     &	 2*Dij13*p12 - 2*Dij23*p12 + 2*Dij12*p1q2 - 2*Dij13*p1q2 - 
-     &   4*Dij23*p1q2 + 2*Dij25*p1q2 + 2*Dij26*p1q2 - Dij12*q2s + 
-     &   Dij13*q2s + Dij23*q2s - Dij26*q2s))
+	c(2,2) = c(2,2) + (
+     &   -4*(2*Dij27 + 2*Dij312 - 2*Dij22*p1q2 + 2*Dij24*p1q2 + 
+     &   Dij12*q2s - Dij13*q2s + Dij22*q2s - Dij26*q2s))
     
 c"q2-coeff: "
-	c(2,3) = c(2,3) + (-4*(Cij23411 - Cij23412 + 2*Dij27 - 2*Dij312 +
-     &	 2*Dij313 + 2*D00*p12 + 2*Dij11*p12 - 2*Dij23*p12 + 2*Dij26*p12 -
-     &	 2*Dij12*p1q2 + 2*Dij13*p1q2 - 2*Dij22*p1q2 - 4*Dij23*p1q2 - 
-     &	 2*Dij24*p1q2 + 2*Dij25*p1q2 + 6*Dij26*p1q2 + Dij22*q2s +
-     &	  Dij23*q2s - 2*Dij26*q2s))
+	c(2,3) = c(2,3) + (
+     &   -4*(-C0234 + 4*Dij27 + 2*Dij312 - 2*Dij313 - 2*Dij22*p1q2 + 
+     &   2*Dij24*p1q2 - 2*Dij25*p1q2 + 2*Dij26*p1q2 - 
+     &   2*Dij12*p2q2 + 2*Dij13*p2q2 + Dij22*q2s + 
+     &   Dij23*q2s - 2*Dij26*q2s))
     
       endif!box-type
 	
@@ -332,58 +327,49 @@ c		   p2.{si}*q2.{rho}*c35 + p1.{si}*q2.{rho}*c36 +
 c		   p2.{si}*p2.{rho}*c37 + p1.{si}*p1.{rho}*c38 +
 c		   p1.{si}*p2.{rho}*c39 + p2.{si}*p1.{rho}*c310)*q2.{omm} 
 
-c there are vtx-type contributions: 
-	if (vtx_type) then
-c"g-coeff:"
-	c(3,1) = (2*(4*Cij12324 + 4*Cijcr24 - 4*C0cr*p12 - 
-     &	4*Cijcr11*p12 + 4*C0123*p1q2 + 
-     &  4*Cij12311*p1q2 + 4*Cij12312*p1q2 + 4*Cijcr12*p1q2 + 4*C0cr*p2q2 + 
-     &  4*Cijcr11*p2q2 - 2*Cij12312*q2s - 2*Cijcr12*q2s - 2*B0q1 - 
-     &  2*B0q2 + B0pq1))/(2*p1q2 - q2s)+
-     &  (-2*bvirt)/(-2*p1q2 + q2s)
-		
-	do i = 2,10
-	   c(3,i) = 0d0
-	enddo		
-
-	endif
+c there are no vtx-type contributions 
 
 	if (box_type) then
 	
 c"g-coeff:"
-	c(3,1) = c(3,1) + (
-     &	8*(Dij27 + Dij312 - Dij313 + D00*p12 + Dij11*p12))
+	c(3,1) = -4*(C0234 - Cij23411 + Cij23412 - 4*Dij27 + 
+     &   2*Dij312 - 2*Dij313 + 2*Dij22*p12 - 
+     &   2*Dij24*p12 + 2*Dij25*p12 - 2*Dij26*p12 + 2*Dij22*p1q2 - 
+     &   2*Dij24*p1q2 + 2*Dij25*p1q2 - 2*Dij26*p1q2 - 4*Dij22*p2q2 - 
+     &   2*Dij23*p2q2 + 6*Dij26*p2q2 - 2*Dij22*q2s - 2*Dij23*q2s + 
+     &	 4*Dij26*q2s)
 
 c"q*q-coeff:"
-	c(3,2) = 0d0
+	c(3,2) = -8*(Dij22 + Dij23 - 2*Dij26 + Dij32 - 
+     &		  Dij33 - 3*Dij38 + 3*Dij39)
 
 c"q2.{si}*p2.{rho}:"
-	c(3,3) = 0d0
+	c(3,3) = -8*(Dij22 + Dij23 - 2*Dij26 + Dij32 - 2*Dij38 + Dij39)
 
 c"q2.{si}*p1.{rho}:"
-	c(3,4) = 0d0
+	c(3,4) = -8*(Dij12 - Dij13 + Dij23 + Dij24 - Dij25 - Dij26 - 
+     &		  2*Dij310 - Dij32 + Dij36 + Dij37 + 2*Dij38 - Dij39)
 
 c"p2.{si}*q2.{rho}:"
-	c(3,5) = -8*(Dij33 + Dij38 - 2*Dij39)
+	c(3,5) = -8*(Dij12 - Dij13 + 2*Dij22 + Dij23 - 
+     &		  3*Dij26 + Dij32 - 2*Dij38 + Dij39)
 
 c"p1.{si}*q2.{rho}:"
-	c(3,6) = -8*(Dij12 - Dij13 + Dij22 + 2*Dij23 + Dij24 - Dij25 - 
-     &	3*Dij26 - 2*Dij310 - Dij33 + Dij36 + Dij37 - Dij38 + 2*Dij39)
+	c(3,6) = 8*(2*Dij310 + Dij32 - Dij36 - Dij37 - 2*Dij38 + Dij39)
 
 c"p2.{si}*p2.{rho}:"
-	c(3,7) = -8*(Dij23 - Dij26 + Dij33 - Dij39)
+	c(3,7) = -8*(Dij12 - Dij13 + 2*Dij22 - 2*Dij26 + Dij32 - Dij38)
 
 c"p1.{si}*p1.{rho}:"
-	c(3,8) = 8*(Dij12 - Dij13 + 2*Dij23 + 2*Dij24 - 2*Dij25 - 
-     &    2*Dij26 - 2*Dij310 - Dij33 + Dij34 - Dij35 + 2*Dij37 + Dij39)
+	c(3,8) = 8*(Dij22 - Dij24 + Dij25 - Dij26 - 2*Dij310 - 
+     &		 Dij32 - Dij34 + Dij35 +  2*Dij36 + Dij38)
 
 c"p1.{si}*p2.{rho}:"
-	c(3,9) = 8*(Dij12 - Dij13 - Dij23 + Dij24 + Dij310 + 
-     &	  Dij33 - Dij37 - Dij39)
+	c(3,9) = 8*(Dij25 - Dij26 + Dij310 + Dij32 - Dij36 - Dij38)
 
 c"p2.{si}*p1.{rho}:"
-	c(3,10) = -8*(Dij25 - Dij26 - Dij310 - Dij33 + Dij37 + Dij39)
-
+	c(3,10) = -8*(Dij12 - Dij13 - Dij22 + 2*Dij24 - Dij25 - 
+     &		   Dij310 - Dij32 + Dij36 + Dij38)
 
 	endif !box-type
 
@@ -425,21 +411,22 @@ c	C4.{om} =  q2.{om}*c4
 
 	if (vtx_type) then
 	
-       c(4,1) = (4*Cij12324 + 4*Cijcr24 - 4*C0cr*p12 - 4*Cijcr11*p12 +
-     &   4*C0123*p1q2 + 4*Cij12311*p1q2 + 4*Cij12312*p1q2 + 
-     &   4*Cijcr12*p1q2 + 4*C0cr*p2q2 + 4*Cijcr11*p2q2 - 2*Cij12312*q2s -
-     &   2*Cijcr12*q2s - 2*B0q1 - 2*B0q2 + B0pq1)/(2*p1q2 - q2s) -
-     &  (bvirt/(-2*p1q2 + q2s))
-
+       c(4,1) = ((-4*Cij12324 - 4*Cijcr24 + 4*C0123*p12 + 
+     &   4*Cij12311*p12 + 4*C0123*p1q2 + 4*Cij12311*p1q2 + 
+     &   4*C0cr*p2q2 + 4*Cij12312*p2q2 + 4*Cijcr11*p2q2 + 
+     &   4*Cijcr12*p2q2 + 2*Cij12312*q2s + 2*Cijcr12*q2s + 2*B0q1 + 
+     &   2*B0q2 - B0pq)/(2*p2q2 + q2s) +
+     &	 (-bvirt/(2*p2q2 + q2s)))
     
      	endif !(vtx_type)
 	
 	if(box_type) then
 	
-	c(4,1) = c(4,1) + (2*(-C0234 + Cij23411 - Cij23412 + 
-     &	 6*Dij27 + 2*D00*p12 + 2*Dij11*p12 - 2*Dij23*p12 + 
-     &   2*Dij26*p12 -2*Dij22*p1q2 - 4*Dij23*p1q2 - 2*Dij24*p1q2 + 
-     &   2*Dij25*p1q2 + 6*Dij26*p1q2 + 2*Dij23*p2q2 - 2*Dij26*p2q2 + 
+	c(4,1) = c(4,1) + (
+     &   2*(-C0234 + Cij23411 - Cij23412 + 6*Dij27 + 2*D00*p12 + 
+     &	 2*Dij11*p12 - 2*Dij22*p12 + 2*Dij24*p12 - 2*Dij25*p12 + 
+     &   2*Dij26*p12 - 2*Dij22*p1q2 + 2*Dij24*p1q2 - 2*Dij25*p1q2 + 
+     &   2*Dij26*p1q2 + 4*Dij22*p2q2 + 2*Dij23*p2q2 - 6*Dij26*p2q2 + 
      &   2*Dij22*q2s + 2*Dij23*q2s - 4*Dij26*q2s))
     
      	endif !(box_type)

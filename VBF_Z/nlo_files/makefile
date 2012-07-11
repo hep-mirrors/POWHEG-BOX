@@ -3,15 +3,14 @@ FFLAGS = -g -fno-automatic -ffixed-line-length-none -O2
 
 # ----------------------------------------------------------------------------
 
-# object files for qq->qqW+W- with leptonic decays
+# object files for qq->qqZ with leptonic decays
 
-OBJECTS =  ./amp_aux.o \
-	  ./help-z.o \
+OBJECTS =  ./li2.o \
 	  ./help.o \
 	  ./braket_vbf.o \
 	  ./init_tensors_z.o \
-          ./qqzqq-nocut.o \
-          ./qqzqqj-nocut.o \
+          ./qqzqq-qsqcut.o \
+          ./qqzqqj-qsqcut.o \
           ./dhelas/ixxxxx.o \
           ./dhelas/oxxxxx.o \
           ./dhelas/fvixxx.o \
@@ -37,15 +36,15 @@ OBJECTS =  ./amp_aux.o \
 	  ./tensors/tensor-c-full.o \
 	  ./tensors/tensor-d-quarks.o   
 
-TARGETS = libvbfnlo.a
+TARGETS = libnlo.a
 
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
-# rules for vbfnlo_lib:
+# rules for nlo_lib:
 #
- libvbfnlo.a:  $(OBJECTS)
-	$(AR) r libvbfnlo.a $(OBJECTS) 
+ libnlo.a:  $(OBJECTS)
+	$(AR) r libnlo.a $(OBJECTS) 
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
@@ -57,7 +56,7 @@ TARGETS = libvbfnlo.a
 # ----------------------------------------------------------------------------
 
 clean:
-	rm -f *.o core *~ *.x libvbfnlo.a
+	rm -f *.o core *~ *.x libnlo.a
 
 
 

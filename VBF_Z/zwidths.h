@@ -1,3 +1,3 @@
       logical zerowidth
-      common/ww_widths/zerowidth
+      common/z_widths/zerowidth
 

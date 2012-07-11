@@ -222,8 +222,6 @@ c     Born graphs
 c WW fusion contributions (charged current):
       if (cc_include) then
 
-c         PRINT*,'start LO cc'
-
       emit_Wp_upper = .true.
       emit_Wm_upper = .true.
       emit_Wp_lower = .true.
@@ -233,8 +231,6 @@ c         PRINT*,'start LO cc'
       do i2=-max_flav,max_flav
       do i5=-max_flav,max_flav
       do i6=-max_flav,max_flav
-
-c         print*,'i(cc)=',i1,i2,i5,i6
 
 c     no gluons:
          condition = ((i1*i2*i5*i6).ne.0)

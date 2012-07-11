@@ -10,13 +10,6 @@ c
       integer fermion_flav(nleg)
       real * 8 amp2
 
-c test only:
-      logical mg_test
-      parameter (mg_test=.false.)
-      integer test_count
-      real*8 mg_real
-      integer rflav(nleg)
-
       integer j
       real*8 pwsum
       logical, save :: firstreal = .true. 

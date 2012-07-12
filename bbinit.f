@@ -258,10 +258,12 @@ c initialize gen for remnants
 c     save random number seeds
          call randomsave
 c generate few events from remnants, just to determine the generation efficiency
-         do j=1,int(min(powheginput('nubound'),10d0))
-            call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,
-     #            1,mcalls,icalls,xx)
-         enddo
+         if(rad_totrm/rad_totgen.gt.1d-4) then
+            do j=1,int(min(powheginput('nubound'),10d0))
+               call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,
+     #ifoldrm,1,mcalls,icalls,xx)
+            enddo
+         endif
 c     restore  random number seeds
          call randomrestore
 c     print statistics

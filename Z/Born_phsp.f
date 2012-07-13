@@ -12,24 +12,41 @@
       logical ini
       data ini/.true./
       save ini
+      logical genflat
+      data genflat/.false./
+      save genflat
       if(ini) then
 c     set initial- and final-state masses for Born and real
          do k=1,nlegborn
             kn_masses(k)=0
          enddo
          kn_masses(nlegreal)=0
+         if(ph_Zmass2low.ge.ph_Zmass2) genflat=.true.
+         if(ph_Zmass2high.le.ph_Zmass2) genflat=.true.
+         if(genflat) then
+            write(*,*) '*************************************'
+            write(*,*) 
+     $ "WARNING: BW importance sampling around Z peak switched off"
+            write(*,*) '*************************************'
+         endif
          ini=.false.
       endif
 c Phase space:
 c 1 /(16 pi S) d m^2 d cth d y
       xjac=1d0/kn_sbeams/(16*pi)
-      zlow=atan((ph_Zmass2low  - ph_Zmass2)/ph_ZmZw)
-      zhigh=atan((ph_Zmass2high  - ph_Zmass2)/ph_ZmZw)
-      z=zlow+(zhigh-zlow)*xborn(1)
-      xjac=xjac*(zhigh-zlow)
-      m2=ph_ZmZw*tan(z)+ph_Zmass2
+      if(.not.genflat) then
+         zlow=atan((ph_Zmass2low  - ph_Zmass2)/ph_ZmZw)
+         zhigh=atan((ph_Zmass2high  - ph_Zmass2)/ph_ZmZw)
+         z=zlow+(zhigh-zlow)*xborn(1)
+         xjac=xjac*(zhigh-zlow)
+         m2=ph_ZmZw*tan(z)+ph_Zmass2
 c d m^2 jacobian
-      xjac=xjac*ph_ZmZw/cos(z)**2
+         xjac=xjac*ph_ZmZw/cos(z)**2
+      else
+         m2=ph_Zmass2low+(ph_Zmass2high-ph_Zmass2low)*xborn(1)
+c     d m^2 jacobian
+         xjac=xjac*(ph_Zmass2high-ph_Zmass2low)
+      endif
 c d x1 d x2 = d tau d y;
       tau=m2/kn_sbeams
       s=kn_sbeams*tau
@@ -135,7 +152,7 @@ c minimal final state mass
       real * 8 powheginput
       external powheginput
       if(ini) then
-         if(powheginput('#runningscale').ge.1) then
+         if(powheginput('#runningscale').eq.1) then
             runningscales=.true.
          else
             runningscales=.false.

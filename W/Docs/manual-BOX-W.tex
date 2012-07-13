@@ -30,9 +30,10 @@
 \title{The POWHEG BOX user manual:\\
   $\boldsymbol{W^\pm}$ production} \vfill
 \author{Simone Alioli\\
-  Deutsches Elektronen-Synchrotron DESY\\
-  Platanenallee 6, D-15738 Zeuthen, Germany\\
-  E-mail: \email{simone.alioli@desy.de}}
+  LBNL \& UC Berkeley \\
+  1 Cyclotron Road, MS 50A 5104\\
+  94720 CA Berkeley, USA\\
+  E-mail: \email{salioli@lbl.gov}}
 \author{Paolo Nason\\
   INFN, Sezione di Milano-Bicocca,
   Piazza della Scienza 3, 20126 Milan, Italy\\
@@ -138,7 +139,11 @@ Together with the mandatory parameters, the \POWHEGBOX{} input facility  allows 
    alphaem 0.0072973 ! em coupling }
 \\
 \tmtexttt{masswindow\_low 10   ! M\_W > Wmass - masswindow\_low * Wwidth}\\
-\tmtexttt{masswindow\_high 10  ! M\_W < Wmass + masswindow\_high * Wwidth  }\\
+\tmtexttt{masswindow\_high 10  ! M\_W < Wmass + masswindow\_high * Wwidth  }\\~\\
+Alternatively, one may directly define the integration range for the W virtuality by using\\
+\tmtexttt{mass\_low 200   ! M\_W > mass\_low }\\
+\tmtexttt{mass\_high 10  ! M\_W < mass\_high }\\~\\
+If these tokens are defined, they overwite what specified by \tmtexttt{masswindow\_low} and \tmtexttt{masswindow\_high}. This may be particularly useful if one wants to restrict the integration region away from the W peak. In this last case, however, no BW importance sampling is adopted.\\~\\
 \tmtexttt{runningscale 0  ! choice for ren and fac scales in Bbar integration}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 0: fixed scale M\_W}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 1: running scale inv mass W}\\ 

@@ -30,9 +30,10 @@
 \title{The POWHEG BOX user manual:\\
   $\boldsymbol{Z/\gamma^*}$ production} \vfill
 \author{Simone Alioli\\
-  Deutsches Elektronen-Synchrotron DESY\\
-  Platanenallee 6, D-15738 Zeuthen, Germany\\
-  E-mail: \email{simone.alioli@desy.de}}
+  LBNL \& UC Berkeley \\
+  1 Cyclotron Road, MS50A 5104\\
+  94720 CA Berkeley, USA\\
+  E-mail: \email{salioli@lbl.gov}}
 \author{Paolo Nason\\
   INFN, Sezione di Milano-Bicocca,
   Piazza della Scienza 3, 20126 Milan, Italy\\
@@ -131,12 +132,17 @@ Together with the mandatory parameters, the \POWHEGBOX{} input facility  allows 
 }
 \\
 \tmtexttt{masswindow\_low 10   ! M\_Z > Zmass - masswindow\_low * Zwidth}\\
-\tmtexttt{masswindow\_high 10  ! M\_Z < Zmass + masswindow\_high * Zwidth  }\\
+\tmtexttt{masswindow\_high 10  ! M\_Z < Zmass + masswindow\_high * Zwidth  }\\~\\
+Alternatively, one may directly define the integration range for the Z virtuality by using\\
+\tmtexttt{mass\_low 160   ! M\_Z > mass\_low }\\
+\tmtexttt{mass\_high 30  ! M\_Z < mass\_high }\\~\\
+If these tokens are defined, they overwite what specified by \tmtexttt{masswindow\_low} and \tmtexttt{masswindow\_high}. This may be particularly useful if one wants to restrict the integration region away from the Z peak. In this last case, however, no BW importance sampling is adopted.\\~\\
 \tmtexttt{runningscale 0  ! choice for ren and fac scales in Bbar integration}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 0: fixed scale M\_Z}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{ 1: running scale inv mass Z}\\ 
 \tmtexttt{running\_width 1 ! (default 0) (0: fixed width,}\\
 \phantom{pppppppppppppppppppppppppppppp} \tmtexttt{1: running width, (mz*gz) -> (gz*s/mz) )}
+
 
 
 \begin{thebibliography}{10}

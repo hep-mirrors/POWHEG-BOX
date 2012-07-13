@@ -6,6 +6,7 @@
       include 'nlegborn.h'
       include 'pwhg_kn.h'
       real * 8 masswindow_low,masswindow_high
+      real * 8 mass_low,mass_high
       real * 8 powheginput
       external powheginput
       logical verbose
@@ -53,6 +54,10 @@ c     number of light flavors
       st_nlight = 5
 
 c     mass window
+      mass_low = powheginput("#mass_low")
+      if (mass_low.le.0d0) mass_low=-1d0
+      mass_high = powheginput("#mass_high")
+      if (mass_high.le.0d0) mass_high=-1d0    
       masswindow_low = powheginput("#masswindow_low")
       if (masswindow_low.le.0d0) masswindow_low=30d0
       masswindow_high = powheginput("#masswindow_high")
@@ -69,14 +74,26 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       ph_Zmass2 = ph_Zmass**2
       ph_Wmass2 = ph_Wmass**2
 
-c     set mass window around W-mass peak in unit of ph_Wwidth
-c     It is used in the generation of the Born phase space
-      ph_Wmass2low=max(0d0,ph_Wmass-masswindow_low*ph_Wwidth)
-      ph_Wmass2low=ph_Wmass2low**2
-      ph_Wmass2high=ph_Wmass+masswindow_high*ph_Wwidth
+
+      if(mass_low.ge.0d0) then
+         ph_Wmass2low=mass_low**2
+      else
+         ph_Wmass2low=(max(0d0,ph_Wmass-masswindow_low*ph_Wwidth))**2
+      endif
+      if(mass_high.gt.0d0) then
+         ph_Wmass2high=mass_high
+      else
+         ph_Wmass2high=ph_Wmass+masswindow_high*ph_Wwidth
+      endif
       ph_Wmass2high=min(kn_sbeams,ph_Wmass2high**2)
       ph_WmWw = ph_Wmass * ph_Wwidth
       ph_unit_e = sqrt(4*pi*ph_alphaem)
+
+      if( ph_Wmass2low.ge.ph_Wmass2high ) then
+         write(*,*) "Error in init_couplings: mass_low >= mass_high"
+         call exit(1)
+      endif
+
 
       if(verbose) then
       write(*,*) '*************************************'

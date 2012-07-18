@@ -39,8 +39,9 @@ c     set initial- and final-state masses for Born and real
             if (BWshape.lt.0) then
                BWshape=1
             else if (BWshape.gt.3) then
-               write(*,*) 'Unsupported value for bwshape.'
-               write(*,*) 'Bailing out'
+               write(*,*) 'Unsupported value for bwshape in the '//
+     $              'powheg.input file: ',powheginput("#bwshape")
+               write(*,*) 'The POWHEG BOX aborts'
                call exit(1)
             endif
          endif

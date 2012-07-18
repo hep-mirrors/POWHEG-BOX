@@ -127,7 +127,7 @@ USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
         real.o btilde.o pt2maxreg.o LesHouchesreg.o $(PWHGANAL)     \
 	nloreal.o nlovirt.o nloutils.o      \
 	hplog.o HPL_full.o ew.o EWgint.o \
-	decay-util.o SLpolylog.o
+	decay-util.o SLpolylog.o pwhg_cpHTO_reweight.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o lhefwrite.o LesHouches.o		\
 	gen_Born_phsp.o find_regions.o test_Sudakov.o sigborn.o		\

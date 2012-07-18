@@ -21,7 +21,8 @@
       logical BW
       integer BWshape
       save BW,BWshape
-      real * 8 epsilon
+      integer BWflag
+      real * 8 epsilon,weight,m
       parameter (epsilon=1d-10)
 
       if(ini) then
@@ -34,11 +35,14 @@ c     set initial- and final-state masses for Born and real
             BW=.false.
          else
             BW=.true.
-         endif
-         if (powheginput("#bwshape").eq.2) then
-            BWshape=2
-         else
-            BWshape=1
+            BWshape=powheginput("#bwshape")
+            if (BWshape.lt.0) then
+               BWshape=1
+            else if (BWshape.gt.3) then
+               write(*,*) 'Unsupported value for bwshape.'
+               write(*,*) 'Bailing out'
+               call exit(1)
+            endif
          endif
          ini = .false.
       endif
@@ -47,7 +51,7 @@ c     set initial- and final-state masses for Born and real
       Hmass2low = ph_Hmass2low
       Hmass2high = ph_Hmass2high
       HmHw = ph_HmHw
-
+*
 c     Factor due to physical phase space
 c     2*pi/S dM^2 dY delta(s- M^2)
       xjac=2d0*pi/kn_sbeams
@@ -74,6 +78,19 @@ c     BW(M,M0,Ga)=M0 Ga/pi * 1/((M^2-M0^2)^2+M0^2 Ga^2
          elseif (bwshape.eq.2) then
             bwfactor=HmHw/pi/
      $           ((mh2-Hmass2)**2+HmHw**2)
+c     Passarino complex mass scheme
+         elseif (bwshape.eq.3) then
+c     Passarino complex-pole scheme
+c     first: attach the fixed-width BW. the 1/pi factor is attached together to 
+c     the weight
+            bwfactor=HmHw/
+     $        ((mh2-Hmass2)**2+HmHw**2)
+c     second: compute the rescale factor
+            m=sqrt(mh2)
+            BWflag=0
+            call pwhg_cpHTO_reweight(ph_Hmass,ph_Hwidth,ph_topmass,
+     $           BWflag,m,weight)
+            xjac = xjac * weight/pi
          else
             write(*,*) 'ERROR in bwshape'
             call exit(1)

@@ -105,7 +105,7 @@ c     On-shell Higgs
          Hmass2high = mh2
       endif
 c     Assign the Higgs boson mass
-      kn_masses(3)=sqrt(mh2)
+      kn_masses(3)=ph_Hmass
 
 c     d x1 d x2 = d tau d y;
       tau=mh2/kn_sbeams

@@ -49,7 +49,7 @@ c     running width
       endif
 
 c     assign the Higgs boson mass
-      kn_masses(3)=sqrt(m2)
+      kn_masses(3)=ph_Hmass
 c d x1 d x2 = d tau d y;
       taumin=( sqrt(m2+kn_ktmin**2) + kn_ktmin )**2/kn_sbeams
       tau=exp(log(taumin)*(1-xborn(2)**2))

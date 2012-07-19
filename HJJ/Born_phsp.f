@@ -34,8 +34,8 @@ c     set initial- and final-state masses for Born and real
 
       brkn_ktmin=0
       call born_phsp_hj(xborn)
-      kn_masses(3)=sqrt(brkn_cmpborn(0,3)**2-brkn_cmpborn(1,3)**2
-     $     -brkn_cmpborn(2,3)**2-brkn_cmpborn(3,3)**2)
+c      kn_masses(3)=sqrt(brkn_cmpborn(0,3)**2-brkn_cmpborn(1,3)**2
+c     $     -brkn_cmpborn(2,3)**2-brkn_cmpborn(3,3)**2)
 
       if(fullphsp) then
          if(xborn(ndiminteg-3).lt.0.5d0) then
@@ -92,8 +92,8 @@ c     set the CMS energy
 
 c     minimal final state mass 
 c     kn_minmass=sqrt(ph_Hmass2low)
-      kn_minmass=kn_ktmin + sqrt(kn_ktmin**2 + kn_masses(3)**2)
-
+c      kn_minmass=kn_ktmin + sqrt(kn_ktmin**2 + kn_masses(3)**2)
+      kn_minmass=kn_ktmin + sqrt(kn_ktmin**2 + ph_Hmass2low)
       end
 
          

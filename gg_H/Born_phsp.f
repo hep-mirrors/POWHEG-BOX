@@ -69,7 +69,7 @@ c     d m^2 jacobian
          Hmass2high = m2
       endif
 c     Assign the Higgs boson mass
-      kn_masses(3)=sqrt(m2)
+      kn_masses(3)=ph_Hmass
 
       if(BW) then
 C     Evaluate BW factor due to the presence of an 

@@ -105,7 +105,7 @@ all: pwhg_main
 btilde.o: ../btilde.f $(INCLUDE) 
 	$(FF) -c -o obj/$@ btilde_ggH.f
 
-init_couplings.o: init_couplings.f
+init_couplings.o: init_couplings.F
 	$(FF) -ffixed-line-length-none -c -o obj/$@ $^
 
 #FeynHiggsInterface.o: FeynHiggsInterface.f

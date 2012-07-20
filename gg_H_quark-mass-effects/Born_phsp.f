@@ -44,6 +44,14 @@ c     set initial- and final-state masses for Born and real
                write(*,*) 'The POWHEG BOX aborts'
                call exit(1)
             endif
+            if (bwshape.eq.3) then 
+               write(*,*) '*******************************************'
+               write(*,*) '*******************************************'
+               write(*,*) '****        COMPLEX-POLE SCHEME        ****'
+               write(*,*) '****          Passarino et al          ****'
+               write(*,*) '*******************************************'
+               write(*,*) '*******************************************'
+            endif
          endif
          ini = .false.
       endif

@@ -34,9 +34,9 @@
       if(ini) then
          mtdep=int(powheginput("#largemtlim"))
          if (mtdep.lt.0) then
-            mtdep=0
+            mtdep=3
          endif
-         if(mtdep.eq.0) then
+         if((mtdep.eq.0).or.(mtdep.eq.3)) then
             write(*,*)
             write(*,*) ' POWHEG: top mass -> inf for both Born'
             write(*,*) '         and NLO contributions.'
@@ -61,7 +61,8 @@
             write(*,*) '         top mass -> inf for NLO contributions.'
             write(*,*)
          else   
-            write(*,*) ' Error with mtdep flag'
+            write(*,*)
+     $' Error with mtdep flag. Values allowed are 0-3, default 3'
             call exit(1)
          endif   
          ini=.false.
@@ -244,7 +245,8 @@ c     From eq.(2.2) of NPB359(91)283
       include 'PhysPars.h'
       integer mtdep
       common/cmtdep/mtdep
-      real * 8 finitemtcorr
+      real * 8 finitemtcorr,powheginput,hm
+      external powheginput
       complex * 16 zic,tmpc,afunc
       external afunc
       parameter (zic=(0.d0,1.d0))
@@ -255,20 +257,28 @@ c     From eq.(2.2) of NPB359(91)283
       common/cinitialized/initialized
       save ini
       data ini/.true./
-      if ((mtdep.ne.0).or.(.not.initialized)) then
+      if (((mtdep.eq.0).or.(mtdep.eq.3)).and.initialized) then
+         if (mtdep.eq.3) then
+            hm=sqrt(kn_sborn)
+         else
+            hm=ph_hmass
+         endif
+         tmpc=afunc(ph_topmass,hm)
+         if(bloop) tmpc=tmpc+afunc(ph_bmass,hm)
+         tmp=tmpc*dconjg(tmpc)
+      else
          finitemtcorr=1d0
          return
-      else
-         tmpc=afunc(ph_topmass,ph_hmass)
-         if(bloop) tmpc=tmpc+afunc(ph_bmass,ph_hmass)
-         tmp=tmpc*dconjg(tmpc)
       endif
 c     divide by the result in large top mass limit
       finitemtcorr=tmp*9d0/4d0
       if (ini) then
          write(*,*)
-         write(*,*) " POWHEG: finite top-mass correction "
-         write(*,*) " factor is :", finitemtcorr
+         write(*,*) " POWHEG: finite top-mass correction factor"
+         if (mtdep.eq.0) write(*,*) " for mH=",ph_hmass," is :",
+     $        finitemtcorr
+         if (mtdep.eq.3) write(*,*)
+     $        " dependent on Higgs virtuality included"
          write(*,*)
          ini=.false.
       endif

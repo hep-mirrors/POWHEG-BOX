@@ -30,9 +30,9 @@
 \title{The POWHEG BOX user manual:\\
   Higgs boson production through  gluon fusion} \vfill
 \author{Simone Alioli\\
-  Deutsches Elektronen-Synchrotron DESY\\
-  Platanenallee 6, D-15738 Zeuthen, Germany\\
-  E-mail: \email{simone.alioli@desy.de}}
+  LBNL \& UC Berkeley,
+  1 Cyclotron Road, MS50A 5104,  94720 CA Berkeley, USA\\
+  E-mail: \email{salioli@lbl.gov}}
 \author{Paolo Nason\\
   INFN, Sezione di Milano-Bicocca,
   Piazza della Scienza 3, 20126 Milan, Italy\\
@@ -165,23 +165,33 @@ Together with the mandatory parameters, the \POWHEGBOX{} input facility  allows 
 Of particular importance are the following parameters: 
 \begin{itemize}
 
-\item{\tmtexttt{largemtlim 0} (default 0) controls how the large
+\item{\tmtexttt{largemtlim 3} (default 3) controls how the large
   top-mass approximation is enforced.  The default behaviour is to
-  evaluate all the NLO contributions in the large top mass limit and
-  then reweight them by a top-mass correction factor given by the
-  ratio of LO results ($B_{(m_t)} / B_{({m_t}\to \infty)}$) . Setting
-  this parameter to 1 the correction factor is instead omitted and the
-  contributions are all evaluated in the large top mass limit.
-  Setting it to 2 the correction factor is again omitted but the LO
-  contributions are evaluated with the full top-mass dependence (old
-  default)}
+  evaluate the LO contributions with the full mass dependence and the
+  NLO contributions in the large top mass limit. These are then
+  reweighted by a top-mass correction factor $B_{(m_t)} / B_{({m_t}\to \infty)}$,
+  given by the ratio of the LO result in the theory with finite quark masses over
+  the result in the effective theory, where heavy quarks in the loop
+  have been integrated out. This
+  correction factor is evaluated on a event-by-event basis at the
+  actual Higgs boson virtuality, if the zero width approximation 
+  is not enforced (see below). Setting this parameter to 0 one fixes
+  this correction factor to be always evaluated at the Higgs boson
+  mass.  Setting this parameter to 1 the correction factor is instead
+  omitted and the both the LO and NLO contributions are all evaluated
+  in the large top mass limit.  Setting it to 2 the correction factor
+  is again omitted but the LO contributions are evaluated with the
+  full top-mass dependence}
 
 \item{\tmtexttt{includebloop 1} (default 0) Setting
-  this parameter to 1 the correction factor for \tmtexttt{largemtlim 0} will include
-  also the contributions coming from the diagrams with a loop of bottom quarks.  
+  this parameter to 1 the correction factor for the \tmtexttt{largemtlim 0} or\tmtexttt{largemtlim 3} cases  will include
+  also the contributions coming from the diagrams with a loop of bottom quarks.
+  
   The mass of the bottom quark can be set via the \tmtexttt{bmass}  token in the \POWHEGBOX{} input file.
   If not provided, a default value of $m_b = 4.55 \rm{GeV}$ is assumed.
+This token has no effect if used in combination with the \tmtexttt{largemtlim 1} or\tmtexttt{largemtlim 2} choices.
 }
+
 \item{\tmtexttt{hfact    100d0    ! (default no dumping factor) dump factor for high-pt radiation: > 0 dumpfac=hfact**2/(pt2+hfact**2) } controls how much of real contribution 
     enters in the \POWHEG{} Sudakov form factor. By default all real
     contributions are included, but this may lead to a NNLO mismatch in the
@@ -197,9 +207,9 @@ Of particular importance are the following parameters:
 }
 
 \item{\tmtexttt{bwshape 2} (default 1) choose the functional form of the
-  Breit-Wigner along which the Higgs virtuality is distributed, in case of
-  the zero width approximation  has not been chosen. Allowed values are $1$
-  for a BW with a running width,  $2$ for a fixed width and $3$ for the
+  Breit-Wigner along which the Higgs virtuality is distributed, in case 
+  the zero width approximation has not been chosen. Allowed values are $1$
+  for a BW with a running width,  $2$ for a fixed width $\Gamma_H$ and $3$ for the
   complex-pole scheme according to Passarino et al.
 }
 

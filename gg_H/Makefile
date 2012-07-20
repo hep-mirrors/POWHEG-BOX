@@ -1,17 +1,17 @@
 #-*- Makefile -*-
-## Choose compiler: gfortran,g77,ifort
+## Choose compiler: gfortran,ifort ( g77 no longer compatible )
 COMPILER=gfortran
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
-PDF = native 
+PDF = lhapdf
 #Choose Analysis: none, default
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
 ANALYSIS = default
 ## For static linking uncomment the following
-STATIC= -static
+#STATIC= -static
 #
 ifeq ("$(COMPILER)","gfortran")	
-F77= gfortran -fno-automatic 	
+FF= gfortran -fno-automatic 	
 ## -fbounds-check sometimes causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
 #FFLAGS= -Wall -Wimplicit-interface -fbounds-check
@@ -22,21 +22,11 @@ F77= gfortran -fno-automatic
 OPT=-O2
 ## For debugging uncomment the following
 #DEBUG= -ggdb -pg
+MOD= -J mod
 endif
-
-ifeq ("$(COMPILER)","g77")
-F77= g77 -fno-automatic 
-#FFLAGS= -Wall -ffortran-bounds-check
-## For floating point exception trapping  uncomment the following 
-#FPEOBJ=trapfpe.o
-OPT=-O3
-## For debugging uncomment the following
-#DEBUG= -ggdb -pg
-endif
-
 
 ifeq ("$(COMPILER)","ifort")
-F77 = ifort -save  -extend_source
+FF = ifort -save  -extend_source -assume bscc
 CXX = icpc
 LIBS = -limf
 #FFLAGS =  -check
@@ -45,6 +35,7 @@ LIBS = -limf
 OPT = -O3 #-fast
 ## For debugging uncomment the following
 #DEBUG= -debug -g
+MOD = -module mod
 endif
 
 
@@ -56,8 +47,7 @@ VPATH= ./:../:obj/
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
 INCLUDE2=$(shell dirname $(PWD))/include
-FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2)
-
+FF+= $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2)
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
 
@@ -106,8 +96,11 @@ sigremnants.o: ../sigremnants.f $(INCLUDE)
 	sh make_sigremnants.sh
 	$(FF) -c -o obj/$@ sigremnants_ggH.f
 
+pwhg_cpHTO_reweight.o: pwhg_cpHTO_reweight.f $(INCLUDE) 
+	$(FF) -c $(MOD) -o obj/$@ $<
+
 %.o: %.f $(INCLUDE)
-	$(FF) -c -o obj/$@ $<
+	$(FF) -c -o obj/$@ $< 
 
 %.o: %.c
 	$(CC) $(DEBUG) -c -o obj/$@ $^ 
@@ -163,7 +156,7 @@ main-PYTHIA-lhef: $(PYTHIA)
 # target to cleanup
 .PHONY: clean
 clean:
-	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef	\
+	rm -f obj/*.o mod/*.* pwhg_main lhef_analysis main-HERWIG-lhef	\
 	main-PYTHIA-lhef
 
 

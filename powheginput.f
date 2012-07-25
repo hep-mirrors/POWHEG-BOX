@@ -48,36 +48,76 @@
       common/cpwgprefix/pwgprefix,lprefix
       character * 20 keywords(maxnum)
       real * 8 values(maxnum)
-      logical used(maxnum)
+      logical used(maxnum),exist
       integer ios,numvalues,j,k,l,imode
       integer ini
       data ini/0/      
       save ini, keywords, values, numvalues,used
       string=stringa
       if(ini.eq.0) then
-         open(unit=33,file='powheg.input',status='old',iostat=ios)
-         if(ios.ne.0) then
-            write(*,*) ' Enter the prefix for this run < 20 characters'
-            read(*,'(a)') pwgprefix
-            do lprefix=20,1,-1
-               if(pwgprefix(lprefix:lprefix).ne.' ') then
-                  goto 11
-               endif
-            enddo
- 11         continue
-            lprefix=lprefix+1
-            if(lprefix.gt.20) lprefix=20
-            pwgprefix(lprefix:lprefix)='-'
+         exist = .false.
+         if(lprefix.gt.0.and.lprefix.le.len(pwgprefix)) then
+            inquire(file=pwgprefix(1:lprefix)//'powheg.input',
+     1           exist=exist)
+            if(exist) then
+                write(*,*) ' found input file ',
+     1              pwgprefix(1:lprefix)//'powheg.input'
+            else
+               write(*,*) ' file '//pwgprefix(1:lprefix)//
+     1              'powheg.input does not exist'
+            endif
+              
+         endif
+         if(exist) then
             open(unit=33,file=pwgprefix(1:lprefix)//'powheg.input',
-     #           status='old',iostat=ios)
-            if(ios.ne.0) then            
+     1           status='old',iostat=ios)
+            if(ios.ne.0) then         
                write(*,*) ' cannot open ',
-     #              pwgprefix(1:lprefix)//'powheg.input'
-               stop
+     1              pwgprefix(1:lprefix)//'powheg.input'
+               call exit(-1)
+            else
+               write(*,*) ' opened '//pwgprefix(1:lprefix)//
+     1              'powheg.input'
             endif
          else
-            pwgprefix='pwg'
-            lprefix=3
+            inquire(file='powheg.input',exist=exist)
+            if(exist) then
+               write(*,*) ' found input file powheg.input'
+               open(unit=33,file='powheg.input',status='old',iostat=ios)
+               if(ios.ne.0) then
+                  write(*,*) ' cannot open powheg.input'
+                  call exit(-1)
+               else
+                  write(*,*) ' opened powheg.input'
+               endif
+               lprefix=3
+               pwgprefix='pwg'
+            else
+               write(*,*) ' file powheg.input does not exists'
+               write(*,*)
+     1          ' Enter the prefix for this run < 20 characters'
+               read(*,'(a)') pwgprefix
+               do lprefix=20,1,-1
+                  if(pwgprefix(lprefix:lprefix).ne.' ') then
+                     goto 11
+                  endif
+               enddo
+ 11            continue
+               lprefix=lprefix+1
+               if(lprefix.gt.20) lprefix=20
+               pwgprefix(lprefix:lprefix)='-'
+               open(unit=33,file=pwgprefix(1:lprefix)//'powheg.input',
+     1              status='old',iostat=ios)
+               if(ios.ne.0) then            
+                  write(*,*) ' cannot open ',
+     1                 pwgprefix(1:lprefix)//'powheg.input'
+                  call exit(-1)
+               else
+                  write(*,*) ' opened ',
+     1                 pwgprefix(1:lprefix)//'powheg.input'
+                  
+               endif
+            endif
          endif
          numvalues=0
          do l=1,1000000

@@ -11,9 +11,24 @@
       external powheginput
       integer nev
       maxev=0
-      file='pwgevents.lhe'
+      if(powheginput('#manyseeds').eq.1) then
+         write(*,*) 'enter file number'
+         read(*,*) ifile
+      else
+         ifile = -1
+      endif
+      if(ifile.eq.-1) then
+         file=pwgprefix(1:lprefix)//'events.lhe'
+      else
+         file=pwgprefix(1:lprefix)//'events-0000.lhe'
+         write(file(lprefix+8:lprefix+8),'(i4)') ifile
+         do j=lprefix+8,lprefix+11
+            if(file(j:j).eq.' ') file(j:j) = '0'
+         enddo
+      endif
       open(unit=97,file=file,status='old',iostat=ios)
       if(ios.ne.0) then
+         write(*,*)' file not found:',file(1:lenocc(file))
          write(*,*)' enter name of event file'
          read(*,'(a)') file
          open(unit=97,file=file,status='old')

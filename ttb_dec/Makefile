@@ -46,7 +46,7 @@ endif
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
 
-DEPDIRS=./MCFM/QCDLoop/ql ./MCFM/QCDLoop/ff ../KN/MCFM/src/pwgplots/ ./MCFM/src/TopdkBSY/  ./MCFM/src/Newtpair/  ./MCFM/src/Need/ ./MCFM/src/Phase/ ./MCFM/src/Topdecay/ ./MCFM/src/Topdk/
+DEPDIRS=./MCFM/QCDLoop/ql/ ./MCFM/QCDLoop/ff/ ./MCFM/src/TopdkBSY/  ./MCFM/src/Newtpair/  ./MCFM/src/Need/ ./MCFM/src/Phase/ ./MCFM/src/Topdecay/ ./MCFM/src/Topdk/
 
 OBJ=obj-$(COMPILER)
 

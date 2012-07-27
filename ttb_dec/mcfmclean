@@ -1,0 +1,3 @@
+mv ./MCFM/src/Need/eq.f ./MCFM/src/Inc/eq.f
+mv ./MCFM/src/Need/initialize3.f ./MCFM/src/Need/initialize3.f_old
+mv ./MCFM/src/Need/dipoles_mass_old.f ./MCFM/src/Need/dipoles_mass_old.f_old

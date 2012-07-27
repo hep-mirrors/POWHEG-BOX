@@ -1,0 +1,24 @@
+plot: pt della coppia
+      distribuzioni di t e tbarra da confrontare con pPOWHEG-hvq
+      pt della coppia
+      pt del top
+      massa invariante t tbarra
+      rapidita' t
+      delta y(tt)-yjet
+
+      distribuzioni del b (bjet?) nel frame del t
+      pt del b (caso massivo), thrust
+      pt del b-jet (anche massless)
+      distribuzioni del leptone (W-lnu), pt del leptone
+      pt del leptone
+      massa leptone-bjet.
+
+      thrust nel frame di W-> adroni
+
+
+Con POWHEG:
+generare t->e+ nu b (con madgraphstuff), same plots as above
+
+generare W-> q qbar ( ... ) same plots as above
+
+

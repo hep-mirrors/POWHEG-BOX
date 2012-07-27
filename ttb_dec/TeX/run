@@ -1,0 +1,8 @@
+latex Topwdk
+latex Topwdk
+Bibtex Topwdk
+Bibtex Topwdk
+latex Topwdk
+latex Topwdk
+dvips -o Topwdk.ps Topwdk.dvi
+open Topwdk.ps

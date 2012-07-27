@@ -16,9 +16,17 @@
      #  pdf1(flst_born(1,j))*pdf2(flst_born(2,j))*kn_jacborn
          tot=tot+res(j)
 c     if one wants to do only the integration over the whole phase space, then
-c     uncomment the following (with or without the flux factor 1/(2*kn_sborn)
+c     uncomment the following
 c        
-c         res(j)=kn_jacborn/(2*kn_sborn)/flst_nborn
+c         res(j)=kn_jacborn/(kn_sborn**(n-2))/flst_nborn
+c     replacing n with the number of final state lines.
+c This should yield:
+c         phsp(n):=(%pi/2)^(n-1)/(gamma(n)*gamma(n-1))
+c               *(2*%pi)^4/(2*%pi)^(3*n) * 3.8937966d8 (GeV^-2 to pb) 
+c for massless final state partons (the last factor is hc), see
+c A New Monte Carlo Treatment Of Multiparticle Phase Space At High-Energies.
+c R. Kleiss, W.J.Stirling, S.D.Ellis, Comput.Phys.Commun.40:359,1986.
+c
       enddo
       end
 

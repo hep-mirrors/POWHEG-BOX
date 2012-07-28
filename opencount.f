@@ -8,7 +8,8 @@
       integer ios
       character * 7 string
       real * 8 powheginput
-      external powheginput
+      integer  lenocc,j,ifile
+      external powheginput,lenocc
       integer nev
       maxev=0
       if(powheginput('#manyseeds').eq.1) then

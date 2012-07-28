@@ -403,11 +403,14 @@ c the right proportion of u dbar, u sbar, c sbar and c dbar
       enddo
       if(ini) then
          nospincorr = powheginput("#nospincorr").eq.1
-         ini = .false.
       endif
       if(nospincorr) then
 c perform a random rotation of the t (tbar) decay products in the
 c t (tbar) rest frame
+         if(ini) then
+            write(*,*) ' rotating randomly the t and tbar systems'
+            ini = .false.
+         endif
          call randomrotate(3)
          call randomrotate(4)
       endif
@@ -444,7 +447,7 @@ c t (tbar) rest frame
       parameter (ngenerations=4)
       kcurr=mothup(1,k)
       do j=1,ngenerations
-         if(abs(idup(kcurr)).eq.m) then
+         if(kcurr.eq.m) then
             sonof = .true.
             return
          endif
@@ -490,6 +493,7 @@ c     beta.  Lorents convention: (t,x,y,z).
       do j=1,3
          res(j)=r(j,1)*v(1)+r(j,2)*v(2)+r(j,3)*v(3)
       enddo
+      v = res
       end
 
 

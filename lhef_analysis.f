@@ -21,18 +21,31 @@ c     let the analysis subroutine know that it is run by this program
          call pwhgaccumup
          if (mod(j,20000).eq.0) then
             write(*,*) "# of events processed =",j
-            open(unit=99,file='LHEF_analysis.top')
-            call pwhgsetout
-            call pwhgtopout
-            close(99)
+            call lheanend
          endif
 111     continue
       enddo
-      open(unit=99,file='LHEF_analysis.top')
+      call lheanend
+      write(*,*) 'EVENTS FOUND : ',nev
+      end
+
+      subroutine lheanend
+      implicit none
+      character * 20 pwgprefix
+      integer lprefix
+      common/cpwgprefix/pwgprefix,lprefix
+      include 'pwhg_rnd.h'
+      if(rnd_cwhichseed.ne.'none') then
+         open(unit=99,file=pwgprefix(1:lprefix)//'LHEF_analysis-'
+     1        //rnd_cwhichseed//'.top'
+     2     ,status='unknown')
+      else
+         open(unit=99,file=pwgprefix(1:lprefix)//'LHEF_analysis.top'
+     1     ,status='unknown')
+      endif
       call pwhgsetout
       call pwhgtopout
       close(99)
-      write(*,*) 'EVENTS FOUND : ',nev
       end
       
       subroutine UPINIT

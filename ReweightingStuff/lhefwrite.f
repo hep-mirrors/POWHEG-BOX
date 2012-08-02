@@ -113,22 +113,24 @@ c     save last random number
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       integer nlf
-c     rad_type=0,1,2 for btilde,remnants,regulars, respectively
+      integer gen_seed,gen_n1,gen_n2
+      common/cgenrand/gen_seed,gen_n1,gen_n2
+c     rad_type=1,2,3 for btilde,remnants,regulars, respectively
       if(rad_type.eq.1) then
 c     btilde
          write(nlf,*)'#rwg ',rad_type,
      $        rad_ubornidx,rad_btilde_arr(rad_ubornidx),
-     $        rad_www0,'| ',rad_randoms
+     $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.2) then
 c     remnant
          write(nlf,*)'#rwg ',rad_type,
      $        rad_realalr,rad_damp_rem_arr(rad_realalr),
-     $        rad_www0,'| ',rad_randoms
+     $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.3) then
 c     regular
          write(nlf,*)'#rwg ',rad_type,
      $        rad_realreg,rad_reg_arr(rad_realreg),
-     $        rad_www0,'| ',rad_randoms
+     $        gen_seed,gen_n1,gen_n2
       else
          write(*,*) 'Invalid rad_type in lhefwriteevrw: ',rad_type
          call exit(-1)

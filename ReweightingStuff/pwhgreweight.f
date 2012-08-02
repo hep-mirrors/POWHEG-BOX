@@ -1,20 +1,88 @@
       subroutine pwhgnewweight
       implicit none
+      integer iret
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       include 'pwhg_flg.h'
+      include 'LesHouches.h'
       logical ini
       data ini/.true./
       save ini
       integer maxev
+      integer gen_seed,gen_n1,gen_n2
+      common/cgenrand/gen_seed,gen_n1,gen_n2
+      real * 8 newweight
+      logical pwhg_isfinite
+      external pwhg_isfinite
       if(ini) then
          call opencount(maxev)
          call openoutputrw
          ini=.false.
       endif
-      call lhefreadevnew(97,99)
+      call lhefreadevnew(97,99,iret)
+      if(iret.lt.0) then
+         write(*,*) ' End of event file! Aborting ...'
+         call exit(-1)
+      endif
+      call setrandom(gen_seed,gen_n1,gen_n2)
+      if(rad_type.eq.1) then
+         call gen_btilderw
+         newweight=rad_btilde_arr(rad_ubornidx)
+      elseif(rad_type.eq.2) then
+         call gen_sigremnantrw
+         newweight=rad_damp_rem_arr(rad_realalr)
+      elseif(rad_type.eq.3) then
+         call gen_sigremnantrw
+         newweight=rad_reg_arr(rad_realreg)
+      endif
+
+      if(.not.pwhg_isfinite(newweight)) newweight=0d0
+      write(99,*) 'new weight:',
+     1        xwgtup*newweight/rad_currentweight
       end
+
+
+      subroutine gen_btilderw
+      implicit none
+      include 'nlegborn.h'
+      include 'pwhg_flst.h'
+      integer mcalls,icalls
+      real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
+     #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
+     #        ,xmmm(0:50,ndiminteg),xmmmrm(0:50,ndiminteg)
+      integer ifold(ndiminteg),ifoldrm(ndiminteg)
+      common/cgengrids/xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
+     #                ifold,ifoldrm
+      real * 8 xx(ndiminteg)      
+      real * 8 btilde
+      external btilde
+      mcalls=0
+      icalls=0
+      call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,2,
+     #    mcalls,icalls,xx)
+      end
+
+      subroutine gen_sigremnantrw
+      implicit none
+      include 'nlegborn.h'
+      include 'pwhg_flst.h'
+      real * 8 xgrid(0:50,ndiminteg),ymax(50,ndiminteg)
+     #        ,xgridrm(0:50,ndiminteg),ymaxrm(50,ndiminteg)
+     #        ,xmmm(0:50,ndiminteg),xmmmrm(0:50,ndiminteg)
+      integer ifold(ndiminteg),ifoldrm(ndiminteg)
+      common/cgengrids/xgrid,ymax,xmmm,xgridrm,ymaxrm,xmmmrm,
+     #                ifold,ifoldrm
+      real * 8 xx(ndiminteg)
+      integer mcalls,icalls
+      real * 8 sigremnant
+      external sigremnant
+      mcalls=0
+      icalls=0
+      call gen(sigremnant,ndiminteg,xgridrm,ymaxrm,xmmmrm,ifoldrm,2,
+     #    mcalls,icalls,xx)
+      end
+
 
 
       subroutine openoutputrw
@@ -31,21 +99,19 @@
          open(unit=99,file=pwgprefix(1:lprefix)//'eventsww.lhe'
      1     ,status='unknown')
       endif
-      close(99)
       end
 
 c...reads event information from a les houches events file on unit nlf. 
-      subroutine lhefreadevnew(nlf,nuo)
+      subroutine lhefreadevnew(nlf,nuo,iret)
       implicit none
-      integer nlf,nuo
+      integer nlf,nuo,iret
       character * 100 string
       include 'LesHouches.h'
-      integer i,j,lenocc
-      external lenocc
+      integer i,j
  1    continue
       string=' '
       read(nlf,fmt='(a)',err=777,end=666) string
-      write(nuo,'(a)') string(1:lenocc(string))
+      write(nuo,'(a)') trim(string)
       if(string.eq.'</LesHouchesEvents>') then
          goto 998
       endif
@@ -58,7 +124,7 @@ c truncated event files. On EOF return with no event found
      &           mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      &           vtimup(i),spinup(i)
          enddo
-         call lhefreadextra(nlf)
+         call lhefreadextrarw(nlf,nuo,iret)
          goto 999
       else
          goto 1
@@ -69,16 +135,16 @@ c no event found:
       print *,string
       stop
  666  continue
-      print *,"reached EOF"
-      print *,string
-      stop
+      iret=-1
+
+      return
  998  continue
       print *,"read </LesHouchesEvents>"
       nup=0      
  999  end
 
 
-      subroutine lhefreadextra(nlf)
+      subroutine lhefreadextrarw(nlf,nou,iret)
       implicit none
       include 'LesHouches.h'
       include 'nlegborn.h'
@@ -88,39 +154,64 @@ c no event found:
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
       character * 100 string
-      integer nlf
+      integer nlf,nou,iret
       logical readrw
+      integer gen_seed,gen_n1,gen_n2
+      common/cgenrand/gen_seed,gen_n1,gen_n2
+      iret = 0
+      readrw = .false.
  1    continue
       read(unit=nlf,fmt='(a)',end=998) string
       if(string.eq.'<event>') then
-         backspace nlf
-         return
-      endif
-      if(string.eq.'# Start extra-info-previous-event') then
-         read(nlf,'(a)') string
-         read(string(3:),*) rad_kinreg
-         read(nlf,'(a)') string
-         read(string(3:),*) rad_type
-      endif
-      readrw = .false.
-      if(flg_newweight) then
-c read a string; if it starts with #rwg, read first rad_type from the
-c string, then all other information, depending upon rad_type.
-c set readrw to true  
-         if(string(2:5).eq.'#rwg') then
-c     do things
-            print*, 'FOUND'
-c     if all went ok, set readrw to true
-            readrw=.true.
-            read(unit=nlf,fmt='(a)',end=998) string
-         endif
          if(.not.readrw) then
             write(*,*) 
      $ 'Error in lhefreadextra, while reading rwg informations'
             write(*,*)'Abort run'
             call exit(-1)
          endif
+         backspace nlf
+         return
+      endif
+      write(nou,'(a)') trim(string)
+      if(string.eq.'# Start extra-info-previous-event') then
+         read(nlf,'(a)') string
+         read(string(3:),*) rad_kinreg
+         read(nlf,'(a)') string
+         read(string(3:),*) rad_type
+      endif
+      if(flg_newweight) then
+c read a string; if it starts with #rwg, read first rad_type from the
+c string, then all other information, depending upon rad_type.
+c set readrw to true  
+         string=adjustl(string)
+         if(string(1:4).eq.'#rwg') then
+c     do things
+            print*, 'FOUND'
+            read(string(5:),*) rad_type
+            if(rad_type.eq.1) then
+c     btilde
+               read(string(5:),*)rad_type,
+     $              rad_ubornidx,rad_currentweight,
+     $              gen_seed,gen_n1,gen_n2
+            elseif(rad_type.eq.2) then
+c     remnant
+               read(string(5:),*)rad_type,
+     $              rad_realalr,rad_currentweight,
+     $              gen_seed,gen_n1,gen_n2
+            elseif(rad_type.eq.3) then
+c     regular
+               read(string(5:),*)rad_type,
+     $              rad_realreg,rad_currentweight,
+     $              gen_seed,gen_n1,gen_n2
+            else
+               write(*,*) 'Invalid rad_type in lhefwriteevrw: ',rad_type
+               call exit(-1)
+            endif
+c     if all went ok, set readrw to true
+            readrw=.true.
+         endif
       endif
       goto 1
  998  continue
+      iret=-1
       end

@@ -35,11 +35,16 @@
       elseif(rad_type.eq.3) then
          call gen_sigremnantrw
          newweight=rad_reg_arr(rad_realreg)
+      else
+         write(*,*) 'Error in pwhgnewweight, invalid rad_type: ',
+     $        rad_type
+         call exit(-1)
       endif
 
       if(.not.pwhg_isfinite(newweight)) newweight=0d0
-      write(99,*) 'new weight:',
+      write(99,*) '#new weight:',
      1        xwgtup*newweight/rad_currentweight
+      write(99,'(a)') '</event>'
       end
 
 
@@ -105,7 +110,7 @@ c...reads event information from a les houches events file on unit nlf.
       subroutine lhefreadevnew(nlf,nuo,iret)
       implicit none
       integer nlf,nuo,iret
-      character * 100 string
+      character * 200 string
       include 'LesHouches.h'
       integer i,j
  1    continue
@@ -118,12 +123,12 @@ c...reads event information from a les houches events file on unit nlf.
       if(string(1:6).eq.'<event') then
 c on error try next event. The error may be cause by merging
 c truncated event files. On EOF return with no event found
-         read(nfl,'(a)') string
+         read(nlf,'(a)') string
          write(nuo,'(a)') trim(string)
          read(string,fmt=*,end=998,err=1)
      1        nup,idprup,xwgtup,scalup,aqedup,aqcdup
          do i=1,nup
-            read(nfl,'(a)') string
+            read(nlf,'(a)') string
             write(nuo,'(a)') trim(string)
             read(string,fmt=*,end=998,err=1)
      1           idup(i),istup(i),mothup(1,i),
@@ -137,12 +142,11 @@ c truncated event files. On EOF return with no event found
       endif
 c no event found:
  777  continue
-      print *,"Error in reading"
-      print *,string
-      stop
+      write(*,*) "Error in reading"
+      write(*,*) string
+      call exit(-1)
  666  continue
       iret=-1
-
       return
  998  continue
       print *,"read </LesHouchesEvents>"
@@ -168,6 +172,10 @@ c no event found:
       readrw = .false.
  1    continue
       read(unit=nlf,fmt='(a)',end=998) string
+      if(string.eq.'</event>') then
+         if(.not.flg_newweight) write(nou,'(a)') trim(string)
+         return
+      endif
       if(string.eq.'<event>') then
          if(.not.readrw) then
             write(*,*) 
@@ -178,7 +186,6 @@ c no event found:
          backspace nlf
          return
       endif
-      write(nou,'(a)') trim(string)
       if(string.eq.'# Start extra-info-previous-event') then
          read(nlf,'(a)') string
          read(string(3:),*) rad_kinreg
@@ -186,13 +193,14 @@ c no event found:
          read(string(3:),*) rad_type
       endif
       if(flg_newweight) then
+         write(nou,'(a)') trim(string)
 c read a string; if it starts with #rwg, read first rad_type from the
 c string, then all other information, depending upon rad_type.
-c set readrw to true  
+c set readrw to true
          string=adjustl(string)
          if(string(1:4).eq.'#rwg') then
 c     do things
-            print*, 'FOUND'
+c            print*, 'FOUND'
             read(string(5:),*) rad_type
             if(rad_type.eq.1) then
 c     btilde
@@ -216,6 +224,8 @@ c     regular
 c     if all went ok, set readrw to true
             readrw=.true.
          endif
+      else
+         write(nou,'(a)') trim(string)
       endif
       goto 1
  998  continue

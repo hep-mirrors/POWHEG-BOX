@@ -6,6 +6,7 @@
       include 'pwhg_st.h'
       include 'pwhg_kn.h'
       include 'pwhg_rnd.h'
+      include 'pwhg_flg.h'
       integer j,iun,nev
       real * 8 weight,tmp
       real * 8 powheginput
@@ -74,14 +75,18 @@ c     read(iun,*) rnd_initialseed,rnd_i1,rnd_i2
       if (testplots) WHCPRG='NLO   '
       call pwhginit
       if(nev.gt.0) then
-         if(rnd_cwhichseed.ne.'none') then
-            write(*,*) pwgprefix(1:lprefix)//'events-'//
-     1           rnd_cwhichseed//'.lhe', rnd_iwhichseed,rnd_initialseed
-            open(unit=iun,status='new',file=pwgprefix(1:lprefix)
-     1           //'events-'//rnd_cwhichseed//'.lhe')
+         if(flg_newweight) then
+            continue
          else
-            open(unit=iun,status='new',
-     1           file=pwgprefix(1:lprefix)//'events.lhe')
+            if(rnd_cwhichseed.ne.'none') then
+               write(*,*) pwgprefix(1:lprefix)//'events-'//
+     1            rnd_cwhichseed//'.lhe', rnd_iwhichseed,rnd_initialseed
+               open(unit=iun,status='new',file=pwgprefix(1:lprefix)
+     1              //'events-'//rnd_cwhichseed//'.lhe')
+            else
+               open(unit=iun,status='new',
+     1              file=pwgprefix(1:lprefix)//'events.lhe')
+            endif
          endif
       else
          write(*,*) ' No events requested'

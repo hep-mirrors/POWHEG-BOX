@@ -1,7 +1,9 @@
-      subroutine pwhgreweight
+      subroutine pwhgnewweight
       implicit none
+      include 'nlegborn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_rad.h'
       include 'pwhg_flg.h'
-      include 'pwhg_rad'
       logical ini
       data ini/.true./
       save ini
@@ -9,10 +11,10 @@
       if(ini) then
          call opencount(maxev)
          call openoutputrw
-         call lhefreadneww(97,99)
-
          ini=.false.
       endif
+      call lhefreadevnew(97,99)
+      end
 
 
       subroutine openoutputrw
@@ -38,7 +40,8 @@ c...reads event information from a les houches events file on unit nlf.
       integer nlf,nuo
       character * 100 string
       include 'LesHouches.h'
-      integer i,j
+      integer i,j,lenocc
+      external lenocc
  1    continue
       string=' '
       read(nlf,fmt='(a)',err=777,end=666) string
@@ -86,6 +89,7 @@ c no event found:
       include 'pwhg_flg.h'
       character * 100 string
       integer nlf
+      logical readrw
  1    continue
       read(unit=nlf,fmt='(a)',end=998) string
       if(string.eq.'<event>') then
@@ -102,9 +106,20 @@ c no event found:
       if(flg_newweight) then
 c read a string; if it starts with #rwg, read first rad_type from the
 c string, then all other information, depending upon rad_type.
-c set readrw to true    
-      else
-         goto 1
+c set readrw to true  
+         if(string(2:5).eq.'#rwg') then
+c     do things
+            print*, 'FOUND'
+c     if all went ok, set readrw to true
+            readrw=.true.
+            read(unit=nlf,fmt='(a)',end=998) string
+         endif
+         if(.not.readrw) then
+            write(*,*) 
+     $ 'Error in lhefreadextra, while reading rwg informations'
+            write(*,*)'Abort run'
+            call exit(-1)
+         endif
       endif
       goto 1
  998  continue

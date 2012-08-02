@@ -75,8 +75,11 @@ c select which upper bounding function form
 c info on pdf for each event
       flg_pdfreweight=.false.
       if(powheginput("#pdfreweight").eq.1)flg_pdfreweight=.true.
-c infos to reweight events
+c infos to write LH file with infos to reweight events
       flg_reweight=powheginput('#evreweight').eq.1
+c infos to read LH file with infos to reweight events,
+c and produce a new LH file with updated weights
+      flg_newweight=powheginput('#newweight').eq.1
 c
       call setrandom(i1,n1,n2)
 c     assign a default id for the process at hand

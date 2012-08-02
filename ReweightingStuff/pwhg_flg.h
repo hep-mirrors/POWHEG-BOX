@@ -22,7 +22,7 @@ c flg_reweight: outputs extra infos for reweighting LH events
      1     flg_smartsig,flg_bornonly,flg_debug,flg_withnegweights,
      2     flg_jacsing,flg_weightedev,flg_pdfreweight,flg_collremnsamp,
      3     flg_lightpart_check,flg_btlscalereal,flg_btlscalect,
-     4     flg_bornzerodamp,flg_ckkwscalup,flg_reweight
+     4     flg_bornzerodamp,flg_ckkwscalup,flg_reweight,flg_newweight
       character * 1 flg_btildepart
       character * 20 flg_processid
       common/pwhg_flg/flg_nlotest,flg_withsubtr,flg_withdamp,
@@ -31,5 +31,5 @@ c flg_reweight: outputs extra infos for reweighting LH events
      4     flg_pdfreweight,flg_collremnsamp,flg_lightpart_check,
      5     flg_btlscalereal,flg_btlscalect,
      6     flg_bornzerodamp,flg_ckkwscalup,
-     7     flg_btildepart,flg_processid,flg_reweight
+     7     flg_btildepart,flg_processid,flg_reweight,flg_newweight
       save /pwhg_flg/

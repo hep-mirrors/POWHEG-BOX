@@ -118,9 +118,15 @@ c...reads event information from a les houches events file on unit nlf.
       if(string(1:6).eq.'<event') then
 c on error try next event. The error may be cause by merging
 c truncated event files. On EOF return with no event found
-         read(nlf,*,end=998,err=1)nup,idprup,xwgtup,scalup,aqedup,aqcdup
+         read(nfl,'(a)') string
+         write(nuo,'(a)') trim(string)
+         read(string,fmt=*,end=998,err=1)
+     1        nup,idprup,xwgtup,scalup,aqedup,aqcdup
          do i=1,nup
-            read(nlf,*,end=998,err=1) idup(i),istup(i),mothup(1,i),
+            read(nfl,'(a)') string
+            write(nuo,'(a)') trim(string)
+            read(string,fmt=*,end=998,err=1)
+     1           idup(i),istup(i),mothup(1,i),
      &           mothup(2,i),icolup(1,i),icolup(2,i),(pup(j,i),j=1,5),
      &           vtimup(i),spinup(i)
          enddo

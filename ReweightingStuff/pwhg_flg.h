@@ -30,6 +30,6 @@ c flg_reweight: outputs extra infos for reweighting LH events
      3     flg_withnegweights,flg_jacsing,flg_weightedev,
      4     flg_pdfreweight,flg_collremnsamp,flg_lightpart_check,
      5     flg_btlscalereal,flg_btlscalect,
-     6     flg_bornzerodamp,flg_ckkwscalup,
-     7     flg_btildepart,flg_processid,flg_reweight,flg_newweight
+     6     flg_bornzerodamp,flg_ckkwscalup,flg_reweight,flg_newweight,
+     7     flg_btildepart,flg_processid
       save /pwhg_flg/

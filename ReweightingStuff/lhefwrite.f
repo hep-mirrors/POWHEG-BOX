@@ -21,7 +21,7 @@ c...writes initialization information to a les houches events file on unit nlf.
       write(nlf,'(a)') 'Input file powheg.input contained:'
       call wrtpowheginput(nlf)
       write(nlf,'(a)') 'End of powheg.input content'
-      write(*,'(a)') 'PDF package: '//whichpdfpk()
+      write(nlf,'(a)') 'PDF package: '//whichpdfpk()
       call rm48ut(iran,n1ran,n2ran)
       write(nlf,*) 'Random number generator initialized with: ',
      # iran,' ',n1ran,' ',n2ran
@@ -121,17 +121,17 @@ c     save last random number
 c     rad_type=1,2,3 for btilde,remnants,regulars, respectively
       if(rad_type.eq.1) then
 c     btilde
-         write(nlf,*)'#rwg ',rad_type,
+         write(nlf,*)'#rwgt ',rad_type,
      $        rad_ubornidx,rad_btilde_arr(rad_ubornidx),
      $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.2) then
 c     remnant
-         write(nlf,*)'#rwg ',rad_type,
+         write(nlf,*)'#rwgt ',rad_type,
      $        rad_realalr,rad_damp_rem_arr(rad_realalr),
      $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.3) then
 c     regular
-         write(nlf,*)'#rwg ',rad_type,
+         write(nlf,*)'#rwgt ',rad_type,
      $        rad_realreg,rad_reg_arr(rad_realreg),
      $        gen_seed,gen_n1,gen_n2
       else

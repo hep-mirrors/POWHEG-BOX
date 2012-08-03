@@ -47,9 +47,9 @@
       integer i1,n1,n2
       integer i1cur,n1cur,n2cur,j
       real * 8 tmp
-      if(i1.eq.0.and.n1.eq.0.and.n2.eq.0) then
+      if(i1.eq.0) then
 c This is used for complete initialization
-         call rm48in(I1,N1,N2)
+         call resetrandom
          return
       endif
 c Reinitializing the random number may be expensive;

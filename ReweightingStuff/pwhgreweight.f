@@ -93,11 +93,11 @@
       common/cpwgprefix/pwgprefix,lprefix
       include 'pwhg_rnd.h'
       if(rnd_cwhichseed.ne.'none') then
-         open(unit=99,file=pwgprefix(1:lprefix)//'eventsww-'
+         open(unit=99,file=pwgprefix(1:lprefix)//'events-rwgt-'
      1        //rnd_cwhichseed//'.lhe'
      2     ,status='unknown')
       else
-         open(unit=99,file=pwgprefix(1:lprefix)//'eventsww.lhe'
+         open(unit=99,file=pwgprefix(1:lprefix)//'events-rwgt.lhe'
      1     ,status='unknown')
       endif
       end
@@ -190,27 +190,28 @@ c Don't write the end event record; first we must output the new weight
       endif
       if(flg_newweight) then
          write(nou,'(a)') trim(string)
-c read a string; if it starts with #rwg, read first rad_type from the
+c read a string; if it starts with #rwgt, read first rad_type from the
 c string, then all other information, depending upon rad_type.
 c set readrw to true
          string=adjustl(string)
-         if(string(1:4).eq.'#rwg') then
+         if(string(1:5).eq.'#rwgt') then
+            string(1:5)=' '
 c     do things
 c            print*, 'FOUND'
-            read(string(5:),*) rad_type
+            read(string,*) rad_type
             if(rad_type.eq.1) then
 c     btilde
-               read(string(5:),*)rad_type,
+               read(string,*)rad_type,
      $              rad_ubornidx,rad_currentweight,
      $              gen_seed,gen_n1,gen_n2
             elseif(rad_type.eq.2) then
 c     remnant
-               read(string(5:),*)rad_type,
+               read(string,*)rad_type,
      $              rad_realalr,rad_currentweight,
      $              gen_seed,gen_n1,gen_n2
             elseif(rad_type.eq.3) then
 c     regular
-               read(string(5:),*)rad_type,
+               read(string,*)rad_type,
      $              rad_realreg,rad_currentweight,
      $              gen_seed,gen_n1,gen_n2
             else

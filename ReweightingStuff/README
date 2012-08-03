@@ -1,5 +1,15 @@
 This files allow the storage of reweighting information in the .lhe
-file. It works as follows:
+file. It works as follows.
+
+At the moment, you must edit the process Makefile, set the VPATH
+with the ReweightingStuff directory as the first directory to search,
+and set the include paths to serch this directory before the others.
+Add the dependencies pwhgreweight.o and opencount.o to the pwhg_main
+target, and compile.
+
+Later on all the changes will be merged with the trunk, and the reweighting
+options will be available with no further work.
+
 
 1) Run pwhg_main with the line
 
@@ -29,3 +39,4 @@ own numbering scheme, or the lhapdf package.
 
 The script runexample.sh illustrate the procedure with an example for building
 reweighting information for 6 more combinations of scale variations.
+

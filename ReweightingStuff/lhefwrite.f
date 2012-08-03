@@ -11,6 +11,8 @@ c...writes initialization information to a les houches events file on unit nlf.
       common/cversion/version
       data version/1.0/
       integer ipr,iran,n1ran,n2ran
+      character * 3 whichpdfpk
+      external whichpdfpk
       include 'LesHouches.h'
       write(nlf,'(a)') '<LesHouchesEvents version="1.0">'
       write(nlf,'(a)') '<!--'
@@ -19,6 +21,7 @@ c...writes initialization information to a les houches events file on unit nlf.
       write(nlf,'(a)') 'Input file powheg.input contained:'
       call wrtpowheginput(nlf)
       write(nlf,'(a)') 'End of powheg.input content'
+      write(*,'(a)') 'PDF package: '//whichpdfpk()
       call rm48ut(iran,n1ran,n2ran)
       write(nlf,*) 'Random number generator initialized with: ',
      # iran,' ',n1ran,' ',n2ran

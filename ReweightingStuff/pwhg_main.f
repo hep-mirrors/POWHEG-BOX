@@ -7,7 +7,7 @@
       include 'pwhg_kn.h'
       include 'pwhg_rnd.h'
       include 'pwhg_flg.h'
-      integer j,iun,nev
+      integer j,iun,nev,maxev
       real * 8 weight,tmp
       real * 8 powheginput
       character * 20 pwgprefix
@@ -116,6 +116,15 @@ c to examine that event in particular
       call resetcnt('vetoed radiation')
       write(*,*)
       write(*,*)' POWHEG: generating events'
+      if(flg_newweight) then
+         call opencount(maxev)
+         call openoutputrw
+         if(maxev.ne.nev) then
+            write(*,*) ' Warning: powheg.input says ',nev,' events'
+            write(*,*) ' the file contains ', maxev, ' events'
+            write(*,*) ' Doing ',maxev,' events'
+         endif
+      endif
       do j=1,nev
          if(flg_newweight) then
             call pwhgnewweight

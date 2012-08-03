@@ -5,21 +5,16 @@
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       include 'pwhg_flg.h'
+      include 'pwhg_st.h'
+      include 'pwhg_pdf.h'
       include 'LesHouches.h'
-      logical ini
-      data ini/.true./
-      save ini
       integer maxev
       integer gen_seed,gen_n1,gen_n2
       common/cgenrand/gen_seed,gen_n1,gen_n2
       real * 8 newweight
       logical pwhg_isfinite
       external pwhg_isfinite
-      if(ini) then
-         call opencount(maxev)
-         call openoutputrw
-         ini=.false.
-      endif
+      character * 3 whichpdfpk
       call lhefreadevnew(97,99,iret)
       if(iret.lt.0) then
          write(*,*) ' End of event file! Aborting ...'
@@ -42,8 +37,9 @@
       endif
 
       if(.not.pwhg_isfinite(newweight)) newweight=0d0
-      write(99,*) '#new weight:',
-     1        xwgtup*newweight/rad_currentweight
+      write(99,*) '#new weight,renfact,facfact,pdf1,pdf2',
+     1        xwgtup*newweight/rad_currentweight,st_renfact,
+     2        st_facfact,pdf_ndns1,pdf_ndns2,whichpdfpk()
       write(99,'(a)') '</event>'
       end
 
@@ -173,7 +169,7 @@ c no event found:
  1    continue
       read(unit=nlf,fmt='(a)',end=998) string
       if(string.eq.'</event>') then
-         if(.not.flg_newweight) write(nou,'(a)') trim(string)
+         write(nou,'(a)') trim(string)
          return
       endif
       if(string.eq.'<event>') then

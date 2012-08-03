@@ -106,7 +106,7 @@ c...reads event information from a les houches events file on unit nlf.
       subroutine lhefreadevnew(nlf,nuo,iret)
       implicit none
       integer nlf,nuo,iret
-      character * 200 string
+      character * 500 string
       include 'LesHouches.h'
       integer i,j
  1    continue
@@ -159,7 +159,7 @@ c no event found:
       include 'pwhg_st.h'
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
-      character * 100 string
+      character * 500 string
       integer nlf,nou,iret
       logical readrw
       integer gen_seed,gen_n1,gen_n2
@@ -169,7 +169,7 @@ c no event found:
  1    continue
       read(unit=nlf,fmt='(a)',end=998) string
       if(string.eq.'</event>') then
-         write(nou,'(a)') trim(string)
+c Don't write the end event record; first we must output the new weight
          return
       endif
       if(string.eq.'<event>') then

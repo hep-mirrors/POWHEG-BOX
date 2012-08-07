@@ -67,7 +67,7 @@ c things because of hit and miss
       enddo
       call momcons(2,pp,nup-2,pp(1,3))
 c exchange momenta in pp to put them in standard form
-      call momstdform(idup,1,3,4,proc,pp)
+      call momstdform(idup,nup,1,3,4,proc,pp)
 c compute mnr invariants
       s=2*dotprod(pp(1,1),pp(1,2))
       q1q=-2*dotprod(pp(1,1),pp(1,3))
@@ -214,7 +214,7 @@ c Store the ppss in pp for permutations (ppss are saved)
          enddo
       enddo
 c exchange momenta to get standard form
-      call momstdform(idup,3,3,6,proc,pp)
+      call momstdform(idup,nup,3,3,6,proc,pp)
 c check mom.cons.
       call momcons(2,pp,nup-4+6,pp(1,3))
 c Check the invariant masses
@@ -649,7 +649,7 @@ c we optimize for cfac at most = 2 (no prize for larger values)
       if(2*ran(5).gt.cfac) goto 1
       end
       
-      subroutine momstdform(idup,ndec,it,itbar,proc,pp)
+      subroutine momstdform(idup,nup,ndec,it,itbar,proc,pp)
 c puts momenta in standard order, for evaluation by MNR and MadEvent
 c MadEvent -> g(1)g(2) -> l+(3)nu(4)b(5) l-(6)nub(7)bb(8)
 c MadEvent -> q(1)qb(2)-> l+(3)nu(4)b(5) l-(6)nub(7)bb(8)
@@ -667,46 +667,61 @@ c by exchanging 1<->2, and by mimicking charge conjugation by 3<->4 (MNR)
 c or (3,4,5)<->(6,7,8) (MadEvent) exchange
 c
 c Calling sequence:
-c call momstdform(idup,1,3,4,proc,pp) (MNR)
-c call momstdform(idup,3,3,6,proc,pp) (MadEvent)
+c call momstdform(idup,nup,1,3,4,proc,pp) (MNR)
+c call momstdform(idup,nup,3,3,6,proc,pp) (MadEvent)
 c idup: idup array of Les Houches Common Block
 c return values:
 c proc: two characted string: 'gg', 'qa', 'qg'
 c pp: momentum array in input, permuted array in output
       implicit none
       character * 2 proc
-      integer idup(2)
+      integer idup(2),nup
       real * 8 pp(4,*)
-      integer ndec,it,itbar
+      integer ndec,it,itbar,id1,id2
       integer k
+      id1=idup(1)
+      id2=idup(2)
+      if(id1.eq.21) id1=0
+      if(id2.eq.21) id2=0
 c now label the process and do the exchanges
-      if(idup(1).gt.0.and.idup(2).lt.0) then
+      if(id1.gt.0.and.id2.lt.0) then
 c quark antiquark
          proc='qa'
-      elseif(idup(1).eq.21.and.idup(2).eq.21) then
+      elseif(id1.eq.0.and.id2.eq.0) then
          proc='gg'
-      elseif(idup(1).gt.0.and.idup(2).eq.21) then
+      elseif(id1.gt.0.and.id2.eq.0) then
          proc='qg'
-      elseif(idup(1).lt.0.and.idup(2).gt.0) then
+      elseif(id1.lt.0.and.id2.gt.0) then
          call exchmom(pp(1,1),pp(1,2))
          proc='qa'
-      elseif(idup(1).eq.21.and.idup(2).gt.0) then
+      elseif(id1.eq.0.and.id2.gt.0) then
          call exchmom(pp(1,1),pp(1,2))
          proc='qg'
-      elseif(idup(1).lt.0.and.idup(2).eq.21) then
+      elseif(id1.lt.0.and.id2.eq.0) then
 c Exchange t and t-tbar, to mimic charge conjugation.
          do k=0,ndec-1
             call exchmom(pp(1,it+k),pp(1,itbar+k))
          enddo
+         call parity(pp,2+2*ndec+nup-4)
          proc='qg'
-      elseif(idup(1).eq.21.and.idup(2).lt.0) then
+      elseif(id1.eq.0.and.id2.lt.0) then
 c Exchange initial state momenta and t-tbar decay products
          call exchmom(pp(1,1),pp(1,2))
          do k=0,ndec-1
             call exchmom(pp(1,it+k),pp(1,itbar+k))
          enddo
+         call parity(pp,2+2*ndec+nup-4)
          proc='qg'
       endif
+      end
+
+      subroutine parity(pp,n)
+      implicit none
+      real * 8 pp(1:4,n)
+      integer n,j
+      do j=1,n
+         pp(1:3,j)=-pp(1:3,j)
+      enddo
       end
 
       subroutine decaytop(ptop,wvirt2,eb,decprod)

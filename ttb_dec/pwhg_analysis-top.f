@@ -141,6 +141,7 @@ c  pwhgfill  :  fills the histograms with data
       character * 2 digit(20)
       data digit/'01','02','03','04','05','06','07','08','09','10',
      1           '11','12','13','14','15','16','17','18','19','20'/
+      integer id1,id2
       ngenerations = powheginput("#ngenerations")
       if(ngenerations.lt.0) ngenerations = 4
 
@@ -271,6 +272,58 @@ c            endif
       else
          iprodrad = 0
       endif
+
+      id1=idup(1)
+      id2=idup(2)
+      if(id1.eq.21) id1=0
+      if(id2.eq.21) id2=0
+
+      if(whcprg.eq.'LHE') then
+         if(powheginput('#subprocess').eq.1) then
+            if(id1.eq.0.and.id2.eq.0) then
+               continue
+            else
+               return
+            endif
+         elseif(powheginput('#subprocess').eq.2) then
+            if(id1.gt.0.and.id2.lt.0) then
+               continue
+            else
+               return
+            endif
+         elseif(powheginput('#subprocess').eq.3) then
+            if(id1.lt.0.and.id2.gt.0) then
+               continue
+            else
+               return
+            endif
+         elseif(powheginput('#subprocess').eq.4) then
+            if(id1.gt.0.and.id2.eq.0) then
+               continue
+            else
+               return
+            endif
+         elseif(powheginput('#subprocess').eq.5) then
+            if(id1.lt.0.and.id2.eq.0) then
+               continue
+            else
+               return
+            endif
+         elseif(powheginput('#subprocess').eq.6) then
+            if(id1.eq.0.and.id2.gt.0) then
+               continue
+            else
+               return
+            endif
+         elseif(powheginput('#subprocess').eq.7) then
+            if(id1.eq.0.and.id2.lt.0) then
+               continue
+            else
+               return
+            endif
+         endif
+      endif
+               
 
       p_top=phep(1:4,i_top)
       p_tb=phep(1:4,i_atop)

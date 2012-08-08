@@ -22,6 +22,8 @@ c maxpart is in constants.f
       logical isodd,isaquark
       real * 8 psav(0:3,nlegs)
       save psav,msq,dkflag
+      real * 8 brcorrect
+      external brcorrect
       if(dkflag.ne.kn_resemitter) goto 11
       do mu=0,3
          do j=1,nlegs
@@ -159,5 +161,7 @@ C---W boson 2
 
       result=msq(rflav(1),rflav(2))/ason2pi
 
-      return
+c supply strong corrections to branching ratios, if needed
+      result=result*brcorrect(p)
+
       end

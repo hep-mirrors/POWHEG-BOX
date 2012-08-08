@@ -4,6 +4,7 @@
       include 'pwhg_kn.h'
       include 'PhysPars.h'   
       include 'pwhg_st.h'   
+      include 'pwhg_flg.h'   
       include 'pwhg_math.h'   
       include 'masses.f'   
       include 'ewcouple.f'   
@@ -15,6 +16,10 @@
      1     ii9,ii10,ii11,ii12,ii13
       real * 8 lotopdecaywidth,powheginput,pwhg_alphas
       external lotopdecaywidth,powheginput,pwhg_alphas
+c Bornzerodamp on by default
+      flg_withdamp=.true.
+      flg_bornzerodamp=.true.
+
 c alfafcut parameters (MCFM Nagy)
       aff=1d0
       aif=1d0

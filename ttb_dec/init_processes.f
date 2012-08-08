@@ -11,13 +11,13 @@
 c      include 'PhysPars.h'
       logical debug,iseven
       parameter (debug=.false.)
-      integer i,k,kres,lwp,lwm,awp,awm,fladec,fltdec
+      integer i,k,kres,lwp,lwm,awp,awm
       integer ii1,ii2,ii3,ii4,ii5,ii6,ii7,ii8,ii9,ii10,ii11,ii12,ii13
       common/inputprocind/ii1,ii2,ii3,ii4,ii5,ii6,ii7,ii8,
      1     ii9,ii10,ii11,ii12,ii13
       real * 8 powheginput
-      integer jnlowhich
-      common/cjnlowhich/jnlowhich
+      integer jnlowhich,fladec,fltdec
+      common/cjnlowhich/jnlowhich,fladec,fltdec
 
 c--- virtuals are in DR scheme
       flg_drscheme=.true.
@@ -335,5 +335,43 @@ c i is the incoming (and radiated) quark
 
       write(*,*) ' n-born ',flst_nborn,',  n-real ',flst_nreal
 
+
+      end
+
+
+      function brcorrect(p)
+      implicit none
+c Setup correction factor for hadronic/leptonic decay
+c in case the NLO corrections to W decays are not included
+      include 'pwhg_math.h'
+      include 'pwhg_st.h'
+      real * 8 brcorrect,p(0:3,*)
+      integer jnlowhich,fltdec,fladec
+      common/cjnlowhich/jnlowhich,fltdec,fladec
+      real * 8 asopi,mw2,hfrac,lfrac,pwhg_alphas
+      brcorrect = 1
+      if(jnlowhich.lt.0.or.jnlowhich.eq.3) then
+         return
+      endif
+c W+
+      mw2=p(0,5)**2-p(1,5)**2-p(2,5)**2-p(3,5)**2
+      asopi=pwhg_alphas(mw2,st_lambda5MSB,5)/pi
+      hfrac=6*(1+asopi+1.409*asopi**2-12.77*asopi**3-80*asopi**4)
+      lfrac=1
+c It seems that the mcfm results yields the correct leptonic branching.
+c Correct the hadronic branching only to yield the correct
+c hadron/lepton ratio = hfrac/lfrac
+
+      if(fltdec.lt.5) then
+c     hadronic decay
+         brcorrect=brcorrect*hfrac/6
+      endif
+c W-
+      mw2=p(0,6)**2-p(1,6)**2-p(2,6)**2-p(3,6)**2
+      asopi=pwhg_alphas(mw2,st_lambda5MSB,5)/pi
+      hfrac=6*(1+asopi+1.409*asopi**2-12.77*asopi**3-80*asopi**4)
+      if(fladec.lt.5) then
+         brcorrect=brcorrect*hfrac/6
+      endif
 
       end

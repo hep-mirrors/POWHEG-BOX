@@ -23,6 +23,8 @@ c mxpart is in constants.f
       integer iem,iep,inu,inub,ib,ibb,fl,j,k,myin(nlegs)
       logical isodd,isaquark
       external qqb_QQbdk_gvec
+      real * 8 brcorr, brcorrect
+      external brcorrect
 c set scale in mcfm blocks
       scale=sqrt(st_muren2)
       musq=st_muren2
@@ -178,8 +180,12 @@ C fill other non-zero values
             bornjk(k,j)=bornjk(j,k)
          enddo
       enddo
+c Supply strong correction to branching ratio, if needed
+      brcorr = brcorrect(p)
+      bres   = bres   * brcorr
+      bornjk = bornjk * brcorr
+      bmunu  = bmunu  * brcorr
 
-      return
       end
 
 

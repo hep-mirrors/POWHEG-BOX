@@ -34,8 +34,8 @@ c mxpart is in constants.f
       common/cjnlowhich/jnlowhich
       data ini/.true./
       save ini
-      real * 8 powheginput
-      external powheginput
+      real * 8 powheginput,brcorrect
+      external powheginput,brcorrect
       if(ini) then
          scheme='dred'
          epinv=0
@@ -168,6 +168,9 @@ c         write(*,*) msqh(0,0)
      &      +msqsl(vflav(1),vflav(2))
      &       +msqh(vflav(1),vflav(2))
       vres = vres/ason2pi
+
+c Supply strong correction to branching ratios, if needed
+      vres = vres * brcorrect(p)
 
       end
 

@@ -12,28 +12,26 @@ topdec 11         ! 11, 13 and 15 for e+,mu+,tau+, 1 for hadrons
 tbardec 11        ! 11, 13 and 15 for e-,mu-,tau-, 1 for hadrons
 #nospincorr 1     ! if 1 wash out spin correlations
 
+#tmass 172         ! top mass (default 172)
+#bmass 5          ! default: 4.75
+
+
 use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 regenerate)
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
-ncall1  40000  ! number of calls for initializing the integration grid
+ncall1  200000  ! number of calls for initializing the integration grid
 itmx1    3    ! number of iterations for initializing the integration grid
-ncall2  20000  ! number of calls for computing the integral and finding upper bound
+ncall2  200000  ! number of calls for computing the integral and finding upper bound
 itmx2    5     ! number of iterations for computing the integral and finding upper bound
 foldcsi   1    ! number of folds on csi integration
 foldy     1    ! number of folds on  y  integration
 foldphi   1    ! number of folds on phi integration
-nubound 40000  ! number of bbarra calls to setup norm of upper bounding function
+nubound 200000  ! number of bbarra calls to setup norm of upper bounding function
 icsimax  1     ! <= 100, number of csi subdivision when computing the upper bounds
 iymax    1     ! <= 100, number of y subdivision when computing the upper bounds
 xupbound 2d0   ! increase upper bound for radiation generation
 
-bornzerodamp 1     ! prevent Born zeroes to yield nonsensical results
-
 testplots 1
 
-qmass 172
 
-#bmass 5            ! default: 4.75
-
-manyseeds 1
 

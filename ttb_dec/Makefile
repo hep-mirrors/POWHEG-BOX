@@ -1,5 +1,5 @@
 #-*- Makefile -*-
-## Choose compiler: gfortran,g77,ifort
+## Choose compiler: gfortran,ifort
 COMPILER=gfortran
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately

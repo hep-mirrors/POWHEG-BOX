@@ -31,10 +31,9 @@ beginning of the init_processes subroutine:
          flg_minlo=.false.
       endif
 
-      st_bornorder=<m>
+      st_bornorder=<n>
 
-where <m> is the power of alpha_s associated with the h h -> heavy particles
-(with no jets) process. In the Higgs + 1 or 2 jets example, we have m=2.
+where <n> is the power of alpha_s associated with the Born subprocess. In the Higgs + 1 or 2 jets example, we have m=3 and m=4.
 
 With the above lines minlo is activated by a "minlo 1" line in the powheg.input
 file. If you want it to be always on, add instead

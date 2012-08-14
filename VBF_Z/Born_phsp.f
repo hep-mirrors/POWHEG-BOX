@@ -470,22 +470,8 @@ c default is Born kinematics:
       muf=muref
       mur=muref
 
-      if (facscfact .gt. 0d0) then 
-         muf=muref*facscfact
-      else
-         muf = muref
-      endif
-      
-c make sure muf never falls below min. cutoff value:
+c make sure muf and mur never fall below min. cutoff value:
       muf = max(muf,dsqrt(2d0)) 
-
-      if (renscfact .gt. 0d0) then 
-         mur=muref*renscfact
-      else
-         mur = muref
-      endif
-      
-c make sure mur never falls below min. cutoff value:      
       mur = max(mur,dsqrt(2d0)) 
 
       end

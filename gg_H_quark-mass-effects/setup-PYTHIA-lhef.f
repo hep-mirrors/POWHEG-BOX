@@ -87,12 +87,6 @@ C--- Opens input file and counts number of events, setting MAXEV;
       integer hdecaymode,i      
       integer maxev
       common/mcmaxev/maxev
-
-      integer higgspdg, local_higgstype,local_model
-      save higgspdg
-      real * 8 powheginput
-      external powheginput
-
       nevhep=0
 c read the header first, so lprup is set
       call lhefreadhdr(97)
@@ -107,24 +101,11 @@ C---Decay;
          stop
       endif   
 
-c     We cannot use the data in the common block since it is set only in POWHEG.
-      local_model = powheginput('model')
-      if (local_model.eq.2) then
-         local_higgstype = powheginput('higgstype')
-         if (local_higgstype.eq.1) then
-            higgspdg = 25
-         else
-            higgspdg = 35
-         endif
-      else
-         higgspdg = 25
-      endif
-
 c     choose Higgs decay channel
       if (hdecaymode.eq.-1) then
-         mdcy(pycomp(higgspdg),1)=0
+         mdcy(pycomp(25),1)=0
       else   
-         mdcy(pycomp(higgspdg),1)=1
+         mdcy(pycomp(25),1)=1
          if (hdecaymode.gt.0) then
             do i=210,288
                if (mdme(i,1).ne.-1) mdme(i,1)=0

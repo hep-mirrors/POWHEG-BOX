@@ -109,8 +109,8 @@ c     IMPORTANT: the flux factor 1/2s is intentionally missing
       parameter (nlegs=nlegborn)
       real * 8 pphy(0:3,nlegs)
       integer i
-      real * 8 m12,m0,y12,y0,bornqcd
-      complex * 16 ampl, reduced,x12,x0,aux
+      real * 8 m12,y12,bornqcd
+      complex * 16 ampl, reduced,x12,aux
       common /bornampl/ampl,bornqcd
       external reduced
       real * 8 getdeltaew,ewcorr
@@ -133,34 +133,9 @@ c     1/(2pi) comes from the 2*pi*delta(s-m^2) of phase space
          ampl = ampl+aux
 c         write(*,*) 'fermion ', i , ' ampl ', aux
       end do
-
-c     Scalars with full mass dependence
-      if (flg_lhscalars.eq.0) then
-         do i=1,asca
-            m0 = msca(i)
-            y0 = m0**2/mh2
-            x0 = reduced(1d0/y0)
-            aux = lambdasca(i)*trsca(i)*(mmaa/m0)**2*
-     &           4d0*y0*(1d0+2d0*y0*0.5d0*log(x0)**2)
-            ampl = ampl + aux
-c        write(*,*) 'scalar ', afer+i , ' ampl ', aux
-         end do
-      else
-c     Scalars in the light Higgs mass limit
-         do i=1,asca
-            m0 = msca(i)
-            y0 = m0**2/mh2
-            aux = lambdasca(i)*trsca(i)*(mmaa/m0)**2*
-     &             (-1d0/3d0)
-            ampl = ampl + aux
-c            write(*,*) 'scalar ', afer+i , ' ampl ', aux
-         end do
-      endif
-
 c     If enabled, here we add the EW corrections
 
       tmp = ampl * dconjg(ampl)
-
       if (flg_ew.eq.1) then
          ewcorr = getdeltaew(ampl)
       else

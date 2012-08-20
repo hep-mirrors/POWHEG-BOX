@@ -15,10 +15,10 @@
       include 'Flags.h'
       double precision aqqbar2
       double complex ampl
-      double precision s,t,u,realfac
-      double precision m0,m12,y0,y12
-      double precision s0,t0,u0,s12,t12,u12
-      double complex bdvd12,bdvd0,fermion,scalar
+      double precision s
+      double precision m12,y12
+      double precision s12
+      double complex bdvd12,fermion
       integer i
 
       ampl = dcmplx(0d0)
@@ -31,25 +31,6 @@
          ampl = ampl + fermion
       end do
 
-      if (flg_lhscalars.ne.1) then
-       do i=1,asca
-        m0 = msca(i)
-        s0 = s/m0**2
-        y0 = m0**2/mh2
-        scalar = lambdasca(i)*(mmaa**2/m0**2)*trsca(i)*y0*bdvd0(s0,y0)
-        ampl = ampl + scalar
-       end do
-      else
-         realfac = -(mh2-s)/(2*(mh2))
-         do i=1,asca
-            m0 = msca(i)
-            y0 = m0**2/mh2
-            scalar = realfac*lambdasca(i)*trsca(i)*(mmaa/m0)**2*
-     &           (-1d0/3d0)
-            ampl = ampl + scalar
-         end do
-      endif
-
       aqqbar2 = abs(ampl)**2
 
       end
@@ -58,10 +39,10 @@
       implicit none
       include 'PhysPars.h'
       include 'Flags.h'
-      double precision s,t,u,m0,m12,realfac
-      double precision y0,y12
-      double precision s0,t0,u0,s12,t12,u12
-      double complex bdvb12,bdvb0,fermion,scalar
+      double precision s,t,u,m12
+      double precision y12
+      double precision s12,t12,u12
+      double complex bdvb12,bdvb0,fermion
       external bdvb12,bdvb0
       integer i
 
@@ -79,29 +60,6 @@
          bdva2 = bdva2 + fermion
       end do
 
-      if (flg_lhscalars.ne.1) then
-         do i=1,asca
-            m0 = msca(i)
-            s0 = s/m0**2
-            t0 = t/m0**2
-            u0 = u/m0**2
-            y0 = m0**2/mh2
-            scalar = lambdasca(i)*(mmaa**2/m0**2)*trsca(i)*y0**2*
-     &           (bdvb0(s0,t0,u0,y0)+bdvb0(s0,u0,t0,y0))
-
-            bdva2 = bdva2 + scalar
-         end do
-      else
-         realfac = s**2/(4*(s+t+u)**2)
-         do i=1,asca
-            m0 = msca(i)
-            y0 = m0**2/mh2
-            scalar = realfac*lambdasca(i)*trsca(i)*(mmaa/m0)**2*
-     &           (-1d0/3d0)
-            bdva2 = bdva2 + scalar
-         end do
-      endif
-
       return
       end
 
@@ -109,9 +67,9 @@
       implicit none
       include 'PhysPars.h'
       include 'Flags.h'
-      double precision s,t,u,m0,m12,y0,y12,realfac
-      double precision s0,t0,u0,s12,t12,u12
-      double complex bdvc12,bdvc0,fermion,scalar
+      double precision s,t,u,m12,y12
+      double precision s12,t12,u12
+      double complex bdvc12,bdvc0,fermion
       external bdvc12,bdvc0
       integer i
 
@@ -129,30 +87,6 @@
 
       bdva4 = bdva4 + fermion
       end do
-
-
-      if (flg_lhscalars.ne.1) then
-         do i=1,asca
-            m0 = msca(i)
-            s0 = s/m0**2
-            t0 = t/m0**2
-            u0 = u/m0**2
-            y0 = m0**2/mh2
-            scalar = lambdasca(i)*(mmaa**2/m0**2)*trsca(i)*y0**2*
-     &      (bdvc0(s0,t0,u0,y0)+bdvc0(t0,u0,s0,y0)+bdvc0(u0,s0,t0,y0))
-
-            bdva4 = bdva4 + scalar
-         end do
-      else
-         realfac = 1d0/4d0
-         do i=1,asca
-            m0 = msca(i)
-            y0 = m0**2/mh2
-            scalar = realfac*lambdasca(i)*trsca(i)*(mmaa/m0)**2*
-     &           (-1d0/3d0)
-            bdva4 = bdva4 + scalar
-         end do
-      endif
 
       return
       end
@@ -181,22 +115,10 @@
       return
       end
 
-      double complex function bdvb0(s,t,u,y0)
-      implicit none
-      double precision s,t,u,y0
-      double complex bdvbigb0
-      external bdvbigb0
-
-      bdvb0= -0.5d0*bdvbigb0(s,t,u,y0) 
-
-      return
-      end
-
-
       double complex function bdvbigb12(s,t,u,y12)
       implicit none
       include 'PhysPars.h'
-      double precision s,t,u,m12, y12, m2
+      double precision s,t,u, y12, m2
       double complex xs,xt,x12,r1,r2
       double complex bdvh3, reduced
       external bdvh3, reduced
@@ -229,46 +151,10 @@
       return
       end
 
-      double complex function bdvbigb0(s,t,u,y0)
-      implicit none
-      include 'PhysPars.h'
-      double precision s,t,u, m0,y0,m2
-      double complex xs,xt,x0, r1, r2
-      double complex bdvh3, reduced
-      external bdvh3, reduced
-
-      x0 = reduced(1d0/y0)
-      xs = reduced(s)
-      xt = reduced(t)
-      m2 = y0*mh2
-
-      if (y0.lt.0.25d0) then
-         r1 = dsqrt(1d0-4d0*y0)
-      else
-         r1 = cdsqrt(dcmplx(1d0-4d0*y0))
-      end if
-      if ((t.lt.0.d0).or.(t.gt.4d0)) then
-         r2 = dsqrt(1d0-4d0/t)
-      else
-         r2 = cdsqrt(dcmplx(1d0-4d0/t))
-      end if
-
-
-      bdvbigb0= s*(t-s)/(s+t) 
-     &    +2d0*(t*u**2+2d0*s*t*u)/(s+u)**2*(r1*log(x0)-r2*log(xt))
-     &     -(1d0+t*u/s)*0.5d0*log(x0)**2+0.5d0*log(xs)**2
-     &     -2d0*(2d0*s**2/(s+u)**2 -1d0-t*u/s)*
-     &                0.5d0*(log(x0)**2-log(xt)**2)
-     &     +0.5d0*(t*u/s+3d0)*bdvh3(s,u,t,m2)-bdvh3(t,s,u,m2)
-
-      return
-      end
-
-
       double complex function bdvc12(s,t,u,y12)
       implicit none
       include 'PhysPars.h'
-      double precision s,t,u,m12, y12, m2
+      double precision s,t,u,y12, m2
       double complex xs,x12
       double complex bdvbigc12, bdvh3, reduced
       external bdvbigc12, bdvh3, reduced
@@ -283,19 +169,6 @@
 
       return
       end
-
-      double complex function bdvc0(s,t,u, y0)
-      implicit none
-      double precision s,t,u, y0
-      double complex bdvbigc0
-      external bdvbigc0
-
-      bdvc0 = -0.5d0*bdvbigc0(s,t,u, y0)
-
-      return
-      end
-
-
 
       double complex function bdvbigc12(s,t,u,y12)
       implicit none
@@ -315,28 +188,10 @@
       return
       end
 
-      double complex function bdvbigc0(s,t,u, y0)
-      implicit none
-      include 'PhysPars.h'
-      double precision s,t,u,y0,m2
-      double complex xs,x0
-      double complex bdvh3, reduced
-      external bdvh3, reduced
-
-      x0 = reduced(1d0/y0)
-      xs = reduced(s)
-      m2 = y0*mh2
-      bdvbigc0 = -2d0*s-2d0*0.5d0*(log(x0)**2-log(xs)**2)-
-     &            bdvh3(u,s,t,1d0)
-      
-      return
-      end
-
-
       double complex function bdvd12(s,y12)
       implicit none
       include 'PhysPars.h'
-      double precision s,t,u,m12, y12, m2
+      double precision s,y12,m2
       double complex xs,x12
       double complex bdvbigd12, reduced
       external bdvbigd12, bdvh3, reduced
@@ -348,28 +203,13 @@
       bdvd12= bdvbigd12(s,y12) -
      &        2d0*(0.5d0*(log(x12)**2-log(xs)**2))
 
-
       return
       end
-
-      double complex function bdvd0(s, y0)
-      implicit none
-      include 'PhysPars.h'
-      double precision s,t,u, y0
-      double complex bdvbigd0
-      external bdvbigd0
-
-      bdvd0 = -0.5d0*bdvbigd0(s, y0)
-
-      return
-      end
-
-
 
       double complex function bdvbigd12(s,y12)
       implicit none
       include 'PhysPars.h'
-      double precision s,t,u,y12,m2
+      double precision s,y12,m2
       double complex xs,x12,r1,r2
       double complex reduced
       external reduced
@@ -395,37 +235,6 @@
       return
       end
 
-      double complex function bdvbigd0(s, y0)
-      implicit none
-      include 'PhysPars.h'
-      double precision s,t,u,y0,m2
-      double complex xs,x0,r1,r2
-      double complex bdvh3, reduced
-      external bdvh3, reduced
-
-      x0 = reduced(1d0/y0)
-      xs = reduced(s)
-      m2 = y0*mh2
-
-      if (y0.lt.0.25d0) then
-         r1 = dsqrt(1d0-4d0*y0)
-      else
-         r1 = cdsqrt(dcmplx(1d0-4d0*y0))
-      end if
-      if ((s.lt.0.d0).or.(s.gt.4d0)) then
-         r2 = dsqrt(1d0-4d0/s)
-      else
-         r2 = cdsqrt(dcmplx(1d0-4d0/s))
-      end if
-
-      bdvbigd0  = 4d0 + 4d0*s/(1d0/y0-s)*(r1*log(x0)-r2*log(xs))+
-     &            8d0/(1d0/y0-s)*0.5d0*(log(x0)**2-log(xs)**2)
-
-      return
-      end
-
-
-
       double complex function bdvh3(s,t,u,m2)
       implicit none
       double precision s,t,u,m2
@@ -444,12 +253,11 @@ c      bdvh3 = bdvi3(s,t,u,t) + bdvi3(s,t,u,u) - bdvi3(s,t,u,s+t+u)
 
       double complex function w3(s,t,u,v,m2)
       implicit none
-      double precision s,t,u,v,xf,xh,tau,m2
+      double precision s,t,u,v,m2
       double complex ei3
       external ei3
 
       w3 = ei3(s,t,u,v,m2) -ei3(s,t,u,s,m2) - ei3(s,t,u,u,m2)
-c      w3 = dcmplx(0d0)
 
       return
       end
@@ -489,11 +297,13 @@ c      double complex ei3
            cosphi=r*(al**2+2d0*be-1d0)/(1d0+al**2)
            if (cosphi.gt.1) then
               if (cosphi.lt.1.000001) then
-                 write(18,*) "Detected rounding error - cosphi: "
+                 write(18,*) "Detected rounding error in 
+     $ei3 - cosphi: "
                  write(18,*) cosphi
                  cosphi = 1.d0
               else
-                 write(18,*) "Rounding error seems too large! Aborting!"
+                 write(18,*) "Rounding error seems in
+     $ei3 too large! Aborting!"
                  write(18,*) cosphi
                  stop
               endif

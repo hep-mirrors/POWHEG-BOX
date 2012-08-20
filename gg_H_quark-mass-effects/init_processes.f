@@ -5,8 +5,6 @@
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
       include 'LesHouches.h'
-      include 'Flags.h'
-      include 'PhysPars.h'
       integer i1,i2,i3,i4,k,ii(4)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4))
@@ -50,19 +48,7 @@ c     index of the first LIGHT coloured parton in the final state
    
       i1=0
       i2=0
-c     In the MSSM model we give the possibility to choose between the light and heavy cp-even neutral Higgs
-      model = int(powheginput('model'))
-      if (model.eq.2) then
-         ih = int(powheginput('higgstype'))
-         if (ih.eq.1) then
-            i3 = 25
-         else
-            i3 = 35
-         endif
-      else
-         i3 = 25
-      endif
-
+      i3=25
       flst_nborn=1
       do k=1,3
          flst_born(k,flst_nborn)=ii(k)

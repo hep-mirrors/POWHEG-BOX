@@ -15,6 +15,7 @@
       logical pwhg_isfinite
       external pwhg_isfinite
       character * 3 whichpdfpk
+      character * 200 string
       call lhefreadevnew(97,99,iret)
       if(iret.lt.0) then
          write(*,*) ' End of event file! Aborting ...'
@@ -38,9 +39,10 @@
       endif
 
       if(.not.pwhg_isfinite(newweight)) newweight=0d0
-      write(99,*) '#new weight,renfact,facfact,pdf1,pdf2',
+      write(string,*) '#new weight,renfact,facfact,pdf1,pdf2',
      1        xwgtup*newweight/rad_currentweight,st_renfact,
-     2        st_facfact,pdf_ndns1,pdf_ndns2,whichpdfpk()
+     2        st_facfact,pdf_ndns1,pdf_ndns2,' ',whichpdfpk()
+      write(99,'(a)') trim(adjustl(string))
       write(99,'(a)') '</event>'
       end
 
@@ -184,13 +186,15 @@ c Don't write the end event record; first we must output the new weight
          return
       endif
       if(string.eq.'# Start extra-info-previous-event') then
+         write(nou,'(a)') trim(string)
          read(nlf,'(a)') string
+         write(nou,'(a)') trim(string)
          read(string(3:),*) rad_kinreg
          read(nlf,'(a)') string
          read(string(3:),*) rad_type
       endif
+      write(nou,'(a)') trim(string)
       if(flg_newweight) then
-         write(nou,'(a)') trim(string)
 c read a string; if it starts with #rwgt, read first rad_type from the
 c string, then all other information, depending upon rad_type.
 c set readrw to true
@@ -222,8 +226,6 @@ c     regular
 c     if all went ok, set readrw to true
             readrw=.true.
          endif
-      else
-         write(nou,'(a)') trim(string)
       endif
       goto 1
  998  continue

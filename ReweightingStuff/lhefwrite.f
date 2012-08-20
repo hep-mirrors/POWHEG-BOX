@@ -116,27 +116,31 @@ c     save last random number
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       integer nlf
+      character * 132 string
       integer gen_seed,gen_n1,gen_n2
       common/cgenrand/gen_seed,gen_n1,gen_n2
 c     rad_type=1,2,3 for btilde,remnants,regulars, respectively
       if(rad_type.eq.1) then
 c     btilde
-         write(nlf,*)'#rwgt ',rad_type,
+         write(string,*)'#rwgt ',rad_type,
      $        rad_ubornidx,rad_btilde_arr(rad_ubornidx)
      $        *rad_btilde_sign(rad_ubornidx),
      $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.2) then
 c     remnant
-         write(nlf,*)'#rwgt ',rad_type,
+         write(string,*)'#rwgt ',rad_type,
      $        rad_realalr,rad_damp_rem_arr(rad_realalr),
      $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.3) then
 c     regular
-         write(nlf,*)'#rwgt ',rad_type,
+         write(string,*)'#rwgt ',rad_type,
      $        rad_realreg,rad_reg_arr(rad_realreg),
      $        gen_seed,gen_n1,gen_n2
       else
          write(*,*) 'Invalid rad_type in lhefwriteevrw: ',rad_type
          call exit(-1)
       endif
+c This gymnastics to avoid some fortran compiler going automatically to a new line
+c when writing too long records with fmt=*
+      write(nlf,'(a)') trim(adjustl(string))
       end

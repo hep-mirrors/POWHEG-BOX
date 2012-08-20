@@ -23,7 +23,8 @@
       call setrandom(gen_seed,gen_n1,gen_n2)
       if(rad_type.eq.1) then
          call gen_btilderw
-         newweight=rad_btilde_arr(rad_ubornidx)
+         newweight=rad_btilde_arr(rad_ubornidx)*
+     1        rad_btilde_sign(rad_ubornidx)
       elseif(rad_type.eq.2) then
          call gen_sigremnantrw
          newweight=rad_damp_rem_arr(rad_realalr)

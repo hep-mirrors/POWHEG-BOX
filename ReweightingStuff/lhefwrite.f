@@ -122,7 +122,8 @@ c     rad_type=1,2,3 for btilde,remnants,regulars, respectively
       if(rad_type.eq.1) then
 c     btilde
          write(nlf,*)'#rwgt ',rad_type,
-     $        rad_ubornidx,rad_btilde_arr(rad_ubornidx),
+     $        rad_ubornidx,rad_btilde_arr(rad_ubornidx)
+     $        *rad_btilde_sign(rad_ubornidx),
      $        gen_seed,gen_n1,gen_n2
       elseif(rad_type.eq.2) then
 c     remnant

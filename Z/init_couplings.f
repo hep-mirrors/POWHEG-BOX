@@ -35,9 +35,9 @@ c     number of light flavors
 
 c     mass window
       mass_low = powheginput("#mass_low")
-      if (mass_low.le.0d0) mass_low=-1d0
+      if (mass_low.lt.0d0) mass_low=-1d0
       mass_high = powheginput("#mass_high")
-      if (mass_high.le.0d0) mass_high=-1d0   
+      if (mass_high.lt.0d0) mass_high=-1d0   
       masswindow_low = powheginput("#masswindow_low")
       if (masswindow_low.le.0d0) masswindow_low=30d0
       masswindow_high = powheginput("#masswindow_high")

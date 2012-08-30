@@ -1,4 +1,4 @@
-<TeXmacs|1.0.7.9>
+<TeXmacs|1.0.7.3>
 
 <style|generic>
 
@@ -17,12 +17,14 @@
   <with|font-family|tt|POWHEG BOX> implementation are given in the
   <with|font-family|tt|manual-BOX.pdf> document, in the
   <with|font-family|tt|POWHEG-BOX/Docs> directory. The decay mode of the
-  <with|mode|math|W<rsup|> >bosons can be fixed by setting vdecaymode1 and
-  vdecaymode2 in the powheg.input file. These flags spacify the charged
-  leptons the bosons decay to (-11 e-; -13 mu-; -15 tau-; 11 e+; 13 mu+; 15
-  tau+). vdecaymode1 and vdecaymode2 must have the same sign. In the case of
-  identical leptons in the final state interference effects are neglected, so
-  that the cross-section is exactly half that of distinct leptons. \ 
+  <with|mode|math|W<rsup|> >bosons can be fixed by setting
+  <with|font-family|tt|vdecaymodeW1> and <with|font-family|tt|vdecaymodeW2>
+  in the powheg.input file. These flags spacify the charged leptons the
+  bosons decay to (11 e-; 13 mu-; 15 tau-; -11 e+; -13 mu+; -15 tau+).
+  <with|font-family|tt|vdecaymodeW1> and <with|font-family|tt|vdecaymodeW2>
+  must have the same sign. In the case of identical leptons in the final
+  state interference effects are neglected, so that the cross-section is
+  exactly half that of distinct leptons. \ 
 
   If you use this program, please quote <cite|Melia:2011gk>,
   <cite|Melia:2010bm>, <cite|Alioli:2010xd>.

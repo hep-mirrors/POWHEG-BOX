@@ -1,16 +1,29 @@
-      subroutine setreal(p,fermion_flav,amp2)
+      subroutine setreal(p,rflav,amp2)
       implicit none
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_math.h'
       include 'pwhg_st.h'
       include 'PhysPars.h'
+      include 'cvecbos.h' 
       integer nleg
       parameter (nleg=nlegreal)
-      real * 8 p(0:3,nleg)
-      integer fermion_flav(nleg)
+      real * 8 p(0:3,nleg),p0(0:3,nleg)
+      integer rflav(nleg),rflav0(nleg)
       real * 8 amp2
-      call compreal(p,fermion_flav,amp2)
+
+
+      if(idvecbos.eq.24) then
+         rflav0=rflav
+         p0=p
+      else
+c Apply CP to the kinematics
+         rflav0=-rflav
+         p0=p
+         p0(1,:)=-p(1,:)
+      endif
+
+      call compreal(p0,rflav0,amp2)
 
       end
 

@@ -206,8 +206,10 @@ c     Born graphs
       do i8=i7,4
 
 C     charge conservation 
+C     construct the Born flavour list for Wp Wp (then reverse signs for Wm Wm) 
                   condition=(charge3(i1)+charge3(i2))
-     .                 .eq.(2*sign(3,idvecbos)+charge3(i7)+charge3(i8))
+C     .                 .eq.(2*sign(3,idvecbos)+charge3(i7)+charge3(i8))
+     .             .eq.(2*sign(3,abs(idvecbos))+charge3(i7)+charge3(i8))
 C     assume diagonal CKM 
                   condition = condition .and. (
      .                 (-fam(i1)== fam(i2)  .and. fam(i7)==-fam(i8)).or. 
@@ -225,6 +227,12 @@ c     q qbar'
             enddo
          enddo
       enddo
+C     reverse signs for Wm Wm
+      if (idvecbos == -24 ) then 
+         flst_born(1:2,:) = -flst_born(1:2,:)
+         flst_born(7:8,:) = -flst_born(7:8,:)
+      endif
+
       if (debug) then
          write(*,*) ' born processes',flst_nborn
          do j=1,flst_nborn
@@ -243,8 +251,9 @@ c     Real graphs
 
 
 C     charge conservation 
+C     construct the real flavour list for Wp Wp (then reverse signs for Wm Wm) 
          condition=(charge3(i1)+charge3(i2))
-     .        .eq.(2*sign(3,idvecbos)+charge3(i7)+charge3(i8)
+     .        .eq.(2*sign(3,abs(idvecbos))+charge3(i7)+charge3(i8)
      .        +charge3(i9))
 C     assume diagonal CKM 
          condition = condition .and. (
@@ -283,6 +292,13 @@ c     q qbar'
       enddo
       enddo
       enddo
+
+C     reverse signs for Wm Wm
+      if (idvecbos == -24 ) then 
+         flst_real(1:2,:) = -flst_real(1:2,:)
+         flst_real(7:9,:) = -flst_real(7:9,:)
+      endif
+
       if (debug) then
          write(*,*) ' real processes',flst_nreal
          do j=1,flst_nreal

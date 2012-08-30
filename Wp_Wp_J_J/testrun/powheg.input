@@ -1,6 +1,6 @@
 !Single vector boson production parameters
-idvecbos 24   ! PDG code for vector boson to be produced ( W+:24 W-:-24 )
-vdecaymode -11  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
+vdecaymodeW1 -11  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
+vdecaymodeW2 -13  ! PDG code for charged decay product of the vector boson (11:e-; -11:e+; ...)  
 numevts 0   ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)

@@ -6,15 +6,31 @@
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'PhysPars.h'
+      include 'cvecbos.h'
       integer nlegs,nf
       parameter (nlegs=nlegborn)
       parameter (nf=5)
-      real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
+      real * 8 p(0:3,nlegs),p0(0:3,nlegs),bornjk(nlegs,nlegs)
       real * 8 bmunu(0:3,0:3,nlegs),born
-      integer bflav(nlegs)
+      integer bflav0(nlegs),bflav(nlegs)
 !      integer i,j
-      
-      call compborn(p,bflav,born,bmunu,bornjk)
+      if(idvecbos.eq.24) then
+         bflav0=bflav
+         p0=p
+      else
+c Apply CP to the kinematics
+         bflav0=-bflav
+         p0=p
+         p0(1,:)=-p(1,:)
+      endif
+      call compborn(p0,bflav0,born,bmunu,bornjk)
+C No bmunu to worry about here
+C      if(idvecbos.ne.24) then
+Cc     Apply P also to bmunu tensor
+C         bmunu(1,:,:) = -bmunu(1,:,:) 
+C         bmunu(:,1,:) = -bmunu(:,1,:) 
+C      endif
+
 !      call qqb_wpwp_qqb_colborn(bflav,p,bornjk2)
 
 c     Colour factors for colour-correlated Born amplitudes;
@@ -67,6 +83,7 @@ c-----setting MCFMconstants
 	 MCFMgw     = ph_unit_e/ph_sthw
          firsttime = .false. 
       endif
+
       Npoint = 6 
       MCFMgsq    = st_alpha*4d0*pi 
 

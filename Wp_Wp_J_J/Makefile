@@ -49,6 +49,12 @@ OPT = -O3 #-fast
 #DEBUG= -debug -g
 endif
 
+ifdef DEBUG
+#FPE=-ffpe-trap=invalid,zero,overflow
+#,underflow
+OPT=-O0
+endif
+
 
 
 PWD=$(shell pwd)
@@ -95,12 +101,13 @@ else
 PWHGANAL=pwhg_analysis-dummy.o
 endif
 
+
 QCDLOOP=QCDLoop-1.9-$(FC)
 
 LIBS+= -LF90/obj-$(FC) -lWpWp2j -L$(QCDLOOP)/ql -L$(QCDLOOP)/ff -lqcdloop -lff
 
 %.o: %.f $(INCLUDE)
-	$(FF) -c -o obj-$(FC)/$@ $<
+	$(FF) -c $(DEBUG) -o obj-$(FC)/$@ $<
 
 %.o: %.c
 	$(CC) $(DEBUG) -c -o obj-$(FC)/$@ $^ 

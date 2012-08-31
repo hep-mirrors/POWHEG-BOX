@@ -44,6 +44,13 @@ c
       call pdfcall(2,kn_xb2,pdf2)
       call setborn0(kn_cmpborn,flst_born(1,rad_ubornidx),born,
      #        bornjk,bmunu)
+c Store in the br_born arrays; they are used to compute
+c collinear and soft approximations, and affect the subtraction
+c of the remnant component.
+      br_born(rad_ubornidx)=born
+      br_bornjk(:,:,rad_ubornidx)=bornjk
+      br_bmunu(:,:,:,rad_ubornidx)=bmunu
+
       born=born *
      #  pdf1(flst_born(1,rad_ubornidx))*pdf2(flst_born(2,rad_ubornidx))
       end

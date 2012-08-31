@@ -240,7 +240,7 @@ c Output NLO histograms
       write(*,*) ' negative weight fraction:',
      1     rad_totnegbtl/(2*rad_totnegbtl+rad_tot)
       close(iunstat)
-      call flush
+      call flush(6)
 c initialize gen; the array xmmm is set up at this stage.
       call gen(btilde,ndiminteg,xgrid,ymax,xmmm,ifold,0,
      #    mcalls,icalls,xx)

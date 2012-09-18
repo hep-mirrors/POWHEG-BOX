@@ -131,25 +131,42 @@ c     If fast_ew is enabled, create the array with the campionazied deltaew valu
       include 'PhysPars.h'
       include 'Flags.h'
       integer i
-      real * 8 m12,m0,y12,y0,value
+      real * 8 m12,m0,y12,y0,value,ph_Hmasshigh
       complex * 16 ampl, reduced,x12,x0,aux,bornqcd
       common /bornampl/ampl,bornqcd
       real * 8 deltaew
       external reduced,deltaew
 
+      ph_Hmasshigh = sqrt(ph_Hmass2high)
+
       write(*,*) 'Starting cached EW corrections array initialization'
-      if (sqrt(ph_Hmass2high).gt.10000) then
-              write(*,*) 'Upper bound of the BW greater than EW
-     $ corrections array limit. Please lower it or
-     $ disable EW corrections.'
+      if ((ph_Hmass.le.700d0).and.(ph_Hmasshigh.gt.1800d0)) then
+              write(*,*) 'The POWHEG-BOX aborts: 
+     $For m_H less or equal than 700 GeV, EW corrections available
+     $for virtualities up to 1800GeV. Please fix the maxwindow parameter 
+     $accordingly.'
               call exit(1)
-      end if    
-      do mh=0,10000
+      else if (((ph_Hmass.gt.700d0).and.(ph_Hmass.le.1000d0)).and.
+     $          (ph_Hmass2high.gt.2000d0)) then
+              write(*,*) 'The POWHEG-BOX aborts: 
+     $For m_H greater than 700 and less than 1000, EW corrections
+     $available for virtualities up to 2000GeV.
+     $Please fix the maxwindow parameter accordingly.'
+         call exit(1)
+      else if (ph_Hmass.gt.1000d0) then
+              write(*,*) 'The POWHEG-BOX aborts: 
+     $For m_H greater than 1000, EW corrections are NOT available. 
+     $Please disable them.' 
+         call exit(1)
+      end if
+
+c     2500 is the end of Passarino's grid
+      do mh=0,2500
          value = 0d0
          if (flg_passarino.eq.1) then
             call exa_ewgrid(mh,value)
 c            write(*,*) 'mh',mh, value
-            cached_ew_corr(int(mh)) = value/100d0
+            cached_ew_corr(nint(mh)) = value/100d0
          else
 c     write(*,*) 'mh', mh
             ampl = dcmplx(0d0)
@@ -163,7 +180,7 @@ c     write(*,*) 'mh', mh
             end do
             cached_ew_corr(int(mh)) = deltaew(ampl)
          end if
-         write(33,*) 'deltaew',mh, cached_ew_corr(int(mh))
+         write(33,*) 'deltaew',mh, cached_ew_corr(nint(mh))
       end do
       close(33)
       write(*,*) 'Finished cached EW corrections array initialization'

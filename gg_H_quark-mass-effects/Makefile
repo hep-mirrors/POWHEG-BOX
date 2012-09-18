@@ -9,7 +9,7 @@ PDF = lhapdf
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
 ANALYSIS = default
 ## For static linking uncomment the following
-STATIC= -static
+#STATIC= -static
 #LIBS+= -lSLHA -lFH
 #
 ifeq ("$(COMPILER)","gfortran")	
@@ -18,7 +18,7 @@ F77= gfortran -fno-automatic
 ## of boolean in gfortran.
 #FFLAGS= -Wall -Wimplicit-interface -fbounds-check
 #FFLAGS= -Wall -Wimplicit-interface
-FFLAGS= -Wall -fwhole-file
+FFLAGS= -Wall
 ## For floating point exception trapping  uncomment the following 
 FPE=-ffpe-trap=invalid,zero,overflow,underflow 
 ## gfortran 4.4.1 optimized with -O3 yields erroneous results
@@ -26,6 +26,7 @@ FPE=-ffpe-trap=invalid,zero,overflow,underflow
 #OPT=-O2
 ## For debugging uncomment the following
 #DEBUG= -ggdb -pg
+# -fwhole-file is not supported on very old gcc and the default on newer ones
 #DEBUG= -ggdb -fwhole-file
 endif
 

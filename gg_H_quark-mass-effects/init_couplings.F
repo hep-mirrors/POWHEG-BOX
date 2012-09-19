@@ -147,7 +147,7 @@ c     If fast_ew is enabled, create the array with the campionazied deltaew valu
      $accordingly.'
               call exit(1)
       else if (((ph_Hmass.gt.700d0).and.(ph_Hmass.le.1000d0)).and.
-     $          (ph_Hmass2high.gt.2000d0)) then
+     $          (ph_Hmasshigh.gt.2000d0)) then
               write(*,*) 'The POWHEG-BOX aborts: 
      $For m_H greater than 700 and less than 1000, EW corrections
      $available for virtualities up to 2000GeV.

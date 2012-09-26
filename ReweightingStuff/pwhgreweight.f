@@ -112,6 +112,7 @@ c...reads event information from a les houches events file on unit nlf.
       character * 500 string
       include 'LesHouches.h'
       integer i,j
+      iret=0
  1    continue
       string=' '
       read(nlf,fmt='(a)',err=777,end=666) string
@@ -149,6 +150,7 @@ c no event found:
       return
  998  continue
       print *,"read </LesHouchesEvents>"
+      iret=-1
       nup=0      
  999  end
 
@@ -167,7 +169,6 @@ c no event found:
       logical readrw
       integer gen_seed,gen_n1,gen_n2
       common/cgenrand/gen_seed,gen_n1,gen_n2
-      iret = 0
       readrw = .false.
  1    continue
       read(unit=nlf,fmt='(a)',end=998) string

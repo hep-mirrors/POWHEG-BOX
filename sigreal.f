@@ -14,6 +14,8 @@
       integer j,iuborn
       logical valid_emitter
       external valid_emitter
+      logical pwhg_isfinite 
+      external pwhg_isfinite
       do j=1,flst_nborn
          resreal(j)=0
       enddo
@@ -146,6 +148,11 @@ c     to avoid divergent integral (25 is an ad hoc value)
                   endif
                enddo
             endif
+         endif
+         if (.not.pwhg_isfinite(out0).or..not.pwhg_isfinite(out1)) then
+            out0 = 0d0 
+            out1 = 0d0 
+            resreal = 0d0 
          endif
          if(flg_nlotest) then
             out0=out0*www

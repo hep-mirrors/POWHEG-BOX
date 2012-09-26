@@ -19,6 +19,8 @@ c     for x_1 and x_2, and take away an overall azimuth
       integer j
       save resborn,resvirt,wwwtot
       real *8 totborn,totvirt
+      logical pwhg_isfinite 
+      external pwhg_isfinite
       www=www0*hc2
       do j=1,ndiminteg-3
          xborn(j)=xx(j)
@@ -92,6 +94,10 @@ c output Born
                totborn=totborn+resborn(j)
             enddo
             totborn=totborn*wwwtot
+            if (.not.pwhg_isfinite(totborn)) then 
+               totborn = 0d0 
+               resborn = 0d0 
+            endif
             call analysis_driver(totborn,0)
             if(.not.flg_bornonly) then
 c output virtual
@@ -100,6 +106,10 @@ c output virtual
                   totvirt=totvirt+resvirt(j)
                enddo
                totvirt=totvirt*wwwtot
+               if (.not.pwhg_isfinite(totvirt)) then 
+                  totvirt = 0d0 
+                  resvirt = 0d0 
+               endif
                call analysis_driver(totvirt,0)
             endif
 c closing call to end a sequence of correlated events in the

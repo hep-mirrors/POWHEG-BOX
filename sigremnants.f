@@ -11,6 +11,8 @@ c damping
       include 'pwhg_rad.h'
       include 'pwhg_flg.h'
       include 'pwhg_math.h'
+      logical pwhg_isfinite 
+      external pwhg_isfinite
       real * 8 sigremnant,xx(ndiminteg),ww
       integer ifirst
       real * 8 xrad(3)
@@ -53,6 +55,10 @@ c This subroutine may set the scales with values depending
 c upon the real emission kinematics
          call setscalesbtlreal
          call sigreal_reg(xjac,rad_reg_tot,rad_reg_arr)
+         if (.not.pwhg_isfinite(rad_reg_tot)) then 
+            rad_reg_tot = 0d0 
+            sigremnant = 0d0
+         endif
          if(flg_nlotest) then
             call analysis_driver(rad_reg_tot/suppfact,1)
          endif
@@ -70,6 +76,10 @@ c upon the real emission kinematics
 c     No need to generate phase space; it is already available
                   call setscalesbtlreal
                   call sigreal_damp_rem(xjac,ttt,rad_damp_rem_arr)
+                  if (.not.pwhg_isfinite(ttt)) then 
+                     ttt = 0d0 
+                     sigremnant = 0d0
+                  endif
                   if(flg_nlotest) then
                      call analysis_driver(ttt/suppfact,1)
                   endif
@@ -81,6 +91,10 @@ c     No need to generate phase space; it is already available
      #                *kn_jacborn*suppfact*ww*hc2
                   call setscalesbtlreal
                   call sigreal_damp_rem(xjac,ttt,rad_damp_rem_arr)
+                  if (.not.pwhg_isfinite(ttt)) then 
+                     ttt = 0d0 
+                     sigremnant = 0d0
+                  endif
                   if(flg_nlotest) then
                      call analysis_driver(ttt/suppfact,1)
                   endif

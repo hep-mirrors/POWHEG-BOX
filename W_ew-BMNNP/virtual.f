@@ -2226,7 +2226,11 @@ c$$$      end
 *
 * m12 = 0
 *
-          arglog = ( m02 - p2 )/m02
+          if (.not.complexmasses.and.abs(m02-mw2).lt.2d0*epsilon) then
+              arglog = ( m02 - ii*ph_WmWw - p2 )/m02
+          else
+              arglog = ( m02 - p2 )/m02
+          endif
 
           if (dble(m02).le.dble(p2)) then
    

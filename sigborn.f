@@ -18,7 +18,7 @@
 c     if one wants to do only the integration over the whole phase space, then
 c     uncomment the following
 c        
-c         res(j)=kn_jacborn/(kn_sborn**(n-2))/flst_nborn
+c         res(j)=kn_jacborn/(kn_sborn**(n-4))/flst_nborn
 c     replacing n with the number of final state lines.
 c This should yield:
 c         phsp(n):=(%pi/2)^(n-1)/(gamma(n)*gamma(n-1))

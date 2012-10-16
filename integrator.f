@@ -139,6 +139,7 @@ c
       vtot=0
       etot=0
       do kpoint=1,ncalls
+ 12      continue
 c find random x, and its random cell
          do kdim=1,ndim
             kfold(kdim)=1
@@ -162,21 +163,21 @@ c contribution to integral
          if(imode.eq.0) then
             vfun=abs(fun(x,vol,ifirst))
 c If you get NaN or Inf, skip this value
-            if(.not.pwhg_isfinite(vfun)) goto 11
+            if(.not.pwhg_isfinite(vfun)) goto 12
             f=vfun+f
             f=fun(x,vol,2)
-            if(.not.pwhg_isfinite(f)) goto 11
+            if(.not.pwhg_isfinite(f)) goto 12
          else
 c this accumulated value will not be used
             vfun=fun(x,vol,ifirst)
-            if(.not.pwhg_isfinite(vfun)) goto 11
+            if(.not.pwhg_isfinite(vfun)) goto 12
             f=vfun+f
             ifirst=1
             call nextlexi(ndim,ifold,kfold,iret)
             if(iret.eq.0) goto 1
 c closing call: accumulated value with correct sign
             f=fun(x,vol,2)
-            if(.not.pwhg_isfinite(f)) goto 11
+            if(.not.pwhg_isfinite(f)) goto 12
          endif
 c
          if(imode.eq.0) then

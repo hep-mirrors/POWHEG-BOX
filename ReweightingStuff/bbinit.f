@@ -465,7 +465,7 @@ c random seeds
          read(iun,iostat=ios) shx, ih1x, ih2x, ndns1x, ndns2x
          if(ios.ne.0) goto 998
          if(shx.ne.kn_sbeams.or.ih1x.ne.pdf_ih1.or.ih2x.ne.pdf_ih2
-     1      .or.ndns1x.ne.pdf_ndns1.or.ndns2x.ne.pdf_ndns2.or.ios.ne.0)
+     1      .or.ios.ne.0)
      2        goto 998
          read(iun,iostat=ios) ((tot(k,j),k=1,2),j=1,8)
          if(ios.ne.0) goto 998
@@ -612,7 +612,7 @@ c
      1     xintrm
       read(iun,iostat=ios) shx, ih1x, ih2x, ndns1x, ndns2x
       if(shx.ne.kn_sbeams.or.ih1x.ne.pdf_ih1.or.ih2x.ne.pdf_ih2
-     #  .or.ndns1x.ne.pdf_ndns1.or.ndns2x.ne.pdf_ndns2.or.ios.ne.0) then
+     #  .or.ios.ne.0) then
          iret=-1
          close(iun)
          return

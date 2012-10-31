@@ -113,6 +113,10 @@ c to examine that event in particular
       write(*,*)' POWHEG: generating events'
       do j=1,nev
          call pwhgevent
+         if(nup.eq.0) then
+            write(*,*) ' nup = 0 skipping event'
+            goto 111
+         endif
          call lhefwritev(iun)
          if(idwtup.eq.3) then
             weight=rad_totgen*xwgtup*rad_branching
@@ -123,10 +127,6 @@ c to examine that event in particular
             call exit(-1)
          endif
          if(testplots) then
-            if(nup.eq.0) then
-               write(*,*) ' nup = 0 skipping event'
-               goto 111
-            endif
             call lhtohep
             call analysis(weight)
             call pwhgaccumup

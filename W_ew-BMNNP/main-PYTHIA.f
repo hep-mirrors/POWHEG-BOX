@@ -64,14 +64,11 @@ c PHOTOS UNTIL EVENT OK
          call hepevttolhef
 
 c PHYTHIA
-         print*,phep(:,1)
          call pyevnt
 c         if(nup.eq.0) goto 111
 c     Convert from PYJETS event record to HEPEVT event record
          temp=nevhep
          call pyhepc(1)
-         print*,phep(:,3)
-         print*
          nevhep=temp
 c     Print out the event record
          IF (IEV.le.maxpr) THEN 

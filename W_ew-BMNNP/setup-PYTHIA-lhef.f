@@ -98,7 +98,7 @@ c     Make PI0 stable as in herwig default
 
       subroutine UPEVNT
       implicit none
-      call lhefreadev(97)
+c      call lhefreadev(97)
       end
 
 

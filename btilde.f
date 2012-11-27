@@ -17,7 +17,7 @@ c     for x_1 and x_2, and take away an overall azimuth
       real * 8 results(maxprocborn)
       real * 8 tmp,suppfact,www,wwwtot
       integer j
-      save resborn,resvirt,wwwtot
+      save resborn,resvirt,wwwtot,suppfact
       real *8 totborn,totvirt
       logical pwhg_isfinite 
       external pwhg_isfinite

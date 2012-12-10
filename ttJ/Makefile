@@ -49,7 +49,6 @@ endif
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-DIRVIRTUALS=$(PWD)/Virtuals
 VPATH= ./:../:obj-$(COMPILER)/:madgraph/:madgraph/born/:madgraph/real/:madgraph/born_decay/:madgraph/real_decay/
 
 
@@ -135,7 +134,7 @@ PWHG= pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o ttjdecay.o \
 	$(PDFPACK) $(USER) $(FPEOBJ)
 
 # main target, to generate the hardest emission and write events on a LHEF file
-pwhg_main: $(PWHG) $(LIBDHELAS) $(LIBVIRTUALS) 
+pwhg_main: $(PWHG) $(LIBDHELAS) 
 	$(FF) $(patsubst %.o,obj-$(COMPILER)/%.o,$(PWHG)) $(LIBS) -o $@-$(COMPILER)
 
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
@@ -192,17 +191,12 @@ clean:
 dist-clean: clean
 	rm -f obj*/*.o obj*/*/* madgraph/DHELAS/*/*.o madgraph/DHELAS/*.a \
 	pwhg_main-* lhef_analysis-* main-HERWIG-lhef-* main-PYTHIA-lhef-*
-	@echo looking into subdir $(DIRVIRTUALS)
-	$(MAKE) dist-clean --directory=$(DIRVIRTUALS) COMPILER=$(COMPILER)
 
 ###### to compile dependencies
 $(LIBDHELAS): force_look
 	@echo looking into subdir madgraph/DHELAS
 	$(MAKE) FC=$(FC) FF='$(FF)' --directory=madgraph/DHELAS 
 
-$(FASTJETWRAP): force_look
-	@echo looking into subdir $(DIRVIRTUALS)
-	$(MAKE) fastjet_wrap.o --directory=$(DIRVIRTUALS)
 force_look :
 	true
 ######

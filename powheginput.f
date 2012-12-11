@@ -142,6 +142,20 @@ c skip blanks
                   goto 12
                endif
                k=index(line,' ')
+c See if the same keyword is already there: give error in this case
+               if(numvalues.gt.1) then
+                  do j=1,numvalues-1
+                     if(keywords(j).eq.line(1:k-1)) then
+                        write(*,*) 'powheginput: keyword '//line(1:k-1)
+     1                     //' appears more than once in powheg.input:'
+                        write(*,*) trim(line)
+                        write(*,*) ' appeared after '
+                        write(*,*) line(1:k-1), values(j)
+                        write(*,*) 'Exiting'
+                        call exit(-1)
+                     endif
+                  enddo
+               endif
                keywords(numvalues)=line(1:k-1)
                line=line(k+1:)
                read(unit=line,fmt=*,iostat=ios) values(numvalues)

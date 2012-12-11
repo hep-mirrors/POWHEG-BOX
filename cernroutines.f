@@ -1937,3 +1937,14 @@ c Assume we wrapped around
       RETURN
       END
 
+
+
+      subroutine pwhg_exit(iret)
+      integer iret
+      real * 8 tmp,powheginput
+      tmp=powheginput('print unused tokens')
+      call write_counters
+      call exit(-1)
+      end
+
+

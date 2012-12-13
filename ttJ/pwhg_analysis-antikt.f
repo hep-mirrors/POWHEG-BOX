@@ -1159,8 +1159,8 @@ c     but include gluons
          
               condition=.true.
               if(WHCPRG.eq.'LHE   ') then
-                 if(.not.((abs(idhep(ihep)).eq.5)
-     4              .and.(abs(idhep(jmohep(1,ihep))).eq.6))) then
+                 if((abs(idhep(ihep)).eq.5)
+     4              .and.(abs(idhep(jmohep(1,ihep))).eq.6)) then
 c     exclude final state b quarks whose mother is a top 
 c     (needed in LHEF analysis of decayed event)          
                     condition=.false.

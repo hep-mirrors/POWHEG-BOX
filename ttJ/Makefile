@@ -122,24 +122,25 @@ MADGRAPH+=$(shell echo madgraph/real_decay/*.f | sed -e 's/.f/.o/g;s/madgraph\/r
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
         real.o $(PWHGANAL) $(MADGRAPH)
 
-PWHG= pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o ttjdecay.o \
-	LesHouches.o LesHouchesreg.o gen_Born_phsp.o find_regions.o   \
-	test_Sudakov.o pt2maxreg.o sigborn.o gen_real_phsp.o maxrat.o \
-	gen_index.o gen_radiation.o Bornzerodamp.o sigremnants.o      \
-	random.o boostrot.o lhefroutines.o bra_ket_subroutines.o      \
-	cernroutines.o init_phys.o powheginput.o pdfcalls.o sigreal.o \
-	sigcollremn.o pwhg_bookhist.o pwhg_analysis_driver.o	      \
-	reshufflemoms.o checkmomzero.o setstrongcoupl.o integrator.o  \
-	newunit.o mwarn.o sigsoftvirt.o sigcollsoft.o sigvirtual.o    \
+PWHG= pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
+	ttjdecay.o LesHouches.o LesHouchesreg.o gen_Born_phsp.o		\
+	find_regions.o test_Sudakov.o pt2maxreg.o sigborn.o		\
+	gen_real_phsp.o maxrat.o gen_index.o gen_radiation.o		\
+	Bornzerodamp.o sigremnants.o random.o boostrot.o		\
+	lhefroutines.o bra_ket_subroutines.o cernroutines.o		\
+	init_phys.o powheginput.o pdfcalls.o sigreal.o sigcollremn.o	\
+	pwhg_bookhist.o pwhg_bookhist_add.o pwhg_analysis_driver.o	\
+	reshufflemoms.o checkmomzero.o setstrongcoupl.o integrator.o	\
+	newunit.o mwarn.o sigsoftvirt.o sigcollsoft.o sigvirtual.o	\
 	$(PDFPACK) $(USER) $(FPEOBJ)
 
 # main target, to generate the hardest emission and write events on a LHEF file
 pwhg_main: $(PWHG) $(LIBDHELAS) 
 	$(FF) $(patsubst %.o,obj-$(COMPILER)/%.o,$(PWHG)) $(LIBS) -o $@-$(COMPILER)
 
-LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o  opencount.o \
-	powheginput.o pwhg_bookhist.o lhefread.o newunit.o \
-        pwhg_analysis_driver.o printleshouches.o \
+LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o opencount.o	\
+	powheginput.o pwhg_bookhist.o pwhg_bookhist_add.o lhefread.o	\
+	newunit.o pwhg_analysis_driver.o printleshouches.o		\
 	$(PWHGANAL) $(FPEOBJ)
 
 # target to analyze LHEF output
@@ -148,8 +149,8 @@ lhef_analysis:$(LHEF)
 
 
 # target to read event file, shower events with HERWIG + analysis
-HERWIG=main-HERWIG.o herwig.o boostrot.o	\
-	powheginput.o pwhg_bookhist.o $(PWHGANAL) lhefread.o	\
+HERWIG=main-HERWIG.o herwig.o boostrot.o powheginput.o			\
+	pwhg_bookhist.o pwhg_bookhist_add.o $(PWHGANAL) lhefread.o		\
 	pdfdummies.o cernroutines.o opencount.o printleshouches.o
 
 HERWIG_DRIVER_NOUE= setup-HERWIG-lhef.o
@@ -165,7 +166,7 @@ main-HERWIG-UE-lhef: $(HERWIG) $(HERWIG_DRIVER_UE)
 
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o  pythia.o boostrot.o powheginput.o	\
-	pwhg_bookhist.o $(PWHGANAL) lhefread.o pdfdummies.o			\
+	pwhg_bookhist.o pwhg_bookhist_add.o $(PWHGANAL) lhefread.o pdfdummies.o			\
         cernroutines.o opencount.o printleshouches.o
 
 PYTHIA_DRIVER_NOMPI=setup-PYTHIA-lhef.o

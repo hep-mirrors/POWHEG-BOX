@@ -55,8 +55,9 @@ VPATH= ./:../:obj-$(COMPILER)/:madgraph/:madgraph/born/:madgraph/real/:madgraph/
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
 INCLUDE2=$(shell dirname $(PWD))/include
+INCLUDE3=$(shell dirname $(PWD))
 
-FF=$(F77) $(FPE) $(OPT) $(PP) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) 
+FF=$(F77) $(FPE) $(OPT) $(PP) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2)  -I$(INCLUDE3)
 
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h madgraph/*.inc)

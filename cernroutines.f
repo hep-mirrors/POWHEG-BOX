@@ -624,6 +624,7 @@ C for 32-bit machines, use IMPLICIT DOUBLE PRECISION
       COMMON/R48ST1/U(97),C,I97,J97
       PARAMETER (MODCNS=1000000000)
       SAVE CD, CM, TWOM24, NTOT, NTOT2, IJKL,TWOM49, ONE, ZERO
+      save /R48ST1/
       DATA NTOT,NTOT2,IJKL/-1,0,0/
 C
       IF (NTOT .GE. 0)  GO TO 50
@@ -688,7 +689,9 @@ C            (NTOT2*MODCNS + NTOT) random numbers
       IF (LOOP2 .EQ. NTOT2+1)  NOW=NTOT
       IF (NOW .GT. 0)  THEN
       WRITE(6,'(A,I15)') ' RM48IN SKIPPING OVER ',NOW
-          DO 40 IDUM = 1, NTOT
+c Bug! fixed by P. Nason, 13/12/2012
+c          DO 40 IDUM = 1, NTOT
+          DO 40 IDUM = 1, NOW
           UNI = U(I97)-U(J97)
           IF (UNI .LT. ZERO)  UNI=UNI+ONE
           U(I97) = UNI

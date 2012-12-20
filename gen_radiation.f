@@ -14,11 +14,12 @@
       integer mcalls,icalls
       real * 8 pwhg_pt2,pt2max_regular
       external pwhg_pt2,pt2max_regular
+      real * 8 weight
       integer i
       if(idwtup.eq.3) then
-         xwgtup=1
+         weight=1
       elseif(idwtup.eq.-4) then
-         xwgtup=rad_totgen * rad_branching
+         weight=rad_totgen * rad_branching
       else
          write(*,*) ' only 3 and -4 are allowed for idwtup'
          call exit(-1)
@@ -41,21 +42,12 @@ c add a random azimuthal rotation around beam axis
 c --- set up les houches interface
          rad_pt2max=pwhg_pt2()
          call gen_leshouches
-c if negative weight, flip the sign of xwgtup
+c if negative weight, flip the sign of weight
          if(rad_btilde_sign(rad_ubornidx).eq.-1) then
-            xwgtup=-xwgtup
+            weight=-weight
          endif
 c rad_type=1 for btilde events (used only for debugging purposes)
          rad_type=1
-         if(flg_weightedev) then
-            call born_suppression(suppfact)
-            if(suppfact.eq.0) then
-               write(*,*) ' 0 suppression factor in event generation'
-               write(*,*) ' aborting'
-               call exit(-1)
-            endif
-            xwgtup=xwgtup/suppfact
-         endif
          call increasecnt("btilde event")
       else
 c generate remnant n+1 body cross section
@@ -81,13 +73,6 @@ c     set st_muren2 equal to pt2 for scalup value
             rad_pt2max=max(rad_ptsqmin,pwhg_pt2())
             call set_rad_scales(rad_pt2max)
             call gen_leshouches
-            call born_suppression(suppfact)
-            if(suppfact.eq.0) then
-               write(*,*) ' 0 suppression factor in event generation'
-               write(*,*) ' aborting'
-               call exit(-1)
-            endif
-            xwgtup=xwgtup/suppfact
 c     rad_type=2 for remnants
             rad_type=2
             call increasecnt("remnant event")
@@ -101,6 +86,16 @@ c rad_type=3 for regular contributions
             call increasecnt("regular event")
          endif         
       endif
+      if(flg_weightedev) then
+         call born_suppression(suppfact)
+         if(suppfact.eq.0) then
+            write(*,*) ' 0 suppression factor in event generation'
+            write(*,*) ' aborting'
+            call exit(-1)
+         endif
+         weight=weight/suppfact
+      endif
+      xwgtup = weight
       end
 
 

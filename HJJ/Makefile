@@ -111,7 +111,7 @@ H2JVIRTFILES=Ampvirt_AQgg.o GZHggggvsqPoles.o HAQggvsqanal.o Hqaggvsq.o Hqaqavsq
 	gg_hgg_eval.o H4plo.o lfunctions.o spinoru.o h4g.o h4gnew.o h4q.o dclaus.o hqqggdfm.o\
 	hqqgg.o Amplo_AQgg.o i3m.o dot.o\
 
-H2JVFILES= A0HAQgg.o A0phiAQgg.o A0phiggggpppp.o A1phiAQggmpmm.o A1phiAgQgmppp.o\
+H2JVFILES= A0HAQgg.o A0phiAQgg.o A0phiggggpppp.o Lsm1DS.o A1phiAQggmpmm.o A1phiAgQgmppp.o\
 	A41phiAQgg.o A43phiAQggmpmp.o Aslcphiqarbmpmp.o F41mF.o A0Hggggmmpp.o A0phiAgQg.o\
 	A0phiqarb.o A1phiAQggmpmp.o A1phiggggmmmm.o A41phiqarb.o A43phiAQggmppm.o Aslcphiqarbmppm.o\
 	F42me.o A0Hggggmpmp.o A0phiggggmmmm.o A1Hggggmmpp.o A1phiAQggmppm.o A1phiggggmmpp.o A42Hqarb.o Afphiqarbmpmp.o\

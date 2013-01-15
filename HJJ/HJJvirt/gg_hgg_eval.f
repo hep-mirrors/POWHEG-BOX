@@ -183,16 +183,19 @@ C     g(1)+q(2)->q(5)+g(6)
       if(recalc) gqqg(icurr)=+HAQggvsqanal(2,5,1,6)
 
 C     a(1)+g(2)->a(5)+g(6)
-      if(recalc) agag(icurr)=+HAQggvsqanal(5,1,2,6)
+      if(recalc) agag(icurr)=qgqg(icurr)
+C      if(recalc) agag(icurr)=+HAQggvsqanal(5,1,2,6)
 
 C     g(1)+a(2)->a(5)+g(6)
-      if(recalc) gaag(icurr)=+HAQggvsqanal(5,2,1,6)
+      if (recalc) gaag(icurr)=gqqg(icurr)
+C      if(recalc) gaag(icurr)=+HAQggvsqanal(5,2,1,6)
 
 C     g(1)+g(2)->q(5)+a(6)
       if(recalc) ggqa(icurr)=+HAQggvsqanal(6,5,1,2)
 
 C     q(1)+a(2)->g(5)+g(6)
-      if(recalc) qagg(icurr)=+HAQggvsqanal(1,2,5,6)
+      if (recalc) qagg(icurr)=aqgg(icurr)
+C      if(recalc) qagg(icurr)=+HAQggvsqanal(1,2,5,6)
       
 c--- FOUR GLUON PROCESS
       if(recalc) gggg(icurr)=+Hggggvsqanal(1,2,5,6)

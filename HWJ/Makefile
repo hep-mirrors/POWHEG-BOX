@@ -1,6 +1,6 @@
 #-*- Makefile -*-
 ## Choose compiler: gfortran,ifort (g77 not supported, F90 constructs in use!)
-COMPILER=gfortran
+COMPILER=ifort
 FC=$(COMPILER)
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
@@ -11,6 +11,12 @@ ANALYSIS=HWnJ
 ## For static linking uncomment the following
 #STATIC= -static
 #
+
+
+
+OBJ=obj-$(COMPILER)
+OBJDIR:=$(OBJ)
+
 ifeq ("$(COMPILER)","gfortran")	
 F77=gfortran -fno-automatic -J$(OBJ) -I$(OBJ)
 ## -fbounds-check sometimes causes a weird error due to non-lazy evaluation
@@ -29,21 +35,37 @@ FPE=-ffpe-trap=invalid,zero,overflow,underflow
 endif
 endif
 
-PWD=$(shell pwd)
-WDNAME=$(shell basename $(PWD))
 
-OBJ=obj-$(COMPILER)
-OBJDIR:=$(OBJ)
+
+ifeq ("$(COMPILER)","ifort")
+F77 = ifort -save  -extend_source  -I$(OBJ)
+#CXX = g++
+#LIBS = -limf
+#FFLAGS =  -checkm
+## For floating point exception trapping  uncomment the following 
+#FPE = -fpe0
+OPT = -O3 #-fast
+## For debugging uncomment the following
+#DEBUG= -debug -g
+ifdef DEBUG
+OPT=-O0
+endif
+endif
+
+
 
 GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// ; s/qlconstants.f// ; s/.f /.o /g ; s/.f90 /.o /g ; ' | tee GoSamlib.txt)
 
-#VPATH= ./:../:$(OBJ):./GoSamlib/
-VPATH= ../Parallel-grids/:./:../:$(OBJ):./GoSamlib/
+
+PWD=$(shell pwd)
+WDNAME=$(shell basename $(PWD))
+VPATH= ./:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
 
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
+INCLUDE1.2=$(shell dirname $(PWD))/Version-pre2-1/include
 INCLUDE2=$(shell dirname $(PWD))/include
-FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2)
+FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE1.2) -I$(INCLUDE2)
 
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
@@ -59,7 +81,7 @@ ifeq  ("$(STATIC)","-static")
 ## does perform this inclusion. The path has to be set by the user. 
 # LIBGFORTRANPATH= #/usr/lib/gcc/x86_64-redhat-linux/4.1.2
 # LIBSTDCPP=/lib64
-# LIBSLHAPDF+=  -L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran -L$(LIBSTDCPP) -lstdc++
+ LIBSLHAPDF+=  -L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran -L$(LIBSTDCPP) -lstdc++
 endif
 LIBS+=$(LIBSLHAPDF)
 else
@@ -70,13 +92,13 @@ endif
 ifeq ("$(ANALYSIS)","HWnJ")
 ##To include Fastjet configuration uncomment the following lines. 
 FASTJET_CONFIG=$(shell which fastjet-config)
-#FASTJET_CONFIG=~/lib/fastjet242/bin/fastjet-config
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HWnJ.o fastjetfortran.o
+PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HWnJ.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
-PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o 
+#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o  fastjetfortran.o
+PWHGANAL+= fastjetktwrap.o  fastjetfortran.o
 else
 PWHGANAL=pwhg_analysis-dummy.o
 endif
@@ -84,6 +106,7 @@ endif
 
 %.o: %.f $(INCLUDE) | $(OBJDIR)
 	$(FF) -c -o $(OBJ)/$@ $<
+
 %.o: %.f90 $(INCLUDE) | $(OBJDIR)
 	$(FF) -c -o $(OBJ)/$@ $<
 
@@ -106,7 +129,9 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	pwhg_analysis_driver.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	reshufflemoms.o  pwhg_gosam.o                                   \
-	sigcollsoft.o sigvirtual.o  $(PDFPACK) $(USER) $(FPEOBJ)
+	sigcollsoft.o sigvirtual.o  \
+	pwhgreweight.o setlocalscales-HWJ.o mint_upb.o opencount.o  \
+	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 
 
 LIBDIRMG=.

@@ -3,13 +3,31 @@
       include "nlegborn.h"
       include "pwhg_flst.h"
       include "pwhg_st.h"
+      include "pwhg_flg.h"
       include "coupl.inc"
       integer idvecbos,vdecaymode
       common/cvecbos/idvecbos,vdecaymode
       integer i
       real * 8 powheginput
       external powheginput
-      
+ 
+
+      st_bornorder=1
+      if(powheginput("#minlo").eq.1) then
+         flg_minlo=.true.
+         if(powheginput("#minlo_nnll").eq.1) then
+            flg_minlo_nnll=.true.
+         else
+            flg_minlo_nnll=.false.
+         endif
+         flg_minlo_real=.false.
+      else
+         flg_minlo=.false.
+         flg_minlo_nnll=.false.
+         flg_minlo_real=.false.
+      endif
+
+     
       idvecbos=powheginput('idvecbos')
 
       call init_processes_born

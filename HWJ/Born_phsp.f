@@ -5,6 +5,7 @@
       include 'pwhg_kn.h'
       include 'coupl.inc'
       include 'PhysPars.h'
+      include 'pwhg_flg.h'
       real * 8 xborn(ndiminteg-3),tmpvec(0:3)
       integer k
       logical ini,fullphsp
@@ -31,7 +32,13 @@ c     set initial- and final-state masses for Born and real
          ph_Hmass2low=powheginput("hmasslow")**2
          ph_Hmass2high=powheginput("hmasshigh")**2
          ph_Wmass2low=powheginput("wmasslow")**2
-         ph_Wmass2high=powheginput("wmasshigh")**2
+         ph_Wmass2high=powheginput("wmasshigh")**2         
+c     MINLO
+         if (flg_minlo) then
+            write(*,*) '***  kn_ktmin set to 0 in Born_phsp.f ***'
+            write(*,*) '***  to integrate over the whole PS   ***'
+            kn_ktmin=0d0
+         endif
          ini = .false.
       endif      
 
@@ -68,7 +75,7 @@ c$$$      include 'PhysPars.h'
 c     
       sqrts = sqrt(kn_sbeams)
       xjac=1
-c     First determine virtualities of the Higgs
+c     First determine virtuality of the Higgs
       smin=ph_Hmass2low
       smax=ph_Hmass2high
       mllminsq=ph_Wmass2low
@@ -215,9 +222,17 @@ c     now boost everything BACK along z-axis
       external powheginput      
       save ini,runningscales
 
-
       if (ini) then
          runningscales=powheginput("#runningscales")
+
+         if(powheginput("#minlo").eq.1) then
+            write(*,*) '****************************************'
+            write(*,*) '*******          MINLO ACTIVE    *******'
+            write(*,*) '****************************************'
+            write(*,*) '*******     FIXED SCALES!          *****'
+            runningscales=0
+         endif
+
          if (runningscales.eq.1) then
             write(*,*) '****************************************'
             write(*,*) '****************************************'

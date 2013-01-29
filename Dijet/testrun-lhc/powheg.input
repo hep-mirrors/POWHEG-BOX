@@ -49,7 +49,7 @@ nubound 500000       ! No. calls to set up the upper bounding norms for radiatio
 
 ! OPTIONAL PARAMETERS
 
-#withnegweights 1    ! (default 0). If 1 use negative weights.
+withnegweights 1     ! (default 0). If 1 use negative weights.
 #bornonly 1          ! (default 0). If 1 compute underlying Born using LO
                      ! cross section only.
 
@@ -72,3 +72,16 @@ nubound 500000       ! No. calls to set up the upper bounding norms for radiatio
                      ! integer at line j is used to initialize the random
                      ! sequence for the generation of the event.
                      ! The event file is called pwgevents-'j'.lhe
+
+doublefsr 1          ! Default 0; if 1 use new mechanism to generate regions
+                     ! such that the emitted harder than the
+                     ! emitter in FSR is suppressed. If doublefsr=0 this is
+                     ! only the case for emitted gluons (old behaviour). If
+                     ! 1 it is also applied to emitted quarks.
+                     ! If set, it strongly reduces spikes on showered output.
+
+
+
+#par_diexp 4         ! default is 2. With 4 there is a stronger separation
+#par_dijexp 4        ! of regions, it may help to reduce spikes when generating
+#par_2gsupp 4        ! weighted events.

@@ -12,10 +12,10 @@ ANALYSIS=none
 #STATIC= -static
 #
 ifeq ("$(COMPILER)","gfortran")	
-F77= gfortran -fno-automatic 	
+F77= gfortran -fno-automatic
 ## NOTE: -fbounds-check sometimes causes a compilation error
 ## due to non-lazy evaluation of boolean in gfortran.
-# FFLAGS= -Wall -Wimplicit-interface
+#FFLAGS= -Wall -Wimplicit-interface  -fcheck=all
 ## For floating point exception trapping  uncomment the following 
 #FPE=-ffpe-trap=invalid,zero,overflow,underflow 
 ## gfortran 4.4.1 optimized with -O3 yields erroneous results
@@ -37,10 +37,10 @@ endif
 
 
 ifeq ("$(COMPILER)","ifort")
-F77 = ifort -save  -extend_source
-CXX = icpc
-LIBS = -limf
-FFLAGS =  -check
+F77 = ifort
+#CXX = icpc
+#LIBS = -limf
+#FFLAGS =  -check
 ## For floating point exception trapping  uncomment the following 
 #FPE = -fpe0
 OPT = -O3 #-fast
@@ -48,17 +48,20 @@ OPT = -O3 #-fast
 #DEBUG= -debug -g
 endif
 
+ifdef DEBUG
+OPT=-O0
+endif
 
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-VPATH= ./:doublefsr/:../:obj/
+VPATH= ./:./Version-pre2-1/:../:obj/
 
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
-INCLUDE1.5=$(PWD)/doublefsr/include
+INCLUDE1.2=$(PWD)/Version-pre2-1/include
 INCLUDE2=$(shell dirname $(PWD))/include
-FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE1.5) -I$(INCLUDE2)
+FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE1.2) -I$(INCLUDE2)
 
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
@@ -82,16 +85,16 @@ PDFPACK=mlmpdfif.o hvqpdfpho.o
 endif
 
 
+PWHGANAL=pwhg_analysis-dummy.o pwhg_bookhist-new.o
+
 ifeq ("$(ANALYSIS)","default")
 ##To include Fastjet configuration uncomment the following lines. 
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-PWHGANAL=pwhg_analysis.o 
+PWHGANAL=pwhg_analysis.o pwhg_bookhist.o 
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 PWHGANAL+= fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o
-else
-PWHGANAL=pwhg_analysis-dummy.o
 endif
 
 %.o: %.f $(INCLUDE)
@@ -112,8 +115,9 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	gen_index.o gen_radiation.o Bornzerodamp.o sigremnants.o	\
 	random.o boostrot.o bra_ket_subroutines.o cernroutines.o	\
 	init_phys.o powheginput.o pdfcalls.o sigreal.o sigcollremn.o	\
-	pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o		\
+	pwhg_analysis_driver.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
+        pwhgreweight.o setlocalscales.o mint_upb.o opencount.o  validflav.o \
 	sigcollsoft.o sigvirtual.o reshufflemoms.o $(PDFPACK) $(USER) $(FPEOBJ)
 
 # target to generate LHEF output
@@ -121,7 +125,7 @@ pwhg_main:$(PWHG)
 	$(FF) $(patsubst %,obj/%,$(PWHG)) $(LIBS) $(LIBSFASTJET) $(STATIC) -o $@
 
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o		\
-     opencount.o powheginput.o pwhg_bookhist.o $(PWHGANAL)	\
+     opencount.o powheginput.o $(PWHGANAL)	\
      lhefread.o newunit.o pwhg_analysis_driver.o $(FPEOBJ)
 
 # target to analyze LHEF output
@@ -132,7 +136,7 @@ lhef_analysis:$(LHEF)
 
 # target to read event file, shower events with HERWIG + analysis
 HERWIG=main-HERWIG.o setup-HERWIG-lhef.o herwig.o boostrot.o	\
-	powheginput.o pwhg_bookhist.o $(PWHGANAL) lhefread.o	\
+	powheginput.o $(PWHGANAL) lhefread.o	\
 	pdfdummies.o opencount.o $(FPEOBJ)
 
 main-HERWIG-lhef: $(HERWIG)
@@ -140,9 +144,9 @@ main-HERWIG-lhef: $(HERWIG)
 
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o	\
-	powheginput.o pwhg_bookhist.o $(PWHGANAL) lhefread.o newunit.o	\
+	powheginput.o $(PWHGANAL) lhefread.o newunit.o	\
 	pdfdummies.o pwhg_analysis_driver.o random.o cernroutines.o 	\
-	opencount.o $(FPEOBJ)
+	opencount.o bra_ket_subroutines.o $(FPEOBJ)
 
 main-PYTHIA-lhef: $(PYTHIA)
 	$(FF) $(patsubst %,obj/%,$(PYTHIA)) $(LIBSFASTJET)  $(STATIC) -o $@

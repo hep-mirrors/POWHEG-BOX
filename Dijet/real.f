@@ -84,7 +84,7 @@ c -q -Q rather than q Q -> -Q -q (if q>Q) )
       DO I=1,2
          IF(FLAV(I).NE.0) THEN
 c - Sign for crossing fermion line:
-            AVG = AVG*-6.
+            AVG = AVG*(-6.)
          ELSE
             AVG = AVG*16.
          ENDIF

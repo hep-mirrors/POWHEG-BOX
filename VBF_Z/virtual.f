@@ -20,25 +20,19 @@
       integer fakevirt
       save fakevirt 
 
-      real*8 pid 
-      common /ps_id/ pid 
-
 c================================================
 
       virtual = 0d0
 
       if (firsttime) then
-      fakevirt=powheginput("#fakevirt")
-      if (fakevirt == 1) write(*,*) 'WARNING: Using fakevirt !'
-      firsttime = .false.
+        fakevirt=powheginput("#fakevirt")
+        if (fakevirt == 1) write(*,*) 'WARNING: Using fakevirt !'
+        firsttime = .false.
       endif
 
       if(fakevirt.eq.1) then  
 
-      if ( p(0,1).ne.pid) then ! new PS point -> compute tensors
-        call compute_tensors_z(p)     
-        pid = p(0,1)
-      endif
+      call compute_tensors_z(p)     
       call compborn_z_ew(p,vflav,born,bbmunu) 
  
       virtual = 0.2d0*born
@@ -47,10 +41,7 @@ c================================================
 
 c numbering of momenta is q(1) q(2) -> l+(3)l-(4)q(5)q(6)
 c
-      if ( p(0,1).ne.pid) then ! new PS point -> compute tensors
-        call compute_tensors_z(p)    
-        pid = p(0,1)
-      endif
+      call compute_tensors_z(p)    
       call compvirt_z_ew(p,vflav,virtual) 
 
 c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq

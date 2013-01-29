@@ -9,33 +9,11 @@ c
       real * 8 p(0:3,nleg)
       integer fermion_flav(nleg)
       real * 8 amp2
-
       integer j
-      real*8 pwsum
-      logical, save :: firstreal = .true. 
-      real*8 pidr 
-      common /ps_idr/ pidr    
 
 c----------------------------------------------------
 
-      if (firstreal) then
-         pidr = 0d0
-         firstreal = .false.
-      endif     
-      
-      pwsum = 0d0
-      do j = 1,nleg
-            pwsum = pwsum+real(j)*p(0,j)
-      enddo        
-
-      if ( pwsum.ne.pidr) then ! new PS point -> compute tensors
-         call compute_tensors_z_real(p) 
-         pidr = 0d0
-         do j = 1,nleg
-            pidr = pidr+real(j)*p(0,j)
-         enddo  
-      endif
-
+      call compute_tensors_z_real(p) 
       call compreal_z_ew(p,fermion_flav,amp2)
 
 c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq

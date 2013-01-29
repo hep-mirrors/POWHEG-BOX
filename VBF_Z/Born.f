@@ -14,26 +14,12 @@ c
       integer bflav(nlegs)
       integer j,k,mu,nu
 
-      logical, save :: firstborn = .true. 
-      real*8 pid 
-      common /ps_id/ pid    
-
 c----------------------------------------------------
-
-      if (firstborn) then
-         pid = 0d0
-         firstborn = .false.
-      endif   
 c
 c numbering of momenta is q(1) q(2) -> l+(3)l-(4)q(5)q(6)
 c
-      if ( p(0,1).ne.pid) then ! new PS point -> compute tensors
-        call compute_tensors_z(p) 
-        pid = p(0,1)
-      endif
+      call compute_tensors_z(p) 
       call compborn_z_ew(p,bflav,born,bbmunu) 
-
-c 122	continue
 
       do j=1,nlegs
          if(abs(bflav(j)).le.6) then

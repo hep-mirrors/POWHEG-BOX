@@ -14,6 +14,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       double precision m1,m2,m3,s1,s2,s3,lambda
       integer j
       parameter(wt0=1d0/8d0/pi)
+      real * 8 z
 
       wt=0d0
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
@@ -26,7 +27,13 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       s3=s3max*x3+s3min*(1d0-x3)
 
       m3=dsqrt(s3)
-      costh=2d0*xth-1d0      
+ccccccccccccccccccccccccccccccccccccccccccccccc
+c     modified by Carlo Oleari
+c      costh=2d0*xth-1d0      
+      z = 2d0*xth-1d0      
+      costh=1.5d0*(z-z**3/3)
+      w3 = w3*1.5d0*(1-z**2)
+ccccccccccccccccccccccccccccccccccccccccccccccc
       phi=2d0*pi*xphi
       sinth=dsqrt(1d0-costh**2)
       cphi=dcos(phi)

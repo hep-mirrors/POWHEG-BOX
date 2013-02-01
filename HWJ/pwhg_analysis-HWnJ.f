@@ -16,11 +16,13 @@ c  pwhgfill  :  fills the histograms with data
       integer maxjet
       parameter (maxjet=3)
       integer nptmin
-      parameter (nptmin=3)
+      parameter (nptmin=1)
       character * 4 cptmin(nptmin)
       real * 8 ptminarr(nptmin)
-      data cptmin/  '-025',  '-050',  '-100'/
-      data ptminarr/   25d0,    50d0,   100d0/
+c      data cptmin/  '-025',  '-050',  '-100'/
+c      data ptminarr/   25d0,    50d0,   100d0/
+      data cptmin/  '-0'/
+      data ptminarr/   0d0/
       common/infohist/ptminarr,cnum,cptmin
       save /infohist/
       real * 8 Hmass,Hwidth,powheginput
@@ -60,8 +62,9 @@ c     $     Hmass+20*Hwidth)
       call bookupeqbins('HW-y'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('HW-eta'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('HW-pt'//cptmin(i),dpt,0d0,400d0)
+      call bookupeqbins('HW-ptzoom'//cptmin(i),2,1d0,151d0)
+      call bookupeqbins('HW-ptzoom2'//cptmin(i),0.5,0d0,20d0)
       call bookupeqbins('HW-m'//cptmin(i),dpt,0d0,400d0)
-
 
 
       do j=1,maxjet
@@ -184,7 +187,7 @@ c$$$
 c      data cnum/'1','2','3','4','5','6','7','8','9'/
 c      save cnum
       integer nptmin
-      parameter (nptmin=3)
+      parameter (nptmin=1)
       character * 4 cptmin(nptmin)
       real * 8 ptminarr(nptmin)      
       common/infohist/ptminarr,cnum,cptmin
@@ -212,9 +215,16 @@ c     we need to tell to this analysis file which program is running it
       real * 8 mV2,ptvb,mvb,ptlep,ptmin_fastkt,ptvl,R,ylep,yvb,yvl
       real * 8 Wmass,Wwidth,Wmasslow,Wmasshigh
       integer jpart, jjet
-      include 'pwhg_processid.h'
+
 
       if(dsig.eq.0) return
+
+      if (flg_minlo) then
+         flg_processid='HW'
+      else
+         include 'pwhg_processid.h'
+      endif
+         
 
       if (ini) then
          idvecbos=powheginput('idvecbos')
@@ -303,7 +313,7 @@ c     find second decay product
          enddo
          if(nvl.ne.1.or.nlep.ne.1) then
             write(*,*) 'Problems with leptons from W decay'
-            write(*,*) 'PROGRAM ABORT'
+c            write(*,*) 'PROGRAM ABORT'
             write(*,*) 'nvl= ',nvl, 'nlep= ',nlep
 c            call exit(1)
             return
@@ -456,7 +466,7 @@ c      call fastjetsiscone(ptrack,ntracks,0.7d0,0.5d0,pjet,njets)
 c      R = 0.7  Radius parameter
 c.....run the clustering 
          R = 0.7d0          
-         ptmin_fastkt = 10d0
+         ptmin_fastkt = 1d0
          call fastjetktwhich(ptrack,ntracks,ptmin_fastkt,R,
      $        pj,njets,jetvec) 
 c     ... now we have the jets
@@ -469,9 +479,16 @@ c     Since ptminarr(1) is the smallest value, the following is correct
       endif
 
 
+c      if (WHCPRG.eq.'NLO   '.and. njets.eq.2) then
+c         call getyetaptmass(pj(:,2),y,eta,pt,m)
+c         if (pt.lt.10) then 
+c            return
+c         endif
+c      endif
       
-c      do i=1,nptmin        
-      do i=1,1
+
+
+      do i=1,nptmin        
         
       if(njets.eq.0) then
          call filld('Njet'//cptmin(i),0d0,dsig)
@@ -516,6 +533,8 @@ c HW
       call filld('HW-y'//cptmin(i),    y, dsig)
       call filld('HW-eta'//cptmin(i),eta, dsig)
       call filld('HW-pt'//cptmin(i),  pt, dsig)
+      call filld('HW-ptzoom'//cptmin(i),  pt, dsig)
+      call filld('HW-ptzoom2'//cptmin(i),  pt, dsig)
       call filld('HW-m'//cptmin(i), m, dsig)
 
 c jets

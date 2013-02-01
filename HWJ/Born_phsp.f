@@ -33,12 +33,6 @@ c     set initial- and final-state masses for Born and real
          ph_Hmass2high=powheginput("hmasshigh")**2
          ph_Wmass2low=powheginput("wmasslow")**2
          ph_Wmass2high=powheginput("wmasshigh")**2         
-c     MINLO
-         if (flg_minlo) then
-            write(*,*) '***  kn_ktmin set to 0 in Born_phsp.f ***'
-            write(*,*) '***  to integrate over the whole PS   ***'
-            kn_ktmin=0d0
-         endif
          ini = .false.
       endif      
 
@@ -196,8 +190,16 @@ c     now boost everything BACK along z-axis
       include 'coupl.inc'
       real * 8 fact,ptmin
       real * 8 pt2
+      logical ini
+      data ini/.true./
+      real * 8 powheginput
+      save ini,ptmin    
+      if (ini) then
+         ptmin=powheginput("#bornsuppfact")      
+         ini=.false.
+      endif
+
       if(flg_weightedev) then
-         ptmin=20
          pt2=kn_cmpborn(1,6)**2+kn_cmpborn(2,6)**2
          fact = pt2/(ptmin**2+pt2)
       else
@@ -236,14 +238,14 @@ c     now boost everything BACK along z-axis
          if (runningscales.eq.1) then
             write(*,*) '****************************************'
             write(*,*) '****************************************'
-            write(*,*) '**   mur=Ht  used for Bbar function   **'
-            write(*,*) '**   muf=Ht  used for Bbar function   **'
+            write(*,*) '** mur=sqrt(MH^2+pT_H^2)+pT_W         **'
+            write(*,*) '** muf=mur   used for Bbar function   **'
             write(*,*) '****************************************'
             write(*,*) '****************************************'
          elseif (runningscales.eq.2) then
             write(*,*) '****************************************'
             write(*,*) '****************************************'
-            write(*,*) '**   mur=muf=sqrt(pt1*pt2)            **'
+            write(*,*) '**   mur=muf=sqrt(pT_lep*pT_neut)     **'
             write(*,*) '****************************************'
             write(*,*) '****************************************'
          else

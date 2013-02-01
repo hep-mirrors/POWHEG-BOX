@@ -19,7 +19,7 @@ use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 rege
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
 withnegweights   1
-ncall1  50000  ! number of calls for initializing the integration grid
+ncall1  5000  ! number of calls for initializing the integration grid
 itmx1    5     ! number of iterations for initializing the integration grid
 ncall2  50000 ! number of calls for computing the integral and finding upper bound
 itmx2    5     ! number of iterations for computing the integral and finding upper bound
@@ -30,7 +30,7 @@ nubound 100000  ! number of bbarra calls to setup norm of upper bounding functio
 xupbound 2d0   ! increase upper bound for radiation generation
 
 
-#bornonly  1      ! (default 0) if 1 do Born only
+bornonly  1      ! (default 0) if 1 do Born only
 testplots 1
 
 hmass  125d0       ! Higgs mass 

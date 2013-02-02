@@ -41,6 +41,9 @@ c      data ptminarr/   25d0,    50d0,   100d0/
       
       do i=1,nptmin
 c     total cross section sanity check
+
+      call bookupeqbins('sigtot'//cptmin(i),1d0,0.5d0,1.5d0)
+
       call bookupeqbins('Njet'//cptmin(i),1d0,-0.5d0,5.5d0)
 
       call bookupeqbins('H-y'//cptmin(i),dy,-5d0,5d0)
@@ -62,8 +65,8 @@ c     $     Hmass+20*Hwidth)
       call bookupeqbins('HW-y'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('HW-eta'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('HW-pt'//cptmin(i),dpt,0d0,400d0)
-      call bookupeqbins('HW-ptzoom'//cptmin(i),2,1d0,151d0)
-      call bookupeqbins('HW-ptzoom2'//cptmin(i),0.5,0d0,20d0)
+      call bookupeqbins('HW-ptzoom'//cptmin(i),2d0,1d0,151d0)
+      call bookupeqbins('HW-ptzoom2'//cptmin(i),0.5d0,0d0,20d0)
       call bookupeqbins('HW-m'//cptmin(i),dpt,0d0,400d0)
 
 
@@ -465,8 +468,8 @@ c      call fastjetsiscone(ptrack,ntracks,0.7d0,0.5d0,pjet,njets)
 **********************************************************************
 c      R = 0.7  Radius parameter
 c.....run the clustering 
-         R = 0.7d0          
-         ptmin_fastkt = 1d0
+         R = 0.5d0          
+         ptmin_fastkt = 10d0
          call fastjetktwhich(ptrack,ntracks,ptmin_fastkt,R,
      $        pj,njets,jetvec) 
 c     ... now we have the jets
@@ -489,6 +492,8 @@ c      endif
 
 
       do i=1,nptmin        
+
+      call filld('sigtot'//cptmin(i),1d0,dsig)
         
       if(njets.eq.0) then
          call filld('Njet'//cptmin(i),0d0,dsig)

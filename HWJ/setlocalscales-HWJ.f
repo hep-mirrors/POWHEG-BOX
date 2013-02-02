@@ -98,7 +98,7 @@ c     alpha_s reweighting
       mu2=ptb2*st_renfact**2
       st_mufact2=max(ptb2*st_facfact**2,factsc2min)
 
-      alphas=as/(1-y)-as**2*b1*log(1-y)/(b0*(1-y)**2) !  <=============================
+      alphas=as/(1-y)-as**2*b1*log(1-y)/(b0*(1-y)**2) 
 
 c      write(*,*) "ratio ==>",alphas/pwhg_alphas(st_renfact**2*ptb2,
 c     $      st_lambda5MSB,st_nlight)

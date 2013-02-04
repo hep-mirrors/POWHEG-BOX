@@ -98,7 +98,7 @@ PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HWnJ.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o  fastjetfortran.o
-PWHGANAL+= fastjetktwrap.o  fastjetfortran.o
+PWHGANAL+=  fastjetfortran.o
 else
 PWHGANAL=pwhg_analysis-dummy.o
 endif
@@ -167,12 +167,12 @@ main-HERWIG-lhef: $(HERWIG)
 
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o \
-	$(PWHGANAL) lhefread.o newunit.o pdfdummies.o	\
+	$(PWHGANAL) lhefread.o newunit.o 	\
 	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
 	$(FPEOBJ)
 
 main-PYTHIA-lhef: $(PYTHIA)
-	$(FF) $(patsubst %,$(OBJ)/%,$(PYTHIA)) $(LIBSFASTJET)  $(STATIC) -o $@
+	$(FF) $(patsubst %,$(OBJ)/%,$(PYTHIA))  $(LIBS) $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to cleanup
 .PHONY: clean libdhelas3.a libmadgraph.a libmodel.a

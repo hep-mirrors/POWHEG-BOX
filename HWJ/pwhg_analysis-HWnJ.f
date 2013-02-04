@@ -16,13 +16,11 @@ c  pwhgfill  :  fills the histograms with data
       integer maxjet
       parameter (maxjet=3)
       integer nptmin
-      parameter (nptmin=1)
+      parameter (nptmin=3)
       character * 4 cptmin(nptmin)
       real * 8 ptminarr(nptmin)
-c      data cptmin/  '-025',  '-050',  '-100'/
-c      data ptminarr/   25d0,    50d0,   100d0/
-      data cptmin/  '-0'/
-      data ptminarr/   0d0/
+      data cptmin/  '-001',  '-010',  '-020'/
+      data ptminarr/   1d0,     10d0,    20d0/
       common/infohist/ptminarr,cnum,cptmin
       save /infohist/
       real * 8 Hmass,Hwidth,powheginput
@@ -171,14 +169,17 @@ c$$$
       include 'pwhg_math.h' 
       include 'pwhg_rad.h' 
       include 'pwhg_flg.h'
-      include 'LesHouches.h'
+c      include 'LesHouches.h'
+      integer isthep_loc(NMXHEP)  ! local copy of isthep
       logical ini
       data ini/.true./
       save ini
-      integer   maxjet,mjets,njets,ntracks
+      integer   maxjet,mjets,njets,numjets,ntracks
       parameter (maxjet=2048)
       real * 8  ktj(maxjet),etaj(maxjet),rapj(maxjet),
      1    phij(maxjet),pj(4,maxjet),rr,ptrel(4)
+
+c      real * 8 ktj
 
       integer maxtrack
       parameter (maxtrack=2048)
@@ -190,7 +191,7 @@ c$$$
 c      data cnum/'1','2','3','4','5','6','7','8','9'/
 c      save cnum
       integer nptmin
-      parameter (nptmin=1)
+      parameter (nptmin=3)
       character * 4 cptmin(nptmin)
       real * 8 ptminarr(nptmin)      
       common/infohist/ptminarr,cnum,cptmin
@@ -215,9 +216,11 @@ c     we need to tell to this analysis file which program is running it
       real * 8 pvl(4,maxnumlep),plep(4,maxnumlep)
       integer mu,ilep,ivl,nlep,nvl
       logical is_W
-      real * 8 mV2,ptvb,mvb,ptlep,ptmin_fastkt,ptvl,R,ylep,yvb,yvl
+      real * 8 mV2,ptvb,mvb,ptlep,ptminfastjet,ptvl,R,ylep,yvb,yvl
       real * 8 Wmass,Wwidth,Wmasslow,Wmasshigh
       integer jpart, jjet
+      real * 8 palg
+      integer ii
 
 
       if(dsig.eq.0) return
@@ -260,6 +263,10 @@ c     write(*,*) '**************************************************'
       ih=0
       ivl=0
 
+      do ihep=1,nhep  
+         isthep_loc(ihep) = isthep(ihep)
+      enddo
+      
       if ((WHCPRG.eq.'NLO   ').or.(WHCPRG.eq.'LHE   ')) then 
          do ihep=1,nhep            
             if(idhep(ihep).eq.idl) then
@@ -291,16 +298,20 @@ c     looking into the shower branchings.
          do ihep=1,nhep
 c     works for POWHEG+HERWIG, POWHEG+PYHIA, HERWIG, PYTHIA and real in
 c     MC@NLO
-            if(idhep(ihep).eq.25.and.isthep(ihep).eq.1) then
+            if(idhep(ihep).eq.25.and.isthep_loc(ihep).eq.1) then
                ph=phep(1:4,ihep)
                ih=ihep
             endif
-            if (isthep(ihep).eq.1.and.(idhep(ihep).eq.idl .or.
+            if (isthep_loc(ihep).eq.1.and.(idhep(ihep).eq.idl .or.
      $           idhep(ihep).eq.idnu))
      1           then
-               is_W = idhep(jmohep(1,jmohep(1,ihep))).eq.idvecbos .or.
-     $         idhep(jmohep(1,jmohep(1,jmohep(1, ihep)))).eq.idvecbos
-c               is_W = .true.
+c               is_W = idhep(jmohep(1,jmohep(1,ihep))).eq.idvecbos .or.
+c     $         idhep(jmohep(1,jmohep(1,jmohep(1, ihep)))).eq.idvecbos
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     if the hadronization is switched off, then the electrons and neutrinos
+c     that are found come only from the W decay
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+               is_W = .true.
                if (is_W) then
 c     find first decay product
                   if(idhep(ihep).eq.idl) then
@@ -321,6 +332,7 @@ c            write(*,*) 'PROGRAM ABORT'
 c            call exit(1)
             return
          endif
+            
          do mu=1,4
             plep(mu,nlep)=phep(mu,ilep)
             pvl(mu,nvl)=phep(mu,ivl)
@@ -334,115 +346,33 @@ c            call exit(1)
       endif
          
 c     change status of l vu and Higgs
-      isthep(ilep)=10000
-      isthep(ivl)=10000
-      isthep(ih)=10000
-      
-      
-c$$$      do i=1,maxnumlep
-c$$$         lepvec(i) = 0
-c$$$         vlvec(i) = 0
-c$$$      enddo
-c$$$
-c$$$
-c$$$      if (WHCPRG.eq.'PYTHIA') then
-c$$$         nlep=0 
-c$$$         nvl=0 
-c$$$c     Loop over final state particles to find leptons 
-c$$$         do ihep=1,nhep
-c$$$            if (isthep(ihep).eq.1) then
-c$$$               if(idhep(ihep).eq.idl) then
-c$$$                  if (pass_lept_cuts(phep(1,ihep))) then 
-c$$$                     nlep=nlep+1
-c$$$                     lepvec(nlep)=ihep
-c$$$                     do mu=1,4
-c$$$                        plep(mu,nlep)=phep(mu,ihep)
-c$$$                     enddo
-c$$$                  endif
-c$$$               elseif(idhep(ihep).eq.idnu) then
-c$$$                  if (pass_lept_cuts(phep(1,ihep))) then 
-c$$$                     nvl=nvl+1
-c$$$                     vlvec(nvl)=ihep
-c$$$                     do mu=1,4
-c$$$                        pvl(mu,nvl)=phep(mu,ihep)
-c$$$                     enddo
-c$$$                  endif
-c$$$               endif
-c$$$            endif         
-c$$$         enddo
-c$$$
-c$$$c correct here pvl and plep for collinear photons (in the electron case)
-c$$$
-c$$$         if (nlep*nvl.eq.0) then
-c$$$c     no two opposite-sign leptons to reconstruct the W mass peak
-c$$$            return
-c$$$         endif
-c$$$
-c$$$         dist = 1d36
-c$$$         ilep=0
-c$$$         ivl=0
-c$$$         do nleps=1,nlep
-c$$$            do nvls=1,nvl
-c$$$               do i=1,4
-c$$$c in case of electron, we may need to add collinear photons here
-c$$$                  pw(i)=plep(i,nleps)+pvl(i,nvls)
-c$$$               enddo
-c$$$               call getinvmass(pw,inv_mV)
-c$$$               if (inv_mV.gt.Wmasslow.and.inv_mV.lt.Wmasshigh.and.
-c$$$     #                 abs(inv_mV-Wmass).lt.dist) then
-c$$$                  dist = abs(inv_mV-Wmass)
-c$$$                  ilep = nleps
-c$$$                  ivl = nvls
-c$$$               endif
-c$$$            enddo
-c$$$         enddo
-c$$$         
-c$$$         if (ilep*ivl.eq.0) then
-c$$$c     no reconstructed W mass peak in the experimental window
-c$$$            return
-c$$$         else            
-c$$$            do i=1,4
-c$$$               pw(i)=plep(i,ilep)+pvl(i,ivl)
-c$$$            enddo        
-c$$$         endif         
-c$$$      endif
-
+      isthep_loc(ilep)=10000
+      isthep_loc(ivl)=10000
+      isthep_loc(ih)=10000
 
 c     W momentum
       do mu=1,4
          pw(mu)=plep(mu,1) + pvl(mu,1)
       enddo
-c      mV2 = pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
-c      write(*,*) '>>>>>>>>>>>>>>>>>>>>>>>>>>',sqrt(mV2)
-c      ptvb=sqrt(pw(1)**2+pw(2)**2)
-
-c      call getinvmass(pw,mvb)
-c      call getrapidity(pw,yvb)
-c      ptvl=sqrt(phep(1,ivl)**2+phep(2,ivl)**2)
-c      call getrapidity(phep(1,ivl),yvl)
-c      ptlep=sqrt(phep(1,ilep)**2+phep(2,ilep)**2)
-c      call getrapidity(phep(1,ilep),ylep)
-
-c$$$      call build_jets(njets,pjet)
 
 c     set up arrays for jet finding
-      do jpart=1,maxtrack
-         do mu=1,4
-            ptrack(mu,jpart)=0d0
-         enddo
-         jetvec(jpart)=0
-      enddo      
-      do jjet=1,maxjet
-         do mu=1,4
-            pj(mu,jjet)=0d0
-         enddo
-      enddo
+c      do jpart=1,maxtrack
+c         do mu=1,4
+c            ptrack(mu,jpart)=0d0
+c         enddo
+c         jetvec(jpart)=0
+c      enddo      
+c      do jjet=1,maxjet
+c         do mu=1,4
+c            pj(mu,jjet)=0d0
+c         enddo
+c      enddo
 
       ntracks=0
-      njets=0
+      mjets=0
 c     Loop over final state particles to find jets 
       do ihep=1,nhep
-         if (isthep(ihep).eq.1) then
+         if (isthep_loc(ihep).eq.1) then
            if (ntracks.eq.maxtrack) then
               write(*,*) 'Too many particles. Increase maxtrack.'//
      #             ' PROGRAM ABORTS'
@@ -456,42 +386,32 @@ c     copy momenta to construct jets
         endif
       enddo
       if (ntracks.eq.0) then
+         write(*,*) 'ntracks = 0 ????'
          return
       else
-**********************************************************************
-c     R = 0.7  radius parameter
-c     f = 0.5  overlapping fraction
-c.....run the clustering        
-c      call fastjetsiscone(ptrack,ntracks,0.7d0,0.5d0,pjet,njets) 
-************************************************************************
-*     fastkt algorithm
-**********************************************************************
-c      R = 0.7  Radius parameter
-c.....run the clustering 
-         R = 0.5d0          
-         ptmin_fastkt = 10d0
-         call fastjetktwhich(ptrack,ntracks,ptmin_fastkt,R,
-     $        pj,njets,jetvec) 
-c     ... now we have the jets
+c     palg=1 is standard kt, -1 is antikt
+         palg = -1d0
+         R = 0.5d0              ! radius parameter
+         ptminfastjet = 1d0
+         call fastjetppgenkt(ptrack,ntracks,R,palg,ptminfastjet,
+     $        pj,numjets,jetvec)
+c         call fastjetktwhich(ptrack,ntracks,ptminfastjet,R,
+c     $        pj,mjets,jetvec) 
       endif
 
+      do i=1,nptmin        
+      njets=0
+      do j=1,min(4,numjets)
+         ktj(j) = sqrt(pj(1,j)**2 + pj(2,j)**2 )
+         if (ktj(j).gt.ptminarr(i)) then
+            njets=njets+1
+         endif
+      enddo
 
 c     Since ptminarr(1) is the smallest value, the following is correct
       if (flg_processid.eq.'HWJ') then
          if(njets.eq.0) return
       endif
-
-
-c      if (WHCPRG.eq.'NLO   '.and. njets.eq.2) then
-c         call getyetaptmass(pj(:,2),y,eta,pt,m)
-c         if (pt.lt.10) then 
-c            return
-c         endif
-c      endif
-      
-
-
-      do i=1,nptmin        
 
       call filld('sigtot'//cptmin(i),1d0,dsig)
         
@@ -510,10 +430,6 @@ c      endif
       else
 c         write(*,*) ' Njet?',mjets
       endif
-
-
-      mjets=min(njets,2)
-  
 c Higgs
       call getyetaptmass(ph,y,eta,pt,m)
       call filld('H-y'//cptmin(i),    y, dsig)
@@ -543,6 +459,8 @@ c HW
       call filld('HW-m'//cptmin(i), m, dsig)
 
 c jets
+      mjets=min(njets,2)
+
       do j=1,mjets
          call getyetaptmass(pj(:,j),y,eta,pt,m)
          call filld('j'//cnum(j)//'-y'//cptmin(i),     y, dsig)

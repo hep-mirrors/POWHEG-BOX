@@ -1,9 +1,20 @@
       subroutine setup_PYTHIA_tune
-C   100       A : Rick Field's CDF Tune A                     (Oct 2002)
-C   103      DW : Rick Field's CDF Tune DW                    (Apr 2006)
-C   320 Perugia 0 : "Perugia" update of S0-Pro                (Feb 2009)
-C   
-      call PYTUNE(320)
+      implicit none
+      real * 8 powheginput
+      external powheginput
+      integer pythiatune
+C --------------------------------------------------------------- C
+C - N.B. PYTUNE(ITUNE) must be called before the call to PYINIT - C
+C --------------------------------------------------------------- C
+C -  100         A :  Rick Field's CDF Tune A     (Oct 2002)
+C -  103        DW :  Rick Field's CDF Tune DW    (Apr 2006)
+C -  320 Perugia 0 :  Perugia update of S0-Pro    (Feb 2009)      
+      
+      pythiatune=powheginput('#pythiatune')
+      if (pythiatune.lt.0) then
+         pythiatune=340
+      endif         
+      call PYTUNE(pythiatune)
       end
 
       subroutine setup_PYTHIA_parameters
@@ -19,68 +30,74 @@ C
       integer MDCY,MDME,KFDP
       double precision brat
       COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
+      integer MRPY
+      double precision RRPY
+      COMMON/PYDATR/MRPY(6),RRPY(100)
       integer pycomp
       external pycomp
-c     multiple interactions
-      logical mult_inter
-      parameter (mult_inter=.true.)
       integer maxev
       common/mcmaxev/maxev
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c     multiple interactions
-c     (MI can increase a lot the execution time)
-c      if(.not.mult_inter) then
-c         mstp(81)=20   !No Multiple interactions. Force a call to PYEVNW 
-c      else
-c         mstp(81)=21   ! MPI on in the PYEVNW MPI scenario
-c      endif
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      real * 8 scalupfact
+      common/cscalupfac/scalupfact
+      real * 8 powheginput
+      external powheginput
+      character * 20 pwgprefix
+      integer lprefix
+      common/cpwgprefix/pwgprefix,lprefix
+      integer iseed,ios
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c     photon radiation off quarks and leptons
-c       mstj(41)=12              
-c     No photon radiation off quarks and leptons
-c       mstj(41)=11              
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-c      mstp(61)=0                !No IS shower
-c      mstp(71)=0                !No FS shower
-c      mstp(91)=0                !No Primordial kt
-c      mstp(131)=0               !No Pile Up
-c      mstp(111)=0               !No hadronization
-
-c      mstp(64) =3 !use Lambda_MC for IS shower > 6.4.19
-c      mstp(64) =1 !use Lambda_MSbar (default)
-
-c     number of warnings printed on the shell
-      mstu(26)=20
-c     call PYLIST(12) to see the PYTHIA decay table
-ccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-      PARJ(90)= 2*10**4   ! tauola to prevent pythia to radiate photon 
-c     off leptons. The parameter, divided by 2,  represents the threshold in GeV 
-c     below which leptons do not radiate
+c$$$      if(lprefix.eq.7.and.pwgprefix(1:3).eq.'pwg') then
+c$$$         read(pwgprefix(4:7),fmt='(i4)',iostat=ios) iseed
+c$$$         if(ios.eq.0) then
+c$$$c initialize random seed
+c$$$            write(*,*) ' *****************************************'
+c$$$            write(*,*) ' initializing PYTHIA random seed to ',iseed
+c$$$            write(*,*) ' *****************************************'
+c$$$            mrpy(1)=iseed+10
+c$$$            mrpy(2)=0
+c$$$         endif
+c$$$      endif
+c$$$
+      scalupfact=powheginput('#scalupfact')
+      if(scalupfact.gt.0) then
+         write(*,*)' ********* SCALUP scale multiplied by ',scalupfact
+      endif
+c      mstj(41) =3 ! Photon radiation off leptons. Not recommended to touch
+c                  ! this -- causes interference with the pT ordered shower.
+c      mstp(61) =0 ! No IS shower
+c      mstp(71) =0 ! No FS shower
+c      mstp(81) =0 ! No Multiple interactions (MI increases execution time).
+c      mstp(91) =0 ! No Primordial kt
+c      mstp(131)=0 ! No Pile Up
+c      mstp(111)=0 ! No hadronization
+      
+c     N.B.
+c     ====
+c     For the case of jet production the following parameter setting
+c     limits the transverse momentum of secondary scatterings, due
+c     to multiple parton interactions, to be less than that of the
+c     primary interaction (see POWHEG Dijet paper arXiv:1012.3380
+c     [hep-ph] sec. 4.1 and also the PYTHIA Manual).
+      mstp(86)=1
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c     tolerate 2% of killed events
-      mstu(22)=maxev/50
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
-
-
+c     maximum number of errors before pythia aborts (def=10)
+      mstu(22)=1000
+c     number of warnings printed on the shell
+      mstu(26)=20
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c Hadronization off
-         mstp(111)=0
+      mstp(111)=0
 c primordial kt off
-         mstp(91)=0
+      mstp(91)=0
 c No multiple parton interactions
-         if(mstp(81).eq.1) then
+      if(mstp(81).eq.1) then
 c Q2 ordered shower
-            mstp(81)=0
-         elseif(mstp(81).eq.21) then
+         mstp(81)=0
+      elseif(mstp(81).eq.21) then
 c p_t^2 ordered shower
-            mstp(81)=20
-         endif
-
-
+         mstp(81)=20
+      endif
       end
 
       subroutine getmaxev(maxev)
@@ -106,70 +123,111 @@ C--- Opens input file and counts number of events, setting MAXEV;
       external pycomp
       integer maxev
       common/mcmaxev/maxev
-      real * 8 powheginput
-      external powheginput
-      integer hdecaymode,i
-
       nevhep=0
 c read the header first, so lprup is set
       call lhefreadhdr(97)
 
 c     Make PI0 stable as in herwig default
       mdcy(pycomp(111),1)=0
-
-
-
-C---Decay;
-      hdecaymode=powheginput('#hdecaymode')
-      if(hdecaymode.lt.-10) hdecaymode=lprup(1)-10000
-      if ((hdecaymode.lt.-1).or.(hdecaymode.gt.12)) then
-         write(*,*) "Higgs decay mode not allowed"
-         stop
-      endif   
-      
-c     choose Higgs decay channel
-      if (hdecaymode.eq.-1) then
-         mdcy(pycomp(25),1)=0
-      else   
-         mdcy(pycomp(25),1)=1
-         if (hdecaymode.gt.0) then
-            do i=210,288
-               if (mdme(i,1).ne.-1) mdme(i,1)=0
-            enddo
-            if (hdecaymode.eq.12) then
-               mdme(223,1)=1
-            elseif(hdecaymode.eq.11) then
-               mdme(225,1)=1
-            elseif(hdecaymode.eq.10) then
-               mdme(226,1)=1
-            elseif(hdecaymode.eq.7) then
-               mdme(218,1)=1
-            elseif(hdecaymode.eq.8) then
-               mdme(219,1)=1
-            elseif(hdecaymode.eq.9) then
-               mdme(220,1)=1   
-            else
-               mdme(209+hdecaymode,1)=1
-            endif
-         endif      
-      endif
-
-
-
 c     Make tau stable
-      if (lprup(1).eq.10015)  mdcy(pycomp(15),1)=0 ! tau stable. Done by Tauola too 
-
-c     print the values of some PYTHIA parameters
-      call PYSTAT(5)
- 
-
+      mdcy(pycomp(15),1)=0 ! tau stable. Done by Tauola too
       end
 
       subroutine UPEVNT
       implicit none
+      include 'LesHouches.h'
+      include 'nlegborn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_rad.h'
+      real * 8 scalupfact
+      common/cscalupfac/scalupfact
+      real * 8 ptmin, pcm(0:3,5), beta, vec(3)
+      integer k,mu,j
+      real * 8 ptkj2
+      real * 8 dotp
+      external dotp
+      logical ini, changescalup
+      save ini, changescalup
+      real * 8 powheginput
+      external powheginput
+      data ini/.true./
       call lhefreadev(97)
-      end
+      
+      if (ini) then
+         if(powheginput('#changescalup').eq.1d0) then
+            changescalup=.true.
+            write(*,*) '*************************************'
+            write(*,*) 'scalup set to the min pt in the event'
+            write(*,*) '*************************************'
+         else
+            changescalup=.false.
+         endif
+         ini=.false.
+      endif
+      
+      if (changescalup) then
+c     comupute pt's of partons respect the beams
+         ptmin=min(pup(1,3)**2+pup(2,3)**2, pup(1,4)**2+pup(2,4)**2)
+         if(nup.eq.5) then
+            ptmin=min(ptmin,pup(1,5)**2+pup(2,5)**2)
+         endif
+c     compute pt's of the final state partons with respect to each other
+c     go in the CM frame   
+         do k=1,nup
+            do mu=1,3
+               pcm(mu,k)=pup(mu,k)
+            enddo
+            pcm(0,k)=pup(4,k)
+         enddo
+         beta=-(pup(3,1)+pup(3,2))/(pup(4,1)+pup(4,2))
+         vec(1)=0
+         vec(2)=0
+         vec(3)=1
+         call mboost(nup,vec,beta,pcm,pcm)
+c     write(*,*) 'momenta'
+c     do k=1,nup
+c     write(*,*) (pcm(mu,k),mu=0,3)
+c     enddo
+         do k=3,nup
+            do j=k+1,nup
+               ptkj2 = 2*dotp(pcm(0,k),pcm(0,j))*
+     1              pcm(0,k)*pcm(0,j)/(pcm(0,k)+pcm(0,j))**2
+               ptmin=min(ptmin,ptkj2)
+            enddo
+         enddo
+         ptmin=sqrt(ptmin)
+         if(scalup.gt.ptmin) then
+c     write(*,*) 'DECREASED SCALUP FROM ',scalup,' TO ',ptmin
+            scalup = ptmin
+         endif
+      endif
 
+
+c      if(scalup.gt.ptmin*2) then
+      if(scalup.eq.-1) then
+         write(*,*) ' scalup: ',scalup,' ptmin:',ptmin
+         call  lhefreadextra(97)
+         
+         write(*,*) ' rad_kinreg:',rad_kinreg
+         write(*,'(5(1x,i2))') (idup(k),k=1,nup)
+         do k=1,nup
+            do mu=1,3
+               pcm(mu,k)=pup(mu,k)
+            enddo
+            pcm(0,k)=pup(4,k)
+         enddo
+         beta=-(pup(3,1)+pup(3,2))/(pup(4,1)+pup(4,2))
+         vec(1)=0
+         vec(2)=0
+         vec(3)=1
+         call mboost(nup,vec,beta,pcm,pcm)
+         write(*,'(4(1x,d10.4))') ((pcm(mu,k),mu=0,3),k=1,nup)
+      endif
+
+
+      if(scalupfact.gt.0) scalup=scalup*scalupfact
+c      call lhefinitemasses      
+      end
 
       subroutine upveto
 c pythia routine to abort event
@@ -180,11 +238,19 @@ c pythia routine to abort event
       end
 
       subroutine pyaend
+      implicit none
+      include 'pwhg_rnd.h'
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
-      open(unit=99,file=pwgprefix(1:lprefix)//'POWHEG+PYTHIA-output.top'
-     #     ,status='unknown')
+      if(rnd_cwhichseed.eq.'none') then
+         open(unit=99,file=pwgprefix(1:lprefix)//
+     1     'POWHEG+PYTHIA-output.top',status='unknown')
+      else
+         open(unit=99,file=pwgprefix(1:lprefix)//'-'//
+     1        rnd_cwhichseed //'-'//
+     2     'POWHEG+PYTHIA-output.top',status='unknown')
+      endif
       call pwhgsetout
       call pwhgtopout
       close(99)
@@ -195,25 +261,15 @@ c pythia routine to abort event
       implicit none
       include 'hepevt.h'
       include 'LesHouches.h'
-      integer mint
-      double precision vint
-      COMMON/PYINT1/MINT(400),VINT(400)
-c     check parameters
-      logical verbose
-      parameter (verbose=.false.)
-      
-      if(mint(51).ne.0) then
-         if(verbose) then
-            write(*,*) 'Killed event'
-            write(*,*) 'Scalup= ',scalup
-            call pylist(7)      !hepeup
-            call pylist(2)      !all the event
-         endif
-         return
-      endif
       nevhep=nevhep+1
       if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       call analysis(xwgtup)
       call pwhgaccumup 
       end
 
+
+      function dotp(p1,p2)
+      implicit none
+      real * 8 dotp,p1(0:3),p2(0:3)
+      dotp = (p1(0)*p2(0) - p1(3)*p2(3)) - p1(1)*p2(1) - p1(2)*p2(2)
+      end

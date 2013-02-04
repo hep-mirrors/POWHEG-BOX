@@ -10,10 +10,10 @@ c coupling rescaling, for Born (imode=1) and NLO corrections (imode=2)
       include 'pwhg_math.h'
       integer iuborn,imode
       real * 8 rescfac,expsudakov,expsud,sudakov,pwhg_alphas
-      real * 8 ptb2,mb2,mu2,alphas,b0,optb2,omb2,orescfac
+      real * 8 ptb2,mb2,mu2,alphas,b0,optb2,omb2,orescfac,omuf2
       real * 8 pb(0:3)
       integer oimode,i,flav
-      save optb2,omb2,orescfac,oimode
+      save optb2,omb2,orescfac,oimode,omuf2
       data optb2/-1d0/
       logical ini
       data ini/.true./
@@ -67,6 +67,7 @@ c     the sequence of colourless particles is unchanged in the Born and in the r
 
       if(imode.eq.oimode.and.ptb2.eq.optb2.and.mb2.eq.omb2) then
          rescfac=orescfac
+         st_mufact2=omuf2
          return
       else
          optb2=ptb2
@@ -97,7 +98,7 @@ c      endif
 c     alpha_s reweighting
       mu2=ptb2*st_renfact**2
       st_mufact2=max(ptb2*st_facfact**2,factsc2min)
-
+      omuf2=st_mufact2
       alphas=as/(1-y)-as**2*b1*log(1-y)/(b0*(1-y)**2) 
 
 c      write(*,*) "ratio ==>",alphas/pwhg_alphas(st_renfact**2*ptb2,

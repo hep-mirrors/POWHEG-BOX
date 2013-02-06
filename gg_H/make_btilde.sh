@@ -10,7 +10,8 @@ s/     www=www0\*hc2/     real \*8 finitemtcorr\
       external finitemtcorr\
       www=www0\*hc2/;
 s/         call gen_born_phsp\(xborn\)/         call gen_born_phsp\(xborn\)\
-         www=www*finitemtcorr()/'>  btilde_ggH.f
+         www=www*finitemtcorr()\
+         wwwtot=wwwtot*finitemtcorr()/'>  btilde_ggH.f
 
 mv btilde_ggH.f tmpfile
 echo "c###################################################### " >btilde_ggH.f  

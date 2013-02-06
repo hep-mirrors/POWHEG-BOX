@@ -103,8 +103,11 @@ all: pwhg_main
 
 # target to build the modified btilde local version (btilde_ggH)
 # in process subdirectory
-btilde.o: ../btilde.f $(INCLUDE) 
+btilde.o: btilde_ggH.f $(INCLUDE) 
 	$(FF) -c -o obj/$@ btilde_ggH.f
+
+sigremnants.o: sigremnants_ggH.f $(INCLUDE) 
+	$(FF) -c -o obj/$@ sigremnants_ggH.f
 
 init_couplings.o: init_couplings.F
 	$(FF) -ffixed-line-length-none -c -o obj/$@ $^

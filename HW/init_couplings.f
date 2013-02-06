@@ -23,7 +23,6 @@ c but never closed ...
 c Parameters are read from the MadGraph param_card.dat,
 c except the strong coupling constant, which is defined
 c somewhere else
-c      call setpara("param_card.dat",.true.)
 
       call lh_readin("none")
       call madtophys
@@ -38,53 +37,49 @@ c   decay products of the vector boson
       Vdecmod=powheginput('vdecaymode')
       
       if(idvecbos.eq.24) then
-         select case(Vdecmod)
-         case (1)
+         if (Vdecmod.eq.1) then
             vdecaymode=-11
-         case (2)
+         elseif (Vdecmod.eq.2) then
             vdecaymode=-13
-         case (3)
+         elseif (Vdecmod.eq.3) then
             vdecaymode=-15
-         case default
-            write(*,*) 'ERROR: The decay mode you selected' /
-     $           /' is not allowed '
-            stop
-         end select  
+         else
+            write(*,*) 'ERROR: The decay mode you selected ',Vdecmod, 
+     $           ' is not allowed '
+            call pwhg_exit(1)
+         endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single W+ production and decay ' 
-         if (vdecaymode.eq.-11) write(*,*) '         to e+ ve '
-         if (vdecaymode.eq.-13) write(*,*) '         to mu+ vmu'
-         if (vdecaymode.eq.-15) write(*,*) '         to tau+ vtau'
+         write(*,*) ' POWHEG: H W+ production and decay ' 
+         if (vdecaymode.eq.-11) write(*,*) '  to e+ ve '
+         if (vdecaymode.eq.-13) write(*,*) '  to mu+ vmu'
+         if (vdecaymode.eq.-15) write(*,*) '  to tau+ vtau'
          write(*,*) 
       elseif(idvecbos.eq.-24) then
-         select case(Vdecmod)
-         case (1)
-            vdecaymode= 11
-         case (2)
-            vdecaymode= 13
-         case (3)
-            vdecaymode= 15
-         case default
-            write(*,*) 'ERROR: The decay mode you selected' /
-     $           /' is not allowed '
-            stop
-         end select
+         if (Vdecmod.eq.1) then
+            vdecaymode=11
+         elseif (Vdecmod.eq.2) then
+            vdecaymode=13
+         elseif (Vdecmod.eq.3) then
+            vdecaymode=15
+         else
+            write(*,*) 'ERROR: The decay mode you selected ',Vdecmod, 
+     $           ' is not allowed '
+            call pwhg_exit(1)
+         endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single W- production and decay '
-         if (vdecaymode.eq.11) write(*,*) '         to e- ve~ '
-         if (vdecaymode.eq.13) write(*,*) '         to mu- vmu~'
-         if (vdecaymode.eq.15) write(*,*) '         to tau- vtau~'
+         write(*,*) ' POWHEG: H W- production and decay '
+         if (vdecaymode.eq.11) write(*,*) '  to e- ve~ '
+         if (vdecaymode.eq.13) write(*,*) '  to mu- vmu~'
+         if (vdecaymode.eq.15) write(*,*) '  to tau- vtau~'
          write(*,*)    
       else
-         write(*,*) 'ERROR: The ID of vector boson you selected' 
-     $        //' is not allowed (24: W+ -24: W-)'
-         stop
+         write(*,*) 'ERROR: The ID of vector boson you selected ',
+     $        idvecbos, ' is not allowed (24: W+ -24: W-)'
+         call pwhg_exit(1)
       endif
 
 c     set lepton mass
-      decmass=lepmass(Vdecmod)
-    
-
+      decmass=lepmass(Vdecmod)   
       end
 
 
@@ -101,9 +96,7 @@ c the lh_readin routine in MODEL/couplings.f
       parameter( Rt2   = 1.414213562d0 )
       parameter( Pi = 3.14159265358979323846d0 )
 
-c
 c     Common to lh_readin and printout
-c
       double precision  alpha, gfermi, alfas
       double precision  mtMS,mbMS,mcMS,mtaMS!MSbar masses
       double precision  Vud,Vus,Vub,Vcd,Vcs,Vcb,Vtd,Vts,Vtb !CKM matrix elements
@@ -112,20 +105,19 @@ c
      &                  Vud,Vus,Vub,Vcd,Vcs,Vcb,Vtd,Vts,Vtb
 c
       real * 8 powheginput
+      external powheginput
 c the only parameters relevant for this process are set
 c via powheginput. All others are needed for the
 c madgraph routines not to blow.
-c      alpha= 7.7585538055706d-03
+
       alpha= 1/132.50698d0
       gfermi = 0.1166390d-4
       alfas = 0.119d0
       zmass = 91.188d0
-c      tmass = 174.3d0
       tmass = 172.5d0
       lmass = 0d0
       mcMS = 0d0
       mbMS = 0d0
-c      mtMS = 174d0
       mtMS = 172.5d0
       mtaMS = 1.777d0
       cmass = 0d0
@@ -136,19 +128,14 @@ c      mtMS = 174d0
 
       twidth=1.5083d0
 
-      ph_Wmass2low=20d0**2
-      
-      ph_Wmass2high=140d0**2
-
       hmass = powheginput('hmass')
       hwidth = powheginput('hwidth')
-      
+ 
+      ph_Wmass2low=20d0**2      
+      ph_Wmass2high=140d0**2
+     
       zwidth=2.441d0
       wwidth=2.0476d0
-
-      
-      gal(1) = sqrt(alpha*4*pi)
-
 
 c     POWHEG CKM matrix
 c
@@ -157,25 +144,25 @@ c    u
 c    c
 c    t
 
-c      Vud=0.97428d0 
-c      Vus=0.2253d0  
-c      Vub=0.00347d0 
-c      Vcd=0.2252d0  
-c      Vcs=0.97345d0 
-c      Vcb=0.0410d0  
-c      Vtd=0.00862d0 
-c      Vts=0.0403d0  
-c      Vtb=0.999152d0
+      Vud=0.97428d0 
+      Vus=0.2253d0  
+      Vub=0.00347d0 
+      Vcd=0.2252d0  
+      Vcs=0.97345d0 
+      Vcb=0.0410d0  
+      Vtd=0.00862d0 
+      Vts=0.0403d0  
+      Vtb=0.999152d0
 
-      Vud=1d0
-      Vus=1d-10
-      Vub=1d-10
-      Vcd=1d-10
-      Vcs=1d0
-      Vcb=1d-10
-      Vtd=1d-10
-      Vts=1d-10
-      Vtb=1d0
+c$$$      Vud=1d0
+c$$$      Vus=1d-10
+c$$$      Vub=1d-10
+c$$$      Vcd=1d-10
+c$$$      Vcs=1d0
+c$$$      Vcb=1d-10
+c$$$      Vtd=1d-10
+c$$$      Vts=1d-10
+c$$$      Vtb=1d0
 
       end
 
@@ -196,11 +183,12 @@ c
       common/values/    alpha,gfermi,alfas,   
      &                  mtMS,mbMS,mcMS,mtaMS,
      &                  Vud,Vus,Vub,Vcd,Vcs,Vcb,Vtd,Vts,Vtb
-      e_em=gal(1)
+
       
+      gal(1) = sqrt(alpha*4*pi)
+      e_em=gal(1)      
       ph_unit_e=e_em
       ph_alphaem=e_em**2/(4*pi)
-
       ph_sthw2=1-(wmass/zmass)**2
       ph_sthw=sqrt(ph_sthw2)
       g_weak=e_em/ph_sthw

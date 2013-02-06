@@ -42,7 +42,7 @@ F77 = ifort -save  -extend_source  -I$(OBJ)
 #FPE = -fpe0
 OPT = -O3 #-fast
 ## For debugging uncomment the following
-DEBUG= -debug -g
+#DEBUG= -debug -g
 ifdef DEBUG
 OPT=-O0
 endif

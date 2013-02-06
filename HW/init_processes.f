@@ -3,12 +3,18 @@
       include "nlegborn.h"
       include "pwhg_flst.h"
       include "pwhg_st.h"
+      include 'pwhg_flg.h'
       include "coupl.inc"
       integer idvecbos,vdecaymode
       common/cvecbos/idvecbos,vdecaymode
       integer i
       real * 8 powheginput
       external powheginput
+
+
+c     in order to prevent a WRONG call to setlocalscales, set
+c     MiNLO flags to false
+      flg_minlo=.false.
       
       idvecbos=powheginput('idvecbos')
 

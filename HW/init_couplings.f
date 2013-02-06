@@ -130,9 +130,12 @@ c madgraph routines not to blow.
 
       hmass = powheginput('hmass')
       hwidth = powheginput('hwidth')
- 
-      ph_Wmass2low=20d0**2      
-      ph_Wmass2high=140d0**2
+
+      ph_Hmass2low=powheginput("hmasslow")**2
+      ph_Hmass2high=powheginput("hmasshigh")**2
+      ph_Wmass2low=powheginput("wmasslow")**2
+      ph_Wmass2high=powheginput("wmasshigh")**2    
+
      
       zwidth=2.441d0
       wwidth=2.0476d0
@@ -166,7 +169,7 @@ c$$$      Vtb=1d0
 
       end
 
-
+    
 
       subroutine madtophys
       implicit none

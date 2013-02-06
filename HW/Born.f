@@ -4,7 +4,7 @@ c      maple+average over initial spin and colour)
       implicit none
       include 'nlegborn.h'
       include 'PhysPars.h'
-      include 'pwhg_math.h'
+      include 'pwhg_math.h'      
       real *8 p(0:3,nlegborn),born,bornjk(nlegborn,nlegborn)
       real *8 bmunu(0:3,0:3,nlegborn)
       integer bflav(nlegborn)
@@ -13,7 +13,7 @@ c      maple+average over initial spin and colour)
       real *8 p13,p14,p23,p24,p34,p12,p33
       real *8 dotp
       external dotp
-c
+
       amp2 = 0d0
       n=3d0 !number of initial colour
 c

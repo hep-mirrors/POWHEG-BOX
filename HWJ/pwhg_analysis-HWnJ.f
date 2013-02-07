@@ -170,7 +170,7 @@ c$$$
       include 'pwhg_flst.h'
       include 'pwhg_math.h' 
       include 'pwhg_rad.h' 
-      include 'pwhg_flg.h'
+c      include 'pwhg_flg.h'
 c      include 'LesHouches.h'
       integer isthep_loc(NMXHEP)  ! local copy of isthep
       logical ini
@@ -216,15 +216,13 @@ c     we need to tell to this analysis file which program is running it
       integer jpart, jjet
       real * 8 palg
       integer ii
+      logical minlo
+      save minlo
+      data minlo/.false./
+      character * 20 processid
 
       if(dsig.eq.0) return
 
-      if (flg_minlo) then
-         flg_processid='HW'
-      else
-         include 'pwhg_processid.h'
-      endif
-         
 
       if (ini) then
          idvecbos=powheginput('idvecbos')
@@ -250,23 +248,16 @@ c     if idvecbos=24 idl and idnu are ok
             idl = -idl
             idnu= -idnu
          endif
-c     if ((WHCPRG.ne.'NLO   ').or.(WHCPRG.ne.'LHE   ')) then 
-c     set values if analysis file is run by HERWIG and PYTHIA
-c            Wmass = 80.398d0
-c            Wwidth = 2.141d0
-c            Wmasslow = (Wmass-10*Wwidth)
-c            Wmasshigh = (Wmass+10*Wwidth)
-c         endif      
-c     write(*,*) '**************************************************'
-c         write(*,*) '**************************************************'
-c     write(*,*) '                ANALYSIS CUTS                     '
-c     write(*,*) '**************************************************'
-c         write(*,*) '**************************************************'
-c     write(*,*)   Wmasslow,' < M_W < ',Wmasshigh
-c     write(*,*) '**************************************************'
-c     write(*,*) '**************************************************'
+
+         minlo=powheginput('#minlo')
+         if (minlo) then
+            processid='HW'
+         else
+            include 'pwhg_processid.h'
+         endif
          ini=.false.
       endif
+
 
       ilep=0
       ih=0
@@ -419,8 +410,8 @@ c     $        pj,mjets,jetvec)
             endif
          enddo
          
-         
-         if (flg_processid.eq.'HWJ') then
+c     since ptminarr(1) is the smallest value, the following return is correct
+         if (processid.eq.'HWJ') then
             if(njets.eq.0) return
          endif
          

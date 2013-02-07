@@ -114,7 +114,7 @@ module     p0_dbaru_hepneg_config
    ! Note: at the moment it only works for virtual corrections
    ! to Tree level processes.
    logical :: SP_check = .true.
-   integer :: SP_verbosity = 0
+   integer :: SP_verbosity = 2
    real(ki) :: SP_chk_threshold1 = 0.00001_ki
    logical :: SP_rescue = .true.
    real(ki) :: SP_chk_threshold2 = 0.001_ki

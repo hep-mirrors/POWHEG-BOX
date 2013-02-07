@@ -10,7 +10,7 @@ c but never closed ...
       external powheginput
       data called/.false./
       save called
-      integer idvecbos,vdecaymode,decmod
+      integer idvecbos,vdecaymode,Vdecmod
       common/cvecbos/idvecbos,vdecaymode
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
@@ -32,24 +32,8 @@ c somewhere else
 
       call madtophys
 
-c      ph_Hmass = powheginput('hmass')
-c      ph_Hwidth = powheginput('hwidth')
-
-C      write(*,*) 'hmass', ph_Hmass
-C      pause
-
-c Are these needed?
-c$$$      physpar_ml(1)=0.511d-3
-c$$$      physpar_ml(2)=0.1057d0
-c$$$      physpar_ml(3)=1.777d0
-c$$$      physpar_mq(1)=0.33d0     ! up
-c$$$      physpar_mq(2)=0.33d0     ! down
-c$$$      physpar_mq(3)=0.50d0     ! strange
-c$$$      physpar_mq(4)=1.50d0     ! charm
-c$$$      physpar_mq(5)=4.80d0     ! bottom
       call golem_initialize
 
-c      ph_runwidth = .false.
 
 c******************************************************
 c     Choose the process to be implemented
@@ -57,55 +41,52 @@ c******************************************************
 c    ID of vector boson produced
       idvecbos=powheginput('idvecbos')
 c   decay products of the vector boson
-      decmod=powheginput('vdecaymode')
+      Vdecmod=powheginput('vdecaymode')
       
       if(idvecbos.eq.24) then
-         select case(decmod)
-         case (1)
+         if (Vdecmod.eq.1) then
             vdecaymode=-11
-         case (2)
+         elseif (Vdecmod.eq.2) then
             vdecaymode=-13
-         case (3)
+         elseif (Vdecmod.eq.3) then
             vdecaymode=-15
-         case default
-            write(*,*) 'ERROR: The decay mode you selected' /
-     $           /' is not allowed '
-            stop
-         end select  
+         else
+            write(*,*) 'ERROR: The decay mode you selected ',Vdecmod, 
+     $           ' is not allowed '
+            call pwhg_exit(1)
+         endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single W+ production and decay ' 
+         write(*,*) ' POWHEG: H W+ J production and decay ' 
          if (vdecaymode.eq.-11) write(*,*) '         to e+ ve '
          if (vdecaymode.eq.-13) write(*,*) '         to mu+ vmu'
          if (vdecaymode.eq.-15) write(*,*) '         to tau+ vtau'
          write(*,*) 
       elseif(idvecbos.eq.-24) then
-         select case(decmod)
-         case (1)
-            vdecaymode= 11
-         case (2)
-            vdecaymode= 13
-         case (3)
-            vdecaymode= 15
-         case default
-            write(*,*) 'ERROR: The decay mode you selected' /
-     $           /' is not allowed '
-            stop
-         end select
+         if (Vdecmod.eq.1) then
+            vdecaymode=11
+         elseif (Vdecmod.eq.2) then
+            vdecaymode=13
+         elseif (Vdecmod.eq.3) then
+            vdecaymode=15
+         else
+            write(*,*) 'ERROR: The decay mode you selected ',Vdecmod, 
+     $           ' is not allowed '
+            call pwhg_exit(1)
+         endif
          write(*,*) 
-         write(*,*) ' POWHEG: Single W- production and decay '
+         write(*,*) ' POWHEG: H W- J production and decay '
          if (vdecaymode.eq.11) write(*,*) '         to e- ve~ '
          if (vdecaymode.eq.13) write(*,*) '         to mu- vmu~'
          if (vdecaymode.eq.15) write(*,*) '         to tau- vtau~'
          write(*,*)    
       else
-         write(*,*) 'ERROR: The ID of vector boson you selected' 
-     $        //' is not allowed (24: W+ -24: W-)'
-         stop
+         write(*,*) 'ERROR: The ID of vector boson you selected ',
+     $        idvecbos, ' is not allowed (24: W+ -24: W-)'
+         call pwhg_exit(1)
       endif
 
 c     set lepton mass
-      decmass=lepmass(decmod)
-
+      decmass=lepmass(Vdecmod)   
       end
 
 
@@ -122,9 +103,7 @@ c the lh_readin routine in MODEL/couplings.f
       parameter( Rt2   = 1.414213562d0 )
       parameter( Pi = 3.14159265358979323846d0 )
 
-c
 c     Common to lh_readin and printout
-c
       double precision  alpha, gfermi, alfas
       double precision  mtMS,mbMS,mcMS,mtaMS!MSbar masses
       double precision  Vud,Vus,Vub,Vcd,Vcs,Vcb,Vtd,Vts,Vtb !CKM matrix elements
@@ -133,20 +112,19 @@ c
      &                  Vud,Vus,Vub,Vcd,Vcs,Vcb,Vtd,Vts,Vtb
 c
       real * 8 powheginput
+      external powheginput
 c the only parameters relevant for this process are set
 c via powheginput. All others are needed for the
 c madgraph routines not to blow.
-c      alpha= 7.7585538055706d-03
+
       alpha= 1/132.50698d0
       gfermi = 0.1166390d-4
       alfas = 0.119d0
       zmass = 91.188d0
-c      tmass = 174.3d0
       tmass = 172.5d0
       lmass = 0d0
       mcMS = 0d0
       mbMS = 0d0
-c      mtMS = 174d0
       mtMS = 172.5d0
       mtaMS = 1.777d0
       cmass = 0d0
@@ -157,14 +135,15 @@ c      mtMS = 174d0
 
       twidth=1.5083d0
 
-      ph_Wmass2low=20d0**2
-      
-      ph_Wmass2high=140d0**2
-
       hmass = powheginput('hmass')
       hwidth = powheginput('hwidth')
-c      hmass = 120d0
-c      hwidth =  5.75308848d-03
+
+      ph_Hmass2low=powheginput("hmasslow")**2
+      ph_Hmass2high=powheginput("hmasshigh")**2
+      ph_Wmass2low=powheginput("wmasslow")**2
+      ph_Wmass2high=powheginput("wmasshigh")**2    
+
+     
       zwidth=2.441d0
       wwidth=2.0476d0
 
@@ -174,37 +153,6 @@ c        d     s     b
 c    u
 c    c
 c    t
-c
-c      ph_CKM(1,1)=0.97428d0
-c      ph_CKM(1,2)=0.2253d0
-c      ph_CKM(1,3)=0.00347d0
-c      ph_CKM(2,1)=0.2252d0
-c      ph_CKM(2,2)=0.97345d0
-c      ph_CKM(2,3)=0.0410d0
-c      ph_CKM(3,1)=0.00862d0
-c      ph_CKM(3,2)=0.0403d0
-c      ph_CKM(3,3)=0.999152d0
-
-c      Vud=8.83272000E-01
-c      Vus=4.68860000E-01
-c      Vub=0.00000000E+00
-c      Vcd=-4.68860000E-01
-c      Vcs=8.83272000E-01
-c      Vcb=0.00000000E+00
-c      Vtd=0.00000000E+00
-c      Vts=0.00000000E+00
-c      Vtb=1.00000000E+00
-
-c$$$ CKM for comparison with Francesco
-c$$$      Vud=0.975047d0 
-c$$$      Vus=0.222d0  
-c$$$      Vub=0d0 
-c$$$      Vcd=0.222d0  
-c$$$      Vcs=0.97345d0 
-c$$$      Vcb=0d0  
-c$$$      Vtd=0d0 
-c$$$      Vts=0d0  
-c$$$      Vtb=1.0d0
 
       Vud=0.97428d0 
       Vus=0.2253d0  
@@ -267,7 +215,6 @@ c
       common/values/    alpha,gfermi,alfas,   
      &                  mtMS,mbMS,mcMS,mtaMS,
      &                  Vud,Vus,Vub,Vcd,Vcs,Vcb,Vtd,Vts,Vtb
-
 
       e_em=gal(1)
       ph_unit_e=e_em

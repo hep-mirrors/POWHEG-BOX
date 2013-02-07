@@ -41,15 +41,17 @@ c  pwhgfill  :  fills the histograms with data
 c     total cross section sanity check
 
       call bookupeqbins('sigtot'//cptmin(i),1d0,0.5d0,1.5d0)
+      
+      call bookupeqbins('Nevents'//cptmin(i),5d0,-2d2,2d2)
 
       call bookupeqbins('Njet'//cptmin(i),1d0,-0.5d0,5.5d0)
 
       call bookupeqbins('H-y'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('H-eta'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('H-pt'//cptmin(i),dpt,0d0,400d0)
-c      call bookupeqbins('H-m'//cptmin(i),Hwidth,Hmass-20*Hwidth,
-c     $     Hmass+20*Hwidth)
-      call bookupeqbins('H-m'//cptmin(i),0.2d-2,124.98d0,125.020d0)
+      call bookupeqbins('H-m'//cptmin(i),Hwidth,Hmass-20*Hwidth,
+     $     Hmass+20*Hwidth)
+c      call bookupeqbins('H-m'//cptmin(i),0.2d-2,124.98d0,125.020d0)
 
       call bookupeqbins('W-y'//cptmin(i),dy,-5d0,5d0)
       call bookupeqbins('W-eta'//cptmin(i),dy,-5d0,5d0)
@@ -178,18 +180,11 @@ c      include 'LesHouches.h'
       parameter (maxjet=2048)
       real * 8  ktj(maxjet),etaj(maxjet),rapj(maxjet),
      1    phij(maxjet),pj(4,maxjet),rr,ptrel(4)
-
-c      real * 8 ktj
-
       integer maxtrack
       parameter (maxtrack=2048)
       real * 8  ptrack(4,maxtrack)
       integer   jetvec(maxtrack),itrackhep(maxtrack)
-
-
       character * 1 cnum(9)
-c      data cnum/'1','2','3','4','5','6','7','8','9'/
-c      save cnum
       integer nptmin
       parameter (nptmin=3)
       character * 4 cptmin(nptmin)
@@ -209,8 +204,8 @@ c     we need to tell to this analysis file which program is running it
       real * 8 powheginput,dotp
       external powheginput,dotp
       real * 8 ptmin
-      integer idvecbos,idl,idnu
-      save idvecbos,idl,idnu
+      integer idvecbos,Vdecmod,idl,idnu
+      save idvecbos,Vdecmod,idl,idnu
       integer maxnumlep
       parameter (maxnumlep=10)
       real * 8 pvl(4,maxnumlep),plep(4,maxnumlep)
@@ -221,7 +216,6 @@ c     we need to tell to this analysis file which program is running it
       integer jpart, jjet
       real * 8 palg
       integer ii
-
 
       if(dsig.eq.0) return
 
@@ -234,14 +228,29 @@ c     we need to tell to this analysis file which program is running it
 
       if (ini) then
          idvecbos=powheginput('idvecbos')
-         if (idvecbos.eq.24) then
-            idl=-11
-            idnu=12
+         Vdecmod=powheginput('vdecaymode')
+
+         if (WHCPRG.ne.'NLO   ') then
+            if (Vdecmod.eq.1) then
+               idl=-11
+               idnu=12
+            elseif (Vdecmod.eq.2) then
+               idl=-13
+               idnu=14
+            elseif (Vdecmod.eq.3) then
+               idl=-15
+               idnu=16
+            endif
          else
-            idl=11
-            idnu=-12
-         endif        
-c         if ((WHCPRG.ne.'NLO   ').or.(WHCPRG.ne.'LHE   ')) then 
+            idl=-11
+            idnu=12           
+         endif
+c     if idvecbos=24 idl and idnu are ok
+         if (idvecbos.eq.-24) then
+            idl = -idl
+            idnu= -idnu
+         endif
+c     if ((WHCPRG.ne.'NLO   ').or.(WHCPRG.ne.'LHE   ')) then 
 c     set values if analysis file is run by HERWIG and PYTHIA
 c            Wmass = 80.398d0
 c            Wwidth = 2.141d0
@@ -342,6 +351,8 @@ c            call exit(1)
       if (ilep*ih*ivl.eq.0) then
          write(*,*) 
      $        'ERROR... have NOT found the electron/neutrino/Higgs'
+         write(*,*) 'idhep'
+         write(*,*) (idhep(ihep),ihep=1,nhep)
          return
       endif
          
@@ -386,8 +397,7 @@ c     copy momenta to construct jets
         endif
       enddo
       if (ntracks.eq.0) then
-         write(*,*) 'ntracks = 0 ????'
-         return
+         numjets=0
       else
 c     palg=1 is standard kt, -1 is antikt
          palg = -1d0
@@ -400,108 +410,107 @@ c     $        pj,mjets,jetvec)
       endif
 
       do i=1,nptmin        
-      njets=0
-      do j=1,min(4,numjets)
-         ktj(j) = sqrt(pj(1,j)**2 + pj(2,j)**2 )
-         if (ktj(j).gt.ptminarr(i)) then
-            njets=njets+1
+         njets=0
+         
+         do j=1,min(3,numjets)
+            ktj(j) = sqrt(pj(1,j)**2 + pj(2,j)**2 )
+            if (ktj(j).gt.ptminarr(i)) then
+               njets=njets+1
+            endif
+         enddo
+         
+         
+         if (flg_processid.eq.'HWJ') then
+            if(njets.eq.0) return
          endif
-      enddo
-
-c     Since ptminarr(1) is the smallest value, the following is correct
-      if (flg_processid.eq.'HWJ') then
-         if(njets.eq.0) return
-      endif
-
-      call filld('sigtot'//cptmin(i),1d0,dsig)
-        
-      if(njets.eq.0) then
-         call filld('Njet'//cptmin(i),0d0,dsig)
-      elseif(njets.eq.1) then
-         call filld('Njet'//cptmin(i),1d0,dsig)
-      elseif(njets.eq.2) then
-         call filld('Njet'//cptmin(i),2d0,dsig)
-      elseif(njets.eq.3) then
-         call filld('Njet'//cptmin(i),3d0,dsig)
-      elseif(njets.eq.4) then
-         call filld('Njet'//cptmin(i),4d0,dsig)
-      elseif(njets.eq.5) then
-         call filld('Njet'//cptmin(i),5d0,dsig)
-      else
-c         write(*,*) ' Njet?',mjets
-      endif
-c Higgs
-      call getyetaptmass(ph,y,eta,pt,m)
-      call filld('H-y'//cptmin(i),    y, dsig)
-      call filld('H-eta'//cptmin(i),eta, dsig)
-      call filld('H-pt'//cptmin(i),  pt, dsig)
-      call filld('H-m'//cptmin(i), m, dsig)
-c W
-      call getyetaptmass(pw,y,eta,pt,m)
-      call filld('W-y'//cptmin(i),    y, dsig)
-      call filld('W-eta'//cptmin(i),eta, dsig)
-      call filld('W-pt'//cptmin(i),  pt, dsig)
-      call filld('W-m'//cptmin(i), m, dsig)
-c lepton
-      call getyetaptmass(plep(:,1),y,eta,pt,m)
-      call filld('lept-eta'//cptmin(i),eta, dsig)
-      call filld('lept-pt'//cptmin(i),  pt, dsig)
-c neutrino
-      call getyetaptmass(pvl(:,1),y,eta,pt,m)
-      call filld('miss-pt'//cptmin(i),  pt, dsig)
-c HW
-      call getyetaptmass(ph+pw,y,eta,pt,m)
-      call filld('HW-y'//cptmin(i),    y, dsig)
-      call filld('HW-eta'//cptmin(i),eta, dsig)
-      call filld('HW-pt'//cptmin(i),  pt, dsig)
-      call filld('HW-ptzoom'//cptmin(i),  pt, dsig)
-      call filld('HW-ptzoom2'//cptmin(i),  pt, dsig)
-      call filld('HW-m'//cptmin(i), m, dsig)
-
-c jets
-      mjets=min(njets,2)
-
-      do j=1,mjets
-         call getyetaptmass(pj(:,j),y,eta,pt,m)
-         call filld('j'//cnum(j)//'-y'//cptmin(i),     y, dsig)
-         call filld('j'//cnum(j)//'-eta'//cptmin(i), eta, dsig)
-         call filld('j'//cnum(j)//'-pt'//cptmin(i),   pt, dsig)
-         call filld('j'//cnum(j)//'-ptzoom'//cptmin(i),   pt, dsig)
-         call filld('j'//cnum(j)//'-ptzoom2'//cptmin(i),   pt, dsig)
-         call filld('j'//cnum(j)//'-m'//cptmin(i),     m, dsig)
-c         call filld('ptrel'//cnum(j)//cptmin(i),ptrel(j), dsig)         
-      enddo
-
-
-
-      do j=1,mjets
-         do k=j+1,mjets
-            call getyetaptmass(pj(:,j)+pj(:,k),y,eta,pt,m)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-y'//cptmin(i),
-     $           y, dsig)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-eta'//cptmin(i),
-     $           eta, dsig)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-pt'//cptmin(i),
-     $           pt, dsig)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-m'//cptmin(i), 
-     $           m, dsig)
+         
+         call filld('sigtot'//cptmin(i),1d0,dsig)
+         
+         call filld('Nevents'//cptmin(i),dsig,1d0)
+         
+         if(njets.eq.0) then
+            call filld('Njet'//cptmin(i),0d0,dsig)
+         elseif(njets.eq.1) then
+            call filld('Njet'//cptmin(i),1d0,dsig)
+         elseif(njets.eq.2) then
+            call filld('Njet'//cptmin(i),2d0,dsig)
+         elseif(njets.eq.3) then
+            call filld('Njet'//cptmin(i),3d0,dsig)
+         elseif(njets.eq.4) then
+            call filld('Njet'//cptmin(i),4d0,dsig)
+         elseif(njets.eq.5) then
+            call filld('Njet'//cptmin(i),5d0,dsig)
+         else
+c     write(*,*) ' Njet?',mjets
+         endif
+c     Higgs
+         call getyetaptmass(ph,y,eta,pt,m)
+         call filld('H-y'//cptmin(i),    y, dsig)
+         call filld('H-eta'//cptmin(i),eta, dsig)
+         call filld('H-pt'//cptmin(i),  pt, dsig)
+         call filld('H-m'//cptmin(i), m, dsig)
+c     W
+         call getyetaptmass(pw,y,eta,pt,m)
+         call filld('W-y'//cptmin(i),    y, dsig)
+         call filld('W-eta'//cptmin(i),eta, dsig)
+         call filld('W-pt'//cptmin(i),  pt, dsig)
+         call filld('W-m'//cptmin(i), m, dsig)
+c     lepton
+         call getyetaptmass(plep(:,1),y,eta,pt,m)
+         call filld('lept-eta'//cptmin(i),eta, dsig)
+         call filld('lept-pt'//cptmin(i),  pt, dsig)
+c     neutrino
+         call getyetaptmass(pvl(:,1),y,eta,pt,m)
+         call filld('miss-pt'//cptmin(i),  pt, dsig)
+c     HW
+         call getyetaptmass(ph+pw,y,eta,pt,m)
+         call filld('HW-y'//cptmin(i),    y, dsig)
+         call filld('HW-eta'//cptmin(i),eta, dsig)
+         call filld('HW-pt'//cptmin(i),  pt, dsig)
+         call filld('HW-ptzoom'//cptmin(i),  pt, dsig)
+         call filld('HW-ptzoom2'//cptmin(i),  pt, dsig)
+         call filld('HW-m'//cptmin(i), m, dsig)
+         
+c     jets
+         mjets=min(njets,2)
+         
+         do j=1,mjets
+            call getyetaptmass(pj(:,j),y,eta,pt,m)
+            call filld('j'//cnum(j)//'-y'//cptmin(i),     y, dsig)
+            call filld('j'//cnum(j)//'-eta'//cptmin(i), eta, dsig)
+            call filld('j'//cnum(j)//'-pt'//cptmin(i),   pt, dsig)
+            call filld('j'//cnum(j)//'-ptzoom'//cptmin(i),   pt, dsig)
+            call filld('j'//cnum(j)//'-ptzoom2'//cptmin(i),   pt, dsig)
+            call filld('j'//cnum(j)//'-m'//cptmin(i),     m, dsig)
+c     call filld('ptrel'//cnum(j)//cptmin(i),ptrel(j), dsig)         
          enddo
-      enddo
-
-      
-      do j=1,mjets
-         do k=j+1,mjets
-            call deltaplot(pj(:,j),pj(:,k),dsig,
-     1           'j'//cnum(j)//'j'//cnum(k),cptmin(i))
+         
+         do j=1,mjets
+            do k=j+1,mjets
+               call getyetaptmass(pj(:,j)+pj(:,k),y,eta,pt,m)
+               call filld('j'//cnum(j)//'j'//cnum(k)//'-y'//cptmin(i),
+     $              y, dsig)
+               call filld('j'//cnum(j)//'j'//cnum(k)//'-eta'//cptmin(i),
+     $              eta, dsig)
+               call filld('j'//cnum(j)//'j'//cnum(k)//'-pt'//cptmin(i),
+     $              pt, dsig)
+               call filld('j'//cnum(j)//'j'//cnum(k)//'-m'//cptmin(i), 
+     $              m, dsig)
+            enddo
          enddo
-      enddo
-
-      do j=1,mjets
-         call deltaplot(pj(:,j),plep(:,1),dsig,
-     1        'j'//cnum(j)//'lept',cptmin(i))
-      enddo
-      
-      
+         
+         do j=1,mjets
+            do k=j+1,mjets
+               call deltaplot(pj(:,j),pj(:,k),dsig,
+     1              'j'//cnum(j)//'j'//cnum(k),cptmin(i))
+            enddo
+         enddo
+         
+         do j=1,mjets
+            call deltaplot(pj(:,j),plep(:,1),dsig,
+     1           'j'//cnum(j)//'lept',cptmin(i))
+         enddo
+         
       enddo
       end
 

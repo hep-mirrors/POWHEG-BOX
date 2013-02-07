@@ -130,7 +130,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	reshufflemoms.o  pwhg_gosam.o                                   \
 	sigcollsoft.o sigvirtual.o  \
-	pwhgreweight.o setlocalscales-HWJ.o mint_upb.o opencount.o  \
+	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o  \
 	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 
 

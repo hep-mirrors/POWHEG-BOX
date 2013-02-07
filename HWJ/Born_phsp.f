@@ -3,17 +3,15 @@
       include 'nlegborn.h'
       include 'pwhg_math.h'
       include 'pwhg_kn.h'
-      include 'coupl.inc'
       include 'PhysPars.h'
       include 'pwhg_flg.h'
-      real * 8 xborn(ndiminteg-3),tmpvec(0:3)
+      real * 8 xborn(ndiminteg-3)
       integer k
-      logical ini,fullphsp
+      logical ini
       data ini/.true./
-      save ini,fullphsp
-      real * 8 powheginput
+      save ini
       real * 8 xjac,smin,smax,z,s,wt,sqrts,
-     1         mllminsq,mllmaxsq,vmass,vwidth,m3,m45,taumin,lntaum,
+     1         mllminsq,mllmaxsq,m3,m45,taumin,lntaum,
      2         tau,ymax,ycm,xx(2),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),
      3         p12(4),p45(4),p345(4),beta,vec(3),s345min
       integer mu
@@ -24,49 +22,11 @@ c     set initial- and final-state masses for Born and real
             kn_masses(k)=0
          enddo
          kn_masses(nlegreal)=0
-         kn_masses(3)=hmass
-         ph_HmHw=hmass*hwidth
-         ph_Hmass=hmass
-         ph_Hwidth=hwidth
-         ph_Hmass2=hmass**2
-         ph_Hmass2low=powheginput("hmasslow")**2
-         ph_Hmass2high=powheginput("hmasshigh")**2
-         ph_Wmass2low=powheginput("wmasslow")**2
-         ph_Wmass2high=powheginput("wmasshigh")**2         
+         kn_masses(3)=ph_Hmass
+         ph_HmHw=ph_Hmass*ph_Hwidth
          ini = .false.
       endif      
 
-c      call born_phsp_hll(xborn)
-c Dovrebbe essere la massa di polo
-c$$$      kn_masses(3)=sqrt(brkn_cmpborn(0,3)**2-brkn_cmpborn(1,3)**2
-c$$$     $     -brkn_cmpborn(2,3)**2-brkn_cmpborn(3,3)**2)
-c$$$      brkn_emitter=0
-c$$$      call br_real_phsp_isr(xborn(ndiminteg-5),jac)
-c$$$      kn_cmpborn=brkn_cmpreal
-c$$$      kn_pborn=brkn_preal
-c$$$      kn_xb1=brkn_x1
-c$$$      kn_xb2=brkn_x2
-c$$$
-c$$$      kn_jacborn=brkn_jacborn*jac
-c$$$
-c$$$c     set the CMS energy 
-c$$$      kn_sborn=brkn_sreal
-c$$$
-c$$$      kn_minmass=sqrt(ph_Hmass2low) + sqrt(ph_Wmass2low)
-c$$$
-c$$$      end
-c$$$
-c$$$         
-c$$$      subroutine born_phsp_hll(xborn)
-c$$$      implicit none
-c$$$      include 'pwhg_math.h'
-c$$$      include 'brinclude.h'
-c$$$      include 'pwhg_kn.h'
-c$$$      include 'coupl.inc'
-c$$$      include 'PhysPars.h'
-      vmass=ph_wmass
-      vwidth=ph_wwidth
-c     
       sqrts = sqrt(kn_sbeams)
       xjac=1
 c     First determine virtuality of the Higgs
@@ -87,7 +47,6 @@ c Take it off
 c If you want Passarino's shape, put it here
 
       m3=sqrt(s)
-c
 c      write(*,*)"--> mH mass in PWHG: ",m3
 
       smin=mllminsq
@@ -97,7 +56,7 @@ c      z=xborn(2)**4
 c      xjac=xjac*4*xborn(2)**3
       z=xborn(2)
 
-      call breitw(z,smin,smax,vmass,vwidth,s,wt)
+      call breitw(z,smin,smax,ph_wmass,ph_wwidth,s,wt)
       xjac=xjac*wt/(2*pi)
       m45=sqrt(s)
       taumin = ((kn_ktmin + sqrt((m3+m45)**2 + kn_ktmin**2))/sqrts)**2
@@ -187,7 +146,6 @@ c     now boost everything BACK along z-axis
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
-      include 'coupl.inc'
       real * 8 fact,ptmin
       real * 8 pt2
       logical ini
@@ -214,7 +172,7 @@ c     now boost everything BACK along z-axis
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
-      include 'coupl.inc'
+      include 'PhysPars.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
@@ -262,7 +220,7 @@ c     now boost everything BACK along z-axis
          pt1=sqrt(kn_pborn(1,4)**2+kn_pborn(2,4)**2)
          pt2=sqrt(kn_pborn(1,5)**2+kn_pborn(2,5)**2)
          ptHsq=kn_pborn(1,3)**2+kn_pborn(2,3)**2
-         Ht=sqrt(hmass**2+ptHsq)+pt1+pt2
+         Ht=sqrt(ph_hmass**2+ptHsq)+pt1+pt2
          mur=Ht
          muf=mur
       elseif (runningscales.eq.2) then
@@ -272,8 +230,8 @@ c     now boost everything BACK along z-axis
          if(mur.lt.2) mur=2
          muf=mur         
       else
-         muf=hmass+wmass
-         mur=hmass+wmass
+         muf=ph_hmass+ph_wmass
+         mur=ph_hmass+ph_wmass
       endif
       end
 

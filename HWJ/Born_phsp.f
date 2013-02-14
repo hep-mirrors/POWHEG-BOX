@@ -98,8 +98,8 @@ C     total incoming momentum
 
       s345min=(m3+m45)**2
 
-      call phi1_2m_nobw(0d0,xborn(5),xborn(6),xborn(7),s345min,
-     $     p12,p6,p345,wt)
+      call phi1_2m_nobw(0d0,xborn(5),xborn(6),xborn(7),s345min,p12,
+     $     p6,p345,wt)
       xjac=xjac*wt
 
       call phi1_2(xborn(8),xborn(9),p345,p3,p45,m3,m45,wt)
@@ -154,9 +154,11 @@ c     now boost everything BACK along z-axis
       save ini,ptmin    
       if (ini) then
          ptmin=powheginput("#bornsuppfact")      
+         if (ptmin.lt.0d0) then
+            ptmin=0d0
+         endif
          ini=.false.
       endif
-
       if(flg_weightedev) then
          pt2=kn_cmpborn(1,6)**2+kn_cmpborn(2,6)**2
          fact = pt2/(ptmin**2+pt2)

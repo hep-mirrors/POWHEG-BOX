@@ -1,5 +1,5 @@
-      subroutine phi1_2m_nobw(m2,x3,xth,xphi,s3min,p1,p2,p3,wt)
-c     massive particle p1 decaying into p2 mass m2 and p3 mass-squared s3.
+      subroutine phi1_2m_nobw_ktmin(m2,x3,xth,xphi,s3min,p1,p2,p3,wt)
+c     massive particle p1 decaying into p2 mass m2 and p3 minimum mass-squared s3min,
 c     with invariant mass of particle three s3 integrated over.
 c     vectors returned p2 and p3 are in the same frame as p1 is supplied
 c     Expression evaluate is 
@@ -14,14 +14,14 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       double precision m1,m2,m3,s1,s2,s3,lambda
       integer j
       parameter(wt0=1d0/8d0/pi)
-      real * 8 z
+      real * 8 z,mod_p2,sinth_min,th_min,max_costh
 
       wt=0d0
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) stop
       m1=dsqrt(s1)
       s2=m2**2
-      s3max=(m2-m1)**2
+      s3max=(m1-m2)**2
       if (s3min .gt. s3max) stop
       w3=s3max-s3min
       s3=s3max*x3+s3min*(1d0-x3)
@@ -29,11 +29,23 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       m3=dsqrt(s3)
 ccccccccccccccccccccccccccccccccccccccccccccccc
 c     modified by Carlo Oleari
+c     costh=2d0*xth-1d0     ! original line. Superseded by the following lines
+c     mod_p2 is the modulus of the vector p2 or p3, one recoiling against the other
+      mod_p2=sqrt((s1-s2-s3)**2-4d0*s2*s3)/(2*m1)
+      sinth_min = kn_ktmin/mod_p2
+      th_min = arcsin(sinth_min)
+      max_costh = cos(th_min)
 c      costh=2d0*xth-1d0      
-      z = 2d0*xth-1d0      
-      costh=1.5d0*(z-z**3/3)
-      w3 = w3*1.5d0*(1-z**2)
+      costh=(max_costh+1)*xth-1d0      
+c     we divide by two, since this factor is already included in wt0
+      w3 = w3/2*(max_costh+1)
+
+c      z = 2d0*xth-1d0      
+c      costh=1.5d0*(z-z**3/3)
+c     w3 = w3*1.5d0*(1-z**2)
 ccccccccccccccccccccccccccccccccccccccccccccccc
+
+
       phi=2d0*pi*xphi
       sinth=dsqrt(1d0-costh**2)
       cphi=dcos(phi)
@@ -52,6 +64,8 @@ ccccccccccccccccccccccccccccccccccccccccccccccc
       endif
       lambda=dsqrt(lambda)
       wt=wt0*w3*lambda/s1
+
+      
 
       p3cm(4)=m1/2d0*(s1+s3-s2)/s1
       p3cm(1)=m1/2d0*lambda/s1*sinth*sphi

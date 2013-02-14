@@ -86,17 +86,20 @@ c     maximum number of errors before pythia aborts (def=10)
 c     number of warnings printed on the shell
       mstu(26)=20
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c Hadronization off
-      mstp(111)=0
-c primordial kt off
-      mstp(91)=0
-c No multiple parton interactions
-      if(mstp(81).eq.1) then
-c Q2 ordered shower
-         mstp(81)=0
-      elseif(mstp(81).eq.21) then
-c p_t^2 ordered shower
-         mstp(81)=20
+      if(powheginput("#nohad").gt.0) then
+         write(*,*)' ****** switching hadronization off ****'
+c     Hadronization off
+         mstp(111)=0
+c     primordial kt off
+         mstp(91)=0
+c     No multiple parton interactions
+         if(mstp(81).eq.1) then
+c     Q2 ordered shower
+            mstp(81)=0
+         elseif(mstp(81).eq.21) then
+c     p_t^2 ordered shower
+            mstp(81)=20
+         endif
       endif
       end
 
@@ -131,6 +134,42 @@ c     Make PI0 stable as in herwig default
       mdcy(pycomp(111),1)=0
 c     Make tau stable
       mdcy(pycomp(15),1)=0 ! tau stable. Done by Tauola too
+
+C---Decay;
+      hdecaymode=powheginput('#hdecaymode')
+      if(hdecaymode.lt.-10) hdecaymode= -1
+      if ((hdecaymode.lt.-1).or.(hdecaymode.gt.12)) then
+         write(*,*) "Higgs decay mode not allowed"
+         stop
+      endif   
+
+c     choose Higgs decay channel
+      if (hdecaymode.eq.-1) then
+         mdcy(pycomp(25),1)=0
+      else   
+         mdcy(pycomp(25),1)=1
+         if (hdecaymode.gt.0) then
+            do i=210,288
+               if (mdme(i,1).ne.-1) mdme(i,1)=0
+            enddo
+            if (hdecaymode.eq.12) then
+               mdme(223,1)=1
+            elseif(hdecaymode.eq.11) then
+               mdme(225,1)=1
+            elseif(hdecaymode.eq.10) then
+               mdme(226,1)=1
+            elseif(hdecaymode.eq.7) then
+               mdme(218,1)=1
+            elseif(hdecaymode.eq.8) then
+               mdme(219,1)=1
+            elseif(hdecaymode.eq.9) then
+               mdme(220,1)=1   
+            else
+               mdme(209+hdecaymode,1)=1
+            endif
+         endif      
+      endif
+
       end
 
       subroutine UPEVNT
@@ -272,4 +311,63 @@ c pythia routine to abort event
       implicit none
       real * 8 dotp,p1(0:3),p2(0:3)
       dotp = (p1(0)*p2(0) - p1(3)*p2(3)) - p1(1)*p2(1) - p1(2)*p2(2)
+      end
+
+
+      subroutine change_scalup
+      implicit none
+      include 'LesHouches.h'
+c      include 'hepevt.h'
+      include 'nlegborn.h'
+      include 'pwhg_flst.h'
+      include 'pwhg_rad.h'
+      real * 8 ptmin,ptmin2,pcm(0:3,maxnup),beta,vec(3),ptkj2
+      integer k,mu,j
+      logical ini
+      save ini
+      data ini/.true./
+      real * 8 dotp
+      external dotp
+      integer npart
+      npart=0
+      do k=3,nup
+c     only light partons
+         if (idup(k).eq.21.or.abs(idup(k)).le.5) then
+            npart=npart+1
+            do mu=1,3
+               pcm(mu,npart)=pup(mu,k)
+            enddo
+            pcm(0,npart)=pup(4,k)
+         endif
+      enddo
+c     compute min pt of light partons with respect to the incoming beam
+      ptmin2=1d30
+      do k=1,npart
+         ptmin2=min(ptmin2,pcm(1,k)**2+pcm(2,k)**2)
+      enddo
+
+c     compute pt's of the final state partons with respect to each other
+      beta=-(pup(3,1)+pup(3,2))/(pup(4,1)+pup(4,2))
+      vec(1)=0
+      vec(2)=0
+      vec(3)=1
+c     go in the CM frame   
+      call mboost(npart,vec,beta,pcm,pcm)
+      do k=1,npart-1
+         do j=k+1,npart
+            ptkj2 = 2*dotp(pcm(0,k),pcm(0,j))*
+     $           pcm(0,k)*pcm(0,j)/(pcm(0,k)+pcm(0,j))**2
+            ptmin2=min(ptmin2,ptkj2)
+         enddo
+      enddo
+      ptmin=sqrt(ptmin2)
+      if(scalup.gt.ptmin) then
+         if (ini) then
+            write(*,*) '*************************************'
+            write(*,*) 'scalup set to the min pt in the event'
+            write(*,*) '*************************************'
+            ini=.false.
+         endif         
+         scalup = ptmin
+      endif
       end

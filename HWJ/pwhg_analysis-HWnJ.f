@@ -67,6 +67,7 @@ c      call bookupeqbins('H-m'//cptmin(i),0.2d-2,124.98d0,125.020d0)
       call bookupeqbins('HW-pt'//cptmin(i),dpt,0d0,400d0)
       call bookupeqbins('HW-ptzoom'//cptmin(i),2d0,1d0,151d0)
       call bookupeqbins('HW-ptzoom2'//cptmin(i),0.5d0,0d0,20d0)
+      call bookupeqbins('HW-ptzoom3'//cptmin(i),0.001d0,0d0,0.2d0)
       call bookupeqbins('HW-m'//cptmin(i),dpt,0d0,400d0)
 
 
@@ -220,6 +221,10 @@ c     we need to tell to this analysis file which program is running it
       save minlo
       data minlo/.false./
       character * 20 processid
+      real * 8 rescfac1,rescfac2
+      common /crescfac/rescfac1,rescfac2
+
+
 
       if(dsig.eq.0) return
 
@@ -455,11 +460,19 @@ c     neutrino
          call filld('miss-pt'//cptmin(i),  pt, dsig)
 c     HW
          call getyetaptmass(ph+pw,y,eta,pt,m)
+
+         if (pt.gt.0.09d0 .and. pt.lt.0.11d0) then
+            write(*,*) 'ci siamo'
+            write(*,*) rescfac1,rescfac2
+         endif
+
+
          call filld('HW-y'//cptmin(i),    y, dsig)
          call filld('HW-eta'//cptmin(i),eta, dsig)
          call filld('HW-pt'//cptmin(i),  pt, dsig)
          call filld('HW-ptzoom'//cptmin(i),  pt, dsig)
          call filld('HW-ptzoom2'//cptmin(i),  pt, dsig)
+         call filld('HW-ptzoom3'//cptmin(i),  pt, dsig)
          call filld('HW-m'//cptmin(i), m, dsig)
          
 c     jets

@@ -20,7 +20,10 @@ c coupling rescaling, for Born (imode=1) and NLO corrections (imode=2)
       save ini
       real * 8 powheginput,factsc2min,frensc2min,as,y,b1,tmp
       save factsc2min,frensc2min,b0,b1
-
+      integer imax
+      real * 8 rescfac1,rescfac2
+      common /crescfac/rescfac1,rescfac2
+      
       if(ini) then
          factsc2min = powheginput("#factsc2min")
          frensc2min = powheginput("#frensc2min")
@@ -32,6 +35,8 @@ c coupling rescaling, for Born (imode=1) and NLO corrections (imode=2)
          b1=(153d0-19d0*st_nlight)/(24*pi**2)
          ini = .false.
       endif
+
+
 
       rescfac = 1
 
@@ -81,8 +86,11 @@ c      endif
 
       as=pwhg_alphas(mb2,st_lambda5MSB,st_nlight)
       y = -as*b0*log(st_renfact**2*ptb2/mb2)
+
       if(y.ge.1) then
          rescfac = 0d0
+         orescfac = 0d0
+         rescfac1 = rescfac
          return
       endif
       
@@ -93,6 +101,8 @@ c      endif
          rescfac = sudakov(ptb2,mb2,flav)**2
          expsud  = 2 * expsudakov(ptb2,mb2,flav)
       endif
+
+      rescfac1 = rescfac
 
 
 c     alpha_s reweighting
@@ -114,6 +124,9 @@ c     $      st_lambda5MSB,st_nlight)
          endif
       endif
       orescfac=rescfac
+
+      rescfac2 = rescfac
+
       end
 
 
@@ -321,7 +334,7 @@ c     d alpha/d log mu^2=-b0 alpha^2 - be1 alpha^3 -be2 alpha^4
 
       if (y .ge. 1) then 
          write(*,*) '-------> y',y
-         theExponent = -100d0 
+         theExponent = -1000d0 
          return 
       endif
 

@@ -59,7 +59,7 @@ GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// 
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-VPATH= ./:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
+VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
 
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
@@ -117,7 +117,7 @@ endif
 	$(CXX) $(DEBUG) -c -o $(OBJ)/$@ $^ $(FJCXXFLAGS)
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-     real.o  phi1_2.o phi1_2m_nobw.o phi3m0.o phi3m.o boost.o breit.o $(PWHGANAL)
+     real.o  phi1_2.o phi1_2m_nobw_ktmin.o phi3m0.o phi3m.o boost.o breit.o $(PWHGANAL)
 
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
@@ -129,7 +129,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	pwhg_analysis_driver.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	reshufflemoms.o  pwhg_gosam.o                                   \
-	sigcollsoft.o sigvirtual.o  \
+	sigcollsoft.o sigvirtual.o  ubprojections.o \
 	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o  \
 	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 

@@ -42,7 +42,7 @@ c     total cross section sanity check
 
       call bookupeqbins('sigtot'//cptmin(i),1d0,0.5d0,1.5d0)
       
-      call bookupeqbins('Nevents'//cptmin(i),5d0,-2d2,2d2)
+      call bookupeqbins('Nevents'//cptmin(i),2.5d0,0,2d2)
 
       call bookupeqbins('Njet'//cptmin(i),1d0,-0.5d0,5.5d0)
 
@@ -422,7 +422,7 @@ c     since ptminarr(1) is the smallest value, the following return is correct
          
          call filld('sigtot'//cptmin(i),1d0,dsig)
          
-         call filld('Nevents'//cptmin(i),dsig,1d0)
+         call filld('Nevents'//cptmin(i),abs(dsig),1d0)
          
          if(njets.eq.0) then
             call filld('Njet'//cptmin(i),0d0,dsig)
@@ -461,10 +461,10 @@ c     neutrino
 c     HW
          call getyetaptmass(ph+pw,y,eta,pt,m)
 
-         if (pt.gt.0.09d0 .and. pt.lt.0.11d0) then
-            write(*,*) 'ci siamo'
-            write(*,*) rescfac1,rescfac2
-         endif
+c         if (pt.gt.0.09d0 .and. pt.lt.0.11d0) then
+c            write(*,*) 'ci siamo'
+c            write(*,*) rescfac1,rescfac2
+c         endif
 
 
          call filld('HW-y'//cptmin(i),    y, dsig)

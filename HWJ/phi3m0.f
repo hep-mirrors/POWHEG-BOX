@@ -22,16 +22,16 @@ c     delta(p2^2) delta(p3^2)
        stop 'phi3m0: s < 0' 
       endif
 
-      roots=dsqrt(abs(s))
+      roots=sqrt(abs(s))
       costh=2d0*xth-1d0    
-      sinth=dsqrt(1d0-costh**2)
+      sinth=sqrt(1d0-costh**2)
       phi=2d0*pi*xphi
 
       wt=wt0
 
       p1cm(4)=roots/2d0
-      p1cm(1)=roots/2d0*sinth*dsin(phi)
-      p1cm(2)=roots/2d0*sinth*dcos(phi)
+      p1cm(1)=roots/2d0*sinth*sin(phi)
+      p1cm(2)=roots/2d0*sinth*cos(phi)
       p1cm(3)=roots/2d0*costh
 
       call boost(roots,p0,p1cm,p1)

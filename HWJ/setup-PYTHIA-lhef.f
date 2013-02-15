@@ -30,9 +30,9 @@ C -  320 Perugia 0 :  Perugia update of S0-Pro    (Feb 2009)
       integer MDCY,MDME,KFDP
       double precision brat
       COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
-      integer MRPY
-      double precision RRPY
-      COMMON/PYDATR/MRPY(6),RRPY(100)
+c      integer MRPY
+c      double precision RRPY
+c      COMMON/PYDATR/MRPY(6),RRPY(100)
       integer pycomp
       external pycomp
       integer maxev
@@ -41,10 +41,10 @@ C -  320 Perugia 0 :  Perugia update of S0-Pro    (Feb 2009)
       common/cscalupfac/scalupfact
       real * 8 powheginput
       external powheginput
-      character * 20 pwgprefix
-      integer lprefix
-      common/cpwgprefix/pwgprefix,lprefix
-      integer iseed,ios
+c      character * 20 pwgprefix
+c      integer lprefix
+c      common/cpwgprefix/pwgprefix,lprefix
+c      integer iseed,ios
 
 c$$$      if(lprefix.eq.7.and.pwgprefix(1:3).eq.'pwg') then
 c$$$         read(pwgprefix(4:7),fmt='(i4)',iostat=ios) iseed
@@ -58,10 +58,7 @@ c$$$            mrpy(2)=0
 c$$$         endif
 c$$$      endif
 c$$$
-      scalupfact=powheginput('#scalupfact')
-      if(scalupfact.gt.0) then
-         write(*,*)' ********* SCALUP scale multiplied by ',scalupfact
-      endif
+
 c      mstj(41) =3 ! Photon radiation off leptons. Not recommended to touch
 c                  ! this -- causes interference with the pT ordered shower.
 c      mstp(61) =0 ! No IS shower
@@ -87,7 +84,7 @@ c     number of warnings printed on the shell
       mstu(26)=20
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if(powheginput("#nohad").gt.0) then
-         write(*,*)' ****** switching hadronization off ****'
+         write(*,*)' ****** switching off hadronization ****'
 c     Hadronization off
          mstp(111)=0
 c     primordial kt off
@@ -124,8 +121,11 @@ C--- Opens input file and counts number of events, setting MAXEV;
       COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
       integer pycomp
       external pycomp
+      integer hdecaymode,i   
       integer maxev
       common/mcmaxev/maxev
+      real * 8 powheginput
+      external powheginput
       nevhep=0
 c read the header first, so lprup is set
       call lhefreadhdr(97)
@@ -140,7 +140,7 @@ C---Decay;
       if(hdecaymode.lt.-10) hdecaymode= -1
       if ((hdecaymode.lt.-1).or.(hdecaymode.gt.12)) then
          write(*,*) "Higgs decay mode not allowed"
-         stop
+         call pwhg_exit(-1)
       endif   
 
 c     choose Higgs decay channel
@@ -169,103 +169,28 @@ c     choose Higgs decay channel
             endif
          endif      
       endif
-
       end
 
       subroutine UPEVNT
       implicit none
-      include 'LesHouches.h'
-      include 'nlegborn.h'
-      include 'pwhg_flst.h'
-      include 'pwhg_rad.h'
-      real * 8 scalupfact
-      common/cscalupfac/scalupfact
-      real * 8 ptmin, pcm(0:3,5), beta, vec(3)
-      integer k,mu,j
-      real * 8 ptkj2
-      real * 8 dotp
-      external dotp
-      logical ini, changescalup
-      save ini, changescalup
       real * 8 powheginput
-      external powheginput
+      external powheginput      
+      logical changescalup,ini
+      save changescalup,ini
       data ini/.true./
-      call lhefreadev(97)
-      
       if (ini) then
-         if(powheginput('#changescalup').eq.1d0) then
-            changescalup=.true.
-            write(*,*) '*************************************'
-            write(*,*) 'scalup set to the min pt in the event'
-            write(*,*) '*************************************'
-         else
-            changescalup=.false.
+         changescalup = powheginput("#changescalup").eq.1d0 
+         if (changescalup) then
+            write(*,*) '*********************************'
+            write(*,*) ' CHANGE SCALUP activated '
+            write(*,*) '*********************************'
          endif
          ini=.false.
       endif
-      
+      call lhefreadev(97)
       if (changescalup) then
-c     comupute pt's of partons respect the beams
-         ptmin=min(pup(1,3)**2+pup(2,3)**2, pup(1,4)**2+pup(2,4)**2)
-         if(nup.eq.5) then
-            ptmin=min(ptmin,pup(1,5)**2+pup(2,5)**2)
-         endif
-c     compute pt's of the final state partons with respect to each other
-c     go in the CM frame   
-         do k=1,nup
-            do mu=1,3
-               pcm(mu,k)=pup(mu,k)
-            enddo
-            pcm(0,k)=pup(4,k)
-         enddo
-         beta=-(pup(3,1)+pup(3,2))/(pup(4,1)+pup(4,2))
-         vec(1)=0
-         vec(2)=0
-         vec(3)=1
-         call mboost(nup,vec,beta,pcm,pcm)
-c     write(*,*) 'momenta'
-c     do k=1,nup
-c     write(*,*) (pcm(mu,k),mu=0,3)
-c     enddo
-         do k=3,nup
-            do j=k+1,nup
-               ptkj2 = 2*dotp(pcm(0,k),pcm(0,j))*
-     1              pcm(0,k)*pcm(0,j)/(pcm(0,k)+pcm(0,j))**2
-               ptmin=min(ptmin,ptkj2)
-            enddo
-         enddo
-         ptmin=sqrt(ptmin)
-         if(scalup.gt.ptmin) then
-c     write(*,*) 'DECREASED SCALUP FROM ',scalup,' TO ',ptmin
-            scalup = ptmin
-         endif
+         call change_scalup
       endif
-
-
-c      if(scalup.gt.ptmin*2) then
-      if(scalup.eq.-1) then
-         write(*,*) ' scalup: ',scalup,' ptmin:',ptmin
-         call  lhefreadextra(97)
-         
-         write(*,*) ' rad_kinreg:',rad_kinreg
-         write(*,'(5(1x,i2))') (idup(k),k=1,nup)
-         do k=1,nup
-            do mu=1,3
-               pcm(mu,k)=pup(mu,k)
-            enddo
-            pcm(0,k)=pup(4,k)
-         enddo
-         beta=-(pup(3,1)+pup(3,2))/(pup(4,1)+pup(4,2))
-         vec(1)=0
-         vec(2)=0
-         vec(3)=1
-         call mboost(nup,vec,beta,pcm,pcm)
-         write(*,'(4(1x,d10.4))') ((pcm(mu,k),mu=0,3),k=1,nup)
-      endif
-
-
-      if(scalupfact.gt.0) scalup=scalup*scalupfact
-c      call lhefinitemasses      
       end
 
       subroutine upveto
@@ -298,10 +223,64 @@ c pythia routine to abort event
 
       subroutine pyanal
       implicit none
-      include 'hepevt.h'
       include 'LesHouches.h'
+      include 'hepevt.h'
+      integer MDCY,MDME,KFDP
+      double precision brat
+      COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
+      integer pycomp
+      external pycomp
+      double precision bratio
+      integer hdecaymode
+      integer mint
+      double precision vint
+      COMMON/PYINT1/MINT(400),VINT(400)
+c     check parameters
+      logical verbose
+      parameter (verbose=.false.)
+      real * 8 powheginput
+      external powheginput
+      logical ini
+      save ini,hdecaymode
+      data ini/.true./
+      if (ini) then
+         hdecaymode=powheginput('#hdecaymode')
+         ini=.false.
+      endif
+
+c     non so a che servono le righe seguenti!! C.O.
+      if(mint(51).ne.0) then
+         if(verbose) then
+            write(*,*) 'Killed event'
+            write(*,*) 'Scalup= ',scalup
+            call pylist(7)      !hepeup
+            call pylist(2)      !all the event
+         endif
+         return
+      endif
+
       nevhep=nevhep+1
+      
+      if(hdecaymode.lt.-10) hdecaymode=-1
+      if ((hdecaymode.eq.0).or.(hdecaymode.eq.-1)) then
+         bratio=1d0
+      elseif (hdecaymode.eq.12) then
+         bratio=brat(223)
+      elseif(hdecaymode.eq.11) then
+         bratio=brat(225)
+      elseif(hdecaymode.eq.10) then
+         bratio=brat(226)
+      elseif(hdecaymode.eq.7) then
+         bratio=brat(218)
+      elseif(hdecaymode.eq.8) then
+         bratio=brat(219)
+      elseif(hdecaymode.eq.9) then
+         bratio=brat(220)   
+      else
+         bratio=brat(209+hdecaymode)
+      endif
       if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
+      xwgtup=xwgtup*bratio
       call analysis(xwgtup)
       call pwhgaccumup 
       end
@@ -317,18 +296,34 @@ c pythia routine to abort event
       subroutine change_scalup
       implicit none
       include 'LesHouches.h'
-c      include 'hepevt.h'
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_rad.h'
       real * 8 ptmin,ptmin2,pcm(0:3,maxnup),beta,vec(3),ptkj2
       integer k,mu,j
+      real * 8 scalupfact,powheginput
+      external powheginput
       logical ini
-      save ini
       data ini/.true./
+      save ini,scalupfact
       real * 8 dotp
       external dotp
       integer npart
+
+      if (ini) then
+         write(*,*) '*************************************'
+         write(*,*) 'scalup set to the min pt in the event'
+         write(*,*) '*************************************'
+         scalupfact=powheginput('#scalupfact')         
+         if(scalupfact.gt.0) then
+            write(*,*) '****************************************'
+            write(*,*)'ALL scalup values rescaled by the factor ',
+     $           scalupfact
+            write(*,*)'*****************************************'
+         endif            
+         ini=.false.
+      endif         
+
       npart=0
       do k=3,nup
 c     only light partons
@@ -362,12 +357,12 @@ c     go in the CM frame
       enddo
       ptmin=sqrt(ptmin2)
       if(scalup.gt.ptmin) then
-         if (ini) then
-            write(*,*) '*************************************'
-            write(*,*) 'scalup set to the min pt in the event'
-            write(*,*) '*************************************'
-            ini=.false.
-         endif         
          scalup = ptmin
       endif
+
+      if(scalupfact.gt.0) scalup=scalup*scalupfact
+
       end
+
+
+

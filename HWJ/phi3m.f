@@ -23,11 +23,11 @@ c     factor of (2*pi)^4 included in definition of phase space
          stop 'phi3m: s < smin' 
       endif
 
-      roots=dsqrt(s)
+      roots=sqrt(s)
       m1sq=m1**2
       m2sq=m2**2
       costh=2d0*xth-1d0    
-      sinth=dsqrt(1d0-costh**2)
+      sinth=sqrt(1d0-costh**2)
       phi=2d0*pi*xphi
 
       lambda2=((s+m1sq-m2sq)**2-4d0*m1sq*s)
@@ -36,13 +36,13 @@ c     factor of (2*pi)^4 included in definition of phase space
          write(6,*) 'phi3m:lambda2=', lambda2
          stop
       endif
-      lambda=dsqrt(lambda2)
+      lambda=sqrt(lambda2)
 
       wt=wt0*lambda/s
 
       p1cm(4)=roots/2d0*(s+m1sq-m2sq)/s
-      p1cm(1)=roots/2d0*lambda/s*sinth*dsin(phi)
-      p1cm(2)=roots/2d0*lambda/s*sinth*dcos(phi)
+      p1cm(1)=roots/2d0*lambda/s*sinth*sin(phi)
+      p1cm(2)=roots/2d0*lambda/s*sinth*cos(phi)
       p1cm(3)=roots/2d0*lambda/s*costh
 
 c      write(6,*) 'e',roots/2d0*(s+m1sq-m2sq)/s

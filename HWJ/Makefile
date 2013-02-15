@@ -48,7 +48,8 @@ OPT = -O3 #-fast
 ## For debugging uncomment the following
 #DEBUG= -debug -g
 ifdef DEBUG
-OPT=-O0
+OPT=-O0 
+FPE = -fpe0
 endif
 endif
 

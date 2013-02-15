@@ -11,9 +11,10 @@
       data ini/.true./
       save ini
       real * 8 xjac,smin,smax,z,s,wt,sqrts,
-     1         mllminsq,mllmaxsq,m3,m45,taumin,lntaum,
-     2         tau,ymax,ycm,xx(2),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),
-     3         p12(4),p45(4),p345(4),beta,vec(3),s345min
+     1     mllminsq,mllmaxsq,m3,m45,taumin,lntaum,
+     2     tau,ymax,ycm,xx(2),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),
+     3     p12(4),p45(4),p345(4),beta,vec(3),s345min,s345max,s345,
+     4     sratio,lnsratio,expon
       integer mu
 
       if(ini) then
@@ -34,10 +35,8 @@ c     First determine virtuality of the Higgs
       smax=ph_Hmass2high
       mllminsq=ph_Wmass2low
       mllmaxsq=ph_Wmass2high
-c
-      z=xborn(1)
-c
-      call breitw(z,smin,smax,ph_hmass,ph_hwidth,s,wt)
+
+      call breitw(xborn(1),smin,smax,ph_hmass,ph_hwidth,s,wt)
 c breitw includes in wt a factor
 c   ((s-ph_hmass)**2+(ph_hmass*ph_hwidth)**2)/ph_hmass*ph_hwidth
 c Take it off
@@ -59,10 +58,31 @@ c      xjac=xjac*4*xborn(2)**3
       call breitw(z,smin,smax,ph_wmass,ph_wwidth,s,wt)
       xjac=xjac*wt/(2*pi)
       m45=sqrt(s)
-      taumin = ((kn_ktmin + sqrt((m3+m45)**2 + kn_ktmin**2))/sqrts)**2
-      lntaum = dlog(taumin)
-      tau = dexp(lntaum*(1d0-xborn(3)))
-      xjac = xjac*(-lntaum*tau)
+      
+      s345min=(m3+m45)**2 
+      s345max = (sqrts-kn_ktmin)**2 - kn_ktmin**2
+
+      if (s345max.lt.s345min) then
+         write(*,*) 'Too high values for H/W virtualities'
+         write(*,*) 'Return Jacobian=0'
+         kn_jacborn = 0
+         return
+      endif
+
+c      s345 = (s345max - s345min)*xborn(5)**3 + s345min      
+c      xjac = xjac*(s345max - s345min)*3*xborn(5)**2
+
+      sratio = s345min/s345max
+      lnsratio = log(sratio)
+      expon=1d0/4
+      s345 = exp(lnsratio*(xborn(5)**expon))*s345max
+      xjac = xjac*(-lnsratio*s345)*expon*xborn(5)**(expon-1)
+
+      expon=1d0/5
+      taumin = (kn_ktmin + sqrt(s345 + kn_ktmin**2))**2/kn_sbeams
+      lntaum = log(taumin)
+      tau = exp(lntaum*(1d0-xborn(3))**expon)
+      xjac = xjac*(-lntaum*tau)*expon*(1d0-xborn(3))**(expon-1)
 
       kn_sborn = kn_sbeams*tau
 
@@ -96,11 +116,20 @@ c---if x's out of normal range abort
 C     total incoming momentum 
       p12 = p1+p2 
 
-      s345min=(m3+m45)**2
+c      s345min=(m3+m45)**2
 
-      call phi1_2m_nobw(0d0,xborn(5),xborn(6),xborn(7),s345min,p12,
+      call phi1_2m_nobw_ktmin(p12,0d0,sqrt(s345),kn_ktmin,
+     $     xborn(6),xborn(7),
      $     p6,p345,wt)
       xjac=xjac*wt
+
+
+      if (sqrt(p6(1)**2+p6(2)**2).lt.kn_ktmin) then
+         write(*,*) '** ERROR in phi1_2m_nobw_ktmin: p6_T< kn_ktmin **'
+         write(*,*) 'The POWHEG BOX aborts'
+         call pwhg_exit(1)
+      endif
+
 
       call phi1_2(xborn(8),xborn(9),p345,p3,p45,m3,m45,wt)
       xjac=xjac*wt

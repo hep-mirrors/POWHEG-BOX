@@ -37,17 +37,19 @@ c     The following should never happen
 
       costh=two*x3-one      
       phi=two*pi*x4
-      sinth=dsqrt(one-costh**2)
-      cphi=dcos(phi)
-      sphi=dsin(phi)
+      sinth=sqrt(one-costh**2)
+      cphi=cos(phi)
+      sphi=sin(phi)
       s2=m2**2
       s3=m3**2
       lambda=((s1-s2-s3)**2-4d0*s2*s3)
       if (lambda .lt. 0d0) then 
-         write(*,*) s1,s2,s3
-         stop 'phi1_2: lambda < 0 ?' 
+         write(*,*) 'lambda = ',lambda
+c         write(*,*) s1,s2,s3
+         write(*,*) '**** phi1_2: lambda < 0 *****' 
+         lambda=abs(lambda)
       endif
-      lambda=dsqrt(lambda)
+      lambda=sqrt(lambda)
       wt=wt0*lambda/s1
 
       p3cm(4)=m1/two*(s1+s3-s2)/s1

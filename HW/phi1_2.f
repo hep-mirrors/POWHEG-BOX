@@ -47,7 +47,7 @@ c     The following should never happen
          write(*,*) s1,s2,s3
          stop 'phi1_2: lambda < 0 ?' 
       endif
-      lambda=dsqrt(lambda)
+      lambda=sqrt(lambda)
       wt=wt0*lambda/s1
 
       p3cm(4)=m1/two*(s1+s3-s2)/s1

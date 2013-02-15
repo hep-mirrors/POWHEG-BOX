@@ -13,7 +13,7 @@
       real * 8 xjac,smin,smax,z,s,wt,sqrts,
      1         mllminsq,mllmaxsq,m3,m45,taumin,lntaum,
      2         tau,ymax,ycm,xx(2),p1(4),p2(4),p3(4),p4(4),p5(4),
-     3         p12(4),p45(4),beta,vec(3)
+     3         p12(4),p45(4),beta,vec(3),expon
       integer mu
 
       if(ini) then
@@ -55,11 +55,13 @@ c      xjac=xjac*4*xborn(2)**3
 
       call breitw(z,smin,smax,ph_Wmass,ph_Wwidth,s,wt)
       xjac=xjac*wt/(2*pi)
-      m45=sqrt(s)      
+      m45=sqrt(s)  
+      expon=1d0/5
       taumin = ((m3+m45)/sqrts)**2
       lntaum = dlog(taumin)      
-      tau = dexp(lntaum*(1d0-xborn(3)))
-      xjac = xjac*(-lntaum*tau)
+      tau = exp(lntaum*(1d0-xborn(3))**expon)
+      xjac = xjac*(-lntaum*tau)*expon*(1d0-xborn(3))**(expon-1)
+
       kn_sborn = kn_sbeams*tau
 
       ymax=-0.5d0*log(tau)

@@ -29,10 +29,10 @@ c--- in case the maximum msq is very small, just generate linearly for safety
           almax=+pi/2d0 
           almin=-pi/2d0 
       else
-          almin=datan((mminsq-rmass**2)/rmass/rwidth)
-          almax=datan((mmaxsq-rmass**2)/rmass/rwidth)
+          almin=atan((mminsq-rmass**2)/rmass/rwidth)
+          almax=atan((mmaxsq-rmass**2)/rmass/rwidth)
           al=(almax-almin)*x1+almin
-          tanal=dtan(al)
+          tanal=tan(al)
       endif
 
       msq=rmass**2+rmass*rwidth*tanal

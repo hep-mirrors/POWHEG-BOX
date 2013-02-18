@@ -1,6 +1,6 @@
 #-*- Makefile -*-
 ## Choose compiler: gfortran,ifort (g77 not supported, F90 constructs in use!)
-COMPILER=ifort
+COMPILER=gfortran
 FC=$(COMPILER)
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
@@ -60,7 +60,7 @@ GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// 
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
+VPATH= ./:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
 
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
@@ -130,7 +130,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	pwhg_analysis_driver.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	reshufflemoms.o  pwhg_gosam.o                                   \
-	sigcollsoft.o sigvirtual.o  ubprojections.o \
+	sigcollsoft.o sigvirtual.o  \
 	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o  \
 	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 

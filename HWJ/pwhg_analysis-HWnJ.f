@@ -217,9 +217,9 @@ c     we need to tell to this analysis file which program is running it
       integer jpart, jjet
       real * 8 palg
       integer ii
-      logical minlo
+      integer  minlo
       save minlo
-      data minlo/.false./
+      data minlo/0/
       character * 20 processid
       real * 8 rescfac1,rescfac2
       common /crescfac/rescfac1,rescfac2
@@ -255,7 +255,7 @@ c     if idvecbos=24 idl and idnu are ok
          endif
 
          minlo=powheginput('#minlo')
-         if (minlo) then
+         if (minlo.eq.1) then
             processid='HW'
          else
             include 'pwhg_processid.h'

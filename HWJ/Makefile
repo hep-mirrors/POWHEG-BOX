@@ -55,12 +55,12 @@ endif
 
 
 
-GOSAMLIBS=$(shell cd GoSamlib_new ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// ; s/qlconstants.f// ; s/.f /.o /g ; s/.f90 /.o /g ; ' | tee GoSamlib.txt)
+GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// ; s/qlconstants.f// ; s/.f /.o /g ; s/.f90 /.o /g ; ' | tee GoSamlib.txt)
 
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib_new/
+VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
 
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include

@@ -36,6 +36,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
          write(*,*) "** PROBLEMS in phi1_2m_nobw_ktmin: lambda2 < 0 **"
          write(*,*) 'The POWHEG BOX continues but the problem '
      $        //'should be solved'
+         wt=0d0 
          return
       endif
 c     mod_p2 is the modulus of the vector p2 or p3, one recoiling against the other
@@ -69,9 +70,15 @@ c      costh=2*max_costh*xth-max_costh
       wt=wt0*w3*lambda/s1
 
       p3cm(4)=m1/2d0*(s1+s3-s2)/s1
-      p3cm(1)=m1/2d0*lambda/s1*sinth*sphi
-      p3cm(2)=m1/2d0*lambda/s1*sinth*cphi
-      p3cm(3)=m1/2d0*lambda/s1*costh
+
+c      p3cm(1)=m1/2d0*lambda/s1*sinth*sphi
+c      p3cm(2)=m1/2d0*lambda/s1*sinth*cphi
+c      p3cm(3)=m1/2d0*lambda/s1*costh
+
+      p3cm(1)=mod_p2*sinth*sphi
+      p3cm(2)=mod_p2*sinth*cphi
+      p3cm(3)=mod_p2*costh
+
       call boost(m1,p1,p3cm,p3)
       do j=1,4
       p2(j)=p1(j)-p3(j)

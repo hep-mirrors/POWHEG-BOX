@@ -38,7 +38,7 @@ endif
 
 
 ifeq ("$(COMPILER)","ifort")
-F77 = ifort -save  -extend_source  -I$(OBJ)
+F77 = ifort -save  -extend_source  -module $(OBJ)
 #CXX = g++
 #LIBS = -limf
 #FFLAGS =  -checkm

@@ -10,18 +10,20 @@ c     d^4 p1 d^4 p2 (2 pi)^4 delta(p0-p1-p2)/(2 pi)^6
 c     delta(p2^2) delta(p3^2)
       implicit none
       include 'pwhg_math.h'
-      double precision p0(4),p1(4),p2(4),p1cm(4)
-      double precision xth,xphi,phi,s,roots,costh,sinth
-      double precision wt0,wt
+      real * 8  p0(4),p1(4),p2(4),p1cm(4)
+      real * 8  xth,xphi,phi,s,roots,costh,sinth
+      real * 8  wt0,wt
       integer j
       parameter(wt0=1d0/8d0/pi)
       wt=0d0
 
       s=p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2  
       if (s .lt. 0d0) then
-       stop 'phi3m0: s < 0' 
+         write(*,*) 'phi3m0: s < 0' 
+         write(*,*) 'POWHEG ABORTS'
+         call pwhg_exit(-1)
       endif
-
+      
       roots=sqrt(abs(s))
       costh=2d0*xth-1d0    
       sinth=sqrt(1d0-costh**2)
@@ -36,17 +38,17 @@ c     delta(p2^2) delta(p3^2)
 
       call boost(roots,p0,p1cm,p1)
       do j=1,4
-      p2(j)=p0(j)-p1(j)
+         p2(j)=p0(j)-p1(j)
       enddo
 
       if (  (p0(4) .lt. 0d0) 
-     & .or. (p1(4) .lt. 0d0) 
-     & .or. (p2(4) .lt. 0d0)) then  
-      write(6,*) 'p0',p0(4),p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2,s
-      write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2
-      write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2
-      write(6,*) 'in phi3m0'
+     &     .or. (p1(4) .lt. 0d0) 
+     &     .or. (p2(4) .lt. 0d0)) then  
+         write(6,*) 'p0',p0(4),p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2,s
+         write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2
+         write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2
+         write(6,*) 'in phi3m0'
       endif
-
+      
       end
-
+      

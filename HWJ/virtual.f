@@ -321,4 +321,6 @@ C     We have then to multiply for 2*pi
          call pconj(p,nlegborn)
       endif
 
+c      write(*,*) 'virt ',virtual 
+
       end

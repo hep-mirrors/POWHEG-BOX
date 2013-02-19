@@ -11,7 +11,7 @@
       data ini/.true./
       save ini
       real * 8 xjac,smin,smax,z,s,wt,sqrts,
-     1     mllminsq,mllmaxsq,m3,m45,taumin,lntaum,
+     1     m3,m45,taumin,lntaum,
      2     tau,ymax,ycm,xx(2),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),
      3     p12(4),p45(4),p345(4),beta,vec(3),s345min,s345max,s345,
      4     sratio,lnsratio,expon
@@ -33,9 +33,6 @@ c     set initial- and final-state masses for Born and real
 c     First determine virtuality of the Higgs
       smin=ph_Hmass2low
       smax=ph_Hmass2high
-      mllminsq=ph_Wmass2low
-      mllmaxsq=ph_Wmass2high
-
       call breitw(xborn(1),smin,smax,ph_hmass,ph_hwidth,s,wt)
 c breitw includes in wt a factor
 c   ((s-ph_hmass)**2+(ph_hmass*ph_hwidth)**2)/ph_hmass*ph_hwidth
@@ -48,8 +45,8 @@ c If you want Passarino's shape, put it here
       m3=sqrt(s)
 c      write(*,*)"--> mH mass in PWHG: ",m3
 
-      smin=mllminsq
-      smax=mllmaxsq
+      smin=ph_Wmass2low
+      smax=ph_Wmass2high
 c the following better for Z/gamma
 c      z=xborn(2)**4
 c      xjac=xjac*4*xborn(2)**3

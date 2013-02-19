@@ -21,8 +21,8 @@ c coupling rescaling, for Born (imode=1) and NLO corrections (imode=2)
       real * 8 powheginput,factsc2min,frensc2min,as,y,b1,tmp
       save factsc2min,frensc2min,b0,b1
       integer imax
-      real * 8 rescfac1,rescfac2
-      common /crescfac/rescfac1,rescfac2
+c      real * 8 rescfac1,rescfac2
+c      common /crescfac/rescfac1,rescfac2
       
       if(ini) then
          factsc2min = powheginput("#factsc2min")
@@ -90,7 +90,7 @@ c      endif
       if(y.ge.1) then
          rescfac = 0d0
          orescfac = 0d0
-         rescfac1 = rescfac
+c         rescfac1 = rescfac
          return
       endif
       
@@ -102,7 +102,7 @@ c      endif
          expsud  = 2 * expsudakov(ptb2,mb2,flav)
       endif
 
-      rescfac1 = rescfac
+c      rescfac1 = rescfac
 
 
 c     alpha_s reweighting
@@ -125,7 +125,7 @@ c     $      st_lambda5MSB,st_nlight)
       endif
       orescfac=rescfac
 
-      rescfac2 = rescfac
+c      rescfac2 = rescfac
 
       end
 

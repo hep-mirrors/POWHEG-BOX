@@ -221,8 +221,8 @@ c     we need to tell to this analysis file which program is running it
       save minlo
       data minlo/0/
       character * 20 processid
-      real * 8 rescfac1,rescfac2
-      common /crescfac/rescfac1,rescfac2
+c      real * 8 rescfac1,rescfac2
+c      common /crescfac/rescfac1,rescfac2
 
 
 

@@ -134,6 +134,13 @@ contains
    subroutine     OLP_EvalSubProcess(label, momenta, mu, parameters, res) &
    & bind(C,name="olp_evalsubprocess_")
       use, intrinsic :: iso_c_binding
+     use p6_ubbar_hepneg_model, only:  p6_ubbar_hepneg_mH  => mH
+     use p12_cbbar_hepneg_model, only: p12_cbbar_hepneg_mH => mH
+     use p5_usbar_hepneg_model, only:  p5_usbar_hepneg_mH  => mH
+     use p1_dbarc_hepneg_model, only:  p1_dbarc_hepneg_mH  => mH
+     use p11_csbar_hepneg_model, only: p11_csbar_hepneg_mH => mH
+     use p0_dbaru_hepneg_model, only:  p0_dbaru_hepneg_mH  => mH
+
       implicit none
       integer(kind=c_int), intent(in) :: label
       real(kind=c_double), intent(in) :: mu
@@ -141,10 +148,19 @@ contains
       real(kind=c_double), dimension(10), intent(in) :: parameters
       real(kind=c_double), dimension(4), intent(out) :: res
 
-      real(kind=c_double) :: alpha_s
+      real(kind=c_double) :: alpha_s, hmass
       real(kind=c_double), parameter :: one_over_2pi = 0.15915494309189533577d0
 
+      hmass = sqrt(momenta(11)**2 - momenta(12)**2 - momenta(13)**2 - momenta(14)**2)
+
       alpha_s = parameters(1)
+
+      p6_ubbar_hepneg_mH  = hmass
+      p12_cbbar_hepneg_mH = hmass
+      p5_usbar_hepneg_mH  = hmass
+      p1_dbarc_hepneg_mH  = hmass
+      p11_csbar_hepneg_mH = hmass
+      p0_dbaru_hepneg_mH  = hmass
 
       select case(label)
       case(0)

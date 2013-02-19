@@ -442,10 +442,10 @@ contains
       p11_csbar_hepneg_mT = mT_tmp
       p0_dbaru_hepneg_mT  = mT_tmp
       
-      if (res_tmp(1)/(res(1)*(rescale**6))-1 .gt. 1.0d-6) then
-         write(*,*) "res_tmp", res_tmp(:)/(res(:)*(rescale**6))
-         write(*,*) "============================="
-      end if
+!      if (res_tmp(1)/(res(1)*(rescale**6))-1 .gt. 1.0d-6) then
+        write(*,*) "=============================" 
+        write(*,*) "res_tmp", res_tmp(:)/(res(:)*(rescale**6))
+!      end if
 
       res(1:3) = alpha_s * one_over_2pi * res(1:3) * rescale**6
     ! res(1:3) = alpha_s * one_over_2pi * res_tmp(1:3)

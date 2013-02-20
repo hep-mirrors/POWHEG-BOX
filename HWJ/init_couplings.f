@@ -257,13 +257,21 @@ C     ones defined in the POWHEG BOX.
       implicit none
       include 'PhysPars.h'
       include 'pwhg_st.h'
+      include 'pwhg_rnd.h'
       integer ierr
       integer ioerr
       character * 20 param
       character * 20 value
       character * 50 line
       character * 29 path
-      
+      real * 8 powheginput
+      external powheginput
+      integer parallelstage,rndiwhichseed
+      common/cpwhg_info/parallelstage,rndiwhichseed
+
+      rndiwhichseed=rnd_iwhichseed
+      parallelstage=powheginput("#parallelstage")
+
 C     Parameter definition
       
       param = 'Nf='
@@ -490,6 +498,7 @@ C     Parameter definition
       
 C     Initialize virtual code
       path = '../GoSam_POWHEG/orderfile.olc'
+      
       call OLP_Start(path,ioerr)
       call check_gosam_err('olp_start routine',ierr)
       end

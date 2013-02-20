@@ -39,7 +39,7 @@ contains
            & p0_dbaru_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
            & p0_dbaru_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
       implicit none
-      character(kind=c_char,len=1), intent(in) :: contract_file_name
+      character(kind=c_char,len=1), intent(in)  :: contract_file_name
       integer(kind=c_int), intent(out) :: ierr
 
       interface
@@ -56,6 +56,9 @@ contains
       character(len=9) :: kw
       integer :: PSP_verbosity, PSP_chk_threshold1, PSP_chk_threshold2
       logical :: PSP_rescue
+      ! FROM POWHEG
+      integer parallelstage,rndiwhichseed
+      common/cpwhg_info/parallelstage,rndiwhichseed
 
       ierr = 1
       l = strlen(contract_file_name)
@@ -92,12 +95,22 @@ contains
       if (ierr .eq. 1) then
          call read_slha_file(line_buf(1:l))
       end if
-      call p6_ubbar_hepneg_initgolem(.true.)
-      call p12_cbbar_hepneg_initgolem(.false.)
-      call p5_usbar_hepneg_initgolem(.false.)
-      call p1_dbarc_hepneg_initgolem(.false.)
-      call p11_csbar_hepneg_initgolem(.false.)
-      call p0_dbaru_hepneg_initgolem(.false.)
+
+      if(parallelstage.lt.0) then
+         call p6_ubbar_hepneg_initgolem(.true.)
+         call p12_cbbar_hepneg_initgolem(.false.)
+         call p5_usbar_hepneg_initgolem(.false.)
+         call p1_dbarc_hepneg_initgolem(.false.)
+         call p11_csbar_hepneg_initgolem(.false.)
+         call p0_dbaru_hepneg_initgolem(.false.)
+      else
+         call p6_ubbar_hepneg_initgolem(.true.,parallelstage,rndiwhichseed)
+         call p12_cbbar_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
+         call p5_usbar_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
+         call p1_dbarc_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
+         call p11_csbar_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
+         call p0_dbaru_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
+      end if
 
       ! Uncomment to change rescue system setting on all suprocesses
       ! PSP_rescue = .true.

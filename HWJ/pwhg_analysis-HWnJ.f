@@ -163,9 +163,9 @@ c$$$
       enddo
       end
      
-      subroutine analysis(dsig)
+      subroutine analysis(dsig0)
       implicit none
-      real * 8 dsig
+      real * 8 dsig0,dsig
       include 'hepevt.h'
       include 'nlegborn.h'
       include 'pwhg_flst.h'
@@ -224,7 +224,7 @@ c     we need to tell to this analysis file which program is running it
 c      real * 8 rescfac1,rescfac2
 c      common /crescfac/rescfac1,rescfac2
 
-
+      call reweightifneeded(dsig0,dsig)
 
       if(dsig.eq.0) return
 

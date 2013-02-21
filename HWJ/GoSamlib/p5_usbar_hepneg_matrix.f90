@@ -120,24 +120,28 @@ contains
                if(crndseed(j:j).eq.' ') crndseed(j:j)='0'
             enddo
             file_name = file_pre//"-"//cstage//"-"//crndseed//"."//file_ext
-            open(unit=42, file=file_name, status='unknown', action='write', access='append')
+            open(unit=42, file=file_name, status='replace', action='write', access='append')
             write(42,'(A22)') "<?xml version='1.0' ?>"
             write(42,'(A5)')  "<run>"
          else
-            do while(file_exists)
-               write(file_numb, '(I3.1)') i
-               file_name = file_pre//trim(adjustl(file_numb))//"."//file_ext
-               inquire(file=file_name, exist=file_exists)
-               if(file_exists) then
-                  write(*,*) "File ", file_name, " already exists!"
-                  i = i+1
-               else
-                  write(*,*) "Bad points stored in file: ", file_name
-                  open(unit=42, file=file_name, status='unknown', action='write', access='append')
-                  write(42,'(A22)') "<?xml version='1.0' ?>"
-                  write(42,'(A5)')  "<run>"
-               endif
-            enddo
+            file_name = file_pre//"."//file_ext
+            open(unit=42, file=file_name, status='replace', action='write')
+            write(42,'(A22)') "<?xml version='1.0' ?>"
+            write(42,'(A5)')  "<run>"
+            ! do while(file_exists)
+            !    write(file_numb, '(I3.1)') i
+            !    file_name = file_pre//trim(adjustl(file_numb))//"."//file_ext
+            !    inquire(file=file_name, exist=file_exists)
+            !    if(file_exists) then
+            !       write(*,*) "File ", file_name, " already exists!"
+            !       i = i+1
+            !    else
+            !       write(*,*) "Bad points stored in file: ", file_name
+            !       open(unit=42, file=file_name, status='unknown', action='write')
+            !       write(42,'(A22)') "<?xml version='1.0' ?>"
+            !       write(42,'(A5)')  "<run>"
+            !    endif
+            ! enddo
          end if
       end if
       end if

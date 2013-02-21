@@ -5,7 +5,7 @@ module     olp_module
 
 contains
 
-   subroutine     OLP_Start(contract_file_name,ierr) &
+   subroutine     OLP_Start(contract_file_name,ierr,stage,rndseed) &
    & bind(C,name="olp_start_")
       use, intrinsic :: iso_c_binding
       use p6_ubbar_hepneg_matrix, only: p6_ubbar_hepneg_initgolem => initgolem
@@ -41,7 +41,7 @@ contains
       implicit none
       character(kind=c_char,len=1), intent(in)  :: contract_file_name
       integer(kind=c_int), intent(out) :: ierr
-
+      integer(kind=c_int), intent(in) :: stage, rndseed
       interface
          function strlen(s) bind(C,name='strlen')
             use, intrinsic :: iso_c_binding
@@ -56,9 +56,6 @@ contains
       character(len=9) :: kw
       integer :: PSP_verbosity, PSP_chk_threshold1, PSP_chk_threshold2
       logical :: PSP_rescue
-      ! FROM POWHEG
-      integer parallelstage,rndiwhichseed
-      common/cpwhg_info/parallelstage,rndiwhichseed
 
       ierr = 1
       l = strlen(contract_file_name)
@@ -96,7 +93,7 @@ contains
          call read_slha_file(line_buf(1:l))
       end if
 
-      if(parallelstage.lt.0) then
+      if(stage.lt.0) then
          call p6_ubbar_hepneg_initgolem(.true.)
          call p12_cbbar_hepneg_initgolem(.false.)
          call p5_usbar_hepneg_initgolem(.false.)
@@ -104,12 +101,12 @@ contains
          call p11_csbar_hepneg_initgolem(.false.)
          call p0_dbaru_hepneg_initgolem(.false.)
       else
-         call p6_ubbar_hepneg_initgolem(.true.,parallelstage,rndiwhichseed)
-         call p12_cbbar_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
-         call p5_usbar_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
-         call p1_dbarc_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
-         call p11_csbar_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
-         call p0_dbaru_hepneg_initgolem(.false.,parallelstage,rndiwhichseed)
+         call p6_ubbar_hepneg_initgolem(.true.,stage,rndseed)
+         call p12_cbbar_hepneg_initgolem(.false.,stage,rndseed)
+         call p5_usbar_hepneg_initgolem(.false.,stage,rndseed)
+         call p1_dbarc_hepneg_initgolem(.false.,stage,rndseed)
+         call p11_csbar_hepneg_initgolem(.false.,stage,rndseed)
+         call p0_dbaru_hepneg_initgolem(.false.,stage,rndseed)
       end if
 
       ! Uncomment to change rescue system setting on all suprocesses

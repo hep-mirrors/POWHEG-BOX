@@ -499,7 +499,7 @@ C     Parameter definition
 C     Initialize virtual code
       path = '../GoSam_POWHEG/orderfile.olc'
       
-      call OLP_Start(path,ioerr)
+      call OLP_Start(path,ioerr,parallelstage,rndiwhichseed)
       call check_gosam_err('olp_start routine',ierr)
       end
       

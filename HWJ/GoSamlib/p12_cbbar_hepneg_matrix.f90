@@ -95,7 +95,7 @@ contains
       integer i, j
       character(len=30) :: file_name
       character(len=3)  :: file_numb
-      character(len=9)  :: file_pre = "gs_badpts"
+      character(len=12) :: file_pre = "gosam_badpts"
       character(len=4)  :: file_ext = "log"
       character(len=1)  :: cstage
       character(len=4)  :: crndseed

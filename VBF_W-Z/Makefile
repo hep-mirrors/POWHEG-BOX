@@ -162,7 +162,7 @@ main-HERWIG-lhef: $(HERWIG)vbfnlo-files/libvbfnlo.a
 
 PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia-6.4.25.o \
 	boostrot.o powheginput.o \
-        pwhg_bookhist.o lhefread1.o newunit.o \
+        pwhg_bookhist.o lhefread.o newunit.o \
 	pwhg_analysis_driver.o pdfdummies.o \
 	random.o cernroutines.o opencount.o  $(PWHGANAL) $(SYSOBJ)
 

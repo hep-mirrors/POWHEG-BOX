@@ -830,37 +830,7 @@ c         endif
 !             if (toobig)  print*, 'delphi_gaga  ', delphi_jj            
 
             diag=diag+1
-            call pwhgfill(diag,mHjj,dsig/binsize(diag))
-
-c     loop on the hardest and next-to-hardest jet
-            do ijet=1,2
-               vec(1)=0d0
-               vec(2)=0d0
-               vec(3)=1d0
-               beta = -pj(3,ijet)/pj(0,ijet)
-               call mboost(1,vec,beta,pj(0,ijet),pjetout)  
-c               write(*,*) pjetout
-               ptrel = 0
-               do i=1,ntracks
-                  if (jetvec(i).eq.njj(ijet)) then
-                     do mu=1,3
-                        ptrackin(mu) = ptrack(mu,i)
-                     enddo
-                     ptrackin(0) = ptrack(4,i)
-                     call mboost(1,vec,beta,ptrackin,ptrackout) 
-                     ptrel = ptrel + get_ptrel(ptrackout,pjetout)
-c                     write(*,*) ijet,ptrel
-                  endif
-               enddo
-               diag=diag+1
-               if (ijet.eq.1) then 
-                  call pwhgfill(diag,ptrel,dsig/binsize(diag))
-               endif
-c               diag=diag+1
-               if (ijet.eq.2) then 
-                  call pwhgfill(diag,ptrel,dsig/binsize(diag))
-               endif
-            enddo         
+            call pwhgfill(diag,mHjj,dsig/binsize(diag))  
 
 
 c     now count how many jets have pt > ptalljetmin

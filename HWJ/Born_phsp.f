@@ -123,8 +123,8 @@ c      s345min=(m3+m45)**2
 
       if (sqrt(p6(1)**2+p6(2)**2).lt.kn_ktmin) then
          write(*,*) '** ERROR in phi1_2m_nobw_ktmin: p6_T< kn_ktmin **'
-         write(*,*) 'The POWHEG BOX aborts'
-         call pwhg_exit(1)
+         write(*,*) sqrt(p6(1)**2+p6(2)**2),' < ',kn_ktmin         
+         write(*,*) 'The POWHEG BOX continues'
       endif
 
 

@@ -227,7 +227,8 @@ c Coupling to photons
 
 c Higgs coupling:
         if (hmass.le.150)then	
-       	   gphph(1) = dcmplx( -ee2/4d0/PI/(PI*V)*(47d0/18d0)*series_a, Zero)
+       	   gphph(1) = dcmplx( -ee2/4d0/PI/(PI*V)*(47d0/18d0)*series_a,
+     1          Zero)
         else
 	   gphph(1) = dcmplx( Zero, Zero )
            if (firsttime) then

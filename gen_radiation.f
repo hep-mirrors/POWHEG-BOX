@@ -106,7 +106,7 @@ c rad_type=3 for regular contributions
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'pwhg_rad.h'
-      real * 8 t,csi,y,azi,sig
+      real * 8 t,csi,y,azi,sig,born
       real * 8 tmax
       common/ctmax/tmax
       integer kinreg,firstreg,lastreg
@@ -164,6 +164,12 @@ c Generate a Born like event
             call gen_real_phsp_fsr_rad
          endif
          call set_rad_scales(t)
+c We call sigborn_rad now, becayse the real may depend
+c upon the Born throught the soft and collinear terms,
+c that are used in the real if bornzerodamp is used.
+c Failing to do so may cause problems in picking the
+c flavour
+         call sigborn_rad(born)
          call sigreal_rad(sig)
          call gen_real_idx
       endif

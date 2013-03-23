@@ -156,6 +156,28 @@ c$$$      ph_unit_e = sqrt(4*pi*ph_alphaem)
          filename="order.lh"
          call create_OLP_order(filename)
       endif
+
+      if(powheginput("#check_ref_amp").eq.1) then
+         if((ph_Zmass.ne.91.1876d0).or.
+     $        (ph_Zwidth.ne.2.49d0).or.
+     $        (ph_sthw2.ne.0.23d0).or.
+     $        (ph_alphaem.ne.0.007763854599d0)) then
+            write(*,*) ' WARNING: check_ref_amp activated '
+            write(*,*) '          but physical parameters different'
+            write(*,*) '          from reference values'
+            write(*,*) ' Zmass_ref should be 91.1876          ',
+     $           (ph_Zmass.eq.91.1876d0)
+            write(*,*) ' Zwidth_ref should be 2.49            ',
+     $           (ph_Zwidth.eq.2.49d0)
+            write(*,*) ' sthw2_ref should be 0.23             ',
+     $           (ph_sthw2.eq.0.23d0)
+            write(*,*) ' alphaem_ref should be 0.007763854599 ',
+     $           (ph_alphaem.eq.0.007763854599d0)
+            call exit(-1)
+         endif
+      endif
+
+
       end
 
 
@@ -195,7 +217,7 @@ c     squaring sin(2th) = 2 sin(th) cos(th)
 
          write(iun,*) "Z_mass    ",ph_Zmass
          write(iun,*) "Z_width   ",ph_Zwidth
-         write(iun,*) "sin_2th   ",sin_2th
+         write(iun,*) "#sin_2th   ",sin_2th
          write(iun,*) "sin_th_2  ",ph_sthw2
 
 

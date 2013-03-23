@@ -1,12 +1,13 @@
 #-*- Makefile -*-
 
-VIRTUAL=BH
+VIRTUAL=none
 # none,BH,MCFM
 
 GRID=false
 BH=false
 
-##BHPATH=/mt/data-grid/***/BH/install_dir
+BHPATH=/usersVol2/re/C_Cpp/Blackhat
+QDPATH=/usersVol2/re/.Packages_ER/qd_v_2_3_13
 
 ## Choose compiler: gfortran,g77,ifort
 COMPILER=gfortran
@@ -127,9 +128,13 @@ endif
 
 
 ifeq ("$(BH)","true")
+
 BH_CONFIG=$(BHPATH)/bin/blackhat-config
-LIBSBLACKHAT += -Wl,-rpath,$(BHPATH)/lib  $(shell $(BH_CONFIG) --libs) -lstdc++
-LIBS+=$(LIBSBLACKHAT)
+LIBSBLACKHAT = -Wl,-rpath,$(BHPATH)/lib  $(shell $(BH_CONFIG) --libs) -lstdc++
+QD_CONFIG=$(QDPATH)/bin/qd-config
+LIBSQD = -Wl,-rpath,$(QDPATH)/lib  $(shell $(QD_CONFIG) --libs)
+
+LIBS+=$(LIBSBLACKHAT) $(LIBSQD)
 
 ## remember to set LD_LIBRARY_PATH as enviromental variable,
 ## if the -Wl command is not used when linking with BH

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#svn export ../MadGraphStuff MadTMP
-cp -ra ../MadGraphStuff_new MadTMP
+svn export ../MadGraphStuff MadTMP
+#cp -ra ../MadGraphStuff_new MadTMP
 
 if [ -e proc_card.dat ]
 then

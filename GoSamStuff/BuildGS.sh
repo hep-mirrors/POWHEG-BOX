@@ -265,7 +265,7 @@ then
     cd $RUNDIR
     mv $RUNDIR/virtual.f $RUNDIR/virtual.f.dummy
     mv $RUNDIR/init_couplings.f $RUNDIR/init_couplings.f.old
-    mv $RUNDIR/init_processes.f $RUNDIR/init_processes.f.old
+    #mv $RUNDIR/init_processes.f $RUNDIR/init_processes.f.old
     cp $GOSAMDIR/virtual_new.f $RUNDIR/virtual.f
     cp $GOSAMDIR/init_couplings_new.f $RUNDIR/init_couplings.f
     #cp $GOSAMDIR/init_processes_new.f $RUNDIR/init_processes.f

@@ -50,7 +50,7 @@ endif
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-VPATH= ./:../Version-pre2-1/:../:$(OBJDIR)
+VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR)
 
 
 OBJ=obj-$(COMPILER)
@@ -125,7 +125,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	reshufflemoms.o \
 	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o      \
-	validflav.o \
+	validflav.o  ubprojections.o \
 	sigcollsoft.o sigvirtual.o  $(PDFPACK) $(USER) $(FPEOBJ)
 
 

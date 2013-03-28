@@ -23,37 +23,41 @@ then
     echo "./BuildGS standalone    : makes standalone virtual code,                                  "
     echo "./BuildGS cleanvirt     : removes the created virtual code,                               "
     echo "./BuildGS cleannewfiles : removes the files created to run the virtual amplitude          "
-    echo "./BuildGS veryclean     : restores initial conditions,                                    "
     echo "./BuildGS help          : shows this menu.                                                "
     echo "******************************************************************************************"
     exit
 fi
 
-# # If input is 'CLEANVIRT':
-# if [ "$1" = "cleanvirt" ]
-# then
-#     echo "This will delete the files for the virtual amplitude."
-#     echo "Are you sure you want to proceed? (Yes/No)"
-#     read ANS
-#     if [ "$ANS" = "Yes" ]
-#     then
-# 	echo "---> Cleaning virtual part ..."
-# 	cd $GOSAMDIR
-# 	rm -f gosam.crashed
-# 	rm -fr Virtual
-# 	rm -fr orderfile.olc
-# 	rm -f libgolem_olp.so
-	
-# 	echo "---> Recreating dummy libgolem_olp.so ..."
-# 	cd $GOSAMDIR
-# 	gfortran -fPIC -DPIC -o golem_olp.o -c golem_olp.f
-# 	gfortran -shared -o libgolem_olp.so golem_olp.o
-# 	rm -f golem_olp.o    
-# 	exit
-#     else
-# 	echo "Aborted!"
-#     fi
-# fi
+# If input is 'CLEANVIRT':
+if [ "$1" = "cleanvirt" ]
+then
+    echo "This will delete the files for the virtual amplitude."
+    echo "Are you sure you want to proceed? (Yes/No)"
+    read ANS
+    if [ "$ANS" = "Yes" ]
+    then
+	if [ -d $RUNDIR/GoSamlib ]
+	then
+	    echo "A standalone directory /GoSamlib also exists."
+	    echo "Do you want to remove this as well? (Yes/No)"
+	    read ANSLIB
+	    if [ "$ANSLIB" = "Yes" ]
+	    then
+		echo "---> Removing/GoSamlib directory ..."
+		rm -fr $RUNDIR/GoSamlib
+	    else
+		echo "Directory /GoSamlib will not be removed!"
+	    fi
+	fi
+	echo "---> Making backup copy of generation files and cards ..."
+	cp -f $GOSAMDIR/gosam.rc $GOSAMDIR/filter.py $GOSAMDIR/orderfile.lh $RUNDIR/
+	echo "---> Removing GoSam_POWHEG directory ..."
+	rm -f $GOSAMDIR
+	exit
+    else
+	echo "Aborted!"
+    fi
+fi
 
 # # If input is 'CLEANNEWFILES':
 # if [ "$1" = "cleannewfiles" ]
@@ -96,114 +100,6 @@ fi
     
 # fi
 
-# # VERY CLEAN:
-# if [ "$1" = "veryclean" ]
-# then
-#     echo "This will delete ALL the files for the virtual amplitude."
-#     echo "Are you really sure you want to proceed? (Yes/No)"
-#     read ANS
-#     if [ "$ANS" = "Yes" ]
-#     then
-# 	echo "---> Deleting all files and restoring initial conditions ..."
-# 	cd $RUNDIR
-# 	make clean
-# 	if [ -e $RUNDIR/virtual.f.dummy ]
-# 	then    
-# 	    mv virtual.f.dummy virtual.f
-# 	fi
-# 	if [ -e $RUNDIR/init_couplings.f.old ]
-# 	then    
-# 	    mv init_couplings.f.old init_couplings.f
-# 	fi
-# 	if [ -e $RUNDIR/init_processes.f.old ]
-# 	then    
-# 	    mv init_processes.f.old init_processes.f
-# 	fi
-
-# 	cd $GOSAMDIR
-# 	rm -fr Virtual
-# 	rm -f gosam.crashed
-# 	rm -f orderfile.*
-# 	rm -f write_pwhg_files
-# 	rm -f virtual_new.f
-# 	rm -f init_couplings_new.f
-# 	rm -f init_processes_new.f
-# 	rm -f libgolem_olp.so
-# 	echo "*********************************************"
-# 	echo "All GoSam files have been deleted.           "
-# 	echo "*********************************************"
-# 	exit
-#     else
-# 	echo "Aborted!"
-#     fi
-# fi
-
-# # LIB_GOLEM_OLP
-# if [ "$1" = "libgolem" ]
-# then
-#     if [ $LIBGOLEMOLP = 0 ]
-#     then
-# 	echo "---> Creating dummy $GOSAMDIR/libgolem_olp.so ..."
-# 	cd $GOSAMDIR
-# 	gfortran -fPIC -DPIC -o golem_olp.o -c golem_olp.f
-# 	gfortran -shared -o libgolem_olp.so golem_olp.o
-# 	rm -f golem_olp.o
-# 	exit
-#     else
-# 	echo "*********************************************"
-# 	echo "Dummy libgolem_olp.so already exists         "
-# 	echo "*********************************************"
-#     fi
-# fi
-
-# # ORDERFILE
-# if [ "$1" = "orderfile" ]
-# then
-#     # call to gosam_flst_born in init_processes.f
-#     cd $RUNDIR
-#     if grep -q "gosam_flst_born" "$RUNDIR/init_processes.f"
-#     then
-# 	# do nothing
-# 	:
-#     else
-# 	echo "*********************************************"
-# 	echo "A call to gosam_flst_born is missing.        "
-# 	echo "Please add a call to gosam_flst_born to the  "
-# 	echo "file 'init_processes.f' with the proper      "
-# 	echo "powers of alpha_s and alpha and then re-run  "
-# 	echo "the script.                                  "
-# 	echo "*********************************************"
-# 	exit
-#     fi
-#     if [ $LIBGOLEMOLP = 0 ]
-#     then
-# 	echo "---> Creating dummy $GOSAMDIR/libgolem_olp.so ..."
-# 	cd $GOSAMDIR
-# 	gfortran -fPIC -DPIC -o golem_olp.o -c golem_olp.f
-# 	gfortran -shared -o libgolem_olp.so golem_olp.o
-# 	rm -f golem_olp.o
-# 	if [ -f $GOSAMDIR/libgolem_olp.so ]
-# 	then
-# 	    LIBGOLEMOLP=1
-# 	fi	
-#     fi
-#     if [ $ORDERFILELH = 0 ]
-#     then
-# 	echo "---> Creating order file ..."
-	
-# 	cd $RUNDIR
-# 	export LD_LIBRARY_PATH=$GOSAMDIR:$LD_LIBRARY_PATH
-# 	make 
-	
-# 	cd $GOSAMDIR
-# 	$RUNDIR/pwhg_main
-# 	exit
-#     else
-# 	echo "*********************************************"
-# 	echo "Orderfile already exists!                    "
-# 	echo "*********************************************"
-#     fi
-# fi
 
 # GENVIRT
 if [ "$1" = "virtual" ]
@@ -257,30 +153,32 @@ then
     fi
 
     echo "---> Generating new files to run the virtual amplitude ..."
-    
     cd $GOSAMDIR
     gfortran -o write_pwhg_files write_pwhg_files.f
     ./write_pwhg_files
-    
+
+    echo "---> Copying new files to process directory ..."
+    echo $RUNDIR
     cd $RUNDIR
     mv $RUNDIR/virtual.f $RUNDIR/virtual.f.dummy
     mv $RUNDIR/init_couplings.f $RUNDIR/init_couplings.f.old
-    #mv $RUNDIR/init_processes.f $RUNDIR/init_processes.f.old
     cp $GOSAMDIR/virtual_new.f $RUNDIR/virtual.f
     cp $GOSAMDIR/init_couplings_new.f $RUNDIR/init_couplings.f
-    #cp $GOSAMDIR/init_processes_new.f $RUNDIR/init_processes.f
     cp $GOSAMSTUFFDIR/Templates/PhysPars.h $RUNDIR/PhysPars.h
     cp $GOSAMSTUFFDIR/Templates/pwhg_gosam.f $RUNDIR/pwhg_gosam.f
+
+    echo "---> Removing old executables ..."
+    rm -f $GOSAMDIR/write_pwhg_files
+    rm -f $RUNDIR/Madlib/write_proc_labels
+    rm -f $RUNDIR/Madlib/write_proc_labels_real
 
     echo "*******************************************************"
     echo "The new files:                                         "
     echo "- virtual.f                                            "
     echo "- init_couplings.f                                     "
-    #echo "- init_processes.f                                     "
     echo "were created. The old files were renamed to:           "
     echo "- virtual.f.dummy                                      "
     echo "- init_couplings.f.old                                 "
-    #echo "- init_processes.f.old                                 "
     echo "                                                       "
     echo "The new file                                           "
     echo "-PhysPars.h                                            "
@@ -316,7 +214,7 @@ then
 		:
 	    else
 		echo $file
-		echo 'more than 1 module per file! exiting'
+		echo 'More than 1 module per file! Exiting ...'
 		exit -1
 	    fi
 	done
@@ -356,6 +254,13 @@ then
 	cat $GOSAMSTUFFDIR/StandAlone/Makefile.nodeps deps.txt > $GOSAMLIBDIR/Makefile.virt.dep
 	
 	echo "done"
+	echo "---> Copying generation files to:"
+	echo $RUNDIR"/GoSamlib/"
+	cp -f $GOSAMDIR/gosam.rc $GOSAMLIBDIR/gosam.rc
+	cp -f $GOSAMDIR/orderfile.lh $GOSAMLIBDIR/orderfile.lh
+	cp -f $GOSAMDIR/orderfile.olc $GOSAMLIBDIR/orderfile.olc
+	cp -f $GOSAMDIR/filter.py $GOSAMLIBDIR/filter.py
+
     else
 	echo "*******************************************************"	
 	echo "The program 'makedepf90' was not found on your machine."

@@ -94,13 +94,13 @@ c     writing golem_initialize subroutine
       write(outcoup,4) "character * 20 value"
       write(outcoup,4) "character * 50 line"
       write(outcoup,4) "character * 29 path"
-      write(outcoup,6) "real * 8 powheginput"
-      write(outcoup,6) "external powheginput"
-      write(outcoup,6) "integer parallelstage,rndiwhichseed"
-      write(outcoup,6) "common/cpwhg_info/parallelstage,rndiwhichseed"
+      write(outcoup,4) "real * 8 powheginput"
+      write(outcoup,4) "external powheginput"
+      write(outcoup,4) "integer parallelstage,rndiwhichseed"
+      write(outcoup,4) "common/cpwhg_info/parallelstage,rndiwhichseed"
       write(outcoup,4) ""
-      write(outcoup,6) "rndiwhichseed=rnd_iwhichseed"
-      write(outcoup,6) "parallelstage=powheginput('#parallelstage')"
+      write(outcoup,4) "rndiwhichseed=rnd_iwhichseed"
+      write(outcoup,4) "parallelstage=powheginput('#parallelstage')"
       write(outcoup,4) ""
       write(outcoup,6) "Parameter definition"
       write(outcoup,4) ""
@@ -122,8 +122,8 @@ c     writing golem_initialize subroutine
       write(outcoup,6) "Initialize virtual code"
       write(outcoup,4) ""
       write(outcoup,4) "path = '../GoSam_POWHEG/orderfile.olc'"
-      write(outcoup,4) "call OLP_Start(path,ioerr,-1,-1)"
-      write(outcoup,7) "call OLP_Start(path,ioerr,parallelstage,",
+      write(outcoup,4) ""
+      write(outcoup,41)"call OLP_Start(path,ioerr,parallelstage,",
      $     "rndiwhichseed)"
       write(outcoup,4) "call check_gosam_err('olp_start routine',ierr)"
       write(outcoup,4) "end"
@@ -173,6 +173,7 @@ c$$$      close(inproc)
 c$$$      close(outproc)
  1    format(A)
  4    format('      ',A)
+ 41   format('      ',A,A)
  5    format('     $',4x,A)
  6    format('C     ',A)
  7    format('C     ',A,A)

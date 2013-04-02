@@ -50,7 +50,7 @@ cat powheg.input-save | sed 's/parallelstage.*/parallelstage 4/' > powheg.input
 (echo -n st4 ' ' ; date ) >> Timings.txt
 for i in {1..48}
 do
-echo $i | ../pwhg_main > run-4-$i.log 2>&1 &
+echo $i | ../pwhg_main > run-st4-$i.log 2>&1 &
 done
 wait
 

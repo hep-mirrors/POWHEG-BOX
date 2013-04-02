@@ -328,8 +328,10 @@
   interactively on a multi-core machine with 48 cores. The script
   <with|font-family|tt|runpar.sh> executes all stages of the run. It is up to
   the user to adapt the run to his/her batch environment. The example of the
-  <math|W jj> take about 20 hours to complete on a typical 48 cores machine,
-  while the <math|Z jj> example takes about four times as much.
+  <math|W jj> takes about 2 hours for the preparation stage, and 10 hours for
+  the generation of events, on a 48 cores machine. For the <math|Z jj> case,
+  the preparation stage takes roughly eight hours, while the events are
+  generated in about 75 hours.
 
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>

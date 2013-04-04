@@ -484,8 +484,15 @@ c csimax depends upon y in this case.
       include 'coupl.inc'
       real * 8 fact,ptmin
       real * 8 pt4,pt5,pt45,dotp
-      if(flg_weightedev) then
-         ptmin=20
+      real * 8 powheginput
+      logical ini
+      data ini/.true./
+      save ptmin,ini
+      if(ini) then
+         ptmin=powheginput('#bornsuppfact')
+         ini=.false.
+      endif
+      if(ptmin.gt.0) then
          pt4=kn_cmpborn(1,4)**2+kn_cmpborn(2,4)**2
          pt5=kn_cmpborn(1,5)**2+kn_cmpborn(2,5)**2
          pt45=2*dotp(kn_cmpborn(0,4),kn_cmpborn(0,5))

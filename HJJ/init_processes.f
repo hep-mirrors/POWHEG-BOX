@@ -10,18 +10,22 @@
       real * 8 powheginput
       external powheginput
 c defaults for powheg running
-      
+      st_bornorder=4
+
+c by default include negative weights. Allow for
+c explicit request not to include them
+      if(powheginput("#withnegweights").eq.0) then
+         flg_withnegweights = .false.
+      else
+         flg_withnegweights = .true.
+      endif
+
       par_diexp=powheginput("#par_diexp")
       if(par_diexp.lt.0) par_diexp=2d0
       par_dijexp=powheginput("#par_dijexp")
       if(par_dijexp.lt.0) par_dijexp=2d0
       par_2gsupp=powheginput("#par_2gsupp")
       if(par_2gsupp.lt.0) par_2gsupp=2d0
-
-      flg_withdamp=.true.
-      flg_bornzerodamp=.true.
-
-      flg_weightedev=.true.
 
       flg_ckkwscalup=.true.
       if(powheginput("#ckkwscalup").eq.0) then

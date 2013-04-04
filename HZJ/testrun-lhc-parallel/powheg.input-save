@@ -1,5 +1,6 @@
-vdecaymode        1
+vdecaymode         1
 hdecaymode        -1
+toploops           1 ! if 1 fermion loops with 3rd generation are included
 
 hmass  125d0        ! Higgs boson mass 
 hwidth 0.403d-2     ! Higgs boson width 

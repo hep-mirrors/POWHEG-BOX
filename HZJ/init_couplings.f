@@ -246,9 +246,13 @@ C     ones defined in the POWHEG BOX.
       external powheginput
       integer parallelstage,rndiwhichseed
       common/cpwhg_info/parallelstage,rndiwhichseed
+      logical flg_toploops
 
       rndiwhichseed=rnd_iwhichseed
       parallelstage=powheginput("#parallelstage")
+C     Read from card of top loops should be included
+      flg_toploops = .false.
+      if (powheginput("#toploops").eq.1) flg_toploops=.true.
 
 C     Parameter definition
       
@@ -307,7 +311,11 @@ C     Parameter definition
       call check_gosam_err(param,ierr)
       
       param = 'mT='
-      write(value,'(F20.10)') ph_tmass
+      if(flg_toploops) then
+         write(value,'(F20.10)') ph_tmass
+      else
+         write(value,'(F20.10)') 0d0
+      end if
       line = trim(param)//trim(adjustl(value))
       call OLP_Option(line,ierr)
       call check_gosam_err(param,ierr)

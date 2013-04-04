@@ -12,8 +12,6 @@ ANALYSIS=HWnJ
 #STATIC= -static
 #
 
-
-
 OBJ=obj-$(COMPILER)
 OBJDIR:=$(OBJ)
 
@@ -34,8 +32,6 @@ OPT=-O0
 FPE=-ffpe-trap=invalid,zero,overflow,underflow
 endif
 endif
-
-
 
 ifeq ("$(COMPILER)","ifort")
 F77 = ifort -save  -extend_source  -module $(OBJ)
@@ -67,7 +63,6 @@ INCLUDE1=$(PWD)/include
 INCLUDE1.2=$(shell dirname $(PWD))/Version-pre2-1/include
 INCLUDE2=$(shell dirname $(PWD))/include
 FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE1.2) -I$(INCLUDE2)
-
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
 

@@ -149,7 +149,7 @@ contains
      use p5_usbar_hepneg_model, only:  p5_usbar_hepneg_mH  => mH
      use p1_dbarc_hepneg_model, only:  p1_dbarc_hepneg_mH  => mH
      use p11_csbar_hepneg_model, only: p11_csbar_hepneg_mH => mH
-     use p0_dbaru_hepneg_model, only:  p0_dbaru_hepneg_mH  => mH
+     use p0_dbaru_hepneg_model, only:  p0_dbaru_hepneg_mH  => mH, mT, gHT
 
       implicit none
       integer(kind=c_int), intent(in) :: label
@@ -162,6 +162,9 @@ contains
       real(kind=c_double), parameter :: one_over_2pi = 0.15915494309189533577d0
 
       hmass = sqrt(momenta(11)**2 - momenta(12)**2 - momenta(13)**2 - momenta(14)**2)
+
+      ! write(*,*) "GoSam: top mass ist set to ", mT
+      ! write(*,*) "GoSam: H-T coup ist set to ", gHT
 
       alpha_s = parameters(1)
 

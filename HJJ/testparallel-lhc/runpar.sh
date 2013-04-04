@@ -57,7 +57,7 @@ wait
 (echo -n end ' ' ; date ) >> Timings.txt
 
 
-exit 0
+
 
 # Now all events are available. This is an example of using the reweighting
 # feature. We compute reweighting information for the 7 points scale variation

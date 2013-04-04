@@ -23,7 +23,7 @@ OBJ=obj-gfortran
 #FPE=-ffpe-trap=invalid,zero,overflow,underflow 
 ## gfortran 4.4.1 optimized with -O3 yields erroneous results
 ## Use -O2 to be on the safe side
-OPT=-O2
+OPT=-O3
 ## For debugging uncomment the following
 #DEBUG= -ggdb
 ifdef DEBUG
@@ -55,7 +55,7 @@ DEPDIRS=./MCFMinterface/ ./MCFM/src/pwgplots/ ./MCFM/src/Need/ \
 ./MCFM/src/Lib/ ./MCFM/src/Phase/ ./MCFM/src/Z2jet/ \
 ./MCFM/src/Zbb/  ./MCFM/src/W2jet/ ./MCFM/src/W2jetvirt/ ./MCFM/src/Wbb/ 
 
-VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1:../:$(OBJ)/:../MCFMinterface:./MCFM/src/pwgplots/:./MCFM/src/Need/:./MCFM/src/Lib/:./MCFM/src/Phase/:./MCFM/src/Z2jet/:./MCFM/src/Zbb/:./MCFM/src/W2jet/:./MCFM/src/W2jetvirt/:./MCFM/src/Wbb/
+VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1:../:$(OBJ)/:./MCFMinterface:./MCFM/src/pwgplots/:./MCFM/src/Need/:./MCFM/src/Lib/:./MCFM/src/Phase/:./MCFM/src/Z2jet/:./MCFM/src/Zbb/:./MCFM/src/W2jet/:./MCFM/src/W2jetvirt/:./MCFM/src/Wbb/
 
 
 INCLUDEA=../Version-pre2-1/progress/include

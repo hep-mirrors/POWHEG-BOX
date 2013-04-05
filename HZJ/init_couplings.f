@@ -39,6 +39,7 @@ c******************************************************
 c     Choose the process to be implemented
 c******************************************************
 
+      idvecbos = 23
 c     decay products of the vector boson
       Vdecmod=powheginput('vdecaymode')
       

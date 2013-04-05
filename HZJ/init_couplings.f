@@ -3,6 +3,7 @@
       include "coupl.inc"
       include 'PhysPars.h'
 
+
       real * 8 powheginput
       external powheginput
 c Avoid multiple calls to this subroutine. The parameter file is opened
@@ -247,13 +248,13 @@ C     ones defined in the POWHEG BOX.
       external powheginput
       integer parallelstage,rndiwhichseed
       common/cpwhg_info/parallelstage,rndiwhichseed
-      logical flg_toploops
+      logical toploops
 
       rndiwhichseed=rnd_iwhichseed
       parallelstage=powheginput("#parallelstage")
 C     Read from card of top loops should be included
-      flg_toploops = .false.
-      if (powheginput("#toploops").eq.1) flg_toploops=.true.
+      toploops = .false.
+      if (powheginput("#toploops").eq.1) toploops=.true.
 
 C     Parameter definition
       
@@ -312,7 +313,7 @@ C     Parameter definition
       call check_gosam_err(param,ierr)
       
       param = 'mT='
-      if(flg_toploops) then
+      if(toploops) then
          write(value,'(F20.10)') ph_tmass
       else
          write(value,'(F20.10)') 0d0

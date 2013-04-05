@@ -67,7 +67,7 @@ c
 
       real * 8 xmur
       real * 8 xmur1,xmuf1,s1,scalemur1,scalemuf1
-      common/scale/xmur1,xmuf1,s1,scalemur1,scalemuf1
+      common/mcfm_scale/xmur1,xmuf1,s1,scalemur1,scalemuf1
 
       real*8 jac,pqqb
 c
@@ -929,7 +929,7 @@ c scalar and tensor integrals
       complex * 16 B012d,B112d,B2012d,B013d,B113d,B2013d,B023d,B123d,
      - B2023d
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
 c debug parameter
       logical*4 ldebugp1
       parameter(ldebugp1=.false.)
@@ -2404,7 +2404,7 @@ c
      - B2023d
       real*8 cf_b1_1_v(75),cf_b1_1_a(75),cf_b1_2_v(75),cf_b1_2_a(75)
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
       common/gramdet/dflag
 c
 c debug parameter
@@ -3776,7 +3776,7 @@ c
      - B2023d
       real*8 cf_b2_v(75),cf_b2_a(75)
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
       common/gramdet/dflag
 c
 c debug parameter
@@ -4409,7 +4409,7 @@ c     - A1c1,A2c1,A1c2,A2c2,A3c2,A4c2,
       real*8 cf_b3_1_v(75),cf_b3_1_a(75),cf_b3_1c_v(75),cf_b3_1c_a(75),
      - cf_b3_2_v(75),cf_b3_2_a(75),cf_b3_2c_v(75),cf_b3_2c_a(75)
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
       common/gramdet/dflag
 c
 c test paramters
@@ -6389,7 +6389,7 @@ c      real * 8 B012_ff,B112_ff,B013_ff,B113_ff,B023_ff,B123_ff,
 c     - B112l,B2012l,B2112l,B113l,B2013l,B2113l,B123l,B2023l,B2123l,
 c     - A01,A02,A03
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
 c
 c debug parameter
 c
@@ -7752,7 +7752,7 @@ c
      - cf_v2_1_nab_v(75),cf_v2_1_nab_a(75),cf_v2_2_ab_v(75),
      - cf_v2_2_ab_a(75),cf_v2_2_nab_v(75),cf_v2_2_nab_a(75)
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
 c
 c debug parameter
 c
@@ -8377,7 +8377,7 @@ c
      - B2023d
       real*8 cf_v3_1_v(75),cf_v3_1_a(75),cf_v3_2_v(75),cf_v3_2_a(75)
       real * 8 mur,muf,s,scalemur,scalemuf
-      common/scale/mur,muf,s,scalemur,scalemuf
+      common/mcfm_scale/mur,muf,s,scalemur,scalemuf
 c
 c debug parameter
 c
@@ -15788,7 +15788,7 @@ c---------------------------------------------------------------------
       implicit real*8(a-z)
       parameter (eps=1d-4)
 c      common / dimreg / muedr
-      common/scale/muedr,muedf,xs,scalemur,scalemuf
+      common/mcfm_scale/muedr,muedf,xs,scalemur,scalemuf
       if (m**2.lt.eps) then 
          a0 = 0d0
       else
@@ -15808,7 +15808,7 @@ c---------------------------------------------------------------------
       parameter (eps=1d-4)
       complex*16 b0,b1,b20,ff
 c      common / dimreg / muedr
-      common/scale/muedr,muedf,xs,scalemur,scalemuf
+      common/mcfm_scale/muedr,muedf,xs,scalemur,scalemuf
       pi = 4d0*datan(1d0)
       x1 = m1**2
       x2 = m2**2
@@ -15868,7 +15868,7 @@ c--------------------------------------------------------------------
       implicit real*8(a-z)
       parameter (eps=1d-8)      
 c      common / dimreg / muedr
-      common/scale/muedr,muedf,xs,scalemur,scalemuf
+      common/mcfm_scale/muedr,muedf,xs,scalemur,scalemuf
       xa = a**2
       xb = b**2
       x = xa+xb
@@ -15893,7 +15893,7 @@ c-----------------------------------------------------------------
       implicit real*8(a-z)
       parameter (eps=1d-8)
 c      common / dimreg / muedr
-      common/scale/muedr,muedf,xs,scalemur,scalemuf
+      common/mcfm_scale/muedr,muedf,xs,scalemur,scalemuf
       xa = a**2
       xb = b**2
       x = xa+xb
@@ -15921,7 +15921,7 @@ c-----------------------------------------------------------------
       subroutine bzwnull(a,b,b20)
       implicit real*8(a-z)
 c      common / dimreg / muedr
-      common/scale/muedr,muedf,xs,scalemur,scalemuf
+      common/mcfm_scale/muedr,muedf,xs,scalemur,scalemuf
       xa = a**2
       xb = b**2
       call bnull(a,b,b0)

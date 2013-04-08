@@ -135,7 +135,8 @@ then
     echo "---> GoSam is writing the code for virtual part ..."
     cd $RUNDIR
     gosam.py --olp --mc=powhegbox --config=gosam.rc --ignore-unknown --force --destination=$VIRDIR $GOSAMDIR/orderfile.lh
-    cp $RUNDIR/gosam.rc $VIRDIR
+    cp $RUNDIR/gosam.rc $GOSAMDIR
+    cp -f $RUNDIR/filter.py $GOSAMDIR
     
     cd $VIRDIR
     echo "---> Generating code for virtual amplitudes ..."
@@ -200,7 +201,8 @@ then
 	if [ ! -d $RUNDIR/GoSamlib ]
 	then
 	    mkdir $RUNDIR/GoSamlib
-	fi	    
+	fi
+	echo "---> Generating standalone copy of virtual code ..."
 	for file in `find $GOSAMDIR -path "*.f90"`
 	do    
 	    nmodules=`grep -i '^ *end *module ' $file | wc -l`  
@@ -255,7 +257,7 @@ then
 	
 	echo "done"
 	echo "---> Copying generation files to:"
-	echo $RUNDIR"/GoSamlib/"
+	echo $RUNDIR"/GoSamlib/ ..."
 	cp -f $GOSAMDIR/gosam.rc $GOSAMLIBDIR/gosam.rc
 	cp -f $GOSAMDIR/orderfile.lh $GOSAMLIBDIR/orderfile.lh
 	cp -f $GOSAMDIR/orderfile.olc $GOSAMLIBDIR/orderfile.olc

@@ -56,8 +56,8 @@
      &     '     double precision p(0:3,nexternal),wgt'
       write (12,*) '     integer legs(nexternal),lstr'
       write (12,*) '     character*140 str'
-      write (12,*) '     double precision P1(0:3,nexternal)'
       if (need_switching) then
+         write (12,*) '     double precision P1(0:3,nexternal)'
          write (12,*) '     integer i,ic(nexternal),'
      &        //'legs1(nexternal)'
          write (12,*) '     logical mtc,even'
@@ -101,7 +101,11 @@
             write (12,*)
      &           '     elseif (str.eq."'//str(i)(1:lstr(i))//'") then'
          endif
-         write (12,*) '        call srealmtrx_'//s//'(p1,wgt)'
+         if (need_switching) then
+            write (12,*) '        call srealmtrx_'//s//'(p1,wgt)'
+         else
+            write (12,*) '        call srealmtrx_'//s//'(p,wgt)'
+         endif
          write (12,*) '        goto 20'
       enddo
       write (12,*) '     endif'

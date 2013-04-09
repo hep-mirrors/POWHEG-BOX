@@ -186,8 +186,8 @@ then
     echo "-pwhg_gosam.f                                          "
     echo "was copied from the 'GoSamStuff/Templates' folder      "
     echo "                                                       "
-    echo "Please before compile generate a standalone version of "
-    echo "the virtual code.                                      "
+    echo "Please before compiling generate a standalone version  "
+    echo "of the virtual code.                                   "
     echo "*******************************************************"
     exit
 fi
@@ -261,8 +261,10 @@ then
 	cp -f $GOSAMDIR/gosam.rc $GOSAMLIBDIR/gosam.rc
 	cp -f $GOSAMDIR/orderfile.lh $GOSAMLIBDIR/orderfile.lh
 	cp -f $GOSAMDIR/orderfile.olc $GOSAMLIBDIR/orderfile.olc
-	cp -f $GOSAMDIR/filter.py $GOSAMLIBDIR/filter.py
-
+	if [ -f $GOSAMDIR/filter.py ]
+	then
+	    cp -f $GOSAMDIR/filter.py $GOSAMLIBDIR/filter.py
+	fi
     else
 	echo "*******************************************************"	
 	echo "The program 'makedepf90' was not found on your machine."

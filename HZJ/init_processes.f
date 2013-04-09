@@ -30,16 +30,17 @@
      
       call init_processes_born
       call init_processes_real
+      st_nlight=5
       call init_couplings
-      if (tmass.eq.0d0) then
-         st_nlight=6
-      elseif(bmass.eq.0d0) then
-         st_nlight=5
-      elseif(cmass.eq.0d0) then
-         st_nlight=4
-      else
-         st_nlight=3
-      endif
+c$$$      if (tmass.eq.0d0) then
+c$$$         st_nlight=6
+c$$$      elseif(bmass.eq.0d0) then
+c$$$         st_nlight=5
+c$$$      elseif(cmass.eq.0d0) then
+c$$$         st_nlight=4
+c$$$      else
+c$$$         st_nlight=3
+c$$$      endif
       do i=3,nlegreal
          if (abs(flst_real(i,1)).le.st_nlight) then
             flst_lightpart=i

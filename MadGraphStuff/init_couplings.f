@@ -81,19 +81,23 @@ c madgraph routines not to blow.
       wmass=sqrt(zmass**2/Two+
      $     sqrt(zmass**4/Four-Pi/Rt2*alpha/gfermi*zmass**2))
 
-      twidth=1.5083d0
-
-      hmass = powheginput('hmass')
-      hwidth = powheginput('hwidth')
-
-      ph_Hmass2low=powheginput("hmasslow")**2
-      ph_Hmass2high=powheginput("hmasshigh")**2
-      ph_Wmass2low=powheginput("wmasslow")**2
-      ph_Wmass2high=powheginput("wmasshigh")**2    
-
-     
       zwidth=2.441d0
       wwidth=2.0476d0
+      twidth=1.5083d0
+
+c      hmass = 125d0
+c      hwidth = 0.403d-2
+
+c      hmass = powheginput('hmass')
+c      hwidth = powheginput('hwidth')
+C      ph_Hmass2low=powheginput("hmasslow")**2
+C      ph_Hmass2high=powheginput("hmasshigh")**2
+C      ph_Wmass2low=powheginput("wmasslow")**2
+C      ph_Wmass2high=powheginput("wmasshigh")**2    
+C      ph_Zmass2low=powheginput("zmasslow")**2
+C      ph_Zmass2high=powheginput("zmasshigh")**2    
+
+           
 
 c     POWHEG CKM matrix
 c
@@ -181,7 +185,9 @@ c
       ph_tmass = tmass
 
       ph_WmWw = ph_Wmass * ph_Wwidth
+      ph_ZmZw = ph_Zmass * ph_Zwidth
       ph_Wmass2 = ph_Wmass**2
+      ph_Zmass2 = ph_Zmass**2
 
 c     CKM from PDG 2010 (eq. 11.27)
       ph_CKM(1,1)=Vud

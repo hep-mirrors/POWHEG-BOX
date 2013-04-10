@@ -1,5 +1,7 @@
 #!/bin/bash
 
+RUNDIR=${PWD}
+
 svn export ../MadGraphStuff MadTMP
 #cp -ra ../MadGraphStuff_new MadTMP
 
@@ -47,3 +49,6 @@ then
     echo $i >> ../MGfiles.list
 fi
 done
+
+cd $RUNDIR
+rm -fr MadTMP

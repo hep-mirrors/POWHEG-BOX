@@ -1,8 +1,8 @@
 
 #F77           = gfortran
 FFLAGS        = $(XFFLAGS)
-LIBRARY	      = libmadgraph.a
-LIBDIR        = ../
+LIBDIR        = ../$(OBJ)
+LIBRARY	      = $(LIBDIR)/libmadgraph.a
 CODE          =  sborn_proc.o $(patsubst %.f,%.o,$(wildcard sborn_sf_???.f)) $(patsubst %.f,%.o,$(wildcard sborn_cl_???.f)) $(patsubst %.f,%.o,$(wildcard b_sf_???_???.f)) $(patsubst %.f,%.o,$(wildcard b_cl_???_???.f)) $(patsubst %.f,%.o,$(wildcard realmtrx_???.f)) sreal_proc.o nexper.o
 
 .f.o: ; $(F77) $(FFLAGS) -c $*.f

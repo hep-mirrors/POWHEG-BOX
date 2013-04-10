@@ -12,6 +12,9 @@ ANALYSIS=dummy
 #STATIC= -static
 #
 
+OBJ=obj-$(COMPILER)
+OBJDIR:=$(OBJ)
+
 ifeq ("$(COMPILER)","gfortran")	
 F77=gfortran -fno-automatic -J$(OBJ) -I$(OBJ)
 ## -fbounds-check sometimes causes a weird error due to non-lazy evaluation
@@ -46,14 +49,10 @@ FPE = -fpe0
 endif
 endif
 
-PWD=$(shell pwd)
-WDNAME=$(shell basename $(PWD))
-
-OBJ=obj-$(COMPILER)
-OBJDIR:=$(OBJ)
-
 GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// ; s/qlconstants.f// ; s/.f /.o /g ; s/.f90 /.o /g ; ' | tee GoSamlib.txt)
 
+PWD=$(shell pwd)
+WDNAME=$(shell basename $(PWD))
 #VPATH= ./:../:$(OBJ):./GoSamlib/
 #VPATH= ../Parallel-grids/:./:../:$(OBJ):./GoSamlib/
 VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
@@ -93,14 +92,16 @@ FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 PWHGANAL=pwhg_bookhist-new.o pwhg_analysis.o 
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
-PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetfortran.o
+#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetfortran.o
+PWHGANAL+=  fastjetfortran.o
 else
-PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-dummy.o 
+PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-dummy.o
 endif
 
 
 %.o: %.f $(INCLUDE) | $(OBJDIR)
 	$(FF) -c -o $(OBJ)/$@ $<
+
 %.o: %.f90 $(INCLUDE) | $(OBJDIR)
 	$(FF) -c -o $(OBJ)/$@ $<
 
@@ -124,11 +125,10 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	reshufflemoms.o pwhg_gosam.o                                    \
 	sigcollsoft.o sigvirtual.o  ubprojections.o                     \
-	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o   \
-	validflav.o  $(PDFPACK) $(USER) $(FPEOBJ)
+	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o          \
+	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 
-
-LIBDIRMG=.
+LIBDIRMG=$(OBJ)
 LINKMGLIBS =  -L$(LIBDIRMG)  -lmadgraph -lmodel -ldhelas3 
 
 MADLIBS=libdhelas3.a libmadgraph.a libmodel.a
@@ -166,17 +166,17 @@ PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o \
 	$(FPEOBJ)
 
 main-PYTHIA-lhef: $(PYTHIA)
-	$(FF) $(patsubst %,$(OBJ)/%,$(PYTHIA)) $(LIBSFASTJET)  $(STATIC) -o $@
+	$(FF) $(patsubst %,$(OBJ)/%,$(PYTHIA)) $(LIBS) $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to cleanup
 .PHONY: clean libdhelas3.a libmadgraph.a libmodel.a
 
 XFFLAGS=$(DEBUG) $(OPT)
 libdhelas3.a:
-	cd DHELAS ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)"
+	cd DHELAS ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)" OBJ="$(OBJ)"
 
 libmadgraph.a:
-	cd Madlib ; make FC="$(F77)" F77="$(F77)" XFFLAGS"=$(XFFLAGS)"
+	cd Madlib ; make FC="$(F77)" F77="$(F77)" XFFLAGS"=$(XFFLAGS)" OBJ="$(OBJ)"
 
 ifeq ("$(COMPILER)","gfortran")
 XFFLAGS +=-ffixed-line-length-132
@@ -185,7 +185,7 @@ XFFLAGS +=-extend-source
 endif
 
 libmodel.a:
-	cd MODEL ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)"
+	cd MODEL ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)" OBJ="$(OBJ)"
 
 
 clean:

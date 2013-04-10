@@ -164,7 +164,6 @@
       write (12,*) '        endif'
       write (12,*) '     enddo'
       write (12,*) '     '
-      write (12,*) '     return'
       write (12,*) '     end'
       write (12,*) '     '
       write (12,*) '     '
@@ -290,7 +289,6 @@
      &     write (12,*) '     call switchcolor(color1,color,'
       if (need_switching) write (12,*) '    &     ic,nexternal-1)'
       write (12,*) '     '
-      write (12,*) '     return'
       write (12,*) '     end'
       write (12,*) '     '
       write (12,*) '     '
@@ -352,7 +350,6 @@
       write (12,*) "           endif"
       write (12,*) "        endif"
       write (12,*) "     enddo"
-      write (12,*) "     return"
       write (12,*) "     end"
 
       close(12)
@@ -389,16 +386,20 @@
       write (15,*) ''
       write (15,*) '     call init_processes_born'
       write (15,*) '     call init_processes_real'
+      write (15,*) 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
+      write (15,*) 'C    Set here the number of light flavours'
+      write (15,*) 'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
+      write (15,*) '     st_nlight=5'
       write (15,*) '     call init_couplings'
-      write (15,*) '     if (tmass.eq.0d0) then'
-      write (15,*) '        st_nlight=6'
-      write (15,*) '     elseif(bmass.eq.0d0) then'
-      write (15,*) '        st_nlight=5'
-      write (15,*) '     elseif(cmass.eq.0d0) then'
-      write (15,*) '        st_nlight=4'
-      write (15,*) '     else'
-      write (15,*) '        st_nlight=3'
-      write (15,*) '     endif'
+      write (15,*) 'c     if (tmass.eq.0d0) then'
+      write (15,*) 'c        st_nlight=6'
+      write (15,*) 'c     elseif(bmass.eq.0d0) then'
+      write (15,*) 'c        st_nlight=5'
+      write (15,*) 'c     elseif(cmass.eq.0d0) then'
+      write (15,*) 'c        st_nlight=4'
+      write (15,*) 'c     else'
+      write (15,*) 'c        st_nlight=3'
+      write (15,*) 'c     endif'
       write (15,*) '     do i=3,nlegreal'
       write (15,*) '        if (abs(flst_real(i,1)).le.st_nlight) then'
       write (15,*) '           flst_lightpart=i'
@@ -406,7 +407,6 @@
       write (15,*) '        endif'
       write (15,*) '     enddo'
       write (15,*) ''
-      write (15,*) '     return'
       write (15,*) '     end'
       write (15,*) ''
       write (15,*) ''
@@ -425,7 +425,6 @@
       enddo
       write (15,*) '     flst_nborn=',total_proc
       write (15,*) ''
-      write (15,*) '     return'
       write (15,*) '     end'
       write (15,*) ''
       close(15)
@@ -536,5 +535,4 @@
             endif
          endif
       enddo
-      return
       end

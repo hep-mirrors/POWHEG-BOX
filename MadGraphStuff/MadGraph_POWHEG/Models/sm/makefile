@@ -8,8 +8,8 @@
 
 #F77           = gfortran
 FFLAGS        = $(XFFLAGS) -ffixed-line-length-132
-LIBRARY	      = ../libmodel.a
-LIBDIR        = ../
+LIBDIR        = ../$(OBJ)
+LIBRARY	      = $(LIBDIR)/libmodel.a
 MODEL         = printout.o couplings.o
 
 .f.o: ; $(F77) $(FFLAGS) -c $*.f

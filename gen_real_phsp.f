@@ -175,7 +175,7 @@ c Set up a unit vector orthogonal to kbar_n and to the z axis
 c Rotate k_n+1 around vec of an amount psi
       call mrotate(vec,sqrt(abs(1-cpsi**2)),cpsi,xk(1,n+1))
 c Rotate k_j around vec of an amount psi1 in opposite direction
-      call mrotate(vec,-sqrt(1-cpsi1**2),cpsi1,xk(1,j))
+      call mrotate(vec,-sqrt(abs(1-cpsi1**2)),cpsi1,xk(1,j))
 c set up a unit vector parallel to kbar_j
       do i=1,3
          vec(i)=barredk(i,j)/ubkj

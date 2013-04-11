@@ -165,12 +165,13 @@ c$$$
      
       subroutine analysis(dsig0)
       implicit none
-      real * 8 dsig0,dsig
+      real * 8 dsig0
       include 'hepevt.h'
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_math.h' 
       include 'pwhg_rad.h' 
+      include 'pwhg_weights.h'
 c      include 'pwhg_flg.h'
 c      include 'LesHouches.h'
       integer isthep_loc(NMXHEP)  ! local copy of isthep
@@ -223,10 +224,36 @@ c     we need to tell to this analysis file which program is running it
       character * 20 processid
 c      real * 8 rescfac1,rescfac2
 c      common /crescfac/rescfac1,rescfac2
+      real * 8 dsig(7)
+      integer nweights
+      logical inimulti
+      data inimulti/.true./
+      save inimulti
 
-      call reweightifneeded(dsig0,dsig)
 
-      if(dsig.eq.0) return
+c      call reweightifneeded(dsig0,dsig)
+
+      if(inimulti) then
+         if(weights_num.eq.0) then
+            call setupmulti(1)
+         else
+            call setupmulti(weights_num)
+         endif
+         inimulti=.false.
+      endif
+
+      dsig=0
+      if(weights_num.eq.0) then
+         dsig(1)=dsig0
+         nweights=1
+      else
+         dsig(1:weights_num)=weights_val(1:weights_num)
+          nweights=weights_num
+      endif
+
+      if(sum(abs(dsig)).eq.0) return
+
+c      if(dsig.eq.0) return
 
 
       if (ini) then

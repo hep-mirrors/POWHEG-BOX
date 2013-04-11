@@ -216,6 +216,9 @@ c pythia routine to abort event
      2     'POWHEG+PYTHIA-output.top',status='unknown')
       endif
       call pwhgsetout
+
+      write(*,*) 'FIX pwhgtopout  **************'
+      stop
       call pwhgtopout
       close(99)
       end

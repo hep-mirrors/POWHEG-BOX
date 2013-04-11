@@ -56,7 +56,7 @@ constant value.
 The user should provide an extra function, validflav(lflav), and
 include it in the init_processes.f file, or in any other process file.
 The purpose of this function is to make sure that after each clustering
-in the kt-cl;ustering procedure, we are left with a consistent
+in the kt-clustering procedure, we are left with a consistent
 flavour structure. For example, in q qbar -> H g, if we cluster
 the icoming quark with a gluon, we are left with q qbar -> H, which has
 no cross section.

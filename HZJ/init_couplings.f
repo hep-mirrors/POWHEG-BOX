@@ -63,6 +63,14 @@ c     decay products of the vector boson
 
 c     set lepton mass
       decmass=lepmass(Vdecmod)   
+         
+      if (ph_Zmass2low.lt.4*decmass**2) then
+         write(*,*) 'zmasslow less than the minimun invariant mass of'
+         write(*,*) 'the final-state leptonic system ',2*decmass
+         write(*,*) 'POWHEG aborts'
+         call pwhg_exit(-1)
+      endif
+
       end
 
 

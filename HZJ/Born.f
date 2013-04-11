@@ -45,7 +45,7 @@ c     lepton masses
       call add_resonance(idvecbos,4,5)
 c     The following routine also performs the reshuffling of momenta if
 c     a massive decay is chosen
-      call momenta_reshuffle(4,5,6,decmass)
+      call momenta_reshuffle(4,5,6,decmass,decmass)
 
 c     fix here the Z decay mode
       id5=vdecaymode
@@ -55,13 +55,15 @@ c     fix here the Z decay mode
       end
 
 
-
 c     i1<i2
-      subroutine momenta_reshuffle(ires,i1,i2,decmass)
+      subroutine momenta_reshuffle(ires,i1,i2,m1,m2)
       implicit none
       include 'LesHouches.h'
-      integer ires,i1,i2,j
-      real * 8 ptemp(0:3),ptemp1(0:3),beta(3),betainv(3),modbeta,decmass
+      integer ires,i1,i2
+      real * 8 m1,m2
+      real * 8 ptemp(0:3),pfin(0:3),beta(3),betainv(3),modbeta,m
+      real * 8 mod_pfin,m0
+      integer j,id,dec
       if (i1.ge.i2) then
          write(*,*) 'wrong sequence in momenta_reshuffle'
          stop
@@ -76,45 +78,41 @@ c construct boosts from/to vector boson rest frame
          beta(j)=beta(j)/modbeta
          betainv(j)=-beta(j)
       enddo
-cccccccccccccccccccccccccccccccccccccccc
-c first decay product (massive)
-      ptemp(0)=pup(4,i1)
-      do j=1,3
-         ptemp(j)=pup(j,i1)
-      enddo
-      call mboost(1,beta,modbeta,ptemp,ptemp)
-      ptemp1(0)=0.5d0*(pup(5,ires)+(decmass**2)/pup(5,ires))
-      do j=1,3
-         ptemp1(j)=ptemp(j)/ptemp(0)*sqrt(ptemp1(0)**2 -decmass**2)
-      enddo
-      call mboost(1,betainv,modbeta,ptemp1,ptemp)
-      do j=1,3
-         pup(j,i1)=ptemp(j)
-      enddo
-      pup(4,i1)=ptemp(0)
-      pup(5,i1)=sqrt(pup(4,i1)**2-pup(1,i1)**2
-     $     -pup(2,i1)**2-pup(3,i1)**2)
-      
-c second decay product (massless)
 
-      ptemp(0)=pup(4,i2)
-      do j=1,3
-         ptemp(j)=pup(j,i2)
-      enddo
-      call mboost(1,beta,modbeta,ptemp,ptemp)
-      ptemp1(0)=0.5d0*(pup(5,ires)-(decmass**2)/pup(5,ires))
-      do j=1,3
-         ptemp1(j)=ptemp(j)/ptemp(0)*ptemp1(0)
-      enddo
-      call mboost(1,betainv,modbeta,ptemp1,ptemp)
-      do j=1,3
-         pup(j,i2)=ptemp(j)
-      enddo
-      pup(4,i2)=ptemp(0)
-c abs to avoid tiny negative values
-      pup(5,i2)=sqrt(abs(pup(4,i2)**2-pup(1,i2)**2
-     $     -pup(2,i2)**2-pup(3,i2)**2))
+      m0 = pup(5,ires)
+      mod_pfin=
+     $     1/(2*m0)*sqrt(abs((m0**2-m1**2-m2**2)**2 - 4*m1**2*m2**2))
+               
 cccccccccccccccccccccccccccccccccccccccc
+c     loop of the two decay products
+      
+      do dec=1,2
+         if(dec.eq.1) then
+            id=i1
+            m=m1
+         else
+            id=i2
+            m=m2
+         endif
+         ptemp(0)=pup(4,id)
+         do j=1,3
+            ptemp(j)=pup(j,id)
+         enddo
+         call mboost(1,beta,modbeta,ptemp,ptemp)
+         pfin(0)=sqrt(mod_pfin**2 + m**2)
+         do j=1,3
+            pfin(j)=ptemp(j)*mod_pfin/ptemp(0)
+         enddo
+         call mboost(1,betainv,modbeta,pfin,ptemp)
+         do j=1,3
+            pup(j,id)=ptemp(j)
+         enddo
+         pup(4,id)=ptemp(0)
+         pup(5,id)=sqrt(abs(pup(4,id)**2-pup(1,id)**2
+     $        -pup(2,id)**2-pup(3,id)**2))
+         
+      enddo
+
       end
 
 

@@ -320,7 +320,7 @@ c in pwggrid files is used only if mintupb files have not been saved.
      1 xgridrm,ymaxrm,ymaxratrm,ifold,ifoldrm,ncall2,itmx2,'grid')
 c Output NLO histograms
       if (powheginput('#testplots').eq.1d0) then
-         filename=mergelabels(pwgprefix,rnd_cwhichseed,'NLO.top',' ')
+         filename=mergelabels(pwgprefix,rnd_cwhichseed,'NLO',' ')
          call pwhgtopout(filename)
       endif
          

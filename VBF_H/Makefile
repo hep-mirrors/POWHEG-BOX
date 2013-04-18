@@ -9,7 +9,7 @@ PDF=lhapdf
 ##           installed separately (see below)
 ANALYSIS=default
 ## For static linking uncomment the following
-STATIC=-static
+#STATIC=-static
 #
 ifeq ("$(COMPILER)","gfortran")	
 F77= gfortran -fno-automatic 	

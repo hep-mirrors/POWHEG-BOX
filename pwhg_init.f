@@ -88,8 +88,24 @@ c ID of beam particles 1 and 2 (pdg convention)
 c proton:
       ebmup(1)=kn_beams(0,1)
       ebmup(2)=kn_beams(0,2)
-      idbmup(1) = 2212*pdf_ih1
-      idbmup(2) = 2212*pdf_ih2
+      if(abs(pdf_ih1).eq.1) then
+c proton and antiproton
+        idbmup(1) = 2212*pdf_ih1
+      elseif(abs(pdf_ih1).eq.2) then
+c neutron and antineutron
+        idbmup(1) = 2112*pdf_ih1/abs(pdf_ih1)
+      else
+         write(*,*) ' unimplemented hadron 1 ',pdf_ih1
+         call pwhg_exit(-1)
+      endif
+      if(abs(pdf_ih2).eq.1) then
+        idbmup(2) = 2212*pdf_ih2
+      elseif(abs(pdf_ih2).eq.2) then
+        idbmup(2) = 2112*pdf_ih2/abs(pdf_ih2)
+      else
+         write(*,*) ' unimplemented hadron 2 ',pdf_ih2
+         call pwhg_exit(-1)
+      endif
 c pdf group; negative to use internal herwig pdf's for showering
       pdfgup(1)=-1
       pdfgup(2)=-1

@@ -564,7 +564,7 @@ c      end
       implicit none
       real * 8 p(4),y,eta,pt,mass,pv
       real *8 tiny
-      parameter (tiny=1.d-5)
+      parameter (tiny=5.d-5)
       y=0.5d0*log((p(4)+p(3))/(p(4)-p(3)))
       pt=sqrt(p(1)**2+p(2)**2)
       pv=sqrt(pt**2+p(3)**2)

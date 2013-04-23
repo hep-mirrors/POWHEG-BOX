@@ -351,17 +351,19 @@ c$$$      end
       complex*16 delll_ct_g_alpha0(0:1),delll_ct_z_alpha0(0:1)
       complex*16 deluu_ct_g_alpha0(0:1),deluu_ct_z_alpha0(0:1)
       complex*16 deldd_ct_g_alpha0(0:1),deldd_ct_z_alpha0(0:1)
+      complex*16 delbb_ct_g_alpha0(0:1),delbb_ct_z_alpha0(0:1)
 
       complex*16 deluu_ct_g(0:1),deluu_ct_z(0:1)
       complex*16 deldd_ct_g(0:1),deldd_ct_z(0:1)
+      complex*16 delbb_ct_g(0:1),delbb_ct_z(0:1)
 
       complex*16 delll_ct_g(0:1),delll_ct_z(0:1)
       complex*16 delqq_ct_g(0:1),delqq_ct_z(0:1)
       complex*16 delta
       complex*16 deltatop
 *
-      complex*16 delguu(0:1),delgdd(0:1)
-      complex*16 delzuu(0:1),delzdd(0:1)
+      complex*16 delguu(0:1),delgdd(0:1),delgbb(0:1)
+      complex*16 delzuu(0:1),delzdd(0:1),delzbb(0:1)
       complex*16 delgll(0:1),delgqq(0:1)
       complex*16 delzll(0:1),delzqq(0:1)
 
@@ -378,7 +380,8 @@ c$$$      end
       save ifirst
 
       save delll_ct_g,delll_ct_z,
-     +     deluu_ct_g,deluu_ct_z,deldd_ct_g,deldd_ct_z
+     +     deluu_ct_g,deluu_ct_z,deldd_ct_g,deldd_ct_z,
+     +     delbb_ct_g,delbb_ct_z
 
       integer sig,tau
 
@@ -472,6 +475,13 @@ c$$$      end
           call deltazfl(qd*cone,gd(0),gd(1),zero,zero,delzdd(0))
           call deltazfr(qd*cone,gd(0),gd(1),zero,zero,delzdd(1))
 
+          if (iftopinloop) then
+              call deltazfl(qd*cone,gd(0),gd(1),zero,mqbig2*cone,
+     +                      delzbb(0))
+              call deltazfr(qd*cone,gd(0),gd(1),zero,mqbig2*cone,
+     +                      delzbb(1))
+          endif
+
           call deltazfl(ql*cone,gl(0),gl(1),mlep2*cone,zero,delzll(0))
           call deltazfr(ql*cone,gl(0),gl(1),mlep2*cone,zero,delzll(1))
 
@@ -551,14 +561,42 @@ c$$$      end
      +                         + delzdd(0) - 0.5d0*qd/gd(0)*delaz
           deldd_ct_z(0) = deldd_ct_z_alpha0(0) - delta
 
+          if (iftopinloop) then
+* b+ (gamma)
+              delbb_ct_g_alpha0(1) = delze + 0.5d0*delaa + delzbb(1)
+     +                             - 0.5d0*gd(1)/qd*delza
+              delbb_ct_g(1) = delbb_ct_g_alpha0(1) - delta
+
+* b- (gamma)
+              delbb_ct_g_alpha0(0) = delze + 0.5d0*delaa + delzbb(0)
+     +                             - 0.5d0*gd(0)/qd*delza
+              delbb_ct_g(0) = delbb_ct_g_alpha0(0) - delta
+
+* b+ (Z)
+              delbb_ct_z_alpha0(1) = delgbb(1)/gd(1) + 0.5d0*delzz 
+     +                             + delzbb(1) - 0.5d0*qd/gd(1)*delaz
+              delbb_ct_z(1) = delbb_ct_z_alpha0(1) - delta
+
+* b- (Z)
+              delbb_ct_z_alpha0(0) = delgbb(0)/gd(0) + 0.5d0*delzz 
+     +                             + delzbb(0) - 0.5d0*qd/gd(0)*delaz
+              delbb_ct_z(0) = delbb_ct_z_alpha0(0) - delta
+          endif
+
+
       endif
 *
-      if(qq.gt.0d0)then
+      if (qq.gt.0d0) then
           delqq_ct_g = deluu_ct_g
           delqq_ct_z = deluu_ct_z
       else
-          delqq_ct_g = deldd_ct_g
-          delqq_ct_z = deldd_ct_z
+          if (mqbig2.gt.0d0) then
+              delqq_ct_g = delbb_ct_g
+              delqq_ct_z = delbb_ct_z
+          else
+              delqq_ct_g = deldd_ct_g
+              delqq_ct_z = deldd_ct_z
+          endif
       endif
 *
       call zffg(s,qq,0d0,fzqqg)

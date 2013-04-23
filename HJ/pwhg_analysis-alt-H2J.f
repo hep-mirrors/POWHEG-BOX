@@ -1,3 +1,5 @@
+c This analysis was proposed as benchmark for the Higgs workshop at
+c the end of 2012, by Bruce Mellado and others.
 c  The next subroutines, open some histograms and prepare them 
 c      to receive data 
 c  You can substitute these  with your favourite ones
@@ -9,168 +11,66 @@ c  pwhgfill  :  fills the histograms with data
       implicit none
       include  'LesHouches.h'
       include 'pwhg_math.h'
-      integer j,k,i
-      real * 8 dy,dpt,dr
-      character * 1 cnum(9)
-      data cnum/'1','2','3','4','5','6','7','8','9'/
-      integer maxjet
-      parameter (maxjet=4)
-      integer nptmin
-      parameter (nptmin=3)
-      character * 4 cptmin(nptmin)
-      real * 8 ptminarr(nptmin)
-      data cptmin/  '-020',  '-050',  '-100'/
-      data ptminarr/   20d0,    50d0,   100d0/
-      common/infohist/ptminarr,cnum,cptmin
-      save /infohist/
+      integer j
+      character * 5 cuts
 
       call inihists
 
-      dy=0.5d0
-      dpt=10d0
-      dr=1d0
-      
-      do i=1,nptmin
-c     total cross section sanity check
-      call bookupeqbins('Njet'//cptmin(i),1d0,-0.5d0,5.5d0)
+      do j=1,2
+         if(j.eq.1) then
+            cuts=' '
+         else
+            cuts='-cuts'
+         endif
 
-      call bookupeqbins('H-y'//cptmin(i),dy,-5d0,5d0)
-      call bookupeqbins('H-eta'//cptmin(i),dy,-5d0,5d0)
-      call bookupeqbins('H-pt'//cptmin(i),dpt,0d0,400d0)
-      call bookupeqbins('H-m'//cptmin(i),dpt,0d0,400d0)
-
-      do j=1,maxjet
-         call bookupeqbins('j'//cnum(j)//'-y'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('j'//cnum(j)//'-eta'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('j'//cnum(j)//'-pt'//cptmin(i),dpt,0d0,400d0)
-         call bookupeqbins('j'//cnum(j)//'-ptzoom'//cptmin(i),
-     $        2d0,1d0,151d0)
-         call bookupeqbins('j'//cnum(j)//'-m'//cptmin(i),dpt,0d0,400d0) 
-      enddo
-
-      do j=1,maxjet-1
-      do k=j+1,maxjet
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-y'//cptmin(i),dy,-5d0,5d0)  
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-eta'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-pt'//cptmin(i),dpt,0d0,400d0)  
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-m'//cptmin(i),dpt,0d0,400d0)   
-      enddo
-      enddo
-
-      do j=1,maxjet
-         call bookupeqbins('Hj'//cnum(j)//'-dy'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('Hj'//cnum(j)//'-deta'//cptmin(i),dy,
-     $        -5d0,5d0)
-         call bookupeqbins('Hj'//cnum(j)//'-delphi'//cptmin(i),
-     $        pi/20,0d0,pi)
-         call bookupeqbins('Hj'//cnum(j)//'-dr'//cptmin(i),dr,0d0,20d0)  
-      enddo
-
-      do j=1,maxjet-1
-      do k=j+1,maxjet
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-dy'//cptmin(i),dy,-5d0,5d0)  
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-deta'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-delphi'//cptmin(i),pi/20,0d0,pi)
-         call bookupeqbins('j'//cnum(j)//'j'//cnum(k)//
-     1        '-dr'//cptmin(i),dr,0d0,20d0)  
-      enddo
+         call bookupeqbins('N-jet'//cuts,1d0,-0.5d0,5.5d0)
+         call bookupeqbins('ptj1'//cuts,25d0,25d0,200d0)
+         call bookupeqbins('ptj2'//cuts,25d0,25d0,150d0)
+         call bookupeqbins('Yj1'//cuts,1d0,-5d0,5d0)
+         call bookupeqbins('Yj2'//cuts,1d0,-5d0,5d0)
+         call bookupeqbins('DYjj'//cuts,1d0,0d0,8d0)
+         call bookupeqbins('Mjj'//cuts,40d0,0d0,800d0)
+         call bookupeqbins('DPhijj'//cuts,pi/10,0,pi)
+         call bookupeqbins('ptj3'//cuts,10d0,20d0,100d0)
+         call bookupeqbins('Yj3'//cuts,1d0,-5d0,5d0)
+         call bookupeqbins('Yj3-(yj1+yj2)/2'//cuts,1d0,-5d0,5d0)
       enddo
       
-      do j=1,maxjet-1
-      do k=j+1,maxjet
-         call bookupeqbins('Hj'//cnum(j)//'-j'//cnum(k)//
-     1        '-dy'//cptmin(i),dy,-5d0,5d0)  
-         call bookupeqbins('Hj'//cnum(j)//'-j'//cnum(k)//
-     1        '-deta'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('Hj'//cnum(j)//'-j'//cnum(k)//
-     1        '-delphi'//cptmin(i),pi/20,0d0,pi)
-         call bookupeqbins('Hj'//cnum(j)//'-j'//cnum(k)//
-     1        '-dr'//cptmin(i),dr,0d0,20d0)  
-      enddo
-      enddo
-
-      if(maxjet.ge.3) then
-         call bookupeqbins('Hj1j2-j3-dy'//cptmin(i),dy,-5d0,5d0)  
-         call bookupeqbins('Hj1j2-j3-deta'//cptmin(i),dy,-5d0,5d0)
-         call bookupeqbins('Hj1j2-j3-delphi'//cptmin(i),pi/20,0d0,pi)
-         call bookupeqbins('Hj1j2-j3-dr'//cptmin(i),dr,0d0,20d0)
-      endif
-
-      do j=1,maxjet
-         call bookupeqbins('ptrel'//cnum(j)//cptmin(i),0.5d0,0d0,20d0)
-      enddo      
-c$$$
-c$$$      do j=1,maxjet
-c$$$         call bookupeqbins('ptrel'//cnum(j)//'qqqq'//cptmin(i),
-c$$$     $        0.5d0,0d0,20d0)
-c$$$         call bookupeqbins('ptrel'//cnum(j)//'qqgg'//cptmin(i),
-c$$$     $        0.5d0,0d0,20d0)
-c$$$         call bookupeqbins('ptrel'//cnum(j)//'ggqq'//cptmin(i),
-c$$$     $        0.5d0,0d0,20d0)
-c$$$         call bookupeqbins('ptrel'//cnum(j)//'gggg'//cptmin(i),
-c$$$     $        0.5d0,0d0,20d0)
-c$$$         call bookupeqbins('ptrel'//cnum(j)//'qgqg'//cptmin(i),
-c$$$     $        0.5d0,0d0,20d0)
-c$$$      enddo      
-c$$$
-
-      enddo
       end
      
       subroutine analysis(dsig0)
       implicit none
-      real * 8     dsig(7),dsig0
+      real * 8 dsig0
       include 'hepevt.h'
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_math.h' 
       include 'pwhg_rad.h' 
       include 'pwhg_flg.h'
-      include  'LesHouches.h'
+      include 'LesHouches.h'
       include 'pwhg_weights.h'
-      logical ini
-      data ini/.true./
-      save ini
+      real * 8 dsig(7)
       integer   maxjet,mjets,njets
       parameter (maxjet=2048)
       real * 8  ktj(maxjet),etaj(maxjet),rapj(maxjet),
      1    phij(maxjet),pj(4,maxjet),rr,ptrel(4)
-      character * 1 cnum(9)
-c      data cnum/'1','2','3','4','5','6','7','8','9'/
-c      save cnum
-      integer nptmin
-      parameter (nptmin=3)
-      character * 4 cptmin(nptmin)
-      real * 8 ptminarr(nptmin)      
-      common/infohist/ptminarr,cnum,cptmin
-      save /infohist/
       integer j,k,i,jj
 c     we need to tell to this analysis file which program is running it
       character * 6 WHCPRG
       common/cWHCPRG/WHCPRG
       data WHCPRG/'NLO   '/
       real * 8 ph(4)
-      real * 8 httot,y,eta,pt,m
+      real * 8 httot,y,eta,pt,mass
       real * 8 dy,deta,delphi,dr
       integer ihep
       real * 8 powheginput,dotp
       external powheginput,dotp
       real * 8 ptmin
-
+      character * 5 cuts
       logical ini
       data ini/.true./
       save ini
       if(ini) then
-         if(WHCPRG.eq.'NLO'.or.WHCPRG.eq.'LHE') then
-            weights_num=0
-         endif
          if(weights_num.eq.0) then
             call setupmulti(1)
          else
@@ -187,10 +87,35 @@ c     we need to tell to this analysis file which program is running it
       endif
 
       if(sum(abs(dsig)).eq.0) return
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-      flg_processid='HJ'
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
+c Jets with anti-kt, R-0.4
+c at least two jets with |etaj|<5, ptj>25 GeV
+c \deltayjj>2.8
+c mjj>400 GeV
+c Tagging jets are defined as the highest pt jets in the event.
+c 
+c Distributions before and after topological cuts (\deltayjj>2.8 and  
+c mjj>400 GeV)
+c 
+c 1. Ptj1  (25, 200) in steps of 25 GeV
+c 2. Ptj2  (25, 150) in steps of 25 GeV
+c 3. Yj1 (-5, 5) in steps of 1
+c 4. Yj2 (-5, 5) in steps of 1
+c 5. |DeltaYjj| (0,8) in steps of 1
+c 6. Mjj (0,800) in steps of 40 GeV.
+c 7. Deltaphijj (0,pi) 10 bins
+c 
+c Other distributions pertaining to the third jet
+c 8. Ptj3 (20,100) in steps of 10 GeV
+c 9. Yj3 (-5,5) in steps of 1
+c 10. Yj3 - (Yj1+Yj2)/2. (-5,5) in steps of 1.
+c 
+c 
+c Correct: |etaj|<4.5 -> |etaj|<5
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      flg_processid='HJJ'
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 c      write(*,*) rad_type,' ',rad_kinreg,' ',nup
 c      if(rad_type.eq.1) return
@@ -203,121 +128,75 @@ c      if(rad_kinreg.ne.1) return
          endif
       enddo
 
-      rr=0.5d0       
+      rr=0.4d0       
+      ptmin=20d0
 
-      ptmin=1d0
       call buildjets(1,rr,ptmin,mjets,ktj,etaj,rapj,phij,ptrel,pj)
 
-      do i=1,nptmin        
-      njets=0
-      do k=1,min(4,mjets)
-         if (ktj(k).gt.ptminarr(i)) then
-            njets=njets+1
+
+      if(mjets.eq.0) then
+         call filld('N-jet',0d0,dsig)
+      elseif(mjets.eq.1) then
+         call filld('N-jet',1d0,dsig)
+      endif
+
+c At least 2 jets with pt>25
+      if(mjets.lt.2) return
+      if(ktj(1).le.25) return
+      if(ktj(2).le.25) return
+c and eta<5
+      if(abs(etaj(1)).gt.5) return
+      if(abs(etaj(2)).gt.5) return
+
+      do j=1,2
+         if(j.eq.1) then
+            cuts=' '
+         else
+            cuts='-cuts'
+            call getdydetadphidr(pj(:,1),pj(:,2),dy,deta,delphi,dr)
+            if(abs(deta).lt.2.8) return
+            call getyetaptmass(pj(:,1)+pj(:,2),y,eta,pt,mass)
+            if(mass.lt.400) return
+         endif
+         if(mjets.eq.0) then
+            call filld('N-jet'//cuts,0d0,dsig)
+         elseif(mjets.eq.1) then
+            call filld('N-jet'//cuts,1d0,dsig)
+         elseif(mjets.eq.2) then
+            call filld('N-jet'//cuts,2d0,dsig)
+         elseif(mjets.eq.3) then
+            call filld('N-jet'//cuts,3d0,dsig)
+         elseif(mjets.eq.4) then
+            call filld('N-jet'//cuts,4d0,dsig)
+         elseif(mjets.eq.5) then
+            call filld('N-jet'//cuts,5d0,dsig)
+         else
+c     write(*,*) ' Njet?',mjets
+         endif
+         call filld('ptj1'//cuts,ktj(1),dsig)
+         call filld('ptj2'//cuts,ktj(2),dsig)
+         call filld('Yj1'//cuts,rapj(1),dsig)
+         call filld('Yj2'//cuts,rapj(2),dsig)
+         if(mjets.ge.3) then
+            call filld('ptj3'//cuts,ktj(3),dsig)
+            call filld('Yj3'//cuts,rapj(3),dsig)
+         endif
+         call getdydetadphidr(pj(:,1),pj(:,2),dy,deta,delphi,dr)
+         call filld('DYjj'//cuts,abs(dy),dsig)
+         call filld('DPhijj'//cuts,abs(delphi),dsig)
+         call getyetaptmass(pj(:,1)+pj(:,2),y,eta,pt,mass)
+         call filld('Mjj'//cuts,mass,dsig)
+         if(mjets.ge.3) then
+            call filld('Yj3-(yj1+yj2)/2'//cuts,
+     1           rapj(3)-(rapj(1)+rapj(2))/2,dsig)
          endif
       enddo
-         
-      if(njets.eq.0) then
-         call filld('Njet'//cptmin(i),0d0,dsig)
-      elseif(njets.eq.1) then
-         call filld('Njet'//cptmin(i),1d0,dsig)
-      elseif(njets.eq.2) then
-         call filld('Njet'//cptmin(i),2d0,dsig)
-      elseif(njets.eq.3) then
-         call filld('Njet'//cptmin(i),3d0,dsig)
-      elseif(njets.eq.4) then
-         call filld('Njet'//cptmin(i),4d0,dsig)
-      elseif(njets.eq.5) then
-         call filld('Njet'//cptmin(i),5d0,dsig)
-      else
-c         write(*,*) ' Njet?',mjets
-      endif
 
-c     Since ptminarr(1) is the smallest value, the following is correct
-      if (flg_processid.eq.'HJ') then
-         if(njets.lt.1) return
-      elseif (flg_processid.eq.'HJJ') then
-         if(njets.lt.2) return
-      endif
-
-      mjets=min(mjets,4)
-  
-c Higgs
-      call getyetaptmass(ph,y,eta,pt,m)
-      call filld('H-y'//cptmin(i),    y, dsig)
-      call filld('H-eta'//cptmin(i),eta, dsig)
-      call filld('H-pt'//cptmin(i),  pt, dsig)
-      call filld('H-m'//cptmin(i), m, dsig)
-c jets
-      do j=1,mjets
-         call getyetaptmass(pj(:,j),y,eta,pt,m)
-         call filld('j'//cnum(j)//'-y'//cptmin(i),     y, dsig)
-         call filld('j'//cnum(j)//'-eta'//cptmin(i), eta, dsig)
-         call filld('j'//cnum(j)//'-pt'//cptmin(i),   pt, dsig)
-         call filld('j'//cnum(j)//'-ptzoom'//cptmin(i),   pt, dsig)
-         call filld('j'//cnum(j)//'-m'//cptmin(i),     m, dsig)
-         call filld('ptrel'//cnum(j)//cptmin(i),ptrel(j), dsig)         
-      enddo
-
-c$$$      do j=1,mjets
-c$$$        if (idhep(1).ne.21.and.idhep(2).ne.21.and.
-c$$$     $        idhep(4).ne.21.and.idhep(5).ne.21) then
-c$$$           call filld('ptrel'//cnum(j)//'qqqq'//cptmin(i),ptrel(j),dsig) 
-c$$$        elseif (idhep(1).ne.21.and.idhep(2).ne.21.and.
-c$$$     $          idhep(4).eq.21.and.idhep(5).eq.21) then
-c$$$           call filld('ptrel'//cnum(j)//'qqgg'//cptmin(i),ptrel(j),dsig) 
-c$$$        elseif (idhep(1).eq.21.and.idhep(2).eq.21.and.
-c$$$     $          idhep(4).ne.21.and.idhep(5).ne.21) then
-c$$$           call filld('ptrel'//cnum(j)//'ggqq'//cptmin(i),ptrel(j),dsig) 
-c$$$        elseif (idhep(1).eq.21.and.idhep(2).eq.21.and.
-c$$$     $          idhep(4).eq.21.and.idhep(5).eq.21) then
-c$$$           call filld('ptrel'//cnum(j)//'gggg'//cptmin(i),ptrel(j),dsig) 
-c$$$        else
-c$$$           call filld('ptrel'//cnum(j)//'qgqg'//cptmin(i),ptrel(j),dsig) 
-c$$$        endif
-c$$$      enddo
-c$$$
-
-      do j=1,mjets
-         do k=j+1,mjets
-            call getyetaptmass(pj(:,j)+pj(:,k),y,eta,pt,m)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-y'//cptmin(i),
-     $           y, dsig)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-eta'//cptmin(i),
-     $           eta, dsig)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-pt'//cptmin(i),
-     $           pt, dsig)
-            call filld('j'//cnum(j)//'j'//cnum(k)//'-m'//cptmin(i), 
-     $           m, dsig)
-         enddo
-      enddo
-
-      do j=1,mjets
-         call deltaplot(ph,pj(:,j),dsig,'Hj'//cnum(j),cptmin(i))
-      enddo
-
-      do j=1,mjets
-         do k=j+1,mjets
-            call deltaplot(pj(:,j),pj(:,k),dsig,
-     1           'j'//cnum(j)//'j'//cnum(k),cptmin(i))
-         enddo
-      enddo
-
-      do j=1,mjets
-         do k=j+1,mjets
-            call deltaplot(ph+pj(:,j),pj(:,k),dsig,
-     1           'Hj'//cnum(j)//'-j'//cnum(k),cptmin(i))
-         enddo
-      enddo
-      if(mjets.ge.3) then
-         call deltaplot(ph+pj(:,1)+pj(:,2),pj(:,3),dsig,
-     $        'Hj1j2-j3',cptmin(i))
-      endif
-      enddo
       end
 
 c      subroutine yetaptmassplot(p,dsig,prefix)
 c      implicit none
-c      real * 8 p(4),dsig
+c      real * 8 p(4),dsig(*)
 c      character *(*) prefix
 c      real * 8 y,eta,pt,m
 c      call getyetaptmass(p,y,eta,pt,m)
@@ -329,7 +208,7 @@ c      end
 
       subroutine deltaplot(p1,p2,dsig,prefix,postfix)
       implicit none
-      real * 8 p1(4),p2(4),dsig
+      real * 8 p1(4),p2(4),dsig(*)
       character *(*) prefix,postfix
       real * 8 dy,deta,delphi,dr
       call getdydetadphidr(p1,p2,dy,deta,delphi,dr)

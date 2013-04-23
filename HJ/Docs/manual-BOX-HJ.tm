@@ -1,4 +1,4 @@
-<TeXmacs|1.0.7.9>
+<TeXmacs|1.0.7.14>
 
 <style|generic>
 
@@ -11,7 +11,17 @@
 
   The part of the <with|font-family|tt|POWHEG BOX >program that generates
   Higgs boson plus 1 jet in hadronic collisions is described in ref.
-  <cite|noi>. Here we document its usage.
+  <cite|Campbell:2012am>. Here we document its usage.
+
+  The svn version containing the <with|font-family|tt|AAA-README-Version-pre2>
+  includes all improvements and features documented in ref.
+  <cite|Campbell:2013vha>, including <with|font-family|tt|MiNLO>. Instruction
+  for the use of these features are found in the manual of the
+  <with|font-family|tt|Z2jet> and <with|font-family|tt|W2jet> processes. In
+  particular, the <with|font-family|tt|MiNLO> version implemented here by
+  default, is the improved one of ref. <cite|Hamilton:2012rf>, that can be
+  applied to processes (like the present one) involving a single jet at the
+  Born level.\ 
 
   <section|2 Generation of events>
 
@@ -25,6 +35,11 @@
   main-PYTHIA-lhef><next-line><with|font-family|tt|$ cd
   testrun-lhc><next-line><with|font-family|tt|$ ../main-PYTHIA-lhef>
 
+  In the directory <with|font-family|tt|testparallel-lhc> there are sample
+  files for performing runs in parallel, according to the method described in
+  the manual of the <with|font-family|tt|Z2jet> and
+  <with|font-family|tt|W2jet> processes.
+
   <section|Input parameters>
 
   Parameters in <with|font-family|tt|powheg.input> that are specific to
@@ -34,10 +49,8 @@
   (default 0), if 0 use hmass as central<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! factorization and renormalization
   scale;<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! if 1 use the
-  Higgs transverse momentum in the <next-line>
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! underlying Born
-  kinematics<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner is
-  probed between hmass +- \ <next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  Ht/2<next-line>bwcutoff \ \ 15 \ \ \ \ \ \ ! Higgs Breit-Wigner is probed
+  between hmass +- \ <next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
   bwcutoff*hwidth <next-line>higgsfixedwidth 1 \ \ ! (default 0), If 1 uses
   standard, fixed width Breit-Wigner<next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! formula, if 0 it uses the running
@@ -50,14 +63,16 @@
   no suppression<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! factor is
   included, and events are unweighted. A <next-line>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! generation cut bornktmin\<gtr\>0
-  must be supplied in this case<next-line>#ckkwscalup 1 \ \ \ \ \ \ !
-  (default 1), If 1 compute the scalup scale for subsequent<next-line>
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! shower using the smallest kt in the
-  final state;<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! If 0, use
-  the standard POWHEG BOX scalup (see section 5.3<next-line>
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! of ref <cite|noi> for
-  details)<next-line>withnegweights 1 \ \ \ ! Default 0; If 1 include
-  negative weighted events>
+  must be supplied in this case<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! unless minlo is
+  used.<next-line>#ckkwscalup 1 \ \ \ \ \ \ ! (default 1), If 1 compute the
+  scalup scale for subsequent<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  shower using the smallest kt in the final state;<next-line>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ! If 0, use the standard POWHEG BOX
+  scalup (see section 5.3<next-line> \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ !
+  of ref <cite|noi> for details)<next-line>withnegweights 1 \ \ \ ! Default
+  1; If 1 include negative weighted events<next-line>minlo 1
+  \ \ \ \ \ \ \ \ \ \ \ \ ! Default 0; If 1, use minlo.>
 
   For the use of the <with|font-family|tt|bornktmin> and of the
   <with|font-family|tt|bornsuppfact>, consult the general
@@ -78,9 +93,22 @@
 
   <\bibliography|bib|JHEP|paper.bib>
     <\bib-list|1>
-      <bibitem*|1><label|bib-noi>J.<nbsp>M. Campbell, R.<nbsp>K. Ellis,
-      R.<nbsp>Frederix, P.<nbsp>Nason, C.<nbsp>Oleari, and C.<nbsp>Williams,
-      arXiv:1202.5475
+      <bibitem*|1><label|bib-Campbell:2012am>J.<nbsp>M. Campbell, R.<nbsp>K.
+      Ellis, R.<nbsp>Frederix, P.<nbsp>Nason, C.<nbsp>Oleari,
+      <with|font-shape|italic|et<nbsp>al.>, <with|font-shape|italic|NLO Higgs
+      Boson Production Plus One and Two Jets Using the POWHEG BOX, MadGraph4
+      and MCFM>, <with|font-shape|italic|JHEP> <with|font-series|bold|1207>
+      (2012) 092, [<hlink|<with|font-family|tt|1202.5475>|http://xxx.lanl.gov/abs/1202.5475>].
+
+      <bibitem*|2><label|bib-Campbell:2013vha>J.<nbsp>M. Campbell, R.<nbsp>K.
+      Ellis, P.<nbsp>Nason, and G.<nbsp>Zanderighi, <with|font-shape|italic|W
+      and Z bosons in association with two jets using the POWHEG method>,
+      <hlink|<with|font-family|tt|1303.5447>|http://xxx.lanl.gov/abs/1303.5447>.
+
+      <bibitem*|3><label|bib-Hamilton:2012rf>K.<nbsp>Hamilton, P.<nbsp>Nason,
+      C.<nbsp>Oleari, and G.<nbsp>Zanderighi, <with|font-shape|italic|Merging
+      H/W/Z + 0 and 1 jet at NLO with no merging scale: a path to parton
+      shower + NNLO matching>, <hlink|<with|font-family|tt|1212.4504>|http://xxx.lanl.gov/abs/1212.4504>.
     </bib-list>
   </bibliography>
 </body>
@@ -99,7 +127,10 @@
     <associate|auto-4|<tuple|3|?>>
     <associate|bib-Campbell:1999ah|<tuple|3|?>>
     <associate|bib-Campbell:2011bn|<tuple|4|?>>
+    <associate|bib-Campbell:2012am|<tuple|1|?>>
+    <associate|bib-Campbell:2013vha|<tuple|2|?>>
     <associate|bib-Dixon:1998py|<tuple|2|?>>
+    <associate|bib-Hamilton:2012rf|<tuple|3|?>>
     <associate|bib-noi|<tuple|1|?>>
   </collection>
 </references>
@@ -107,7 +138,11 @@
 <\auxiliary>
   <\collection>
     <\associate|bib>
-      noi
+      Campbell:2012am
+
+      Campbell:2013vha
+
+      Hamilton:2012rf
 
       noi
     </associate>

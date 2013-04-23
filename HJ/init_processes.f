@@ -11,7 +11,17 @@
       real * 8 powheginput
       external powheginput
 c defaults for powheg running
-      
+      st_bornorder = 3
+      call minlo_checks
+
+c by default include negative weights. Allow for
+c explicit request not to include them
+      if(powheginput("#withnegweights").eq.0) then
+         flg_withnegweights = .false.
+      else
+         flg_withnegweights = .true.
+      endif
+
       par_diexp=powheginput("#par_diexp")
       if(par_diexp.lt.0) par_diexp=2d0
       par_dijexp=powheginput("#par_dijexp")
@@ -21,18 +31,6 @@ c defaults for powheg running
 
       flg_withdamp=.true.
       flg_bornzerodamp=.true.
-
-      if(powheginput("#bornsuppfact").ne.0) then
-         flg_weightedev=.true.
-      else
-         tmp=powheginput("#bornktmin")
-         if(tmp.le.0) then
-            write(*,*) "If bornsuppfact=0 you must specify"//
-     1  " a generation cut bornktmin>0"
-            call exit(-1)
-         endif
-         flg_weightedev=.false.
-      endif
 
       flg_ckkwscalup=.true.
       if(powheginput("#ckkwscalup").eq.0) then

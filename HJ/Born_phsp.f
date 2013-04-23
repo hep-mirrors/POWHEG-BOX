@@ -121,8 +121,16 @@ c      kn_minmass=sqrt(ph_Hmass2low)
       include 'coupl.inc'
       include 'pwhg_flg.h'
       real * 8 fact,pt2,ptmin
-      ptmin=20
-      if(flg_weightedev) then
+      real * 8 powheginput
+      external powheginput
+      logical ini
+      data ini/.true./
+      save ptmin,ini
+      if(ini) then
+         ptmin=powheginput('#bornsuppfact')
+         ini=.false.
+      endif
+      if(ptmin.gt.0) then
          pt2=kn_cmpborn(1,4)**2+kn_cmpborn(2,4)**2
          fact=pt2/(pt2+ptmin**2)
       else
@@ -136,12 +144,13 @@ c      kn_minmass=sqrt(ph_Hmass2low)
       include 'coupl.inc'
       include 'nlegborn.h'
       include 'pwhg_flst.h'
+      include 'pwhg_flg.h'
       include 'pwhg_kn.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
       logical runningscales
-      real * 8 pt2
+      real * 8 pt1,pt2,ptHsq,ht
       real * 8 powheginput
       external powheginput      
       save ini,runningscales
@@ -149,22 +158,35 @@ c      kn_minmass=sqrt(ph_Hmass2low)
       if (ini) then
          if (powheginput("#runningscales").eq.1) then
             runningscales=.true.
-            write(*,*) '****************************************'
-            write(*,*) '****************************************'
-            write(*,*) '**   mur=pt  used for Bbar function   **'
-            write(*,*) '**   muf=pt  used for Bbar function   **'
-            write(*,*) '****************************************'
-            write(*,*) '****************************************'
+            write(*,*) '*****************************************'
+            write(*,*) '*****************************************'
+            write(*,*) '** mur=muf=Ht/2 used for Bbar function **'
+            write(*,*) '*****************************************'
+            write(*,*) '*****************************************'
          else
+            write(*,*) '****************************************'
+            write(*,*) '****************************************'
+            write(*,*) '**  mur=muf=MH used for Bbar function**'
+            write(*,*) '****************************************'
+            write(*,*) '****************************************'
             runningscales=.false.
          endif
          ini=.false.
       endif
       
       if (runningscales) then
-         pt2=kn_pborn(1,4)**2+kn_pborn(2,4)**2
-         mur=max(sqrt(pt2),1d0)
-         muf=mur
+         if(flg_btildepart.eq.'b') then
+            pt1=sqrt(kn_pborn(1,4)**2+kn_pborn(2,4)**2)
+            ptHsq=kn_pborn(1,3)**2+kn_pborn(2,3)**2
+            Ht=sqrt(hmass**2+ptHsq)+pt1
+         elseif(flg_btildepart.eq.'r') then
+            pt1=sqrt(kn_preal(1,4)**2+kn_preal(2,4)**2)
+            pt2=sqrt(kn_preal(1,5)**2+kn_preal(2,5)**2)
+            ptHsq=kn_preal(1,3)**2+kn_preal(2,3)**2
+            Ht=sqrt(hmass**2+ptHsq)+pt1+pt2
+         endif
+         mur=ht/2
+         muf=ht/2
       else
          muf=hmass
          mur=hmass

@@ -24,11 +24,8 @@ C   320 Perugia 0 : "Perugia" update of S0-Pro                (Feb 2009)
       COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
       integer pycomp
       external pycomp
-c     multiple interactions
-      logical mult_inter
-      parameter (mult_inter=.true.)
-      integer maxev
-      common/mcmaxev/maxev
+      integer nev
+      common/cnev/nev
       real * 8 powheginput
       external powheginput
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -50,7 +47,7 @@ c      endif
 c     photon radiation off quarks and leptons
 c       mstj(41)=12              
 c     No photon radiation off quarks and leptons
-c      mstj(41)=11              
+      mstj(41)=11
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 c      mstp(61)=0                !No IS shower
@@ -69,20 +66,20 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c     tolerate 2% of killed events
-c      mstu(22)=maxev/50
+      mstu(22)=nev/50
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       if(powheginput("#nohad").gt.0) then
          write(*,*)' ****** switching hadronization off ****'
-c Hadronization off
+c     Hadronization off
          mstp(111)=0
-c primordial kt off
+c     primordial kt off
          mstp(91)=0
-c No multiple parton interactions
+c     No multiple parton interactions
          if(mstp(81).eq.1) then
-c Q2 ordered shower
+c     Q2 ordered shower
             mstp(81)=0
          elseif(mstp(81).eq.21) then
-c p_t^2 ordered shower
+c     p_t^2 ordered shower
             mstp(81)=20
          endif
       endif
@@ -94,6 +91,7 @@ C--- Opens input file and counts number of events, setting MAXEV;
       call opencount(maxev)
       end
 
+ccccccc      subroutine UPINIT
       subroutine UPINIT
       implicit none
       include 'hepevt.h'
@@ -110,8 +108,6 @@ C--- Opens input file and counts number of events, setting MAXEV;
       integer pycomp
       external pycomp      
       integer hdecaymode,i      
-      integer maxev
-      common/mcmaxev/maxev
       real * 8 powheginput
       external powheginput
       nevhep=0
@@ -157,26 +153,10 @@ c     choose Higgs decay channel
       endif
       end
 
+ccccccc      subroutine UPEVNT
       subroutine UPEVNT
       implicit none
-      real * 8 powheginput
-      external powheginput      
-      logical changescalup,ini
-      save changescalup,ini
-      data ini/.true./
-      if (ini) then
-         changescalup = powheginput("#changescalup").eq.1d0 
-         if (changescalup) then
-            write(*,*) '*********************************'
-            write(*,*) ' CHANGE SCALUP activated '
-            write(*,*) '*********************************'
-         endif
-         ini=.false.
-      endif
       call lhefreadev(97)
-      if (changescalup) then
-         call change_scalup
-      endif
       end
  
 
@@ -190,13 +170,18 @@ c pythia routine to abort event
 
       subroutine pyaend
       character * 20 pwgprefix
+      character * 100 filename
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
-      open(unit=99,file=pwgprefix(1:lprefix)//'POWHEG+PYTHIA-output.top'
-     #     ,status='unknown')
+      include 'pwhg_rnd.h'
+      if(rnd_cwhichseed.ne.'none') then
+         filename=pwgprefix(1:lprefix)//'POWHEG+PYTHIA-output-'
+     1        //rnd_cwhichseed
+      else
+         filename=pwgprefix(1:lprefix)//'POWHEG+PYTHIA-output'
+      endif
       call pwhgsetout
-      call pwhgtopout
-      close(99)
+      call pwhgtopout(filename)
       end
 
 
@@ -229,7 +214,9 @@ c     check parameters
          endif
          return
       endif
-      nevhep=nevhep+1
+
+ccccccc      nevhep=nevhep+1
+
       hdecaymode=powheginput('#hdecaymode')
       if(hdecaymode.lt.-10) hdecaymode=lprup(1)-10000
       if ((hdecaymode.eq.0).or.(hdecaymode.eq.-1)) then
@@ -256,7 +243,7 @@ c     check parameters
       end
 
 
-      subroutine change_scalup
+      subroutine py_change_scalup
       implicit none
       include 'LesHouches.h'
 c      include 'hepevt.h'

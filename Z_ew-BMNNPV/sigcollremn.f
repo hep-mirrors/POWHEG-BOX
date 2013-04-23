@@ -157,6 +157,10 @@ c gammaq DIS subtraction
 c gq remnant
             res1=res1 + (omzpgq(z1)*plfrc(z1)
      #                           - ppgq(z1))/z1   * pdfs1(0)*xjac1 
+c gammaq remnant
+            resgam1=resgam1 + (omzpgq(z1)*plfrc(z1)
+     #                           - ppgq(z1))/z1/(tf)  * pdfs1(22)*xjac1
+     #                         *ch1**2   
 c qgamma DIS subtraction 
             if (ifdis) then
                 resgam1 = resgam1  - 3d0*
@@ -212,6 +216,10 @@ c qq DIS subtraction
 c gq remnant
             res2=res2 + (omzpgq(z2)*plfrc(z2)
      #                           - ppgq(z2))/z2   * pdfs2(0)*xjac2 
+c gammaq remnant
+            resgam2=resgam2 + (omzpgq(z2)*plfrc(z2)
+     #                           - ppgq(z2))/z2/(tf)  * pdfs2(22)*xjac2
+     #                         *ch2**2   
 c qgamma DIS subtraction 
             if (ifdis) then
                 resgam2 = resgam2  - 

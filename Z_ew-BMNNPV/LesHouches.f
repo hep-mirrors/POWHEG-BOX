@@ -105,7 +105,7 @@ c     i1<i2
       enddo
 c In case of final state radiation, also the photon is included
 c in the resonance
-      if(rad_kinreg.eq.2) then
+      if(rad_kinreg.ge.2) then
          do j=1,4
             pup(j,i1)=pup(j,i1)+puptmp(j,5)
          enddo
@@ -119,12 +119,32 @@ c     change mothers of decaying particles
       mothuptmp(2,i1)=i1
       mothuptmp(1,i2)=i1
       mothuptmp(2,i2)=i1
+
 c In FSR, the resonance is the mother of the photon too
-      if(rad_kinreg.eq.2) then
-         mothuptmp(1,5)=i1
-         mothuptmp(2,5)=i1
+      if(rad_kinreg.ge.2) then
+         istuptmp(i1+rad_kinreg-2) = 2
+
+         mothuptmp(1,5)=i1+rad_kinreg-1
+         mothuptmp(2,5)=i1+rad_kinreg-1
+
+         mothuptmp(1,6)=i1+rad_kinreg-1
+         mothuptmp(2,6)=i1+rad_kinreg-1
+
+         puptmp(:,6)=puptmp(:,i1+rad_kinreg-2)
+         puptmp(:,i1+rad_kinreg-2)=puptmp(:,i1+rad_kinreg-2)+puptmp(:,5)
+         puptmp(5,i1+rad_kinreg-2)= sqrt (puptmp(4,i1+rad_kinreg-2)**2-
+     %                                    puptmp(1,i1+rad_kinreg-2)**2-
+     %                                    puptmp(2,i1+rad_kinreg-2)**2-
+     %                                    puptmp(3,i1+rad_kinreg-2)**2)
+         vtimup(6)=0
+         spinup(6)=9
+
+         iduptmp(6) = iduptmp(i1+rad_kinreg-2)
+         istuptmp(6) = istuptmp(i1+rad_kinreg-2)
+         nup=nup+1 
       endif         
-      nup=nup+1      
+
+      nup=nup+1 
       do i=i1+1, nup
          idup(i) = iduptmp(i-1)
          istup(i) = istuptmp(i-1)

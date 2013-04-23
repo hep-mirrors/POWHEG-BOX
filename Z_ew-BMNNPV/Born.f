@@ -139,6 +139,11 @@ c     colored particles
          icolup(2,1)=501
          icolup(1,2)=501
          icolup(2,2)=0
+      elseif((idup(1).eq.22).and.(idup(2).eq.22)) then
+         icolup(1,1)=0
+         icolup(2,1)=0
+         icolup(1,2)=0
+         icolup(2,2)=0
       else
          write(*,*) ' invalid flavour'
          stop

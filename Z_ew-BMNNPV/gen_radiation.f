@@ -169,7 +169,7 @@ c Generate a Born like event
          else
             call gen_real_phsp_fsr_rad
          endif
-         call set_rad_scales(pwhg_pt2())
+         call set_rad_scales(max(pwhg_pt2(),rad_ptsqmin))
          call sigreal_rad(sig)
          call gen_real_idx
       endif
@@ -259,6 +259,7 @@ c We use it to find its zero in pt2.
       include 'pwhg_kn.h'
       include 'pwhg_rad.h'
       include 'pwhg_math.h'
+      include 'PhysPars.h'
       real * 8 pt2solve,pt2
 c i set by dzero: 1 for first call, 2 for subsequent calls, 3 for last call
 c before a normal exit; not used here
@@ -302,7 +303,7 @@ c     #        - log(kt2max/pt2)) + xlr
          em = flst_lightpart+rad_kinreg-2
          if(kn_masses(em).ne.0) then
             call compintub(pt2,pt2solve)
-            pt2solve=cunorm*pt2solve+xlr
+            pt2solve=cunorm*pt2solve*ph_alphaem+xlr
          else
             if(rad_iupperfsr.eq.1) then
 c final state radiation
@@ -521,11 +522,11 @@ c
       common/cdfxmin/xmin
       real * 8 tmax
       common/ctmax/tmax
-      real *8 ktmaxqed
-      common/showerqed/ktmaxqed
+      real *8 kt2minqed
+      common/showerqed/kt2minqed
       real * 8 random,pt2solve,pwhg_alphas0,pwhg_upperb_rad,pwhg_pt2
       external random,pt2solve,pwhg_alphas0,pwhg_upperb_rad,pwhg_pt2
-      unorm=rad_norms(rad_kinreg,rad_ubornidx)* ph_alphaem
+      unorm=rad_norms(rad_kinreg,rad_ubornidx)
 c kn_sborn=kn_sreal:
       s=kn_sborn
       kn_emitter=flst_lightpart+rad_kinreg-2
@@ -538,7 +539,7 @@ c See Notes/kt2max.pdf
       endif
 c      if(kt2max.lt.rad_ptsqmin.or.kt2max.lt.tmax) then
 c below is for the QED case; it will never hit that limit anyhow ...
-      if(kt2max.lt.ktmaxqed.or.kt2max.lt.tmax) then
+      if(kt2max.lt.kt2minqed.or.kt2max.lt.tmax) then
          t=-1
          goto 3
       endif
@@ -561,15 +562,16 @@ c                   x=0 and r=-2(ymax-ymin)
 c      error C205.2 Number of calls to F exceeds maxcalls,
 c                   x=0 and r=-(xmax-xmin)/2
 c eps: required accuracy
-      call dzero(rad_ptsqmin,kt2max,t,err,1d-8,1000000,pt2solve)
+c      call dzero(rad_ptsqmin,kt2max,t,err,1d-8,1000000,pt2solve)
+      call dzero(kt2minqed,kt2max,t,err,1d-11,2000000,pt2solve)
 c error conditions
       if(t.eq.0.and.err.lt.0d0
-     # .and.err.gt.rad_ptsqmin-kt2max) then
+     # .and.err.gt.kt2minqed-kt2max) then
          write(*,*) 'DZERO fails'
          write(*,*) ' number of calls exceeded'
          call exit(1)
       endif
- 3    if(t.lt.rad_ptsqmin.or.t.lt.tmax) then
+ 3    if(t.lt.kt2minqed.or.t.lt.tmax) then
 c below cut (either below absolute minimum, or below previously generated
 c radiation in highest bid loop): generate a born event
          t=-1
@@ -578,7 +580,8 @@ c radiation in highest bid loop): generate a born event
       endif
 c vetoes:
       rv=random()
-      call set_rad_scales(t)
+c      call set_rad_scales(t)
+      call set_rad_scales(max(t,st_lambda5MSB))
       if(kn_masses(kn_emitter).eq.0) then
          if(rad_iupperfsr.eq.1) then
             tmp=st_alpha / pwhg_alphas0(t,rad_lamll,nlc)

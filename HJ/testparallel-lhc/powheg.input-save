@@ -49,8 +49,6 @@ nubound 200000    ! number of bbarra calls to setup norm of upper bounding funct
 
 ! OPTIONAL PARAMETERS
 
-#withdamp    1      ! (default 1) use Born-zero damping factor
-
 #testplots  1       ! (default 0, do not) do NLO and PWHG distributions
 
 #withnegweights 1  ! (1 default) If 1 output negative weighted events.

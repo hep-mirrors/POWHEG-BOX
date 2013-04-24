@@ -429,6 +429,7 @@ c If parallel operations, set a different random number also for
 c different grid iterations
       if(iparallel.eq.1) then
          itmp=0
+         call resetrandom
          do j=1,iteration
             itmp = random()*1d9
          enddo
@@ -651,7 +652,7 @@ c
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
-      character * 4 chseed
+      character * 4 chseed, firstfound
       real * 8 shx
       integer ih1x, ih2x, ndns1x, ndns2x
       integer j,k,iun,jfile,nfiles,ncall2,itmx2
@@ -729,7 +730,8 @@ c random seeds
          read(iun,iostat=ios) ((tot(k,j),k=1,2),j=1,8)
          if(ios.ne.0) goto 998
          jfound=jfound+1
-         if(jfile.lt.2) then
+         if(jfound.lt.2) then
+            firstfound = chseed
             do k=1,ndiminteg
                do j=0,nbins
                   xgrid(j,k)=xxgrid(j,k)
@@ -759,9 +761,9 @@ c random seeds
                      write(*,*) ' error loading grids: '
                      write(*,*)  pwgprefix(1:lprefix)//gridtag//'-'//
      1          rnd_cwhichseed//'.dat does not have the same importance'
-                    write(*,*) 'sampling grid as',pwgprefix(1:lprefix)//
-     1                    gridtag//'.dat'
-                     call exit(-1)
+                    write(*,*) 'sampling grid as ',pwgprefix(1:lprefix)
+     1              //gridtag//'-'//firstfound//'.dat'
+                     call pwhg_exit(-1)
                   endif
                enddo
                if(ifold(k).ne.iifold(k)
@@ -769,9 +771,10 @@ c random seeds
                   write(*,*) ' error loading grids: '
                   write(*,*)  pwgprefix(1:lprefix)//gridtag//'-'//
      1                 rnd_cwhichseed//
-     2                 '.dat does not have the same folding as'
-                  write(*,*) pwgprefix(1:lprefix)//gridtag//'.dat'
-                  call exit(-1)
+     2                 '.dat does not have the same folding as '
+                  write(*,*) pwgprefix(1:lprefix)//gridtag//'-'
+     1                 //firstfound//'.dat'
+                  call pwhg_exit(-1)
                endif
             enddo
             do k=1,ndiminteg
@@ -1042,7 +1045,7 @@ c     1     ' files with grid information'
       return
  111  continue
       write(*,*) ' loadgridinfo: problems loading files'
-      call exit(-1)
+      call pwhg_exit(-1)
       end
 
 

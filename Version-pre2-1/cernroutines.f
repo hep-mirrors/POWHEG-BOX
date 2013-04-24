@@ -1981,7 +1981,7 @@ c Assume we wrapped around
       real * 8 tmp,powheginput
       tmp=powheginput('print unused tokens')
       call write_counters
-      call exit(-1)
+      call exit(iret)
       end
 
 

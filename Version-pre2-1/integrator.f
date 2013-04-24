@@ -279,16 +279,21 @@ c nitmax*ncalls calls.
       implicit none
       character *(*) filename
       integer iun
-      common/cregrid/iun
+      logical iunopen
+      common/cregrid/iun,iunopen
+      data iunopen/.false./
       call newunit(iun)
       open(unit=iun,file=filename,status='unknown')
+      iunopen=.true.
       end
 
       subroutine regridplotclose
       implicit none
       integer iun
-      common/cregrid/iun
+      logical iunopen
+      common/cregrid/iun,iunopen
       close(iun)
+      iunopen=.false.
       end
 
       subroutine regrid(xacc0,xgrid,nhits,kdim,nint)
@@ -300,9 +305,8 @@ c nitmax*ncalls calls.
       real * 8 xn(nintervals),r
       integer kint,jint
       integer iun
-      common/cregrid/iun
-      logical lopen
-      data lopen/.true./
+      logical iunopen
+      common/cregrid/iun,iunopen
       xacc = xacc0
       do kint=1,nint
 c xacc (xerr) already contains a factor equal to the interval size
@@ -319,8 +323,7 @@ c If there is no value, keep old grid!
       do kint=1,nint
          xacc(kint)=xacc(kint)/xacc(nint)
       enddo
-      inquire(iun,exist=lopen)
-      if(lopen) then
+      if(iunopen) then
          write(iun,*) 'set limits x 0 1 y 0 1'
          write(iun,*) ' title top "dim=',kdim,'"'
          write(iun,*) 0, 0
@@ -331,7 +334,7 @@ c If there is no value, keep old grid!
       endif
       do kint=1,nint
          r=dble(kint)/nint
-         if(lopen) then
+         if(iunopen) then
             write(iun,*) 0, r
             write(iun,*) 1, r
             write(iun,*) ' join'
@@ -353,7 +356,7 @@ c If there is no value, keep old grid!
       do kint=1,nint
          xgrid(kint)=xn(kint)
       enddo
-      if(lopen) then
+      if(iunopen) then
          do kint=1,nint
             write(iun,*) xgrid(kint), 0
             write(iun,*) xgrid(kint), 1

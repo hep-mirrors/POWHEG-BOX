@@ -49,6 +49,7 @@ endif
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
+DIRVIRTUALS=$(PWD)/Virtuals
 VPATH= ./:../:obj-$(COMPILER)/:madgraph/:madgraph/born/:madgraph/real/:madgraph/born_decay/:madgraph/real_decay/
 
 
@@ -98,6 +99,12 @@ LIBS+=$(LIBSFASTJET)
 LIBDHELAS=madgraph/DHELAS/libdhelas3-$(FC).a
 LIBS += $(LIBDHELAS)
 
+# Libraries added  before here can be linked statically .
+# From now on only dinamically 
+LIBVIRTUALS=libvirtual.so
+LIBVIRTUALS_PATH=$(DIRVIRTUALS)/obj-$(COMPILER)
+LIBS += -Wl,-eh-frame-hdr -shared-libgcc -Wl,-Bdynamic -Wl,-rpath,$(LIBVIRTUALS_PATH) -L$(LIBVIRTUALS_PATH) -lvirtual
+
 
 %.o: %.f $(INCLUDE)
 	$(FF) $(FFLAGS) -c -o obj-$(COMPILER)/$@ $<
@@ -107,6 +114,9 @@ LIBS += $(LIBDHELAS)
 
 %.o: %.cc
 	$(CXX) $(DEBUG) -c -o obj-$(COMPILER)/$@ $^ $(FJCXXFLAGS)
+
+%.o: %.cpp FiniteVirtuals.h 
+	$(CXX) $(DEBUG) -c -o obj-$(COMPILER)/$@ $< $(FJCXXFLAGS) $(IFLAGS)
 
 
 MADGRAPH=functions.o setparam.o 
@@ -136,7 +146,7 @@ PWHG= pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	$(PDFPACK) $(USER) $(FPEOBJ)
 
 # main target, to generate the hardest emission and write events on a LHEF file
-pwhg_main: $(PWHG) $(LIBDHELAS) 
+pwhg_main: $(PWHG) $(LIBDHELAS) $(LIBVIRTUALS) 
 	$(FF) $(patsubst %.o,obj-$(COMPILER)/%.o,$(PWHG)) $(LIBS) -o $@-$(COMPILER)
 
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o opencount.o	\
@@ -193,12 +203,17 @@ clean:
 dist-clean: clean
 	rm -f obj*/*.o obj*/*/* madgraph/DHELAS/*/*.o madgraph/DHELAS/*.a \
 	pwhg_main-* lhef_analysis-* main-HERWIG-lhef-* main-PYTHIA-lhef-*
+	@echo looking into subdir $(DIRVIRTUALS)
+	$(MAKE) dist-clean --directory=$(DIRVIRTUALS) COMPILER=$(COMPILER)
 
 ###### to compile dependencies
 $(LIBDHELAS): force_look
 	@echo looking into subdir madgraph/DHELAS
 	$(MAKE) FC=$(FC) FF='$(FF)' --directory=madgraph/DHELAS 
 
+$(LIBVIRTUALS): force_look
+	@echo looking into subdir $(DIRVIRTUALS)
+	$(MAKE) --directory=$(DIRVIRTUALS) COMPILER=$(COMPILER) DEBUG='$(DEBUG)'
 force_look :
 	true
 ######

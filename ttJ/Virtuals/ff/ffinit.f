@@ -820,7 +820,7 @@ C$Modified:   Tue Nov 9 12:46:16 EST 2010 by S. Alioli  $
   40	continue
 *	third try - should be automatically set by set_ff_path.sh
 *       put path='@@@_SET_PATH_HERE_@@@' to trigger set_ff_path.sh
-	path="@@@_SET_PATH_HERE_@@@"
+	path="/home/alioli/SVN_powhegbox.mib.infn.it/trunk/POWHEG-BOX/ttJ/Virtuals/ff/"
 	fullname 
      .     = path(1:index(path,' ')-1)//name
 	open(ifile,file=fullname,status='OLD',err=50)

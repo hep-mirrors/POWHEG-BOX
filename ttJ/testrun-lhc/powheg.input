@@ -55,7 +55,7 @@ testplots  1      ! (default 0, do not) do NLO and PWHG distributions
 #iseed    54217137    ! initialize random number sequence 
 #rand1     240599122      ! initialize random number sequence 
 #rand2     0      ! initialize random number sequence 
-manyseeds 1       ! Used to perform multiple runs with different random
+#manyseeds 1       ! Used to perform multiple runs with different random
                    ! seeds in the same directory.
                    ! If set to 1, the program asks for an integer j;
                    ! The file pwgseeds.dat at line j is read, and the

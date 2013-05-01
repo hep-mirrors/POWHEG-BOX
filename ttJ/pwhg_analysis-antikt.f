@@ -720,6 +720,7 @@ c     then sets it to the actual value found)
       else
          njets=10
       endif
+
       call build_non_b_jets(njets,pjet,jetalgo,ptreljet)
       call getktyphi(njets,pjet,ktjet,yjet,phijet)
 
@@ -731,16 +732,20 @@ c     if there are no jets skip the analysis
       endif
 
 c     evaluate quantities related to leptons (if present) 
-      if(iiep.gt.0.or.iiem.gt.0) then
+      if(iiep.gt.0) then
 c     Compute lepton variables in top rest frame 
          call decvariables(phep(1,iep),phep(1,it),eep,cthep,phiep)
-         call decvariables(phep(1,iem),phep(1,itbar),eem,cthem,phiem)
-         dphi=(phiep-phiem)-nint((phiep-phiem)/(2*pi))*2*pi
-      
 c     Compute lepton variables in laboratory frame  
          call ptyetaphi(phep(1,iep),ptep,yep,etaep,phiep)
+      endif
+      if(iiem.gt.0) then
+c     Compute lepton variables in top rest frame 
+         call decvariables(phep(1,iem),phep(1,itbar),eem,cthem,phiem)
+c     Compute lepton variables in laboratory frame        
          call ptyetaphi(phep(1,iem),ptem,yem,etaem,phiem)
-     
+      endif
+      if((iiep.gt.0).and.(iiem.gt.0)) then   
+         dphi=(phiep-phiem)-nint((phiep-phiem)/(2*pi))*2*pi
          do mu=1,4
             ppairepem(mu)=phep(mu,iep)+phep(mu,iem)
          enddo
@@ -849,19 +854,18 @@ c N jets
 
          deltaphij1ttbar=deltaphi(phijet(1),phittbar)
    
-C--- consistency check
-         if((whcprg.eq.'NLO   ').or.(whcprg.eq.'LHE   ')) then
-            if (abs(deltaphij1ttbar)/pi.lt.0.5d0) then
-               print *,"*************************************"
-               print *,"Event : ",nevhep
-               print *,"deltaphij1ttbar < pi/2 with only 1 jets"
-               print *," numjets ",njets
-               print *,deltaphij1ttbar,phijet(1),phittbar
-               call printleshouches
-c               stop
-               print *,"*************************************"
-            endif
-         endif
+C--- consistency check, only works if tops decay semileptonically
+c         if((whcprg.eq.'NLO   ').or.(whcprg.eq.'LHE   ')) then
+c            if (abs(deltaphij1ttbar)/pi.lt.0.5d0) then
+c               print *,"*************************************"
+c               print *,"Event : ",nevhep
+c               print *,"deltaphij1ttbar < pi/2 with only 1 jets"
+c               print *," numjets ",njets
+c               print *,deltaphij1ttbar,phijet(1),phittbar
+c               call printleshouches
+c               print *,"*************************************"
+c            endif
+c         endif
 
          deltaRj1ttbar=rsep_azi_y(pjet(1,1),ppairttbar)
 
@@ -1006,32 +1010,36 @@ c next-to-hardest jet pt
  888     continue
 c leptons may not be there, in case we are called by the NLO
 c section
-         if(iiep.eq.0.or.iiem.eq.0) goto 999        
+         if(iiep.eq.0.and.iiem.eq.0) goto 999        
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c  PLOTS INVOLVING LEPTONS FROM TOP DECAY PRODUCTS
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c Lepton energy in top rest frame 
-         call pwhgfill(90+numplots*ncut,eep,dsig/bsz(90))
+         if (iiep.gt.0) call pwhgfill(90+numplots*ncut,eep,dsig/bsz(90))
 c Lepton cos theta in top rest frame 
-         call pwhgfill(91+numplots*ncut,cthep*cthem,dsig/bsz(91))
+         if (iiep.gt.0) call pwhgfill(91+numplots*ncut,cthep*cthem,dsig
+     $        /bsz(91))
 c Lepton azimuth in top rest frame. The origin is the top
 c transverse direction
-         call pwhgfill(92+numplots*ncut,dphi/pi,dsig/bsz(92))
+         if (iiep*iiem.gt.0) call pwhgfill(92+numplots*ncut,dphi/pi,dsig
+     $        /bsz(92))
 
 c Hardest lepton+ pt in lab. frame
-         call pwhgfill(93+numplots*ncut,ptep,dsig/bsz(93))
+         if (iiep.gt.0) call pwhgfill(93+numplots*ncut,ptep,dsig/bsz(93))
 c Hardest lepton- pt in lab. frame
-         call pwhgfill(94+numplots*ncut,ptem,dsig/bsz(94))
+         if (iiem.gt.0) call pwhgfill(94+numplots*ncut,ptem,dsig/bsz(94))
 c Hardest lepton+ y in lab. frame
-         call pwhgfill(95+numplots*ncut,yep,dsig/bsz(95))
+         if (iiep.gt.0) call pwhgfill(95+numplots*ncut,yep,dsig/bsz(95))
 c Hardest lepton- y in lab. frame
-         call pwhgfill(96+numplots*ncut,yem,dsig/bsz(96))
+         if (iiem.gt.0) call pwhgfill(96+numplots*ncut,yem,dsig/bsz(96))
 c Dilepton inv. mass
-         call pwhgfill(97+numplots*ncut,mepem,dsig/bsz(97))
+         if (iiep*iiem.gt.0)call pwhgfill(97+numplots*ncut,mepem,dsig
+     $        /bsz(97))
 c Dilepton azimuthal sep.
-         call pwhgfill(98+numplots*ncut,deltaphiepem/pi,dsig/bsz(98))
+         if (iiep*iiem.gt.0)call pwhgfill(98+numplots*ncut,deltaphiepem
+     $        /pi,dsig/bsz(98))
 c Dilepton azimuthal sep. with mttcut
-         if(mttbar.le.400) then
+         if((iiep*iiem.gt.0).and.(mttbar.le.400)) then
             call pwhgfill(99+numplots*ncut,deltaphiepem/pi,dsig/bsz(99))
          endif
  999     continue
@@ -1471,7 +1479,7 @@ c     check it should never enter here after a shower
          bson=.true.
          return
       endif
-      print *,jcurr,jmohep(1,jcurr)
+c      print *,jcurr,idhep(jcurr),jmohep(1,jcurr)
       oldjcurr=jcurr
       jcurr=jmohep(1,jcurr)  
       if (jmohep(1,jcurr).eq.oldjcurr) then

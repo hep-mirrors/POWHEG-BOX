@@ -6,7 +6,7 @@ endif
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
 PDF=lhapdf
-#Choose Analysis: none, default, antikt
+#Choose Analysis: none,  antikt
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
 ANALYSIS=antikt
 #

@@ -140,7 +140,7 @@ c In FSR, the resonance is the mother of the photon too
          spinup(6)=9
 
          iduptmp(6) = iduptmp(i1+rad_kinreg-2)
-         istuptmp(6) = istuptmp(i1+rad_kinreg-2)
+         istuptmp(6) = 1
          nup=nup+1 
       endif         
 

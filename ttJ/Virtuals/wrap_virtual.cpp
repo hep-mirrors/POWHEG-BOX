@@ -269,7 +269,7 @@ void SetVirtualScales(int verbose) {
   
   double mur = sqrt(pwhg_st_.st_muren2); 
 
-  // Put explicitly a (quiet) NaN in muf to stress that virtuals do
+  // Put explicitly a (quiet) NaN in muf to check that virtuals do
   // not depend on the factorization scale 
   // double muf = sqrt(pwhg_st_.st_mufact2);
   double muf=numeric_limits<double>::quiet_NaN();    
@@ -283,13 +283,14 @@ void SetVirtualScales(int verbose) {
   parms.setRenormalizationScale(mur,verbose);
   parms.setFactorizationScale(muf,verbose);
    
-  if (abs(pwhg_st_.st_alpha - parms.getAlphasNLO())/pwhg_st_.st_alpha > 1.e-14) {
+  /*SA: Commented out to allow for different PDF sets, with their own alphas definition
+    if (abs(pwhg_st_.st_alpha - parms.getAlphasNLO())/pwhg_st_.st_alpha > 1.e-14) {
     cout.precision(16);
     cout<<RED<< "ERROR in alphas value assignment in virtual_initialize_() "<<RESET<<endl;
     cout<<RED<< pwhg_st_.st_alpha << " "<< parms.getAlphasNLO() <<RESET<<endl;
     cout<<RED<< pwhg_st_.st_muren2 << " "<< mur*mur <<RESET<<endl;
     exit(1);
-  };
+    };*/
 }
 
 

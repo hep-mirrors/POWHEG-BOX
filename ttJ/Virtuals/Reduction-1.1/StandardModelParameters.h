@@ -6,6 +6,7 @@
 #include <map>
 #include <iostream>
 #include <cstdlib>
+#include <limits>
 
 enum PerturbativeOrder {LO = 0, NLO = 1, NNLO=2 };
 
@@ -209,12 +210,17 @@ class StandardModelParameters {
     return(masses2[particle]);
   }
 
+  // SA: Put explicitly a (quiet) NaN  to check that virtuals do
+  // not depend on alphas
   inline double getAlphasLO() const{
-    return( alphasLO );
+    //return( alphasLO );
+    return std::numeric_limits<double>::quiet_NaN();    
   }
-
+  // SA: Put explicitly a (quiet) NaN  to check that virtuals do
+  // not depend on alphas
   inline double getAlphasNLO() const{
-    return( alphasNLO );
+    //return( alphasNLO );
+    return std::numeric_limits<double>::quiet_NaN();    
   }
 
   void printParameters();

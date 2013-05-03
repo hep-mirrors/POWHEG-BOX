@@ -46,8 +46,8 @@ OBJECTS =gggtt2.o qqttg2.o qgttq2.o gqbttqb2.o gggtt2virtfin.o		\
 	trapfpe.o RemainingDiags_gg.o RemainingDiags_qq.o		\
 	masscounterterm_gg.o masscounterterm_qq.o Ghosts_gg.o		\
 	Ghosts_qq.o EvalSMExx.o qqgtthel.o gggtthel.o Color.o		\
-	processes.o Subtractions.o SysInfo.o wrap_virtual.o		\
-	OLP_interface.o Histogram.o
+	Subtractions.o SysInfo.o wrap_virtual.o OLP_interface.o         \
+        Histogram.o
 
 
 ALLLIBS= $(LIBOLDF77)  $(LIBFF) $(LIBREDUCTION) 

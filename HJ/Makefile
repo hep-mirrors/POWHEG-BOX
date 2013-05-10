@@ -8,7 +8,7 @@ PDF=lhapdf
 ## ANALYSIS: none, BnJ, HnJ, alt
 ##           the analysis require the FASTJET package, that has to be 
 ##           installed separately (see below)
-ANALYSIS=BnJ
+ANALYSIS=NNLO
 ## For static linking uncomment the following
 #STATIC= -static
 #
@@ -60,7 +60,7 @@ PWD=$(shell pwd)
 OBJ=$(PWD)/obj-$(COMPILER)
 WDNAME=$(shell basename $(PWD))
 HJ=$(PWD)
-VPATH= ./:../Version-pre2-1/progress/:../Version-pre2-1/:../:./Madlib/:./MODEL/:./DHELAS/:$(OBJ)/
+VPATH=./HJ-patches/:./:../Version-pre2-1/progress/:../Version-pre2-1/:../:./Madlib/:./MODEL/:./DHELAS/:$(OBJ)/
 
 
 INCLUDE0=$(PWD)/include/
@@ -124,6 +124,15 @@ PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-alt-H2J.o fastjetfortran.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 endif
 
+ifeq ("$(ANALYSIS)","NNLO")
+##To include Fastjet configuration uncomment the following lines. 
+FASTJET_CONFIG=$(shell which fastjet-config)
+#FASTJET_CONFIG=~/lib/fastjet242/bin/fastjet-config
+LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
+FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
+PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HNNLO.o fastjetfortran.o genclust_kt.o miscclust.o ptyrap.o r.o swapjet.o
+endif
+
 %.o: %.f $(INCLUDE)
 	$(FF) -c -o $(OBJ)/$@ $<
 
@@ -136,7 +145,7 @@ endif
 %.o: %.cc
 	$(CXX) $(DEBUG) -c -o $(OBJ)/$@ $^ $(FJCXXFLAGS)
 
-USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
+USER=init_couplings-HJ-patches.o init_processes.o Born_phsp.o Born.o virtual.o	\
      real.o $(PWHGANAL)
 
 MCFMFILES=i2mcfm_2_POWHEG.o set_interface_MCFM.o i2mcfm_fill.o \
@@ -188,7 +197,7 @@ main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,$(OBJ)/%,$(HERWIG))  $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o		\
+PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef-HJ-patches.o pythia.o boostrot.o powheginput.o		\
 	$(PWHGANAL) lhefread.o newunit.o pdfdummies.o  bra_ket_subroutines.o \
 	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
 	$(FPEOBJ)

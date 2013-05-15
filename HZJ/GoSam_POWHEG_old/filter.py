@@ -13,15 +13,24 @@ def v_floop(d):
    """
    Closed quark loops with gauge boson attached to the loop
    """
-   return d.chord(QUARKS) == d.loopsize() and \
+   return d.chord([U,D,S,C]) == d.loopsize() and \
           d.loopvertices([Z,A], QUARKS, QUARKS) >= 1 \
           and not zero_loop(d)
+
+#def no_hff(d):
+#   """
+#   No Higgs attached to massless fermions.
+#   """
+#   return d.vertices([H], [U,D,S,C,B], [Ubar,Dbar,Sbar,Cbar,Bbar]) == 0
+
 
 def no_hff(d):
    """
    No Higgs attached to massless fermions.
    """
-   return d.vertices([H], [U,D,S,C,B], [Ubar,Dbar,Sbar,Cbar,Bbar]) == 0
+   return d.vertices([H], [U,D,S,C,B], [Ubar,Dbar,Sbar,Cbar,Bbar]) == 0 and \
+          not v_floop(d)
+
 
 def top_loop(d):
    return d.chord([T,Tbar]) == d.loopsize()

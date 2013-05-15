@@ -22,8 +22,8 @@
 #  Choose between SM and SM with diagonal CKM matrix uncommenting    #
 #  what is needed:                                                   #
 ##------------------------------------------------------------------##
-#model=sm
-model=smdiag
+model=sm
+#model=smdiag
 
 ##-- model.options (comma separated list) --------------------------##
 #  If the model in use supports options they can be passed via this  #
@@ -44,7 +44,7 @@ model.options= masses: mT mH, \
 #    gs,e should always be treated as identical to one               #
 ##------------------------------------------------------------------##
 one=gs,e
-zero=me,mU,mD,mC,mS,mB,wB,wT
+zero=me,mU,mD,mC,mS,mB,mBMS,wB,wT
 
 ##-- symmetries ----------------------------------------------------##
 #    List of symmentries which could simplify the virtual code.      #
@@ -73,7 +73,7 @@ qgraf.options=onshell,notadpole,nosnail
 ##------------------------------------------------------------------##
 qgraf.verbatim=\
 # no electron-Higgs: \n\
-true=iprop[ep,em,ne,nebar,phim,phip,chi,A,T,H,0,0];
+true=iprop[ep,em,ne,nebar,phim,phip,chi,A,H,0,0];
 ## at least one Wm,Wp and at most two : \n\
 ##true=iprop[Wp,Wm,1,2];
 

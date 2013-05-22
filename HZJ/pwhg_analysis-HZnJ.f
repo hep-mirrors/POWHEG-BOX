@@ -413,7 +413,7 @@ c     copy momenta to construct jets
 c     palg=1 is standard kt, -1 is antikt
          palg = -1d0
          R = 0.5d0              ! radius parameter
-         ptminfastjet = 1d0
+         ptminfastjet = 20d0
          call fastjetppgenkt(ptrack,ntracks,R,palg,ptminfastjet,
      $        pj,numjets,jetvec)
 c         call fastjetktwhich(ptrack,ntracks,ptminfastjet,R,

@@ -275,13 +275,13 @@ C     ones defined in the POWHEG BOX.
       external powheginput
       integer parallelstage,rndiwhichseed
       common/cpwhg_info/parallelstage,rndiwhichseed
-      logical toploops
+      logical massivetop
 
       rndiwhichseed=rnd_iwhichseed
       parallelstage=powheginput("#parallelstage")
 C     Read from card of top loops should be included
-      toploops = .false.
-      if (powheginput("#toploops").eq.1) toploops=.true.
+      massivetop = .false.
+      if (powheginput("#massivetop").eq.1) massivetop=.true.
 
 C     Parameter definition
       
@@ -340,7 +340,7 @@ C     Parameter definition
       call check_gosam_err(param,ierr)
       
       param = 'mT='
-      if(toploops) then
+      if(massivetop) then
          write(value,'(F20.10)') ph_tmass
       else
          write(value,'(F20.10)') 0d0

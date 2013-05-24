@@ -17,6 +17,10 @@
       real*8 rkallen
       external rkallen
       real*8 pmod,sqla,betal
+      real * 8 masswindow_low,masswindow_high
+      real * 8 phsp_Wm,phsp_Ww,phsp_Wmass2,phsp_WmWw
+      save phsp_Wm,phsp_Ww,phsp_Wmass2,phsp_WmWw
+      real * 8 powheginput
       if(ini) then
 c     set initial- and final-state masses for Born and real
          do k=1,nlegreal
@@ -24,16 +28,39 @@ c     set initial- and final-state masses for Born and real
          enddo
          kn_masses(3)=decmass
          ini=.false.
+         phsp_Wm=powheginput('#phsp_Wm')
+         phsp_Ww=powheginput('#phsp_Ww')
+         if(phsp_Wm.lt.0) phsp_Wm=ph_Wmass
+         if(phsp_Ww.lt.0) phsp_Ww=ph_Wwidth
+         phsp_Wmass2=phsp_Wm**2
+         phsp_WmWw=phsp_Wm*phsp_Ww
+
+c     mass window
+         masswindow_low = powheginput("#masswindow_low")
+         if (masswindow_low.le.0d0) masswindow_low=30d0
+         masswindow_high = powheginput("#masswindow_high")
+         if (masswindow_high.le.0d0) masswindow_high=30d0
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccc   DEPENDENT QUANTITIES       
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+c     set mass window around W-mass peak in unit of ph_Wwidth
+c     It is used in the generation of the Born phase space
+         ph_Wmass2low=max(decmass*10d0,phsp_Wm-masswindow_low*phsp_Ww)
+         ph_Wmass2low=ph_Wmass2low**2
+         ph_Wmass2high=phsp_Wm+masswindow_high*phsp_Ww
+         ph_Wmass2high=min(kn_sbeams,ph_Wmass2high**2)
       endif
 
 c 1 /(16 pi S) d m^2 d cth d y
       xjac=1d0/kn_sbeams/(16*pi)
-      zlow=atan((ph_Wmass2low - ph_Wmass2)/ph_WmWw)
-      zhigh=atan((ph_Wmass2high - ph_Wmass2)/ph_WmWw)
+      zlow=atan((ph_Wmass2low - phsp_Wmass2)/phsp_WmWw)
+      zhigh=atan((ph_Wmass2high - phsp_Wmass2)/phsp_WmWw)
       z=zlow+(zhigh-zlow)*xborn(1)
-      m2=ph_WmWw*tan(z)+ph_Wmass2
+      m2=phsp_WmWw*tan(z)+phsp_Wmass2
 c d m^2 jacobian
-      xjac=xjac*(zhigh-zlow)*(ph_WmWw/cos(z)**2)
+      xjac=xjac*(zhigh-zlow)*(phsp_WmWw/cos(z)**2)
 c d x1 d x2 = d tau d y;
       tau=m2/kn_sbeams
       s=kn_sbeams*tau

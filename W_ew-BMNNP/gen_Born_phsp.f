@@ -25,9 +25,9 @@ c csimax depends upon y in this case.
             if(j.gt.2) then
                m=kn_masses(j)
                q0=2*kn_cmpborn(0,1)
-               mrec2=(q0-kn_cmpborn(0,j))**2
+               mrec2=abs((q0-kn_cmpborn(0,j))**2
      #               -kn_cmpborn(1,j)**2-kn_cmpborn(2,j)**2
-     #               -kn_cmpborn(3,j)**2
+     #               -kn_cmpborn(3,j)**2)
                if(m.eq.0) then
                   kn_csimax_arr(j)=1-mrec2/q0**2
                else

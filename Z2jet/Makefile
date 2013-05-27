@@ -106,7 +106,7 @@ endif
 
 #PWHGANAL=./pwhg_analysis.o
 
-%.o: %.f $(INCLUDE)
+%.o: %.f
 	$(FF) -c -o $(OBJ)/$@ $<
 
 %.o: %.c

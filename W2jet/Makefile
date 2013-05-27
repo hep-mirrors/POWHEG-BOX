@@ -93,7 +93,7 @@ FJCXXFLAGS+=-I$(PYTHIA8LOCATION)/include
 LIBPYTHIA8=-L$(PYTHIA8LOCATION)/lib/archive -lpythia8 -llhapdfdummy -lstdc++
 
 
-%.o: %.f $(INCLUDE)
+%.o: %.f
 	$(FF) -c -o $(OBJ)/$@ $<
 
 %.o: %.c

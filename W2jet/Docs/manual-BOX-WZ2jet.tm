@@ -101,7 +101,9 @@
     <item>Reweighting: it is possible to run a process saving reweighting
     information in the event file, and then use this information to compute
     new weights corresponding, for example, to a different choice of the
-    factorization and renormalisation scales. In order to store reweighting
+    factorization and renormalisation scales. In order for reweighting to
+    work one should always turn on the option<next-line><with|font-family|tt|withnegweights
+    1><next-line>(on by default in Z2jet). In order to store reweighting
     information, one should include the line:<next-line><with|font-family|tt|storeinfo_rwgt
     \ 1 ! Store reweighting information (default 1)><next-line>If this
     feature is present during the event generation, a line of reweighting

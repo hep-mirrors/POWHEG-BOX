@@ -155,10 +155,10 @@ C     sudakov - The Sudakov form factor
       save ini,sudscalevar,b0
 
       if(ini) then
-         if(powheginput("#sudscalevar").eq.1) then
-            sudscalevar = .true.
-         else
+         if(powheginput("#sudscalevar").eq.0) then
             sudscalevar = .false.
+         else
+            sudscalevar = .true.
          endif
          b0 = (11*CA-2d0*st_nlight)/(12*pi)
          ini = .false.

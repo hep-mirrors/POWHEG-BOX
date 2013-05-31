@@ -5,6 +5,8 @@
       include 'vbfnlo-files/global.inc'
       real* 8 vbfnloinput
       external vbfnloinput
+      
+      decaymode = vbfnloinput("DECAYMODE") 
       procID = vbfnloinput("PROC_ID")      
       
       select case(procID)
@@ -12,15 +14,42 @@
       case(Zjj_l) 
           Write(*,*) "Process ", procID
           write(*,*) "Z production in VBF with leptonic decay"
+          write(*,*) "Decaymode: " , decaymode
+          if(decaymode.eq.11) then
+             write(*,*) "into e+ e-"
+          elseif(decaymode.eq.13) then
+             write(*,*) "into mu+ mu-"
+          else
+             write(*,*) "DECAYMODE should be 11 or 13, STOP"
+             stop
+          endif
           call init_process_Z
       case(Wpjj) 
           Write(*,*) "Process ", procID
           write(*,*) "W+ production in VBF with leptonic decay"
+          write(*,*) "Decaymode: " , decaymode
+          if(decaymode.eq.11) then
+             write(*,*) "into e+ nu_e"
+          elseif(decaymode.eq.13) then
+             write(*,*) "into mu+ nu_mu"
+          else
+             write(*,*) "DECAYMODE should be 11 or 13, STOP"
+             stop
+          endif          
           call init_process_Wp
       case(Wmjj) 
           Write(*,*) "Process ", procID
           write(*,*) "W- production in VBF with leptonic decay"
+          write(*,*) "Decaymode: " , decaymode
           call init_process_Wm          
+          if(decaymode.eq.11) then
+             write(*,*) "into e- nu_ebar"
+          elseif(decaymode.eq.13) then
+             write(*,*) "into mu- nu_mubar"
+          else
+             write(*,*) "DECAYMODE should be 11 or 13, STOP"
+             stop
+          endif            
       end select
       
       end
@@ -30,6 +59,7 @@
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'LesHouches.h'
+      include 'process.inc'
       logical debug
       parameter (debug=.false.)
       integer j,i,ii,jj,k
@@ -165,7 +195,7 @@ c     W+ emission from lower leg
       endif
       flst_nborn_WW = flst_nborn
       
-c     ZZ -> H case
+c     NC case
       do i=-max_flav,max_flav
          do j=-max_flav,max_flav
             if (.not.((i.eq.0).or.(j.eq.0))) then
@@ -210,8 +240,8 @@ c     ZZ -> H case
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCC                REAL GRAPHS    
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-c     WW -> H case
-c     q q -> H q q g
+c     WW -> Z case
+c     q q -> Z q q g
       do i=-max_flav,max_flav
          do j=-max_flav,max_flav
             do ii=-max_flav,max_flav
@@ -276,7 +306,7 @@ c     W+ emission from lower leg
             enddo
          enddo
       enddo
-c     g q -> H q q q
+c     g q -> Z q q q
 c     loop on only HALF of the incoming upper-line quark, not to double count!
 c     In fact, the real-radiation term contains TWO Feynman diagrams.
       do i=1,max_flav
@@ -345,7 +375,7 @@ c     W+ emission from lower leg
          enddo
       enddo
 
-c     q g -> H q q q
+c     q g -> Z q q q
 c     loop on only HALF of the incoming lower-line quark, not to double count!
 c     In fact, the real-radiation term contains TWO Feynman diagrams.
       do i=-max_flav,max_flav
@@ -423,8 +453,8 @@ c     W+ emission from lower leg
       flst_nreal_WW = flst_nreal
 
 
-c     ZZ -> H case
-c     q q -> H q q g
+c     NC case
+c     q q -> Z q q g
       do i=-max_flav,max_flav
          do j=-max_flav,max_flav
             if (.not.((i.eq.0).or.(j.eq.0))) then
@@ -461,7 +491,7 @@ c     q q -> H q q g
             endif
          enddo
       enddo
-c     g q -> H q q q
+c     g q -> Z q q q
 c     loop on only HALF of the incoming upper-line quark, not to double count!
 c     In fact, the real-radiation term contains TWO Feynman diagrams.
       do i=1,max_flav
@@ -502,7 +532,7 @@ c     In fact, the real-radiation term contains TWO Feynman diagrams.
          enddo
       enddo
 
-c     q g -> H q q q
+c     q g -> Z q q q
 c     loop on only HALF of the incoming lower-line quark, not to double count!
 c     In fact, the real-radiation term contains TWO Feynman diagrams.
       do i=-max_flav,max_flav
@@ -556,8 +586,8 @@ c      stop
       do i=1,flst_nborn
         flst_born(6,i)=flst_born(5,i)
         flst_born(5,i)=flst_born(4,i)
-        flst_born(4,i)=11
-        flst_born(3,i)=-11
+        flst_born(4,i)=decaymode
+        flst_born(3,i)=-decaymode
         
         flst_borntags(6,i)=flst_borntags(5,i)
         flst_borntags(5,i)=flst_borntags(4,i)
@@ -569,8 +599,8 @@ c      stop
         flst_real(7,i)=flst_real(6,i)
         flst_real(6,i)=flst_real(5,i)
         flst_real(5,i)=flst_real(4,i)
-        flst_real(4,i)=11
-        flst_real(3,i)=-11
+        flst_real(4,i)=decaymode
+        flst_real(3,i)=-decaymode
         
         flst_realtags(7,i)=flst_realtags(6,i)
         flst_realtags(6,i)=flst_realtags(5,i)
@@ -595,6 +625,7 @@ c      stop
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'LesHouches.h'
+      include 'process.inc'
       logical debug
       parameter (debug=.false.)
       integer j,i,ii,jj,k,l
@@ -617,6 +648,19 @@ c      stop
       integer hdecaymode
       real * 8 powheginput
       external powheginput
+      integer lepton, neutrino
+      
+      if(decaymode.eq.11) then 
+         lepton = -11
+         neutrino = 12
+      
+      elseif(decaymode.eq.13) then
+          lepton = -13
+         neutrino = 14     
+      else
+        write(*,*) "Error in init_process_Wp, DECAYMODE"
+        stop
+      endif
 
 
       tag = .true.
@@ -652,8 +696,8 @@ ccccccupper quarkline unchanged
                j=j+1
                flst_born(1,j)=i
                flst_born(2,j)=k
-               flst_born(3,j)=12
-               flst_born(4,j)=-11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=i  
                flst_born(6,j)=k-1
 
@@ -672,8 +716,8 @@ ccccccupper quarkline unchanged
                j=j+1
                flst_born(1,j)=i
                flst_born(2,j)=k
-               flst_born(3,j)=12
-               flst_born(4,j)=-11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=i  
                flst_born(6,j)=k-1  
                
@@ -697,8 +741,8 @@ cccccclower quarkline unchanged
                j=j+1
                flst_born(1,j)=k
                flst_born(2,j)=i
-               flst_born(3,j)=12
-               flst_born(4,j)=-11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=k-1  
                flst_born(6,j)=i
 
@@ -716,8 +760,8 @@ cccccclower quarkline unchanged
                j=j+1
                flst_born(1,j)=k
                flst_born(2,j)=i
-               flst_born(3,j)=12
-               flst_born(4,j)=-11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=k-1  
                flst_born(6,j)=i    
                
@@ -771,8 +815,8 @@ cccccclower quarkline unchanged
                k=k+1        ! upper quarkline q q -> j only (anti)quark
                flst_real(1,k)=0   
                flst_real(2,k)=l
-               flst_real(3,k)=12
-               flst_real(4,k)=-11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=j
                flst_real(6,k)=l-1
                flst_real(7,k)=-j
@@ -792,8 +836,8 @@ cccccclower quarkline unchanged
                        k=k+1
                flst_real(1,k)=0   
                flst_real(2,k)=l
-               flst_real(3,k)=12
-               flst_real(4,k)=-11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=j
                flst_real(6,k)=l-1
                flst_real(7,k)=-j
@@ -812,8 +856,8 @@ cccccclower quarkline unchanged
                k=k+1        ! lower quarkline q q -> j only (anti)quark
                flst_real(1,k)=l               
                flst_real(2,k)=0   
-               flst_real(3,k)=12
-               flst_real(4,k)=-11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=l-1               
                flst_real(6,k)=j
                flst_real(7,k)=-j
@@ -833,8 +877,8 @@ cccccclower quarkline unchanged
                        k=k+1
                flst_real(1,k)=l
                flst_real(2,k)=0   
-               flst_real(3,k)=12
-               flst_real(4,k)=-11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=l-1               
                flst_real(6,k)=j
                flst_real(7,k)=-j
@@ -861,8 +905,9 @@ cccccclower quarkline unchanged
                flst_real(1,k)=j                           
                flst_real(2,k)=0
 
-               flst_real(3,k)=12
-               flst_real(4,k)=-11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
+               
                flst_real(5,k)=j 
                flst_real(6,k)=l-1
                flst_real(7,k)=-l
@@ -883,8 +928,8 @@ cccccclower quarkline unchanged
                            k=k+1
                flst_real(1,k)=0
                flst_real(2,k)=j                           
-               flst_real(3,k)=12
-               flst_real(4,k)=-11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=l-1               
                flst_real(6,k)=j 
                flst_real(7,k)=-l
@@ -932,6 +977,7 @@ cccccclower quarkline unchanged
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'LesHouches.h'
+      include 'process.inc'
       logical debug
       parameter (debug=.false.)
       integer j,i,ii,jj,k,l
@@ -954,8 +1000,20 @@ cccccclower quarkline unchanged
       integer hdecaymode
       real * 8 powheginput
       external powheginput
+      integer lepton,neutrino
 
 
+      if(decaymode.eq.11) then 
+         lepton = 11
+         neutrino = -12
+      
+      elseif(decaymode.eq.13) then
+          lepton = 13
+         neutrino = -14     
+      else
+        write(*,*) "Error in init_process_Wp, DECAYMODE"
+        stop
+      endif
       tag = .true.
       newtag = .true.
 
@@ -990,8 +1048,8 @@ ccccccupper quarkline unchanged
                j=j+1
                flst_born(1,j)=i
                flst_born(2,j)=k-1
-               flst_born(3,j)=-12
-               flst_born(4,j)=11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=i  
                flst_born(6,j)=k
 
@@ -1011,8 +1069,8 @@ ccccccupper quarkline unchanged
                j=j+1
                flst_born(1,j)=i
                flst_born(2,j)=k-1
-               flst_born(3,j)=-12
-               flst_born(4,j)=11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=i  
                flst_born(6,j)=k  
                
@@ -1036,8 +1094,8 @@ cccccclower quarkline unchanged
                j=j+1
                flst_born(1,j)=k-1
                flst_born(2,j)=i
-               flst_born(3,j)=-12
-               flst_born(4,j)=11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=k  
                flst_born(6,j)=i
 
@@ -1054,8 +1112,8 @@ cccccclower quarkline unchanged
                j=j+1
                flst_born(1,j)=k-1
                flst_born(2,j)=i
-               flst_born(3,j)=-12
-               flst_born(4,j)=11
+               flst_born(3,j)=neutrino
+               flst_born(4,j)=lepton
                flst_born(5,j)=k  
                flst_born(6,j)=i    
                
@@ -1110,8 +1168,8 @@ cccccclower quarkline unchanged
                k=k+1        ! upper quarkline q q -> j only (anti)quark
                flst_real(1,k)=0   
                flst_real(2,k)=l-1
-               flst_real(3,k)=-12
-               flst_real(4,k)=11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=j
                flst_real(6,k)=l
                flst_real(7,k)=-j
@@ -1131,8 +1189,8 @@ cccccclower quarkline unchanged
                        k=k+1
                flst_real(1,k)=0   
                flst_real(2,k)=l-1
-               flst_real(3,k)=-12
-               flst_real(4,k)=11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=j
                flst_real(6,k)=l
                flst_real(7,k)=-j
@@ -1151,8 +1209,8 @@ cccccclower quarkline unchanged
                k=k+1        ! lower quarkline q q -> j only (anti)quark
                flst_real(1,k)=l-1              
                flst_real(2,k)=0   
-               flst_real(3,k)=-12
-               flst_real(4,k)=11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=l               
                flst_real(6,k)=j
                flst_real(7,k)=-j
@@ -1172,8 +1230,8 @@ cccccclower quarkline unchanged
                        k=k+1
                flst_real(1,k)=l-1
                flst_real(2,k)=0   
-               flst_real(3,k)=-12
-               flst_real(4,k)=11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=l               
                flst_real(6,k)=j
                flst_real(7,k)=-j
@@ -1200,8 +1258,8 @@ cccccclower quarkline unchanged
                flst_real(1,k)=j                           
                flst_real(2,k)=0
 
-               flst_real(3,k)=-12
-               flst_real(4,k)=11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=j 
                flst_real(6,k)=l
                flst_real(7,k)=-(l-1)
@@ -1222,8 +1280,8 @@ cccccclower quarkline unchanged
                            k=k+1
                flst_real(1,k)=0
                flst_real(2,k)=j                           
-               flst_real(3,k)=-12
-               flst_real(4,k)=11
+               flst_real(3,k)=neutrino
+               flst_real(4,k)=lepton
                flst_real(5,k)=l               
                flst_real(6,k)=j 
                flst_real(7,k)=-(l-1)

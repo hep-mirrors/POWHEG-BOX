@@ -6,6 +6,7 @@
 !c
 
 PROC_ID   130
+DECAYMODE 11
 
 !   Physics parameters
 !------------------------ 

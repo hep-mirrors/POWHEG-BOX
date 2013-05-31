@@ -77,7 +77,6 @@ c strong coupling from powheg:
       if(ewscheme.lt.0d0) ewscheme=3
 
 
-
       Select Case (EWSCHEME)
       Case(1)
          if (replace(gf,0)) gf= vbfnloinput("#FERMI_CONST")
@@ -174,7 +173,6 @@ c strong coupling from powheg:
       endif
 
 
-
       if (anom) then
          Select Case (procID)
          Case(WPWMjj, WPWMjjjLO, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj)
@@ -184,8 +182,6 @@ c strong coupling from powheg:
             with_anomHiggs = anom
          END SELECT
       endif
-
-
 
 
       CALL KOPPLN(2,e,g2,s,c,z,w,q,g)
@@ -287,6 +283,7 @@ c INPUT
       include 'pwhg_math.h'
       include 'mssm.inc'
 
+
 c
 c OUTPUT
 c
@@ -338,7 +335,7 @@ C
 c parameters needed for calculation of H -> B BBAR
       double precision alphas_H, alphas_B, BMASS_POLE, BMASS_B
       double precision alphas_C, CMASS_POLE, CMASS_C
-      double precision DELTA_qq, DELTA_H, C1, C2
+      double precision DELTA_qq, DELTA_H, C1, C2, A_12_b, A_12_t
       integer Nf
       logical replace
       double precision pwhg_alphas, heavy
@@ -463,6 +460,9 @@ c
 * (s)fermions, an effective coupling (which includes loop as well as counterterm
 * diagrams) is used instead.  It's called from amplitudes/vvjj/qqhqq.F so that
 * the momentum dependence can be taken into account
+!       if (ewcor_switch) then
+!          call qqV_ct(clrCT,model,sector)
+!       end if
 
 c
 c THE BBB COUPLINGS
@@ -505,6 +505,7 @@ c
       GWH = G2
       GZH = GWH/C**2
 
+      
 
 
 * Z-Z-Higgs coupling
@@ -695,7 +696,7 @@ c approximation for the whole mass range. For m_Higgs > m_top,
 c the deviation to the six flavour scheme is less the 1%
       Nf=5
 
-      alphas_B=pwhg_alphas(BMASS_POLE**2,st_lambda5MSB,st_nlight)!alphas5(BMASS_POLE**2,1)
+      alphas_B=pwhg_alphas(BMASS_POLE**2,st_lambda5MSB,-1)!alphas5(BMASS_POLE**2,1)
       alphas_H=pwhg_alphas(xmh**2,st_lambda5MSB,st_nlight)!alphas5(xmh**2,1)
 
 
@@ -704,7 +705,7 @@ c calculate the running MSbar bottom mass mb(m_b) = BMASS_B
      &        +(1.0414d0*Nf-14.3323d0)*alphas_B**2/PI**2)
 
 c calculate the running MSbar bottom mass mb(m_H) = BMASS_H
-      alphas_B = pwhg_alphas(BMASS_B**2,st_lambda5MSB,st_nlight)!alphas5(BMASS_B**2,1)
+      alphas_B = pwhg_alphas(BMASS_B**2,st_lambda5MSB,-1)!alphas5(BMASS_B**2,1)
 
       C1=(23.0d0/6.0d0*alphas_H/PI)**(12.d0/23.d0)*(1.d0+1.17549d0
      &     *alphas_H/PI+1.50071d0*alphas_H**2/PI**2+0.172478d0
@@ -747,8 +748,8 @@ c and the running alphas according to that number
          else
             Nf = 5
          endif
-         alphas_H = pwhg_alphas(xmh**2,st_lambda5MSB,st_nlight)!alphas5(xmh**2,1)
-         alphas_C = pwhg_alphas(cmass_pole**2,st_lambda5MSB,st_nlight)!alphas5(CMASS_POLE**2,1)
+         alphas_H = pwhg_alphas(xmh**2,st_lambda5MSB,-1)!alphas5(xmh**2,1)
+         alphas_C = pwhg_alphas(cmass_pole**2,st_lambda5MSB,-1)!alphas5(CMASS_POLE**2,1)\
 
 c calculate the running MSbar charm mass mc(m_c) = CMASS_C
          CMASS_C = CMASS_POLE*(1.0d0-4.d0/3.d0*alphas_C/PI 
@@ -832,16 +833,40 @@ c*********** Next h -> t tbar ************************
       end if
 
 
-** for  H --> gg  I use the simplified formula in the heavy top approx.
-      if (replace(bhgg,3) .or. replace(xgh,3)) then
-         GHGG  = 1.5d-10 * XMH**3 * (ALFAS/0.15d0)**2  
-         if (replace(xgh,3) .and. (.not. replace(bhgg,3))) then
-            xgh = bhgg*ghgg
-         end if
-      else 
-         ghgg = bhgg*xgh
-      end if
+** Higgs to gg 
+** Leading-order is exact result -- see e.g. Djouadi, hep-ph/0503172
+      tau_t = xmh**2/(4d0*xmt**2)
+      if (tau_t .le. 1d0) then
+        A_12_t = asin(sqrt(tau_t))**2
+      else
+        A_12_t = -( 
+     &    log( (1+sqrt(1-1/tau_t))/(1-sqrt(1-1/tau_t)) ) - (0d0,pi)
+     &    )**2/4d0
+      endif
+      A_12_t = 2*(tau_t+(tau_t-1)*A_12_t)/tau_t**2
 
+      tau_b = xmh**2/(4d0*xmb**2)
+      if (tau_b .le. 1d0) then
+        A_12_b = asin(tau_b)**2
+      else
+        A_12_b = -( 
+     &    log( (1+sqrt(1-1/tau_b))/(1-sqrt(1-1/tau_b)) ) - (0d0,pi)
+     &    )**2/4d0
+      endif
+      A_12_b = 2*(tau_b+(tau_b-1)*A_12_b)/tau_b**2
+
+      GHgg = GF*alphas_H**2*XMH**3/(36d0*sqrt(2d0)*pi**3)
+      GHgg = GHgg*abs(3d0/4d0*(A_12_t+A_12_b))**2
+
+      if (tau_t .le. 1d0) then
+c higher-order corrections -- see eg. Schreck, Steinhauser, arXiv:0708.0916
+      GHgg = GHgg * (1d0 + 
+     &  alphas_H/pi*(17.9167d0+9.574d0*tau_t+5.571d0*tau_t**2
+     &              +3.533d0*tau_t**3+2.395d0*tau_t**4+1.708d0*tau_t**4)
+     & +(alphas_H/pi)**2*(156.808d0+109.365d0*tau_t+74.434d0*tau_t**2)
+     & +(alphas_H/pi)**3*(467.684d0)
+     & )
+      endif
 
 c for  H --> gamma gamma  I use p. 25 of Higgs Hunter"s Guide,
 c using t,b and W loops only
@@ -1093,7 +1118,7 @@ c output, which is not so relevant to the user
       write(*,"(T4,A,T36,A,F10.6,A)") "total widths of top quark",": ",
      &     gamt," GeV"
 
-      IF (.true.) then!(with_anomHiggs) THEN
+      IF (with_anomHiggs) then!(with_anomHiggs) THEN
          print*," "         
          PRINT*," partial Higgs decay width "
          print*,"---------------------------"

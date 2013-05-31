@@ -197,7 +197,7 @@ c	Last modified: 19.09.07, Michael Kubocz
 c       Additional D00ij and D0000 coefficients for Denner-Dittmaier-tensor 
 c       decomposition (used in SUBROUTINE DDtens51m in ggf_amp_aux.F) 
 
-      real*8 f1, f2, f3, Xi(3,3), X(3,3), deti
+      real*8 f1, f2, f3, Xi(3,3), X(3,3), deti, fact
       complex*16 r(20:58), Dijp(3,13), t(9), d310pp
       integer i,j, iscount
       logical ldebug, ldb0
@@ -219,8 +219,12 @@ c       decomposition (used in SUBROUTINE DDtens51m in ggf_amp_aux.F)
          enddo
       enddo
       if ((abs(deti).lt.1d-30)) then 
-         if (kn_jacborn.eq.0d0) return
-         if (flg_weightedev) return
+         if (kn_jacborn.eq.0d0) then
+           return
+         endif
+         if (flg_weightedev) then 
+           return
+         endif
          iscount = iscount+1
          if (iscount.le.1000) then
             print*," Warning: singular point in TENS4 "

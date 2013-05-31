@@ -50,23 +50,6 @@ OBJECTS_PH = ./loops/ggf_loops/loops_aux.o \
           ./helas/vxxxxx.o \
           ./helas/jwwwxx.o \
 	  ./loops/aux_loops.o \
-              ./loops/Diagrams/Boxline/boxlineABEDiv.o \
-              ./loops/Diagrams/Boxline/boxlineABE.o \
-              ./loops/Diagrams/Boxline/boxlineABETotal.o  \
-              ./loops/Diagrams/Boxline/boxline.o  \
-              ./loops/Diagrams/Boxline/boxlineNoAbeDiv.o  \
-              ./loops/Diagrams/Boxline/boxlineNoAbe.o  \
-              ./loops/Diagrams/Boxline/boxlineNoAbeTotal.o \
-              ./loops/Diagrams/Penline/penlineABEDiv.o  \
-              ./loops/Diagrams/Penline/penlineABETotal.o  \
-              ./loops/Diagrams/Penline/penlineNoAbeDiv.o  \
-              ./loops/Diagrams/Penline/penlineNoAbeTotal.o \
-              ./loops/Diagrams/Penline/virtual1.o \
-              ./loops/Diagrams/Penline/penlineABE.o \
-              ./loops/Diagrams/Penline/penline.o    \
-              ./loops/Diagrams/Penline/penlineNoAbe.o \
-              ./loops/Diagrams/Penline/tri_box_penta_tens_red.o  \
-              ./loops/Diagrams/Penline/virtual2.o \
               ./loops/Integrals/A0.o \
               ./loops/Integrals/B0C0D01MASG.o \
               ./loops/Integrals/C0functions.o  \
@@ -79,21 +62,6 @@ OBJECTS_PH = ./loops/ggf_loops/loops_aux.o \
               ./loops/Integrals/B0functions.o  \
               ./loops/Integrals/cdilog.o       \
               ./loops/Integrals/D0functions.o \
-              ./loops/TenRed/B/tensor_redux_BijLUde1M_Div.o  \
-              ./loops/TenRed/B/tensor_redux_BijLUde_Div.o  \
-              ./loops/TenRed/B/tensor_redux_BijLUde_G_Div.o\
-              ./loops/TenRed/B/tensor_redux_BijLUde1M.o      \
-              ./loops/TenRed/B/tensor_redux_BijLUde.o      \
-              ./loops/TenRed/B/tensor_redux_BijLUde_G.o\
-              ./loops/TenRed/C/tensor_redux_Cij_Div.o     \
-              ./loops/TenRed/C/tensor_redux_CijLUde_1MasRank3.o    \
-              ./loops/TenRed/C/tensor_redux_CijLUde_Rank3_G.o\
-              ./loops/TenRed/C/tensor_redux_Cij.o                    \
-              ./loops/TenRed/C/tensor_redux_CijLUdeRank3_Div.o     ./loops/TenRed/C/tensor_redux_Cij_new_Re_Com_1Mas.o \
-              ./loops/TenRed/C/tensor_redux_CijLUde_1Mas_Div.o ./loops/TenRed/C/tensor_redux_CijLUdeRank3.o   ./loops/TenRed/C/tensor_redux_Cij_new_Re_Com.o \
-              ./loops/TenRed/C/tensor_redux_CijLUde_1MasRank3_Div.o  ./loops/TenRed/C/tensor_redux_CijLUde_Rank3_G_Div.o \
-              ./loops/TenRed/D/tensor_redux_Dij.o    ./loops/TenRed/D/tensor_redux_Dij_new_Re_Com.o   \
-              ./loops/TenRed/E/tensor_redux_Eij_new_Re_Com_1Mas.o ./loops/TenRed/E/tensor_redux_Eij.o  ./loops/TenRed/E/tensor_redux_Eij_new_Re_Com.o \
               ./loops/Utilities/bra_ket_subroutines.o  ./loops/Utilities/GaugeTest.o  ./loops/Utilities/MatrixElements.o  \
               ./loops/Utilities/pent45_noAbe.o  ./loops/Utilities/Pent_to_boxes.o  ./loops/Utilities/Wardtest.o
 # 	          ./helas/anomal6.o\

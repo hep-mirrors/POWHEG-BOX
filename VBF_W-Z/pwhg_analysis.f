@@ -505,13 +505,13 @@ c     select Z events
 c     find Higgs boson
    
       do ihep=1,nhep
-         if (idhep(ihep).eq.11) then
+         if ((idhep(ihep).eq.11).or.(idhep(ihep).eq.13)) then
             do mu=1,3
                plep(mu,1)=phep(mu,ihep)
             enddo
             plep(0,1)=phep(4,ihep)
          endif
-         if (idhep(ihep).eq.-11) then
+         if ((idhep(ihep).eq.-11).or.(idhep(ihep).eq.-13)) then
             do mu=1,3
                plep(mu,2)=phep(mu,ihep)          
             enddo
@@ -1278,13 +1278,13 @@ c     LEPTONIC CUTS
 
 
       do ihep=1,nhep
-         if (abs(idhep(ihep)).eq.11) then
+         if ((abs(idhep(ihep)).eq.11).or.(abs(idhep(ihep)).eq.13)) then
             do mu=1,3
                plep(mu,1)=phep(mu,ihep)
             enddo
             plep(0,1)=phep(4,ihep)
          endif
-         if (abs(idhep(ihep)).eq.12) then
+         if ((abs(idhep(ihep)).eq.12).or.(abs(idhep(ihep)).eq.14)) then
             do mu=1,3
                plep(mu,2)=phep(mu,ihep)          
             enddo

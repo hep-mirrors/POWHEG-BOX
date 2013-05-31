@@ -13,6 +13,9 @@
       INTEGER finallep, finallep_default, N_lepton
       common /leptonnumbers/ finallep(6), finallep_default(6), N_lepton
 
+      INTEGER decaymode
+      common /decaymode/ decaymode     
+      
       INTEGER Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar
       INTEGER Hjj_WW, Hjj_ZZ_ll, Hjj_ZZ_lnu
       INTEGER HjjjLO, HjjjLO_AA, HjjjLO_mu, HjjjLO_tau, HjjjLO_bbar

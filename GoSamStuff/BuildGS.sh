@@ -21,15 +21,14 @@ then
     echo "./BuildGS virtual       : generates the full virtual code,                                "
     echo "./BuildGS newfiles      : creates the new files needed to run the virtual amplitude,      "
     echo "./BuildGS standalone    : makes standalone virtual code,                                  "
-    echo "./BuildGS cleanvirt     : removes the created virtual code,                               "
-    echo "./BuildGS cleannewfiles : removes the files created to run the virtual amplitude          "
+    echo "./BuildGS allvirt       : makes virtual, newfiles and standalone all in one go,           "
     echo "./BuildGS help          : shows this menu.                                                "
     echo "******************************************************************************************"
     exit
 fi
 
 # If input is 'CLEANVIRT':
-if [ "$1" = "cleanvirt" ]
+if [ "$1" = "cleanvirt" ] || [ "$1" = "allvirt" ]
 then
     echo "This will delete the files for the virtual amplitude."
     echo "Are you sure you want to proceed? (Yes/No)"
@@ -59,50 +58,8 @@ then
     fi
 fi
 
-# # If input is 'CLEANNEWFILES':
-# if [ "$1" = "cleannewfiles" ]
-# then
-#     if [ $WRITEPWHGFL = 1 ]
-#     then
-# 	echo "---> Deleting new files and restoring initial setup..."
-# 	cd $RUNDIR    
-# 	if [ -e $RUNDIR/virtual.f.dummy ]
-# 	then    
-# 	    mv virtual.f.dummy virtual.f
-# 	fi
-# 	if [ -e $RUNDIR/init_couplings.f.old ]
-# 	then    
-# 	    mv init_couplings.f.old init_couplings.f
-# 	fi
-# 	if [ -e $RUNDIR/init_processes.f.old ]
-# 	then    
-# 	    mv init_processes.f.old init_processes.f
-# 	fi
-# 	cd $GOSAMDIR
-# 	rm write_pwhg_files
-# 	rm virtual_new.f
-# 	rm init_couplings_new.f
-# 	rm init_processes_new.f
-
-# 	echo "*********************************************"
-# 	echo "The files:                                   "
-# 	echo "- virtual.f                                  "
-# 	echo "- init_couplings.f                           "
-# 	echo "- init_processes.f                           "
-# 	echo "were replaced with their original versions.  "
-# 	echo "*********************************************"
-# 	exit
-#     else
-# 	echo "*********************************************"
-# 	echo "This command is not applicable to your setup."
-# 	echo "*********************************************"
-#     fi
-    
-# fi
-
-
 # GENVIRT
-if [ "$1" = "virtual" ]
+if [ "$1" = "virtual" ] || [ "$1" = "allvirt" ]
 then
     if [ ! -d $GOSAMDIR ]
     then
@@ -146,7 +103,7 @@ fi
 
 
 # NEWFILES
-if [ "$1" = "newfiles" ]
+if [ "$1" = "newfiles" ] || [ "$1" = "allvirt" ]
 then
     if [ ! -f write_pwhg_files.f ]
     then
@@ -193,7 +150,7 @@ then
 fi
 
 # STANDALONE
-if [ "$1" = "standalone" ]
+if [ "$1" = "standalone" ] || [ "$1" = "allvirt" ]
 then
     MAKEDEPF90=$(command -v makedepf90 | gawk '{ if($1=="") printf "0"; else printf "present"}'); 
     if [ $MAKEDEPF90 = "present" ]

@@ -19,9 +19,9 @@ then
     echo "-- HELP menu for the script buildvirt --                                                  "
     echo "Possible running options:                                                                 "
     echo "./BuildGS virtual       : generates the full virtual code,                                "
-    echo "./BuildGS newfiles      : creates the new files needed to run the virtual amplitude,      "
+    echo "./BuildGS interface      : creates the new files needed to run the virtual amplitude,      "
     echo "./BuildGS standalone    : makes standalone virtual code,                                  "
-    echo "./BuildGS allvirt       : makes virtual, newfiles and standalone all in one go,           "
+    echo "./BuildGS allvirt       : makes virtual, interface and standalone all in one go,           "
     echo "./BuildGS help          : shows this menu.                                                "
     echo "******************************************************************************************"
     exit
@@ -102,8 +102,8 @@ then
 fi
 
 
-# NEWFILES
-if [ "$1" = "newfiles" ] || [ "$1" = "allvirt" ]
+# INTERFACE
+if [ "$1" = "interface" ] || [ "$1" = "allvirt" ]
 then
     if [ ! -f write_pwhg_files.f ]
     then

@@ -4,6 +4,7 @@
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
+      include 'pwhg_st.h'
       integer i1,i2,i3,i4,i5,i6,k,ii(6)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5)),(i6,ii(6))

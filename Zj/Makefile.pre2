@@ -1,6 +1,6 @@
 #-*- Makefile -*-
 ## COMPILER: gfortran, g77, ifort
-COMPILER=gfortran
+COMPILER=ifort
 ## PDF: native, lhapdf
 ## For "lhapdf", the LAHPDF package has to be installed separately
 PDF=lhapdf
@@ -37,9 +37,8 @@ endif
 
 
 ifeq ("$(COMPILER)","ifort")
-F77 = ifort -save  -extend_source
-CXX = icpc
-LIBS = -limf
+F77 = ifort -extend_source
+OBJ=obj-ifort
 #FFLAGS =  -check
 ## For floating point exception trapping  uncomment the following 
 #FPE = -fpe0
@@ -102,7 +101,7 @@ ifeq ("$(ANALYSIS)","BnJ")
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-PWHGANAL=pwhg_analysis-BnJ.o pwhg_bookhist-new.o 
+PWHGANAL=pwhg_analysis-BnJ.o pwhg_bookhist-multi.o 
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 PWHGANAL+= fastjetfortran.o
 endif
@@ -119,7 +118,7 @@ endif
 %.o: %.cc
 	$(CXX) $(DEBUG) -c -o $(OBJ)/$@ $^ $(FJCXXFLAGS)
 
-USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
+USER=init_couplings-pre2.o init_processes-pre2.o Born_phsp-pre2.o Born.o virtual.o \
 		      real.o $(PWHGANAL)
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
@@ -157,7 +156,7 @@ main-HERWIG-lhef: $(HERWIG)
 	$(FF) $(patsubst %,$(OBJ)/%,$(HERWIG))  $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to read event file, shower events with PYTHIA + analysis
-PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o		\
+PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef-pre2.o pythia.o boostrot.o powheginput.o		\
 	$(PWHGANAL) lhefread.o newunit.o pdfdummies.o	\
 	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
 	$(FPEOBJ)

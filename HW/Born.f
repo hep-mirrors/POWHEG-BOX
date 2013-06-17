@@ -198,7 +198,7 @@ c     colored particles
          icolup(2,2)=0
       else
          write(*,*) ' invalid flavour'
-         stop
+         call pwhg_exit(-1)
       endif
       end
  

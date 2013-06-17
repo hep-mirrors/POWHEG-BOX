@@ -48,9 +48,9 @@ use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 rege
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
 ! the typical call uses 1/1400 seconds (1400 calls per second)
-ncall1 50000      ! Number of calls for the construction of the importance sampling grid
+ncall1 300000      ! Number of calls for the construction of the importance sampling grid
 itmx1 1           ! Number of iterations for grid
-ncall2 50000      ! Number of calls for the computation of the upper bounding envelope
+ncall2 300000      ! Number of calls for the computation of the upper bounding envelope
                   ! for the generation of radiation
 itmx2 1           ! Number of iterations for the above
 ! Notice: the total number of calls is ncall2*itmx2*foldcsi*foldy*foldphi

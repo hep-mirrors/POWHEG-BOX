@@ -6,10 +6,9 @@
 # ----------------------------------------------------------------------------
 
 
-
-FFLAGS        = $(XFFLAG) 
-LIBRARY	      = ../libmodel.a
-LIBDIR = ../
+FFLAGS        = $(XFFLAGS) -ffixed-line-length-132
+LIBDIR        = ../$(OBJ)
+LIBRARY	      = $(LIBDIR)/libmodel.a
 MODEL         = printout.o couplings.o
 
 .f.o: ; $(F77) $(FFLAGS) -c $*.f

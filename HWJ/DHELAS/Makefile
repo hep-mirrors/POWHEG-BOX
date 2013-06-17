@@ -28,7 +28,7 @@ HDRS	      =
 
 INSTALL	      = /etc/install
 
-LIBRARY = ../libdhelas3.a
+LIBRARY	      = ../$(OBJ)/libdhelas3.a
 
 MAKEFILE      = Makefile
 

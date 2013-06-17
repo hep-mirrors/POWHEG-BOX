@@ -12,8 +12,6 @@ ANALYSIS=HZnJ
 #STATIC= -static
 #
 
-
-
 OBJ=obj-$(COMPILER)
 OBJDIR:=$(OBJ)
 
@@ -28,14 +26,12 @@ F77=gfortran -fno-automatic -J$(OBJ) -I$(OBJ)
 ## Use -O2 to be on the safe side
 OPT=-O2
 ## For debugging uncomment the following
-#DEBUG= -ggdb -trapfpe
+#DEBUG= -ggdb 
 ifdef DEBUG
 OPT=-O0
 FPE=-ffpe-trap=invalid,zero,overflow,underflow
 endif
 endif
-
-
 
 ifeq ("$(COMPILER)","ifort")
 F77 = ifort -save  -extend_source  -module $(OBJ)
@@ -53,10 +49,7 @@ FPE = -fpe0
 endif
 endif
 
-
-
 GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// ; s/qlconstants.f// ; s/.f /.o /g ; s/.f90 /.o /g ; ' | tee GoSamlib.txt)
-
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
@@ -67,7 +60,6 @@ INCLUDE1=$(PWD)/include
 INCLUDE1.2=$(shell dirname $(PWD))/Version-pre2-1/include
 INCLUDE2=$(shell dirname $(PWD))/include
 FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE1.2) -I$(INCLUDE2)
-
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
 
@@ -95,11 +87,10 @@ ifeq ("$(ANALYSIS)","HZnJ")
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-#PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HZnJ.o reweightifneeded.o
 PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HZnJ.o 
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
-#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o  fastjetfortran.o
+#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetfortran.o
 PWHGANAL+=  fastjetfortran.o
 else
 PWHGANAL=pwhg_analysis-dummy.o
@@ -130,12 +121,12 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	init_phys.o powheginput.o pdfcalls.o sigreal.o sigcollremn.o	\
 	pwhg_analysis_driver.o checkmomzero.o		                \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
-	reshufflemoms.o  pwhg_gosam.o                                   \
+	reshufflemoms.o pwhg_gosam.o                                    \
 	sigcollsoft.o sigvirtual.o  ubprojections.o                     \
-	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o   \
+	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o          \
 	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 
-LIBDIRMG=.
+LIBDIRMG=$(OBJ)
 LINKMGLIBS =  -L$(LIBDIRMG)  -lmadgraph -lmodel -ldhelas3 
 
 MADLIBS=libdhelas3.a libmadgraph.a libmodel.a
@@ -173,17 +164,17 @@ PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o \
 	$(FPEOBJ)
 
 main-PYTHIA-lhef: $(PYTHIA)
-	$(FF) $(patsubst %,$(OBJ)/%,$(PYTHIA))  $(LIBS) $(LIBSFASTJET)  $(STATIC) -o $@
+	$(FF) $(patsubst %,$(OBJ)/%,$(PYTHIA)) $(LIBS) $(LIBSFASTJET)  $(STATIC) -o $@
 
 # target to cleanup
 .PHONY: clean libdhelas3.a libmadgraph.a libmodel.a
 
 XFFLAGS=$(DEBUG) $(OPT)
 libdhelas3.a:
-	cd DHELAS ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)"
+	cd DHELAS ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)" OBJ="$(OBJ)"
 
 libmadgraph.a:
-	cd Madlib ; make FC="$(F77)" F77="$(F77)" XFFLAGS"=$(XFFLAGS)"
+	cd Madlib ; make FC="$(F77)" F77="$(F77)" XFFLAGS"=$(XFFLAGS)" OBJ="$(OBJ)"
 
 ifeq ("$(COMPILER)","gfortran")
 XFFLAGS +=-ffixed-line-length-132
@@ -192,7 +183,7 @@ XFFLAGS +=-extend-source
 endif
 
 libmodel.a:
-	cd MODEL ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)"
+	cd MODEL ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)" OBJ="$(OBJ)"
 
 
 clean:

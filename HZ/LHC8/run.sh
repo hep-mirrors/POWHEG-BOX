@@ -42,14 +42,6 @@ wait
 rm powheg.input
 
 
-
-
-exit
-
-
-
-
-
 parstage=3
 echo "***********************************************"
 echo " stage " $parstage

@@ -26,7 +26,7 @@ F77=gfortran -fno-automatic -J$(OBJ) -I$(OBJ)
 ## Use -O2 to be on the safe side
 OPT=-O2
 ## For debugging uncomment the following
-#DEBUG= -ggdb -trapfpe
+#DEBUG= -ggdb 
 ifdef DEBUG
 OPT=-O0
 FPE=-ffpe-trap=invalid,zero,overflow,underflow
@@ -53,8 +53,6 @@ GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// 
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
-#VPATH= ./:../:$(OBJ):./GoSamlib/
-#VPATH= ../Parallel-grids/:./:../:$(OBJ):./GoSamlib/
 VPATH= ./:../Version-pre2-1/progress:../Version-pre2-1/:../:$(OBJDIR):./GoSamlib/
 
 INCLUDE0=$(PWD)
@@ -89,7 +87,7 @@ ifeq ("$(ANALYSIS)","YOURPROCESS")
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-PWHGANAL=pwhg_bookhist-new.o pwhg_analysis.o 
+PWHGANAL=pwhg_bookhist-new.o pwhg_analysis.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetfortran.o
@@ -161,7 +159,7 @@ main-HERWIG-lhef: $(HERWIG)
 
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o setup-PYTHIA-lhef.o pythia.o boostrot.o powheginput.o \
-	$(PWHGANAL) lhefread.o newunit.o pdfdummies.o	\
+	$(PWHGANAL) lhefread.o newunit.o 	\
 	pwhg_analysis_driver.o random.o cernroutines.o opencount.o	\
 	$(FPEOBJ)
 

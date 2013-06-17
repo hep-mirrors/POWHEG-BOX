@@ -49,10 +49,7 @@ FPE = -fpe0
 endif
 endif
 
-
-
 GOSAMLIBS=$(shell cd GoSamlib ; echo *.f *.f90 ' ' | sed 's/qlonshellcutoff.f// ; s/qlconstants.f// ; s/.f /.o /g ; s/.f90 /.o /g ; ' | tee GoSamlib.txt)
-
 
 PWD=$(shell pwd)
 WDNAME=$(shell basename $(PWD))
@@ -77,7 +74,7 @@ ifeq  ("$(STATIC)","-static")
 ## does perform this inclusion. The path has to be set by the user. 
 # LIBGFORTRANPATH= #/usr/lib/gcc/x86_64-redhat-linux/4.1.2
 # LIBSTDCPP=/lib64
- LIBSLHAPDF+=  -L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran -L$(LIBSTDCPP) -lstdc++
+LIBSLHAPDF+=  -L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran -L$(LIBSTDCPP) -lstdc++
 endif
 LIBS+=$(LIBSLHAPDF)
 else
@@ -90,11 +87,10 @@ ifeq ("$(ANALYSIS)","HWnJ")
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-#PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HWnJ.o reweightifneeded.o
 PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HWnJ.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
-#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o  fastjetfortran.o
+#PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetfortran.o
 PWHGANAL+=  fastjetfortran.o
 else
 PWHGANAL=pwhg_analysis-dummy.o
@@ -125,12 +121,12 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	init_phys.o powheginput.o pdfcalls.o sigreal.o sigcollremn.o	\
 	pwhg_analysis_driver.o checkmomzero.o		                \
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
-	reshufflemoms.o  pwhg_gosam.o                                   \
+	reshufflemoms.o pwhg_gosam.o                                    \
 	sigcollsoft.o sigvirtual.o  ubprojections.o                     \
 	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o          \
 	validflav.o $(PDFPACK) $(USER) $(FPEOBJ)
 
-LIBDIRMG=.
+LIBDIRMG=$(OBJ)
 LINKMGLIBS =  -L$(LIBDIRMG)  -lmadgraph -lmodel -ldhelas3 
 
 MADLIBS=libdhelas3.a libmadgraph.a libmodel.a
@@ -175,10 +171,10 @@ main-PYTHIA-lhef: $(PYTHIA)
 
 XFFLAGS=$(DEBUG) $(OPT)
 libdhelas3.a:
-	cd DHELAS ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)"
+	cd DHELAS ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)" OBJ="$(OBJ)"
 
 libmadgraph.a:
-	cd Madlib ; make FC="$(F77)" F77="$(F77)" XFFLAGS"=$(XFFLAGS)"
+	cd Madlib ; make FC="$(F77)" F77="$(F77)" XFFLAGS"=$(XFFLAGS)" OBJ="$(OBJ)"
 
 ifeq ("$(COMPILER)","gfortran")
 XFFLAGS +=-ffixed-line-length-132
@@ -187,7 +183,7 @@ XFFLAGS +=-extend-source
 endif
 
 libmodel.a:
-	cd MODEL ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)"
+	cd MODEL ; make FC="$(F77)" F77="$(F77)" XFFLAGS="$(XFFLAGS)" OBJ="$(OBJ)"
 
 
 clean:

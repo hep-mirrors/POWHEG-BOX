@@ -44,7 +44,7 @@ model.options= masses: mT mH, \
 #    gs,e should always be treated as identical to one               #
 ##------------------------------------------------------------------##
 one=gs,e
-zero=me,mU,mD,mC,mS,mB,wB,wT
+zero=me,mU,mD,mC,mS,mB,mBMS,wB,wT
 
 ##-- symmetries ----------------------------------------------------##
 #    List of symmentries which could simplify the virtual code.      #
@@ -117,7 +117,7 @@ filter.nlo= no_hff
 #  numpolvec    --- evaluate polarisation vectors numerically        #
 #  derive       --- tensorial reconstruction using derivatives       #
 ##------------------------------------------------------------------##
-extensions=samurai, golem95, autotools, derive
+extensions=samurai, golem95, derive, numpolvec, olp_badpts, formopt
 
 #-- SP_check -------------------------------------------------------##
 #    Single Pole check parameters:                                   #
@@ -128,12 +128,14 @@ extensions=samurai, golem95, autotools, derive
 #    SP_chk_threshold1: threshold to apply rescue                    #
 #    SP_chk_threshold2: threshold to declare rescue failed           #
 ##------------------------------------------------------------------##
-SP_check=True
-SP_verbosity=2
-SP_chk_threshold1=0.00001
-SP_chk_threshold2=0.001
+PSP_check=True
+PSP_verbosity=1
+PSP_chk_threshold1=3
+PSP_chk_threshold2=4
+PSP_chk_kfactor=-1
 
-diagsum=true
+diagsum=True
+abbrev.level=diagram
 
 ######################################################################
 ## ------------------------ program options ----------------------- ##
@@ -152,6 +154,7 @@ qgraf.bin=qgraf
 #    form.bin=tform  |     form.bin=/home/my_user_name/bin/form      #
 ##------------------------------------------------------------------##
 form.bin=tform
+form.threads=2
 
 #-- form.tempdir (text) --------------------------------------------##
 #    Temporary directory for Form. Should point to a directory       #

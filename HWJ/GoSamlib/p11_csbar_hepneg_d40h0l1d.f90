@@ -1,60 +1,81 @@
 module     p11_csbar_hepneg_d40h0l1d
-   ! file:      /home/pcl305a/luisonig/Documents/GoSamPowheg/POWHEG-BOX/HWJ/GoSa
-   ! m/Virtual/p11_csbar_hepneg/helicity0/d40h0l1d.f90
-   ! generator: haggies (1.1)
+   ! file: /home/gionata/Documenti/Lavoro/GoSamPowheg/POWHEG-BOX/HWJ_tmp/GoSam_ &
+   ! &POWHEG/Virtual/p11_csbar_hepneg/helicity0d40h0l1d.f90
+   ! generator: buildfortran_d.py
    use p11_csbar_hepneg_config, only: ki
    use p11_csbar_hepneg_util, only: cond, d => metric_tensor
-   
-
    implicit none
    private
-
    complex(ki), parameter :: i_ = (0.0_ki, 1.0_ki)
    integer, private :: iv0
    integer, private :: iv1
    real(ki), dimension(4), private :: qshift
-
-
-   public :: derivative, reconstruct_d40
+   public :: derivative , reconstruct_d40
 contains
 !---#[ function brack_1:
    pure function brack_1(Q, mu2) result(brack)
       use p11_csbar_hepneg_model
       use p11_csbar_hepneg_kinematics
       use p11_csbar_hepneg_color
-      use p11_csbar_hepneg_abbrevh0
+      use p11_csbar_hepneg_abbrevd40h0
       implicit none
       complex(ki), dimension(4), intent(in) :: Q
       complex(ki), intent(in) :: mu2
+      complex(ki), dimension(16) :: acd40
       complex(ki) :: brack
-      brack = (abb40n8+abb40n14*(spvak5k4(1)*qshift(1)-spvak5k4(2)*qshift(2)-spv&
-      &ak5k4(3)*qshift(3)-spvak5k4(4)*qshift(4))+abb40n15*(spvak6k2(1)*qshift(1)&
-      &-spvak6k2(2)*qshift(2)-spvak6k2(3)*qshift(3)-spvak6k2(4)*qshift(4))+abb40&
-      &n16*dotproduct(k2, qshift)+abb40n17*dotproduct(k6, qshift)+abb40n18*(spva&
-      &k5k1(1)*qshift(1)-spvak5k1(2)*qshift(2)-spvak5k1(3)*qshift(3)-spvak5k1(4)&
-      &*qshift(4)))
-   end  function brack_1
+      acd40(1)=dotproduct(k2,qshift)
+      acd40(2)=abb40(7)
+      acd40(3)=dotproduct(k6,qshift)
+      acd40(4)=abb40(9)
+      acd40(5)=dotproduct(qshift,spvak5k1)
+      acd40(6)=abb40(5)
+      acd40(7)=dotproduct(qshift,spvak5k4)
+      acd40(8)=abb40(10)
+      acd40(9)=dotproduct(qshift,spvak6k2)
+      acd40(10)=abb40(6)
+      acd40(11)=abb40(8)
+      acd40(12)=-acd40(9)*acd40(10)
+      acd40(13)=-acd40(7)*acd40(8)
+      acd40(14)=-acd40(5)*acd40(6)
+      acd40(15)=-acd40(3)*acd40(4)
+      acd40(16)=-acd40(1)*acd40(2)
+      brack=acd40(11)+acd40(12)+acd40(13)+acd40(14)+acd40(15)+acd40(16)
+   end function brack_1
 !---#] function brack_1:
 !---#[ function brack_2:
    pure function brack_2(Q, mu2) result(brack)
       use p11_csbar_hepneg_model
       use p11_csbar_hepneg_kinematics
       use p11_csbar_hepneg_color
-      use p11_csbar_hepneg_abbrevh0
+      use p11_csbar_hepneg_abbrevd40h0
       implicit none
       complex(ki), dimension(4), intent(in) :: Q
       complex(ki), intent(in) :: mu2
+      complex(ki), dimension(15) :: acd40
       complex(ki) :: brack
-      brack = (k2(iv1)*abb40n11+k6(iv1)*abb40n10+spvak5k1(iv1)*abb40n9+spvak5k4(&
-      &iv1)*abb40n13+spvak6k2(iv1)*abb40n12)
-   end  function brack_2
+      acd40(1)=k2(iv1)
+      acd40(2)=abb40(7)
+      acd40(3)=k6(iv1)
+      acd40(4)=abb40(9)
+      acd40(5)=spvak5k1(iv1)
+      acd40(6)=abb40(5)
+      acd40(7)=spvak5k4(iv1)
+      acd40(8)=abb40(10)
+      acd40(9)=spvak6k2(iv1)
+      acd40(10)=abb40(6)
+      acd40(11)=acd40(9)*acd40(10)
+      acd40(12)=acd40(7)*acd40(8)
+      acd40(13)=acd40(5)*acd40(6)
+      acd40(14)=acd40(3)*acd40(4)
+      acd40(15)=acd40(1)*acd40(2)
+      brack=acd40(11)+acd40(12)+acd40(13)+acd40(14)+acd40(15)
+   end function brack_2
 !---#] function brack_2:
-
 !---#[ function derivative:
-   function derivative(mu2, i1) result(numerator)
+   function derivative(mu2,i1) result(numerator)
       use p11_csbar_hepneg_globalsl1, only: epspow
       use p11_csbar_hepneg_kinematics
-      use p11_csbar_hepneg_abbrevh0
+      use p11_csbar_hepneg_abbrevd40h0
       implicit none
       complex(ki), intent(in) :: mu2
       integer, intent(in), optional :: i1
@@ -62,24 +83,24 @@ contains
       complex(ki) :: loc
       integer :: t1
       integer :: deg
-      complex(ki), dimension(4), parameter :: Q = (/&
-        &(0.0_ki,0.0_ki),(0.0_ki,0.0_ki),(0.0_ki,0.0_ki),(0.0_ki,0.0_ki)/)
+      complex(ki), dimension(4), parameter :: Q = (/ (0.0_ki,0.0_ki),(0.0_ki,0.&
+      &0_ki),(0.0_ki,0.0_ki),(0.0_ki,0.0_ki)/)
       qshift = k6
       numerator = 0.0_ki
       deg = 0
       if(present(i1)) then
-         iv1 = i1
-         deg = 1
+          iv1=i1
+          deg=1
       else
-         iv1 = 1
+          iv1=1
       end if
       t1 = 0
       if(deg.eq.0) then
-         numerator = (cond(epspow.eq.t1,brack_1,Q,mu2))
+         numerator = cond(epspow.eq.t1,brack_1,Q,mu2)
          return
       end if
       if(deg.eq.1) then
-         numerator = (cond(epspow.eq.t1,brack_2,Q,mu2))
+         numerator = cond(epspow.eq.t1,brack_2,Q,mu2)
          return
       end if
    end function derivative
@@ -90,9 +111,8 @@ contains
       implicit none
       complex(ki), parameter :: czip = (0.0_ki, 0.0_ki)
       complex(ki), parameter :: cone = (1.0_ki, 0.0_ki)
-
       type(tensrec_info_group2), intent(out) :: coeffs
-      ! rank 1 case:
+      ! rank 1 case :
       !---[# reconstruct coeffs%coeffs_40:
       coeffs%coeffs_40%c0 = derivative(czip)
       coeffs%coeffs_40%c1(1,1) = derivative(czip,1)
@@ -102,4 +122,4 @@ contains
       !---#] reconstruct coeffs%coeffs_40:
    end subroutine reconstruct_d40
 !---#] subroutine reconstruct_d40:
-end module p11_csbar_hepneg_d40h0l1d
+end module     p11_csbar_hepneg_d40h0l1d

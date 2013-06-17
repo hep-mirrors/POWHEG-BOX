@@ -34,7 +34,16 @@ contains
       use p11_csbar_hepneg_globalsl1, only: amp0,perm, use_perm, epspow
       use p11_csbar_hepneg_globalsh0, &
      & only: init_lo, rat2
-      use p11_csbar_hepneg_abbrevh0, only: init_abbrev
+      use p11_csbar_hepneg_abbrevd70h0, only: init_abbrevd70 => init_abbrev
+      use p11_csbar_hepneg_abbrevd61h0, only: init_abbrevd61 => init_abbrev
+      use p11_csbar_hepneg_abbrevd34h0, only: init_abbrevd34 => init_abbrev
+      use p11_csbar_hepneg_abbrevd40h0, only: init_abbrevd40 => init_abbrev
+      use p11_csbar_hepneg_abbrevd60h0, only: init_abbrevd60 => init_abbrev
+      use p11_csbar_hepneg_abbrevd92h0, only: init_abbrevd92 => init_abbrev
+      use p11_csbar_hepneg_abbrevd30h0, only: init_abbrevd30 => init_abbrev
+      use p11_csbar_hepneg_abbrevd37h0, only: init_abbrevd37 => init_abbrev
+      use p11_csbar_hepneg_abbrevd59h0, only: init_abbrevd59 => init_abbrev
+      use p11_csbar_hepneg_abbrevd94h0, only: init_abbrevd94 => init_abbrev
       use p11_csbar_hepneg_diagramsh0l0, only: amplitudel0 => amplitude
       use p11_csbar_hepneg_groups
       implicit none
@@ -47,6 +56,7 @@ contains
 
       real(ki), dimension(-2:0) :: acc
       real(ki), dimension(0:2,-2:0) :: samp_part
+
       logical :: acc_ok
 
       ok = .true.
@@ -67,7 +77,16 @@ contains
 
       rat2 = (0.0_ki, 0.0_ki)
       call init_lo()
-      call init_abbrev()
+      call init_abbrevd70()
+      call init_abbrevd61()
+      call init_abbrevd34()
+      call init_abbrevd40()
+      call init_abbrevd60()
+      call init_abbrevd92()
+      call init_abbrevd30()
+      call init_abbrevd37()
+      call init_abbrevd59()
+      call init_abbrevd94()
       epspow=0
       samplitude(-2) = 0.0_ki
       samplitude(-1) = 0.0_ki

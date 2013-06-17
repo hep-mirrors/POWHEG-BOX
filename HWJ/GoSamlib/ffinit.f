@@ -775,7 +775,7 @@
 *	open(ifile,file=fullname,status='OLD',READONLY,err=100)
 *
 * This has been modified to work with autoconf
-        path='/home/pcl305a/luisonig/local/gosam/share'
+        path='GoSamlib'
         fullname = path(1:index(path,' ')-1)
      +            //'/gosam-contrib/'
      +            //name

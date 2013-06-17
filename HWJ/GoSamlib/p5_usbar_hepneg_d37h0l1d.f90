@@ -1,61 +1,88 @@
 module     p5_usbar_hepneg_d37h0l1d
-   ! file:      /home/pcl305a/luisonig/Documents/GoSamPowheg/POWHEG-BOX/HWJ/GoSa
-   ! m/Virtual/p5_usbar_hepneg/helicity0/d37h0l1d.f90
-   ! generator: haggies (1.1)
+   ! file: /home/gionata/Documenti/Lavoro/GoSamPowheg/POWHEG-BOX/HWJ_tmp/GoSam_ &
+   ! &POWHEG/Virtual/p5_usbar_hepneg/helicity0d37h0l1d.f90
+   ! generator: buildfortran_d.py
    use p5_usbar_hepneg_config, only: ki
    use p5_usbar_hepneg_util, only: cond, d => metric_tensor
-   
-
    implicit none
    private
-
    complex(ki), parameter :: i_ = (0.0_ki, 1.0_ki)
    integer, private :: iv0
    integer, private :: iv1
    real(ki), dimension(4), private :: qshift
-
-
-   public :: derivative, reconstruct_d37
+   public :: derivative , reconstruct_d37
 contains
 !---#[ function brack_1:
    pure function brack_1(Q, mu2) result(brack)
       use p5_usbar_hepneg_model
       use p5_usbar_hepneg_kinematics
       use p5_usbar_hepneg_color
-      use p5_usbar_hepneg_abbrevh0
+      use p5_usbar_hepneg_abbrevd37h0
       implicit none
       complex(ki), dimension(4), intent(in) :: Q
       complex(ki), intent(in) :: mu2
+      complex(ki), dimension(19) :: acd37
       complex(ki) :: brack
-      brack = (abb37n9+abb37n10*(e6(1)*qshift(1)-e6(2)*qshift(2)-e6(3)*qshift(3)&
-      &-e6(4)*qshift(4))+abb37n11*(spvak1k6(1)*qshift(1)-spvak1k6(2)*qshift(2)-s&
-      &pvak1k6(3)*qshift(3)-spvak1k6(4)*qshift(4))+abb37n12*(spvae6k1(1)*qshift(&
-      &1)-spvae6k1(2)*qshift(2)-spvae6k1(3)*qshift(3)-spvae6k1(4)*qshift(4))+abb&
-      &37n13*(spvak6k1(1)*qshift(1)-spvak6k1(2)*qshift(2)-spvak6k1(3)*qshift(3)-&
-      &spvak6k1(4)*qshift(4))+abb37n14*dotproduct(k6, qshift)+abb37n15*dotproduc&
-      &t(k1, qshift))
-   end  function brack_1
+      acd37(1)=dotproduct(k1,qshift)
+      acd37(2)=abb37(5)
+      acd37(3)=dotproduct(k6,qshift)
+      acd37(4)=abb37(13)
+      acd37(5)=dotproduct(e6,qshift)
+      acd37(6)=abb37(11)
+      acd37(7)=dotproduct(qshift,spvak1k6)
+      acd37(8)=abb37(9)
+      acd37(9)=dotproduct(qshift,spvak6k1)
+      acd37(10)=abb37(7)
+      acd37(11)=dotproduct(qshift,spvae6k1)
+      acd37(12)=abb37(6)
+      acd37(13)=abb37(8)
+      acd37(14)=-acd37(11)*acd37(12)
+      acd37(15)=-acd37(9)*acd37(10)
+      acd37(16)=-acd37(7)*acd37(8)
+      acd37(17)=-acd37(5)*acd37(6)
+      acd37(18)=-acd37(3)*acd37(4)
+      acd37(19)=-acd37(1)*acd37(2)
+      brack=acd37(13)+acd37(14)+acd37(15)+acd37(16)+acd37(17)+acd37(18)+acd37(1&
+      &9)
+   end function brack_1
 !---#] function brack_1:
 !---#[ function brack_2:
    pure function brack_2(Q, mu2) result(brack)
       use p5_usbar_hepneg_model
       use p5_usbar_hepneg_kinematics
       use p5_usbar_hepneg_color
-      use p5_usbar_hepneg_abbrevh0
+      use p5_usbar_hepneg_abbrevd37h0
       implicit none
       complex(ki), dimension(4), intent(in) :: Q
       complex(ki), intent(in) :: mu2
+      complex(ki), dimension(18) :: acd37
       complex(ki) :: brack
-      brack = (e6(iv1)*abb37n10+k1(iv1)*abb37n15+k6(iv1)*abb37n14+spvae6k1(iv1)*&
-      &abb37n12+spvak1k6(iv1)*abb37n11+spvak6k1(iv1)*abb37n13)
-   end  function brack_2
+      acd37(1)=k1(iv1)
+      acd37(2)=abb37(5)
+      acd37(3)=k6(iv1)
+      acd37(4)=abb37(13)
+      acd37(5)=e6(iv1)
+      acd37(6)=abb37(11)
+      acd37(7)=spvak1k6(iv1)
+      acd37(8)=abb37(9)
+      acd37(9)=spvak6k1(iv1)
+      acd37(10)=abb37(7)
+      acd37(11)=spvae6k1(iv1)
+      acd37(12)=abb37(6)
+      acd37(13)=-acd37(11)*acd37(12)
+      acd37(14)=-acd37(9)*acd37(10)
+      acd37(15)=-acd37(7)*acd37(8)
+      acd37(16)=-acd37(5)*acd37(6)
+      acd37(17)=-acd37(3)*acd37(4)
+      acd37(18)=-acd37(1)*acd37(2)
+      brack=acd37(13)+acd37(14)+acd37(15)+acd37(16)+acd37(17)+acd37(18)
+   end function brack_2
 !---#] function brack_2:
-
 !---#[ function derivative:
-   function derivative(mu2, i1) result(numerator)
+   function derivative(mu2,i1) result(numerator)
       use p5_usbar_hepneg_globalsl1, only: epspow
       use p5_usbar_hepneg_kinematics
-      use p5_usbar_hepneg_abbrevh0
+      use p5_usbar_hepneg_abbrevd37h0
       implicit none
       complex(ki), intent(in) :: mu2
       integer, intent(in), optional :: i1
@@ -63,24 +90,24 @@ contains
       complex(ki) :: loc
       integer :: t1
       integer :: deg
-      complex(ki), dimension(4), parameter :: Q = (/&
-        &(0.0_ki,0.0_ki),(0.0_ki,0.0_ki),(0.0_ki,0.0_ki),(0.0_ki,0.0_ki)/)
+      complex(ki), dimension(4), parameter :: Q = (/ (0.0_ki,0.0_ki),(0.0_ki,0.&
+      &0_ki),(0.0_ki,0.0_ki),(0.0_ki,0.0_ki)/)
       qshift = -k3-k5-k4
       numerator = 0.0_ki
       deg = 0
       if(present(i1)) then
-         iv1 = i1
-         deg = 1
+          iv1=i1
+          deg=1
       else
-         iv1 = 1
+          iv1=1
       end if
       t1 = 0
       if(deg.eq.0) then
-         numerator = (cond(epspow.eq.t1,brack_1,Q,mu2))
+         numerator = cond(epspow.eq.t1,brack_1,Q,mu2)
          return
       end if
       if(deg.eq.1) then
-         numerator = (cond(epspow.eq.t1,brack_2,Q,mu2))
+         numerator = cond(epspow.eq.t1,brack_2,Q,mu2)
          return
       end if
    end function derivative
@@ -91,9 +118,8 @@ contains
       implicit none
       complex(ki), parameter :: czip = (0.0_ki, 0.0_ki)
       complex(ki), parameter :: cone = (1.0_ki, 0.0_ki)
-
       type(tensrec_info_group3), intent(out) :: coeffs
-      ! rank 1 case:
+      ! rank 1 case :
       !---[# reconstruct coeffs%coeffs_37:
       coeffs%coeffs_37%c0 = derivative(czip)
       coeffs%coeffs_37%c1(1,1) = derivative(czip,1)
@@ -103,4 +129,4 @@ contains
       !---#] reconstruct coeffs%coeffs_37:
    end subroutine reconstruct_d37
 !---#] subroutine reconstruct_d37:
-end module p5_usbar_hepneg_d37h0l1d
+end module     p5_usbar_hepneg_d37h0l1d

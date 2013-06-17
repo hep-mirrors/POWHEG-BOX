@@ -1,6 +1,6 @@
 module     p11_csbar_hepneg_model
-   ! Model parameters for the model: /home/pcl305a/luisonig/Documents/GoSamPowhe
-   ! g/POWHEG-BOX/HWJ/GoSam/Virtual/model/model
+   ! Model parameters for the model: /home/gionata/Documenti/Lavoro/GoSamPowheg/
+   ! POWHEG-BOX/HWJ_tmp/GoSam_POWHEG/Virtual/model/model
    use p11_csbar_hepneg_config, only: ki, &
    & samurai_scalar, samurai_verbosity, samurai_test, &
    & samurai_group_numerators, samurai_istop, &
@@ -44,11 +44,11 @@ module     p11_csbar_hepneg_model
    real(ki) :: GF =        0.000011663900000_ki
    real(ki), parameter :: gs =        1.000000000000000_ki
    real(ki), parameter :: mB =        0.000000000000000_ki
-   real(ki) :: mBMS =        4.200000000000000_ki
+   real(ki), parameter :: mBMS =        0.000000000000000_ki
    real(ki), parameter :: mC =        0.000000000000000_ki
    real(ki), parameter :: mD =        0.000000000000000_ki
    real(ki), parameter :: me =        0.000000000000000_ki
-   real(ki) :: mH =      114.400000000000006_ki
+   real(ki) :: mH =      125.000000000000000_ki
    real(ki), parameter :: mmu =        0.000000000000000_ki
    real(ki), parameter :: mS =        0.000000000000000_ki
    real(ki) :: mT =      171.199999999999989_ki
@@ -214,7 +214,7 @@ module     p11_csbar_hepneg_model
 
    integer, parameter, private :: line_length = 80
    integer, parameter, private :: name_length = max(7,24)
-   character(len=name_length), dimension(37) :: names = (/& 
+   character(len=name_length), dimension(36) :: names = (/& 
       & "CVBC   ", &
       & "CVBT   ", &
       & "CVBU   ", &
@@ -226,7 +226,6 @@ module     p11_csbar_hepneg_model
       & "CVSU   ", &
       & "gauge6z", &
       & "GF     ", &
-      & "mBMS   ", &
       & "mH     ", &
       & "mT     ", &
       & "mW     ", &
@@ -502,56 +501,54 @@ contains
          case(11)
             GF = re
          case(12)
-            mBMS = re
-         case(13)
             mH = re
-         case(14)
+         case(13)
             mT = re
-         case(15)
+         case(14)
             mW = re
-         case(16)
+         case(15)
             mZ = re
-         case(17)
+         case(16)
             NC = re
-         case(18)
+         case(17)
             Nf = re
-         case(19)
+         case(18)
             Nfgen = re
-         case(20)
+         case(19)
             VCB = cmplx(re, im, ki)
-         case(21)
+         case(20)
             VCD = cmplx(re, im, ki)
-         case(22)
+         case(21)
             VCS = cmplx(re, im, ki)
-         case(23)
+         case(22)
             VTB = cmplx(re, im, ki)
-         case(24)
+         case(23)
             VTD = cmplx(re, im, ki)
-         case(25)
+         case(24)
             VTS = cmplx(re, im, ki)
-         case(26)
+         case(25)
             VUB = cmplx(re, im, ki)
-         case(27)
+         case(26)
             VUD = cmplx(re, im, ki)
-         case(28)
+         case(27)
             VUS = cmplx(re, im, ki)
-         case(29)
+         case(28)
             wchi = re
-         case(30)
+         case(29)
             wghWm = re
-         case(31)
+         case(30)
             wghWp = re
-         case(32)
+         case(31)
             wghZ = re
-         case(33)
+         case(32)
             wH = re
-         case(34)
+         case(33)
             wphi = re
-         case(35)
+         case(34)
             wtau = re
-         case(36)
+         case(35)
             wW = re
-         case(37)
+         case(36)
             wZ = re
          end select
       elseif (name(1:7).eq."masses(") then
@@ -1112,4 +1109,6 @@ contains
       sort4 = m(n)
    end  function sort4
 !---#] utility functions for model initialization:
+
 end module p11_csbar_hepneg_model
+

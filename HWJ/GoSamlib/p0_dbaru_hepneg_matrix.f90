@@ -6,7 +6,7 @@ module     p0_dbaru_hepneg_matrix
      & debug_lo_diagrams, debug_nlo_diagrams, &
      & include_symmetry_factor, &
      & PSP_check, PSP_verbosity, PSP_rescue, PSP_chk_threshold1, &
-     & PSP_chk_threshold2, reduction_interoperation, &
+     & PSP_chk_threshold2, PSP_chk_kfactor, reduction_interoperation, &
      & convert_to_cdr, &
      & samurai_verbosity, samurai_test, samurai_scalar
    use p0_dbaru_hepneg_kinematics, only: &
@@ -43,15 +43,15 @@ contains
       write(banner_ch,'(A72)') "|   __   __   ___   __   __  __                  GoSam                 |"
       write(banner_ch,'(A72)') "|  / _) /  \ / __) (  ) (  \/  )         An Automated One-Loop         |"
       write(banner_ch,'(A72)') "| ( (/\( () )\__ \ /__\  )    (         Matrix Element Generator       |"
-      write(banner_ch,'(A72)') "|  \__/ \__/ (___/(_)(_)(_/\/\_)              Version 1.0              |"
+      write(banner_ch,'(A72)') "|  \__/ \__/ (___/(_)(_)(_/\/\_)          Version 1.0 Rev: 228         |"
       write(banner_ch,'(A72)') "|                                                                      |"
-      write(banner_ch,'(A72)') "|                                   (c) The GoSam Collaboration 2011   |"
+      write(banner_ch,'(A72)') "|                                (c) The GoSam Collaboration 2011-2013 |"
       write(banner_ch,'(A72)') "|                                                                      |"
       write(banner_ch,'(A72)') "|                AUTHORS:                                              |"
       write(banner_ch,'(A72)') "|                * Gavin Cullen         <gavin.cullen@desy.de>         |"
       write(banner_ch,'(A72)') "|                * Nicolas Greiner      <greiner@mpp.mpg.de>           |"
       write(banner_ch,'(A72)') "|                * Gudrun Heinrich      <gudrun@mpp.mpg.de>            |"
-      write(banner_ch,'(A72)') "|                * Gionata Luisoni      <gionata.luisoni@durham.ac.uk> |"
+      write(banner_ch,'(A72)') "|                * Gionata Luisoni      <luisonig@mpp.mpg.de>          |"
       write(banner_ch,'(A72)') "|                * Pierpaolo Mastrolia  <pierpaolo.mastrolia@cern.ch>  |"
       write(banner_ch,'(A72)') "|                * Giovanni Ossola      <gossola@citytech.cuny.edu>    |"
       write(banner_ch,'(A72)') "|                * Thomas Reiter        <reiterth@mpp.mpg.de>          |"
@@ -76,7 +76,7 @@ contains
       write(banner_ch,'(A72)') "|    GoSam or parts of it should make a clear reference to the publication:|"
       write(banner_ch,'(A72)') "|                                                                      |"
       write(banner_ch,'(A72)') "|        G. Cullen et al.,                                             |"
-      write(banner_ch,'(A72)') "|        ``Automated One-Loop Calculations with GoSam,''               |"
+      write(banner_ch,'(A72)') "|        ``Automated One-Loop Calculations with GoSam'',               |"
       write(banner_ch,'(A72)') "|        arXiv:1111.2034 [hep-ph]                                      |"
       write(banner_ch,'(A72)') frame
 
@@ -91,12 +91,13 @@ contains
       integer, optional, intent(in) :: stage
       integer, optional, intent(in) :: rndseed
       logical :: init_third_party
-      logical :: file_exists
+      logical :: file_exists, dir_exists
       integer i, j
-      character(len=30) :: file_name
-      character(len=3)  :: file_numb
-      character(len=12) :: file_pre = "gosam_badpts"
-      character(len=4)  :: file_ext = "log"
+      character(len=50) :: file_name
+      character(len=9)  :: dir_name = "BadPoints"
+      character(len=6)  :: file_numb
+      character(len=9)  :: file_pre = "gs_badpts"
+      character(len=3)  :: file_ext = "log"
       character(len=1)  :: cstage
       character(len=4)  :: crndseed
       i = 1
@@ -112,36 +113,36 @@ contains
          &                samurai_verbosity,samurai_test)
       ! call our banner
       call banner()
-      if(PSP_check .and. PSP_rescue) then
+      if(PSP_check .and. PSP_rescue .and. PSP_verbosity .ge. 1) then
+         inquire(file=dir_name, exist=dir_exists)
+         if(.not. dir_exists) then
+            call system('mkdir BadPoints')
+         end if
          if(present(stage)) then
             write(cstage,'(i1)') stage
             write(crndseed,'(i4)') rndseed
             do j=1,4
                if(crndseed(j:j).eq.' ') crndseed(j:j)='0'
             enddo
-            file_name = file_pre//"-"//cstage//"-"//crndseed//"."//file_ext
+            file_name = dir_name//"/"//file_pre//"-"//cstage//"-"//crndseed//"."//file_ext
             open(unit=42, file=file_name, status='replace', action='write')
             write(42,'(A22)') "<?xml version='1.0' ?>"
             write(42,'(A5)')  "<run>"
          else
-            file_name = file_pre//"."//file_ext
-            open(unit=42, file=file_name, status='replace', action='write')
-            write(42,'(A22)') "<?xml version='1.0' ?>"
-            write(42,'(A5)')  "<run>"
-            ! do while(file_exists)
-            !    write(file_numb, '(I3.1)') i
-            !    file_name = file_pre//trim(adjustl(file_numb))//"."//file_ext
-            !    inquire(file=file_name, exist=file_exists)
-            !    if(file_exists) then
-            !       write(*,*) "File ", file_name, " already exists!"
-            !       i = i+1
-            !    else
-            !       write(*,*) "Bad points stored in file: ", file_name
-            !       open(unit=42, file=file_name, status='unknown', action='write')
-            !       write(42,'(A22)') "<?xml version='1.0' ?>"
-            !       write(42,'(A5)')  "<run>"
-            !    endif
-            ! enddo
+            do while(file_exists)
+               write(file_numb, '(I6.1)') i
+               file_name = dir_name//"/"//file_pre//trim(adjustl(file_numb))//"."//file_ext
+               inquire(file=file_name, exist=file_exists)
+               if(file_exists) then
+                  write(*,*) "File ", file_name, " already exists!"
+                  i = i+1
+               else
+                  write(*,*) "Bad points stored in file: ", file_name
+                  open(unit=42, file=file_name, status='unknown', action='write')
+                  write(42,'(A22)') "<?xml version='1.0' ?>"
+                  write(42,'(A5)')  "<run>"
+               end if
+            enddo
          end if
       end if
       end if
@@ -177,16 +178,13 @@ contains
 
    !---#[ subroutine samplitude :
    subroutine     samplitude(vecs, scale2, amp, ok, h)
-      use p0_dbaru_hepneg_config, only: &
-         & reduction_interoperation, PSP_check, PSP_verbosity, &
-         & PSP_chk_threshold1, PSP_chk_threshold2
       implicit none
       real(ki), dimension(6, 4), intent(in) :: vecs
       real(ki), intent(in) :: scale2
       real(ki), dimension(1:4), intent(out) :: amp
       logical, intent(out), optional :: ok
       integer, intent(in), optional :: h
-      real(ki) :: rat2, sam_amp2, sam_amp3, zero
+      real(ki) :: rat2, sam_amp2, sam_amp3, kfac, zero
       integer spprec1, fpprec1, i
       real(ki), dimension(2:3) :: irp
       integer :: tmp_red_int, spprec2, fpprec2 
@@ -194,58 +192,82 @@ contains
       if(PSP_check) then
       tmp_red_int=reduction_interoperation
       call ir_subtraction(vecs, scale2, irp)
-      spprec1 = -int(log10(abs((amp(3)-irp(2))/irp(2))))
-      fpprec1 = spprec1 + int(log10(abs(amp(2)/(amp(2)-rat2))))
-      if(spprec1 .lt. PSP_chk_threshold1 .and. spprec1 .gt. -10000) then
-      if(PSP_verbosity .eq. 3) write(*,*) "UNSTABLE PHASE SPACE POINT !!"
-      if(PSP_rescue) then
-         reduction_interoperation = 1
-         sam_amp2 = amp(2)
-         sam_amp3 = amp(3)
-         call samplitudel01(vecs, scale2, amp, rat2, ok, h)
-         spprec2 = -int(log10(abs((amp(3)-irp(2))/irp(2))))
-         fpprec2 = spprec2 + int(log10(abs(amp(2)/(amp(2)-rat2))))
-         if(spprec2 .le. PSP_chk_threshold2 .and. spprec2 .gt. -10000) then
-            if(PSP_verbosity .ge. 2) then
-!              write(*,*) "RESCUE FAILED !!"
-!              write(*,*) "process: p0_dbaru_hepneg"
-!              write(*,*) "#digits finite | PSP_chk_threshold2"
-!              write(*,*)  fpprec2, PSP_chk_threshold2
-!              write(*,*)
-               write(42,'(2x,A7)')"<event>"
-               write(42,'(4x,A15,A15,A3)') "<process name='", &
-                    &   "p0_dbaru_hepneg","'/>"
-               write(42,'(4x,A27,I2.1,A14,I2.1,A3)') "<pspThresholds threshold1='", &
-                    &   PSP_chk_threshold1, "' threshold2='", PSP_chk_threshold2, "'/>"
-               write(42,'(4x,A17,I2.1,A10,I2.1,A3)') "<precSam spprec='", &
-                    &   spprec1, "' fpprec='", fpprec1, "'/>"
-               write(42,'(4x,A17,I2.1,A10,I2.1,A3)') "<precGol spprec='", &
-                    &   spprec2, "' fpprec='", fpprec2, "'/>"
-               write(42,'(4x,A18,D23.16,A7,D23.16,A6,D23.16,A3)') "<singlePoles sam='", sam_amp3, &
-                    &   "' gol='", amp(3), "' ir='", irp(2),"'/>"
-               write(42,'(4x,A17,D23.16,A8,D23.16,2(A7,D23.16),A3)') "<amplitude born='", amp(1), &
-                    &   "' rat2='", rat2, "' sam='", sam_amp2, "' gol='", amp(2), "'/>"
-               write(42,'(4x,A9)') "<momenta>"
-               do i=1,6
-                  write(42,'(8x,A8,3(D23.16,A6),D23.16,A3)') "<mom e='", vecs(i,1), "' px='", vecs(i,2), &
-                       &     "' py='", vecs(i,3), "' pz='", vecs(i,4), "'/>"
-               enddo
-               write(42,'(4x,A10)')"</momenta>"
-               write(42,'(2x,A8)')"</event>"
-            endif
-            ! Give back a Nan so that point is discarded
-            zero = log(1.0_ki)
-            amp(2)= 1.0_ki/zero
-         else
-            if(PSP_verbosity .eq. 3) write(*,*) "POINT SAVED !!"
-            if(PSP_verbosity .ge. 3) write(*,*)
-         end if
-         reduction_interoperation = tmp_red_int
+      if((amp(3)-irp(2)) .ne. 0.0_ki) then
+         spprec1 = -int(log10(abs((amp(3)-irp(2))/irp(2))))
       else
-         ! Give back a Nan so that point is discarded
-         zero = log(1.0_ki)
-         amp(2)= 1.0_ki/zero
-      end if
+         spprec1 = 16
+      endif
+      if((amp(2)-rat2) .ne. 0.0_ki) then
+         fpprec1 = spprec1 + int(log10(abs(amp(2)/(amp(2)-rat2))))
+      else
+         fpprec1 = -10
+      endif
+      if(amp(1) .ne. 0.0_ki) then
+         kfac = amp(2)/amp(1)
+      else
+         kfac = 0.0_ki
+      endif
+      if(spprec1 .lt. PSP_chk_threshold1 .and. spprec1 .gt. -10000 .or. &
+           (abs(kfac) > PSP_chk_kfactor .and. PSP_chk_kfactor > 0)) then
+         if(PSP_verbosity .eq. 2) write(*,*) "UNSTABLE PHASE SPACE POINT !!"
+         if(PSP_rescue) then
+            reduction_interoperation = 1
+            sam_amp2 = amp(2)
+            sam_amp3 = amp(3)
+            call samplitudel01(vecs, scale2, amp, rat2, ok, h)
+            if((amp(3)-irp(2)) .ne. 0.0_ki) then
+               spprec2 = -int(log10(abs((amp(3)-irp(2))/irp(2))))
+            else
+               spprec2 = 16
+            endif
+            if((amp(2)-rat2) .ne. 0.0_ki) then
+               fpprec2 = spprec2 + int(log10(abs(amp(2)/(amp(2)-rat2))))
+            else
+               fpprec2 = -10
+            endif
+            if(amp(1) .ne. 0.0_ki) then
+               kfac = amp(2)/amp(1)
+            else
+               kfac = 0.0_ki
+            endif
+            if(spprec2 .le. PSP_chk_threshold2 .and. spprec2 .gt. -10000 .or. &
+               (abs(kfac) > PSP_chk_kfactor .and. PSP_chk_kfactor > 0)) then
+               if(PSP_verbosity .ge. 1) then
+                  write(42,'(2x,A7)')"<event>"
+                  if(spprec2 .le. PSP_chk_threshold2 .and. spprec2 .gt. -10000) then
+                     write(42,'(4x,A15,A15,A18,A3)') "<process name='", &
+                          &   "p0_dbaru_hepneg", "' problem='sinpole","'/>"
+                  else if(abs(kfac) > PSP_chk_kfactor) then
+                     write(42,'(4x,A15,A15,A18,A3)') "<process name='", &
+                          &   "p0_dbaru_hepneg", "' problem='kfactor","'/>"
+                  end if
+                  write(42,'(4x,A27,I2.1,A14,I2.1,A3)') "<pspThresholds threshold1='", &
+                       &   PSP_chk_threshold1, "' threshold2='", PSP_chk_threshold2, "'/>"
+                  write(42,'(4x,A17,I2.1,A10,I2.1,A3)') "<precSam spprec='", &
+                       &   spprec1, "' fpprec='", fpprec1, "'/>"
+                  write(42,'(4x,A17,I2.1,A10,I2.1,A3)') "<precGol spprec='", &
+                       &   spprec2, "' fpprec='", fpprec2, "'/>"
+                  write(42,'(4x,A18,D23.16,A7,D23.16,A6,D23.16,A3)') "<singlePoles sam='", sam_amp3, &
+                       &   "' gol='", amp(3), "' ir='", irp(2),"'/>"
+                  write(42,'(4x,A17,D23.16,A8,D23.16,2(A7,D23.16),A3)') "<amplitude born='", amp(1), &
+                       &   "' rat2='", rat2, "' sam='", sam_amp2, "' gol='", amp(2), "'/>"
+                  write(42,'(4x,A9)') "<momenta>"
+                  do i=1,6
+                     write(42,'(8x,A8,3(D23.16,A6),D23.16,A3)') "<mom e='", vecs(i,1), "' px='", vecs(i,2), &
+                          &     "' py='", vecs(i,3), "' pz='", vecs(i,4), "'/>"
+                  enddo
+                  write(42,'(4x,A10)')"</momenta>"
+                  write(42,'(2x,A8)')"</event>"
+               endif
+               ! Give back a Nan so that point is discarded
+               zero = log(1.0_ki)
+               amp(2)= 1.0_ki/zero
+            else
+               if(PSP_verbosity .eq. 2) write(*,*) "POINT SAVED !!"
+               if(PSP_verbosity .ge. 2) write(*,*)
+            end if
+            reduction_interoperation = tmp_red_int
+         end if
       end if
    end if
    end subroutine samplitude

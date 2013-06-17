@@ -1,6 +1,6 @@
 module madds
    use precision, only: ki, ki_ql, ki_lt
-    use precision_golem, only: ki_gol => ki
+!AC!use precision_golem, only: ki_gol => ki
     use avh_olo_kinds, only: ki_avh => kindr2
    use constants
    use options
@@ -99,72 +99,72 @@ module madds
         end function qlI1
      end interface
 
-         interface
-            function gD0(p1,p2,p3,p4,s12,s23,m1,m2,m3,m4,mu2,ep)
-               use precision_golem, only: ki
-               implicit none
-               real(ki), intent(in) :: p1,p2,p3,p4,s12,s23
-               real(ki), intent(in) :: m1,m2,m3,m4
-               real(ki), intent(in) :: mu2
-               integer, intent(in) :: ep
-               complex(ki) :: gD0
-            end function gD0
-         end interface
-         interface
-            function gC0(p1,p2,p3,m1,m2,m3,mu2,ep)
-               use precision_golem, only: ki
-               implicit none
-               real(ki), intent(in) :: p1,p2,p3
-               real(ki), intent(in) :: m1,m2,m3
-               real(ki), intent(in) :: mu2
-               integer, intent(in) :: ep
-               complex(ki) :: gC0
-            end function gC0
-         end interface
-         interface
-            function gB0(p1,m1,m2,mu2,ep)
-               use precision_golem, only: ki
-               implicit none
-               real(ki), intent(in) :: p1
-               real(ki), intent(in) :: m1,m2
-               real(ki), intent(in) :: mu2
-               integer, intent(in) :: ep
-               complex(ki) :: gB0
-            end function gB0
-         end interface
-         interface
-            function gD0C(p1,p2,p3,p4,s12,s23,m1,m2,m3,m4,mu2,ep)
-               use precision_golem, only: ki
-               implicit none
-               complex(ki), intent(in) :: p1,p2,p3,p4,s12,s23
-               complex(ki), intent(in) :: m1,m2,m3,m4
-               real(ki), intent(in) :: mu2
-               integer, intent(in) :: ep
-               complex(ki) :: gD0C
-            end function gD0C
-         end interface
-         interface
-            function gC0C(p1,p2,p3,m1,m2,m3,mu2,ep)
-               use precision_golem, only: ki
-               implicit none
-               complex(ki), intent(in) :: p1,p2,p3
-               complex(ki), intent(in) :: m1,m2,m3
-               real(ki), intent(in) :: mu2
-               integer, intent(in) :: ep
-               complex(ki) :: gC0C
-            end function gC0C
-         end interface
-         interface
-            function gB0C(p1,m1,m2,mu2,ep)
-               use precision_golem, only: ki
-               implicit none
-               complex(ki), intent(in) :: p1
-               complex(ki), intent(in) :: m1,m2
-               real(ki), intent(in) :: mu2
-               integer, intent(in) :: ep
-               complex(ki) :: gB0C
-            end function gB0C
-         end interface
+!AC!     interface
+!AC!        function gD0(p1,p2,p3,p4,s12,s23,m1,m2,m3,m4,mu2,ep)
+!AC!           use precision_golem, only: ki
+!AC!           implicit none
+!AC!           real(ki), intent(in) :: p1,p2,p3,p4,s12,s23
+!AC!           real(ki), intent(in) :: m1,m2,m3,m4
+!AC!           real(ki), intent(in) :: mu2
+!AC!           integer, intent(in) :: ep
+!AC!           complex(ki) :: gD0
+!AC!        end function gD0
+!AC!     end interface
+!AC!     interface
+!AC!        function gC0(p1,p2,p3,m1,m2,m3,mu2,ep)
+!AC!           use precision_golem, only: ki
+!AC!           implicit none
+!AC!           real(ki), intent(in) :: p1,p2,p3
+!AC!           real(ki), intent(in) :: m1,m2,m3
+!AC!           real(ki), intent(in) :: mu2
+!AC!           integer, intent(in) :: ep
+!AC!           complex(ki) :: gC0
+!AC!        end function gC0
+!AC!     end interface
+!AC!     interface
+!AC!        function gB0(p1,m1,m2,mu2,ep)
+!AC!           use precision_golem, only: ki
+!AC!           implicit none
+!AC!           real(ki), intent(in) :: p1
+!AC!           real(ki), intent(in) :: m1,m2
+!AC!           real(ki), intent(in) :: mu2
+!AC!           integer, intent(in) :: ep
+!AC!           complex(ki) :: gB0
+!AC!        end function gB0
+!AC!     end interface
+!AC!     interface
+!AC!        function gD0C(p1,p2,p3,p4,s12,s23,m1,m2,m3,m4,mu2,ep)
+!AC!           use precision_golem, only: ki
+!AC!           implicit none
+!AC!           complex(ki), intent(in) :: p1,p2,p3,p4,s12,s23
+!AC!           complex(ki), intent(in) :: m1,m2,m3,m4
+!AC!           real(ki), intent(in) :: mu2
+!AC!           integer, intent(in) :: ep
+!AC!           complex(ki) :: gD0C
+!AC!        end function gD0C
+!AC!     end interface
+!AC!     interface
+!AC!        function gC0C(p1,p2,p3,m1,m2,m3,mu2,ep)
+!AC!           use precision_golem, only: ki
+!AC!           implicit none
+!AC!           complex(ki), intent(in) :: p1,p2,p3
+!AC!           complex(ki), intent(in) :: m1,m2,m3
+!AC!           real(ki), intent(in) :: mu2
+!AC!           integer, intent(in) :: ep
+!AC!           complex(ki) :: gC0C
+!AC!        end function gC0C
+!AC!     end interface
+!AC!     interface
+!AC!        function gB0C(p1,m1,m2,mu2,ep)
+!AC!           use precision_golem, only: ki
+!AC!           implicit none
+!AC!           complex(ki), intent(in) :: p1
+!AC!           complex(ki), intent(in) :: m1,m2
+!AC!           real(ki), intent(in) :: mu2
+!AC!           integer, intent(in) :: ep
+!AC!           complex(ki) :: gB0C
+!AC!        end function gB0C
+!AC!     end interface
 
 !AC!     interface
 !AC!        function D0(p1,p2,p3,p4,s12,s23,m1,m2,m3,m4)
@@ -396,7 +396,7 @@ contains
       complex(ki) :: c40
           complex(ki_avh), dimension(0:2) :: vald0
       complex(ki) :: ctmp
-          complex(ki), dimension(-2:0) :: d0t
+!AC!      complex(ki), dimension(-2:0) :: d0t
       integer :: ep, cache_index
 
       if (notfirsti.eqv.(.false.)) then
@@ -506,42 +506,42 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-            call gtrunc_rm(abs(V32)+abs(V31), &
-            &   V1,V2,V3,V21,V32,V31,m0,m1,m2,m3)
-            do ep=-2,0
-               if (present(cache_flag)) then
-                  if (cache_flag) then
-                     d0t(ep) = scalar_cache(ep,cache_index)
-                  else
-                     d0t(ep)=gD0(real(V1,ki_gol),real(V21,ki_gol),&
-                     &        real(V32,ki_gol),real(V3,ki_gol),&
-                     &        real(V2,ki_gol),real(V31,ki_gol),&
-                     &        real(m0,ki_gol),real(m1,ki_gol),&
-                     &        real(m2,ki_gol),real(m3,ki_gol),&
-                     &        real(scale2,ki_gol),ep)
-                     scalar_cache(ep,cache_index) = d0t(ep)
-                  end if
-               else
-                  d0t(ep)=gD0(real(V1,ki_gol),real(V21,ki_gol),&
-                  &        real(V32,ki_gol),real(V3,ki_gol),&
-                  &        real(V2,ki_gol),real(V31,ki_gol),&
-                  &        real(m0,ki_gol),real(m1,ki_gol),&
-                  &        real(m2,ki_gol),real(m3,ki_gol),&
-                  &        real(scale2,ki_gol),ep)
-               end if
-            end do
-            !d0t( 0) = d0t(0) + log(scale2) * (d0t(-1) &
-            !      & + 0.5_ki * log(scale2) * d0t(-2))
-            !d0t(-1) = d0t(-1) + log(scale2) * d0t(-2)
-            if (verbosity.ge.2) then
-               do ep=-2,0
-                  write(iout,1) 'I4(',cut4,',',ep,&
-                  & ') = (',real(d0t(ep)),',',aimag(d0t(ep)),'  )' 
-               end do
-            end if
-            tot4(:) = d0t(:) * c40
-!AC!        print*, "isca=3: Golem95 not available"
-!AC!        stop
+!AC!        call gtrunc_rm(abs(V32)+abs(V31), &
+!AC!        &   V1,V2,V3,V21,V32,V31,m0,m1,m2,m3)
+!AC!        do ep=-2,0
+!AC!           if (present(cache_flag)) then
+!AC!              if (cache_flag) then
+!AC!                 d0t(ep) = scalar_cache(ep,cache_index)
+!AC!              else
+!AC!                 d0t(ep)=gD0(real(V1,ki_gol),real(V21,ki_gol),&
+!AC!                 &        real(V32,ki_gol),real(V3,ki_gol),&
+!AC!                 &        real(V2,ki_gol),real(V31,ki_gol),&
+!AC!                 &        real(m0,ki_gol),real(m1,ki_gol),&
+!AC!                 &        real(m2,ki_gol),real(m3,ki_gol),&
+!AC!                 &        real(scale2,ki_gol),ep)
+!AC!                 scalar_cache(ep,cache_index) = d0t(ep)
+!AC!              end if
+!AC!           else
+!AC!              d0t(ep)=gD0(real(V1,ki_gol),real(V21,ki_gol),&
+!AC!              &        real(V32,ki_gol),real(V3,ki_gol),&
+!AC!              &        real(V2,ki_gol),real(V31,ki_gol),&
+!AC!              &        real(m0,ki_gol),real(m1,ki_gol),&
+!AC!              &        real(m2,ki_gol),real(m3,ki_gol),&
+!AC!              &        real(scale2,ki_gol),ep)
+!AC!           end if
+!AC!        end do
+!AC!        !d0t( 0) = d0t(0) + log(scale2) * (d0t(-1) &
+!AC!        !      & + 0.5_ki * log(scale2) * d0t(-2))
+!AC!        !d0t(-1) = d0t(-1) + log(scale2) * d0t(-2)
+!AC!        if (verbosity.ge.2) then
+!AC!           do ep=-2,0
+!AC!              write(iout,1) 'I4(',cut4,',',ep,&
+!AC!              & ') = (',real(d0t(ep)),',',aimag(d0t(ep)),'  )' 
+!AC!           end do
+!AC!        end if
+!AC!        tot4(:) = d0t(:) * c40
+            print*, "isca=3: Golem95 not available"
+            stop
       elseif (isca.eq.4) then
 !AC!        tot4(-2) = 0
 !AC!        tot4(-1) = 0
@@ -605,7 +605,7 @@ contains
       complex(ki) :: c30
           complex(ki_avh), dimension(0:2) :: valc0
       complex(ki) :: ctmp
-          complex(ki), dimension(-2:0) :: c0t
+!AC!      complex(ki), dimension(-2:0) :: c0t
       integer :: ep, cache_index
 
       if (notfirsti.eqv.(.false.)) then
@@ -700,38 +700,38 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-            call gtrunc_rm(abs(V1)+abs(V2)+abs(V3), &
-            &                V1,V2,V3,m0,m1,m2)
-            do ep=-2,0
-               if (present(cache_flag)) then
-                  if (cache_flag) then
-                     c0t(ep) = scalar_cache(ep,cache_index)
-                  else
-                     c0t(ep)=gC0(real(V1,ki_gol),real(V2,ki_gol),&
-                     &        real(V3,ki_gol),real(m0,ki_gol),&
-                     &        real(m1,ki_gol),real(m2,ki_gol),&
-                     &        real(scale2,ki_gol),ep)
-                     scalar_cache(ep,cache_index) = c0t(ep)
-                  end if
-               else
-                  c0t(ep)=gC0(real(V1,ki_gol),real(V2,ki_gol),&
-                  &        real(V3,ki_gol),real(m0,ki_gol),&
-                  &        real(m1,ki_gol),real(m2,ki_gol),&
-                  &        real(scale2,ki_gol),ep)
-               end if
-            end do
-            !c0t( 0) = c0t(0) + log(scale2) * (c0t(-1) &
-            !      & + 0.5_ki * log(scale2) * c0t(-2))
-            !c0t(-1) = c0t(-1) + log(scale2) * c0t(-2)
-            if (verbosity.ge.2) then
-               do ep=-2,0
-                  write(iout,1) 'I3(',cut3,',',ep,&
-                 & ') = (',real(c0t(ep)),',',aimag(c0t(ep)),'  )' 
-               end do
-            end if
-            tot3(:) = c0t(:) * c30
-!AC!        print*, "isca=3: Golem95 not available"
-!AC!        stop
+!AC!        call gtrunc_rm(abs(V1)+abs(V2)+abs(V3), &
+!AC!        &                V1,V2,V3,m0,m1,m2)
+!AC!        do ep=-2,0
+!AC!           if (present(cache_flag)) then
+!AC!              if (cache_flag) then
+!AC!                 c0t(ep) = scalar_cache(ep,cache_index)
+!AC!              else
+!AC!                 c0t(ep)=gC0(real(V1,ki_gol),real(V2,ki_gol),&
+!AC!                 &        real(V3,ki_gol),real(m0,ki_gol),&
+!AC!                 &        real(m1,ki_gol),real(m2,ki_gol),&
+!AC!                 &        real(scale2,ki_gol),ep)
+!AC!                 scalar_cache(ep,cache_index) = c0t(ep)
+!AC!              end if
+!AC!           else
+!AC!              c0t(ep)=gC0(real(V1,ki_gol),real(V2,ki_gol),&
+!AC!              &        real(V3,ki_gol),real(m0,ki_gol),&
+!AC!              &        real(m1,ki_gol),real(m2,ki_gol),&
+!AC!              &        real(scale2,ki_gol),ep)
+!AC!           end if
+!AC!        end do
+!AC!        !c0t( 0) = c0t(0) + log(scale2) * (c0t(-1) &
+!AC!        !      & + 0.5_ki * log(scale2) * c0t(-2))
+!AC!        !c0t(-1) = c0t(-1) + log(scale2) * c0t(-2)
+!AC!        if (verbosity.ge.2) then
+!AC!           do ep=-2,0
+!AC!              write(iout,1) 'I3(',cut3,',',ep,&
+!AC!             & ') = (',real(c0t(ep)),',',aimag(c0t(ep)),'  )' 
+!AC!           end do
+!AC!        end if
+!AC!        tot3(:) = c0t(:) * c30
+            print*, "isca=3: Golem95 not available"
+            stop
       elseif (isca.eq.4) then
 !AC!        tot3(-2) = 0
 !AC!        tot3(-1) = 0
@@ -903,56 +903,56 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-            if (present(cache_flag)) then
-               if (cache_flag) then
-                  J0(:)  = scalar_cache(:,cache_index+0)
-                  J1(:)  = scalar_cache(:,cache_index+1)
-                  J01(:) = scalar_cache(:,cache_index+2)
-                  J11(:) = scalar_cache(:,cache_index+3)
-                  J00(:) = scalar_cache(:,cache_index+4)
-               else
-                  call gtrunc_rm(abs(K11)+1.0_ki, K11,m0,m1)
-                  do ep=-2,0
-                     J00(ep)= gB0(real(K11,ki_gol),&
-                 &           real(m0,ki_gol),real(m0,ki_gol),&
-                 &           real(scale2,ki_gol),ep)
-                     J11(ep)= gB0(real(K11,ki_gol),&
-                 &           real(m1,ki_gol),real(m1,ki_gol),&
-                 &           real(scale2,ki_gol),ep)
-                     J01(ep)= gB0(real(K11,ki_gol),&
-                 &           real(m0,ki_gol),real(m1,ki_gol),&
-                 &           real(scale2,ki_gol),ep)
-                     J0(ep) = gA0(real(m0,ki_gol),&
-                 &           real(scale2,ki_gol),ep)
-                     J1(ep) = gA0(real(m1,ki_gol),&
-                 &           real(scale2,ki_gol),ep)
-                  end do
-                  scalar_cache(:,cache_index+0) = J0(:)
-                  scalar_cache(:,cache_index+1) = J1(:)
-                  scalar_cache(:,cache_index+2) = J01(:)
-                  scalar_cache(:,cache_index+3) = J11(:)
-                  scalar_cache(:,cache_index+4) = J00(:)
-               end if
-            else
-               call gtrunc_rm(abs(K11)+1.0_ki, K11,m0,m1)
-               do ep=-2,0
-                  J00(ep)= gB0(real(K11,ki_gol),&
-              &           real(m0,ki_gol),real(m0,ki_gol),&
-              &           real(scale2,ki_gol),ep)
-                  J11(ep)= gB0(real(K11,ki_gol),&
-              &           real(m1,ki_gol),real(m1,ki_gol),&
-              &           real(scale2,ki_gol),ep)
-                  J01(ep)= gB0(real(K11,ki_gol),&
-              &           real(m0,ki_gol),real(m1,ki_gol),&
-              &           real(scale2,ki_gol),ep)
-                  J0(ep) = gA0(real(m0,ki_gol),&
-              &           real(scale2,ki_gol),ep)
-                  J1(ep) = gA0(real(m1,ki_gol),&
-              &           real(scale2,ki_gol),ep)
-               end do
-            end if
-!AC!        print*, "isca=3: Golem95 not available"
-!AC!        stop
+!AC!        if (present(cache_flag)) then
+!AC!           if (cache_flag) then
+!AC!              J0(:)  = scalar_cache(:,cache_index+0)
+!AC!              J1(:)  = scalar_cache(:,cache_index+1)
+!AC!              J01(:) = scalar_cache(:,cache_index+2)
+!AC!              J11(:) = scalar_cache(:,cache_index+3)
+!AC!              J00(:) = scalar_cache(:,cache_index+4)
+!AC!           else
+!AC!              call gtrunc_rm(abs(K11)+1.0_ki, K11,m0,m1)
+!AC!              do ep=-2,0
+!AC!                 J00(ep)= gB0(real(K11,ki_gol),&
+!AC!             &           real(m0,ki_gol),real(m0,ki_gol),&
+!AC!             &           real(scale2,ki_gol),ep)
+!AC!                 J11(ep)= gB0(real(K11,ki_gol),&
+!AC!             &           real(m1,ki_gol),real(m1,ki_gol),&
+!AC!             &           real(scale2,ki_gol),ep)
+!AC!                 J01(ep)= gB0(real(K11,ki_gol),&
+!AC!             &           real(m0,ki_gol),real(m1,ki_gol),&
+!AC!             &           real(scale2,ki_gol),ep)
+!AC!                 J0(ep) = gA0(real(m0,ki_gol),&
+!AC!             &           real(scale2,ki_gol),ep)
+!AC!                 J1(ep) = gA0(real(m1,ki_gol),&
+!AC!             &           real(scale2,ki_gol),ep)
+!AC!              end do
+!AC!              scalar_cache(:,cache_index+0) = J0(:)
+!AC!              scalar_cache(:,cache_index+1) = J1(:)
+!AC!              scalar_cache(:,cache_index+2) = J01(:)
+!AC!              scalar_cache(:,cache_index+3) = J11(:)
+!AC!              scalar_cache(:,cache_index+4) = J00(:)
+!AC!           end if
+!AC!        else
+!AC!           call gtrunc_rm(abs(K11)+1.0_ki, K11,m0,m1)
+!AC!           do ep=-2,0
+!AC!              J00(ep)= gB0(real(K11,ki_gol),&
+!AC!          &           real(m0,ki_gol),real(m0,ki_gol),&
+!AC!          &           real(scale2,ki_gol),ep)
+!AC!              J11(ep)= gB0(real(K11,ki_gol),&
+!AC!          &           real(m1,ki_gol),real(m1,ki_gol),&
+!AC!          &           real(scale2,ki_gol),ep)
+!AC!              J01(ep)= gB0(real(K11,ki_gol),&
+!AC!          &           real(m0,ki_gol),real(m1,ki_gol),&
+!AC!          &           real(scale2,ki_gol),ep)
+!AC!              J0(ep) = gA0(real(m0,ki_gol),&
+!AC!          &           real(scale2,ki_gol),ep)
+!AC!              J1(ep) = gA0(real(m1,ki_gol),&
+!AC!          &           real(scale2,ki_gol),ep)
+!AC!           end do
+!AC!        end if
+            print*, "isca=3: Golem95 not available"
+            stop
       elseif (isca.eq.4) then
 !AC!        ep = -dim(0, int(getlambda()))
 !AC!        J00(:) = 0.0_ki_lt
@@ -1133,44 +1133,44 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-          if (verbosity.ge.2) write(iout,1) &
-           & 'I1(',cut1,',',-2,') = (',0.0_ki,',',0.0_ki,'  )' 
-          tot1(-2) = (0.0_ki,0.0_ki)
-          if (present(cache_flag)) then
-             if (cache_flag) then
-                do ep=-1,0
-                   ctmp = scalar_cache(ep,cache_index)
-                   tot1(ep) = c1(0)*ctmp
-                   if (verbosity.ge.2) write(iout,1) &
-                     & 'I1(',cut1,',',ep,') = (',&
-                     & real(ctmp),',',aimag(ctmp),'  )' 
-                enddo
-             else
-                scalar_cache(-2,cache_index) = czip
-                call gtrunc_rm(1.0_ki, m0)
-                do ep=-1,0
-                   ctmp = gA0(real(m0,ki_gol),&
-                  &        real(scale2,ki_gol),ep)
-                   scalar_cache(ep,cache_index) = ctmp
-                   tot1(ep) = c1(0)*ctmp
-                   if (verbosity.ge.2) write(iout,1) &
-                     & 'I1(',cut1,',',ep,') = (',&
-                     & real(ctmp),',',aimag(ctmp),'  )' 
-                enddo
-             end if
-          else
-             call gtrunc_rm(1.0_ki, m0)
-             do ep=-1,0
-                ctmp = gA0(real(m0,ki_gol),&
-               &        real(scale2,ki_gol),ep)
-                tot1(ep) = c1(0)*ctmp
-                if (verbosity.ge.2) write(iout,1) &
-                  & 'I1(',cut1,',',ep,') = (',&
-                  & real(ctmp),',',aimag(ctmp),'  )' 
-             enddo
-          end if
-!AC!      print*, "isca=3: Golem95 not available"
-!AC!      stop
+!AC!      if (verbosity.ge.2) write(iout,1) &
+!AC!       & 'I1(',cut1,',',-2,') = (',0.0_ki,',',0.0_ki,'  )' 
+!AC!      tot1(-2) = (0.0_ki,0.0_ki)
+!AC!      if (present(cache_flag)) then
+!AC!         if (cache_flag) then
+!AC!            do ep=-1,0
+!AC!               ctmp = scalar_cache(ep,cache_index)
+!AC!               tot1(ep) = c1(0)*ctmp
+!AC!               if (verbosity.ge.2) write(iout,1) &
+!AC!                 & 'I1(',cut1,',',ep,') = (',&
+!AC!                 & real(ctmp),',',aimag(ctmp),'  )' 
+!AC!            enddo
+!AC!         else
+!AC!            scalar_cache(-2,cache_index) = czip
+!AC!            call gtrunc_rm(1.0_ki, m0)
+!AC!            do ep=-1,0
+!AC!               ctmp = gA0(real(m0,ki_gol),&
+!AC!              &        real(scale2,ki_gol),ep)
+!AC!               scalar_cache(ep,cache_index) = ctmp
+!AC!               tot1(ep) = c1(0)*ctmp
+!AC!               if (verbosity.ge.2) write(iout,1) &
+!AC!                 & 'I1(',cut1,',',ep,') = (',&
+!AC!                 & real(ctmp),',',aimag(ctmp),'  )' 
+!AC!            enddo
+!AC!         end if
+!AC!      else
+!AC!         call gtrunc_rm(1.0_ki, m0)
+!AC!         do ep=-1,0
+!AC!            ctmp = gA0(real(m0,ki_gol),&
+!AC!           &        real(scale2,ki_gol),ep)
+!AC!            tot1(ep) = c1(0)*ctmp
+!AC!            if (verbosity.ge.2) write(iout,1) &
+!AC!              & 'I1(',cut1,',',ep,') = (',&
+!AC!              & real(ctmp),',',aimag(ctmp),'  )' 
+!AC!         enddo
+!AC!      end if
+          print*, "isca=3: Golem95 not available"
+          stop
       elseif (isca.eq.4) then
 !AC!      tot1(-2) = 0
 !AC!      tot1(-1) = 0
@@ -1223,7 +1223,7 @@ contains
       complex(ki) :: c40
           complex(ki_avh), dimension(0:2) :: vald0
       complex(ki) :: ctmp
-          complex(ki), dimension(-2:0) :: d0t
+!AC!      complex(ki), dimension(-2:0) :: d0t
       integer :: ep, cache_index
 
       if (notfirsti.eqv.(.false.)) then
@@ -1323,54 +1323,54 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-            call gtrunc_rm(abs(V32)+abs(V31), V1,V2,V3,V21,V32,V31)
-            call gtrunc_cm(abs(V32)+abs(V31), m0,m1,m2,m3)
-            do ep=-2,0
-               if (present(cache_flag)) then
-                  if (cache_flag) then
-                     d0t(ep) = scalar_cache(ep,cache_index)
-                  else
-                     d0t(ep)=gD0C(&
-                    &        cmplx(V1,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V21,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V32,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V3,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V2,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V31,0.0_ki_gol,ki_gol), &
-                    &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                    &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                    &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
-                    &        cmplx(real(m3,ki_gol),aimag(m3),ki_gol),&
-                    &        real(scale2,ki_gol),ep)
-                     scalar_cache(ep,cache_index) = d0t(ep)
-                  end if
-               else
-                  d0t(ep)=gD0C(&
-                 &        cmplx(V1,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V21,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V32,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V3,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V2,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V31,0.0_ki_gol,ki_gol), &
-                 &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                 &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                 &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
-                 &        cmplx(real(m3,ki_gol),aimag(m3),ki_gol),&
-                 &        real(scale2,ki_gol),ep)
-               end if
-            end do
-            !d0t( 0) = d0t(0) + log(scale2) * (d0t(-1) &
-            !      & + 0.5_ki * log(scale2) * d0t(-2))
-            !d0t(-1) = d0t(-1) + log(scale2) * d0t(-2)
-            if (verbosity.ge.2) then
-               do ep=-2,0
-                  write(iout,1) 'I4(',cut4,',',ep,&
-                  & ') = (',real(d0t(ep)),',',aimag(d0t(ep)),'  )' 
-               end do
-            end if
-            tot4(:) = d0t(:) * c40
-!AC!        print*, "isca=3: Golem95 not available"
-!AC!        stop
+!AC!        call gtrunc_rm(abs(V32)+abs(V31), V1,V2,V3,V21,V32,V31)
+!AC!        call gtrunc_cm(abs(V32)+abs(V31), m0,m1,m2,m3)
+!AC!        do ep=-2,0
+!AC!           if (present(cache_flag)) then
+!AC!              if (cache_flag) then
+!AC!                 d0t(ep) = scalar_cache(ep,cache_index)
+!AC!              else
+!AC!                 d0t(ep)=gD0C(&
+!AC!                &        cmplx(V1,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V21,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V32,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V3,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V2,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V31,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!                &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!                &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
+!AC!                &        cmplx(real(m3,ki_gol),aimag(m3),ki_gol),&
+!AC!                &        real(scale2,ki_gol),ep)
+!AC!                 scalar_cache(ep,cache_index) = d0t(ep)
+!AC!              end if
+!AC!           else
+!AC!              d0t(ep)=gD0C(&
+!AC!             &        cmplx(V1,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V21,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V32,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V3,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V2,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V31,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!             &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!             &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
+!AC!             &        cmplx(real(m3,ki_gol),aimag(m3),ki_gol),&
+!AC!             &        real(scale2,ki_gol),ep)
+!AC!           end if
+!AC!        end do
+!AC!        !d0t( 0) = d0t(0) + log(scale2) * (d0t(-1) &
+!AC!        !      & + 0.5_ki * log(scale2) * d0t(-2))
+!AC!        !d0t(-1) = d0t(-1) + log(scale2) * d0t(-2)
+!AC!        if (verbosity.ge.2) then
+!AC!           do ep=-2,0
+!AC!              write(iout,1) 'I4(',cut4,',',ep,&
+!AC!              & ') = (',real(d0t(ep)),',',aimag(d0t(ep)),'  )' 
+!AC!           end do
+!AC!        end if
+!AC!        tot4(:) = d0t(:) * c40
+            print*, "isca=3: Golem95 not available"
+            stop
       elseif (isca.eq.4) then
 !AC!        tot4(-2) = 0
 !AC!        tot4(-1) = 0
@@ -1447,7 +1447,7 @@ contains
       complex(ki) :: c30
           complex(ki_avh), dimension(0:2) :: valc0
       complex(ki) :: ctmp
-          complex(ki), dimension(-2:0) :: c0t
+!AC!      complex(ki), dimension(-2:0) :: c0t
       integer :: ep, cache_index
 
       if (notfirsti.eqv.(.false.)) then
@@ -1528,44 +1528,44 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-            call gtrunc_rm(abs(V1)+abs(V2)+abs(V3), V1,V2,V3)
-            call gtrunc_cm(abs(V1)+abs(V2)+abs(V3), m0,m1,m2)
-            do ep=-2,0
-               if (present(cache_flag)) then
-                  if (cache_flag) then
-                     c0t(ep) = scalar_cache(ep,cache_index)
-                  else
-                     c0t(ep)=gC0C(&
-                    &        cmplx(V1,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V2,0.0_ki_gol,ki_gol), &
-                    &        cmplx(V3,0.0_ki_gol,ki_gol), &
-                    &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                    &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                    &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
-                    &        real(scale2,ki_gol),ep)
-                     scalar_cache(ep,cache_index) = c0t(ep)
-                  end if
-               else
-                  c0t(ep)=gC0C(&
-                 &        cmplx(V1,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V2,0.0_ki_gol,ki_gol), &
-                 &        cmplx(V3,0.0_ki_gol,ki_gol), &
-                 &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                 &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                 &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
-                 &        real(scale2,ki_gol),ep)
-               end if
-            end do
-            !c0t( 0) = c0t(0) + log(scale2) * (c0t(-1) &
-            !      & + 0.5_ki * log(scale2) * c0t(-2))
-            !c0t(-1) = c0t(-1) + log(scale2) * c0t(-2)
-            do ep=-2,0
-               if (verbosity.ge.2) write(iout,1) 'I3(',cut3,',',ep,&
-                 & ') = (',real(c0t(ep)),',',aimag(c0t(ep)),'  )' 
-            end do
-            tot3(:) = c0t(:) * c30
-!AC!        print*, "isca=3: Golem95 not available"
-!AC!        stop
+!AC!        call gtrunc_rm(abs(V1)+abs(V2)+abs(V3), V1,V2,V3)
+!AC!        call gtrunc_cm(abs(V1)+abs(V2)+abs(V3), m0,m1,m2)
+!AC!        do ep=-2,0
+!AC!           if (present(cache_flag)) then
+!AC!              if (cache_flag) then
+!AC!                 c0t(ep) = scalar_cache(ep,cache_index)
+!AC!              else
+!AC!                 c0t(ep)=gC0C(&
+!AC!                &        cmplx(V1,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V2,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(V3,0.0_ki_gol,ki_gol), &
+!AC!                &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!                &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!                &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
+!AC!                &        real(scale2,ki_gol),ep)
+!AC!                 scalar_cache(ep,cache_index) = c0t(ep)
+!AC!              end if
+!AC!           else
+!AC!              c0t(ep)=gC0C(&
+!AC!             &        cmplx(V1,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V2,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(V3,0.0_ki_gol,ki_gol), &
+!AC!             &        cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!             &        cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!             &        cmplx(real(m2,ki_gol),aimag(m2),ki_gol),&
+!AC!             &        real(scale2,ki_gol),ep)
+!AC!           end if
+!AC!        end do
+!AC!        !c0t( 0) = c0t(0) + log(scale2) * (c0t(-1) &
+!AC!        !      & + 0.5_ki * log(scale2) * c0t(-2))
+!AC!        !c0t(-1) = c0t(-1) + log(scale2) * c0t(-2)
+!AC!        do ep=-2,0
+!AC!           if (verbosity.ge.2) write(iout,1) 'I3(',cut3,',',ep,&
+!AC!             & ') = (',real(c0t(ep)),',',aimag(c0t(ep)),'  )' 
+!AC!        end do
+!AC!        tot3(:) = c0t(:) * c30
+            print*, "isca=3: Golem95 not available"
+            stop
       elseif (isca.eq.4) then
 !AC!        tot3(-2) = 0
 !AC!        tot3(-1) = 0
@@ -1709,74 +1709,74 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-            if (present(cache_flag)) then
-               if (cache_flag) then
-                  J0(:)  = scalar_cache(:,cache_index+0)
-                  J1(:)  = scalar_cache(:,cache_index+1)
-                  J01(:) = scalar_cache(:,cache_index+2)
-                  J11(:) = scalar_cache(:,cache_index+3)
-                  J00(:) = scalar_cache(:,cache_index+4)
-               else
-                  call gtrunc_rm(abs(K11)+1.0_ki, K11)
-                  call gtrunc_cm(abs(K11)+1.0_ki, m0,m1)
-                  do ep=-2,0
-                     J00(ep)= gB0C(&
-                    &   cmplx(K11,0.0_ki_gol,ki_gol), &
-                    &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                    &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                    &   real(scale2,ki_gol),ep)
-                     J11(ep)= gB0C(&
-                    &   cmplx(K11,0.0_ki_gol,ki_gol), &
-                    &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                    &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                    &   real(scale2,ki_gol),ep)
-                     J01(ep)= gB0C(&
-                    &   cmplx(K11,0.0_ki_gol,ki_gol), &
-                    &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                    &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                    &   real(scale2,ki_gol),ep)
-                     J0(ep) = gA0C(&
-                    &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                    &   real(scale2,ki_gol),ep)
-                     J1(ep) = gA0C(&
-                    &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                    &   real(scale2,ki_gol),ep)
-                  end do
-                  scalar_cache(:,cache_index+0) = J0(:)
-                  scalar_cache(:,cache_index+1) = J1(:)
-                  scalar_cache(:,cache_index+2) = J01(:)
-                  scalar_cache(:,cache_index+3) = J11(:)
-                  scalar_cache(:,cache_index+4) = J00(:)
-               end if
-            else
-               call gtrunc_rm(abs(K11)+1.0_ki, K11)
-               call gtrunc_cm(abs(K11)+1.0_ki, m0,m1)
-               do ep=-2,0
-                  J00(ep)= gB0C(&
-                 &   cmplx(K11,0.0_ki_gol,ki_gol), &
-                 &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                 &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                 &   real(scale2,ki_gol),ep)
-                  J11(ep)= gB0C(&
-                 &   cmplx(K11,0.0_ki_gol,ki_gol), &
-                 &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                 &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                 &   real(scale2,ki_gol),ep)
-                  J01(ep)= gB0C(&
-                 &   cmplx(K11,0.0_ki_gol,ki_gol), &
-                 &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                 &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                 &   real(scale2,ki_gol),ep)
-                  J0(ep) = gA0C(&
-                 &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                 &   real(scale2,ki_gol),ep)
-                  J1(ep) = gA0C(&
-                 &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
-                 &   real(scale2,ki_gol),ep)
-               end do
-            end if
-!AC!        print*, "isca=3: Golem95 not available"
-!AC!        stop
+!AC!        if (present(cache_flag)) then
+!AC!           if (cache_flag) then
+!AC!              J0(:)  = scalar_cache(:,cache_index+0)
+!AC!              J1(:)  = scalar_cache(:,cache_index+1)
+!AC!              J01(:) = scalar_cache(:,cache_index+2)
+!AC!              J11(:) = scalar_cache(:,cache_index+3)
+!AC!              J00(:) = scalar_cache(:,cache_index+4)
+!AC!           else
+!AC!              call gtrunc_rm(abs(K11)+1.0_ki, K11)
+!AC!              call gtrunc_cm(abs(K11)+1.0_ki, m0,m1)
+!AC!              do ep=-2,0
+!AC!                 J00(ep)= gB0C(&
+!AC!                &   cmplx(K11,0.0_ki_gol,ki_gol), &
+!AC!                &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!                &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!                &   real(scale2,ki_gol),ep)
+!AC!                 J11(ep)= gB0C(&
+!AC!                &   cmplx(K11,0.0_ki_gol,ki_gol), &
+!AC!                &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!                &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!                &   real(scale2,ki_gol),ep)
+!AC!                 J01(ep)= gB0C(&
+!AC!                &   cmplx(K11,0.0_ki_gol,ki_gol), &
+!AC!                &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!                &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!                &   real(scale2,ki_gol),ep)
+!AC!                 J0(ep) = gA0C(&
+!AC!                &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!                &   real(scale2,ki_gol),ep)
+!AC!                 J1(ep) = gA0C(&
+!AC!                &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!                &   real(scale2,ki_gol),ep)
+!AC!              end do
+!AC!              scalar_cache(:,cache_index+0) = J0(:)
+!AC!              scalar_cache(:,cache_index+1) = J1(:)
+!AC!              scalar_cache(:,cache_index+2) = J01(:)
+!AC!              scalar_cache(:,cache_index+3) = J11(:)
+!AC!              scalar_cache(:,cache_index+4) = J00(:)
+!AC!           end if
+!AC!        else
+!AC!           call gtrunc_rm(abs(K11)+1.0_ki, K11)
+!AC!           call gtrunc_cm(abs(K11)+1.0_ki, m0,m1)
+!AC!           do ep=-2,0
+!AC!              J00(ep)= gB0C(&
+!AC!             &   cmplx(K11,0.0_ki_gol,ki_gol), &
+!AC!             &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!             &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!             &   real(scale2,ki_gol),ep)
+!AC!              J11(ep)= gB0C(&
+!AC!             &   cmplx(K11,0.0_ki_gol,ki_gol), &
+!AC!             &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!             &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!             &   real(scale2,ki_gol),ep)
+!AC!              J01(ep)= gB0C(&
+!AC!             &   cmplx(K11,0.0_ki_gol,ki_gol), &
+!AC!             &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!             &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!             &   real(scale2,ki_gol),ep)
+!AC!              J0(ep) = gA0C(&
+!AC!             &   cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!             &   real(scale2,ki_gol),ep)
+!AC!              J1(ep) = gA0C(&
+!AC!             &   cmplx(real(m1,ki_gol),aimag(m1),ki_gol),&
+!AC!             &   real(scale2,ki_gol),ep)
+!AC!           end do
+!AC!        end if
+            print*, "isca=3: Golem95 not available"
+            stop
       elseif (isca.eq.4) then
 !AC!        J00(:) = 0.0_ki_lt
 !AC!        J11(:) = 0.0_ki_lt
@@ -1963,46 +1963,46 @@ contains
 !AC!      print*, "isca=2: OneLOop not available"
 !AC!      stop
       elseif (isca.eq.3) then
-          tot1(-2) = (0.0_ki,0.0_ki)
-          if (verbosity.ge.2) write(iout,1) &
-         & 'I1(',cut1,',',-2,') = (',0.0_ki,',',0.0_ki,'  )' 
-          if (present(cache_flag)) then
-             if (cache_flag) then
-                do ep=-1,0
-                   ctmp = scalar_cache(ep,cache_index)
-                   tot1(ep) = c1(0)*ctmp
-                   if (verbosity.ge.2) write(iout,1) &
-                     & 'I1(',cut1,',',ep,') = (',&
-                     & real(ctmp),',',aimag(ctmp),'  )' 
-                enddo
-             else
-                scalar_cache(-2,cache_index) = czip
-                call gtrunc_cm(1.0_ki, m0)
-                do ep=-1,0
-                   ctmp = gA0C(&
-                  & cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-                  &        real(scale2,ki_gol),ep)
-                   scalar_cache(ep,cache_index) = ctmp
-                   tot1(ep) = c1(0)*ctmp
-                   if (verbosity.ge.2) write(iout,1) &
-                     & 'I1(',cut1,',',ep,') = (',&
-                     & real(ctmp),',',aimag(ctmp),'  )' 
-                enddo
-             end if
-          else
-             call gtrunc_cm(1.0_ki, m0)
-             do ep=-1,0
-                ctmp = gA0C(&
-               & cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
-               &        real(scale2,ki_gol),ep)
-                tot1(ep) = c1(0)*ctmp
-                if (verbosity.ge.2) write(iout,1) &
-                  & 'I1(',cut1,',',ep,') = (',&
-                  & real(ctmp),',',aimag(ctmp),'  )' 
-             enddo
-          end if
-!AC!      print*, "isca=3: Golem95 not available"
-!AC!      stop
+!AC!      tot1(-2) = (0.0_ki,0.0_ki)
+!AC!      if (verbosity.ge.2) write(iout,1) &
+!AC!     & 'I1(',cut1,',',-2,') = (',0.0_ki,',',0.0_ki,'  )' 
+!AC!      if (present(cache_flag)) then
+!AC!         if (cache_flag) then
+!AC!            do ep=-1,0
+!AC!               ctmp = scalar_cache(ep,cache_index)
+!AC!               tot1(ep) = c1(0)*ctmp
+!AC!               if (verbosity.ge.2) write(iout,1) &
+!AC!                 & 'I1(',cut1,',',ep,') = (',&
+!AC!                 & real(ctmp),',',aimag(ctmp),'  )' 
+!AC!            enddo
+!AC!         else
+!AC!            scalar_cache(-2,cache_index) = czip
+!AC!            call gtrunc_cm(1.0_ki, m0)
+!AC!            do ep=-1,0
+!AC!               ctmp = gA0C(&
+!AC!              & cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!              &        real(scale2,ki_gol),ep)
+!AC!               scalar_cache(ep,cache_index) = ctmp
+!AC!               tot1(ep) = c1(0)*ctmp
+!AC!               if (verbosity.ge.2) write(iout,1) &
+!AC!                 & 'I1(',cut1,',',ep,') = (',&
+!AC!                 & real(ctmp),',',aimag(ctmp),'  )' 
+!AC!            enddo
+!AC!         end if
+!AC!      else
+!AC!         call gtrunc_cm(1.0_ki, m0)
+!AC!         do ep=-1,0
+!AC!            ctmp = gA0C(&
+!AC!           & cmplx(real(m0,ki_gol),aimag(m0),ki_gol),&
+!AC!           &        real(scale2,ki_gol),ep)
+!AC!            tot1(ep) = c1(0)*ctmp
+!AC!            if (verbosity.ge.2) write(iout,1) &
+!AC!              & 'I1(',cut1,',',ep,') = (',&
+!AC!              & real(ctmp),',',aimag(ctmp),'  )' 
+!AC!         enddo
+!AC!      end if
+          print*, "isca=3: Golem95 not available"
+          stop
       elseif (isca.eq.4) then
 !AC!      tot1(-2) = 0
 !AC!      tot1(-1) = 0
@@ -2030,108 +2030,108 @@ contains
       if (present(cache_flag)) cache_offset = cache_offset + 1
   end subroutine add1_cm
 
-    function gA0(m0,mu2,ep)
-       implicit none
-       real(ki_gol), intent(in) :: m0, mu2
-       integer, intent(in) :: ep
-       complex(ki_gol) :: gA0
-       if(ep.eq.(-2) .or. m0.eq.0.0_ki_gol) then
-          gA0 = (0.0_ki_gol, 0.0_ki_gol)
-       elseif(ep.eq.(-1)) then
-          gA0 = m0 * gB0(0.0_ki_gol,m0,m0,mu2,-1)
-       else
-          gA0 = m0 * (gB0(0.0_ki_gol,m0,m0,mu2,0) &
-              &    +  gB0(0.0_ki_gol,m0,m0,mu2,-1))
-       end if
-    end function gA0
-    function gA0C(m0,mu2,ep)
-       implicit none
-       complex(ki_gol), intent(in) :: m0
-       real(ki_gol), intent(in) :: mu2
-       integer, intent(in) :: ep
-       complex(ki_gol) :: gA0C
-       if(ep.eq.(-2) .or. m0.eq.(0.0_ki_gol,0.0_ki_gol)) then
-          gA0C = (0.0_ki_gol, 0.0_ki_gol)
-       elseif(ep.eq.(-1)) then
-          gA0C = m0 * gB0C((0.0_ki_gol,0.0_ki_gol),m0,m0,mu2,-1)
-       else
-          gA0C = m0 * (gB0C((0.0_ki_gol,0.0_ki_gol),m0,m0,mu2,0) &
-              &    +  gB0C((0.0_ki_gol,0.0_ki_gol),m0,m0,mu2,-1))
-       end if
-    end function gA0C
+!AC!function gA0(m0,mu2,ep)
+!AC!   implicit none
+!AC!   real(ki_gol), intent(in) :: m0, mu2
+!AC!   integer, intent(in) :: ep
+!AC!   complex(ki_gol) :: gA0
+!AC!   if(ep.eq.(-2) .or. m0.eq.0.0_ki_gol) then
+!AC!      gA0 = (0.0_ki_gol, 0.0_ki_gol)
+!AC!   elseif(ep.eq.(-1)) then
+!AC!      gA0 = m0 * gB0(0.0_ki_gol,m0,m0,mu2,-1)
+!AC!   else
+!AC!      gA0 = m0 * (gB0(0.0_ki_gol,m0,m0,mu2,0) &
+!AC!          &    +  gB0(0.0_ki_gol,m0,m0,mu2,-1))
+!AC!   end if
+!AC!end function gA0
+!AC!function gA0C(m0,mu2,ep)
+!AC!   implicit none
+!AC!   complex(ki_gol), intent(in) :: m0
+!AC!   real(ki_gol), intent(in) :: mu2
+!AC!   integer, intent(in) :: ep
+!AC!   complex(ki_gol) :: gA0C
+!AC!   if(ep.eq.(-2) .or. m0.eq.(0.0_ki_gol,0.0_ki_gol)) then
+!AC!      gA0C = (0.0_ki_gol, 0.0_ki_gol)
+!AC!   elseif(ep.eq.(-1)) then
+!AC!      gA0C = m0 * gB0C((0.0_ki_gol,0.0_ki_gol),m0,m0,mu2,-1)
+!AC!   else
+!AC!      gA0C = m0 * (gB0C((0.0_ki_gol,0.0_ki_gol),m0,m0,mu2,0) &
+!AC!          &    +  gB0C((0.0_ki_gol,0.0_ki_gol),m0,m0,mu2,-1))
+!AC!   end if
+!AC!end function gA0C
 
-    pure subroutine gtrunc_rm(ref,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10)
-       implicit none
-       real(ki), intent(in) :: ref
-       real(ki), intent(inout), optional :: s1,s2,s3,s4,s5,s6,s7,s8,s9,s10
-       real(ki), parameter :: small = 1.0E-08_ki
-       if(present(s1)) then
-          if(abs(s1/ref) .lt. small) s1 = 0.0_ki
-       end if
-       if(present(s2)) then
-          if(abs(s2/ref) .lt. small) s2 = 0.0_ki
-       end if
-       if(present(s3)) then
-          if(abs(s3/ref) .lt. small) s3 = 0.0_ki
-       end if
-       if(present(s4)) then
-          if(abs(s4/ref) .lt. small) s4 = 0.0_ki
-       end if
-       if(present(s5)) then
-          if(abs(s5/ref) .lt. small) s5 = 0.0_ki
-       end if
-       if(present(s6)) then
-          if(abs(s6/ref) .lt. small) s6 = 0.0_ki
-       end if
-       if(present(s7)) then
-          if(abs(s7/ref) .lt. small) s7 = 0.0_ki
-       end if
-       if(present(s8)) then
-          if(abs(s8/ref) .lt. small) s8 = 0.0_ki
-       end if
-       if(present(s9)) then
-          if(abs(s9/ref) .lt. small) s9 = 0.0_ki
-       end if
-       if(present(s10)) then
-          if(abs(s10/ref) .lt. small) s10 = 0.0_ki
-       end if
-    end  subroutine gtrunc_rm
-    pure subroutine gtrunc_cm(ref,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10)
-       implicit none
-       real(ki), intent(in) :: ref
-       complex(ki), intent(inout), optional :: s1,s2,s3,s4,s5,s6,s7,s8,s9,s10
-       real(ki), parameter :: small = 1.0E-08_ki
-       if(present(s1)) then
-          if(abs(s1/ref) .lt. small) s1 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s2)) then
-          if(abs(s2/ref) .lt. small) s2 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s3)) then
-          if(abs(s3/ref) .lt. small) s3 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s4)) then
-          if(abs(s4/ref) .lt. small) s4 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s5)) then
-          if(abs(s5/ref) .lt. small) s5 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s6)) then
-          if(abs(s6/ref) .lt. small) s6 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s7)) then
-          if(abs(s7/ref) .lt. small) s7 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s8)) then
-          if(abs(s8/ref) .lt. small) s8 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s9)) then
-          if(abs(s9/ref) .lt. small) s9 = (0.0_ki, 0.0_ki)
-       end if
-       if(present(s10)) then
-          if(abs(s10/ref) .lt. small) s10 = (0.0_ki, 0.0_ki)
-       end if
-    end  subroutine gtrunc_cm
+!AC!pure subroutine gtrunc_rm(ref,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10)
+!AC!   implicit none
+!AC!   real(ki), intent(in) :: ref
+!AC!   real(ki), intent(inout), optional :: s1,s2,s3,s4,s5,s6,s7,s8,s9,s10
+!AC!   real(ki), parameter :: small = 1.0E-08_ki
+!AC!   if(present(s1)) then
+!AC!      if(abs(s1/ref) .lt. small) s1 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s2)) then
+!AC!      if(abs(s2/ref) .lt. small) s2 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s3)) then
+!AC!      if(abs(s3/ref) .lt. small) s3 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s4)) then
+!AC!      if(abs(s4/ref) .lt. small) s4 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s5)) then
+!AC!      if(abs(s5/ref) .lt. small) s5 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s6)) then
+!AC!      if(abs(s6/ref) .lt. small) s6 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s7)) then
+!AC!      if(abs(s7/ref) .lt. small) s7 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s8)) then
+!AC!      if(abs(s8/ref) .lt. small) s8 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s9)) then
+!AC!      if(abs(s9/ref) .lt. small) s9 = 0.0_ki
+!AC!   end if
+!AC!   if(present(s10)) then
+!AC!      if(abs(s10/ref) .lt. small) s10 = 0.0_ki
+!AC!   end if
+!AC!end  subroutine gtrunc_rm
+!AC!pure subroutine gtrunc_cm(ref,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10)
+!AC!   implicit none
+!AC!   real(ki), intent(in) :: ref
+!AC!   complex(ki), intent(inout), optional :: s1,s2,s3,s4,s5,s6,s7,s8,s9,s10
+!AC!   real(ki), parameter :: small = 1.0E-08_ki
+!AC!   if(present(s1)) then
+!AC!      if(abs(s1/ref) .lt. small) s1 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s2)) then
+!AC!      if(abs(s2/ref) .lt. small) s2 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s3)) then
+!AC!      if(abs(s3/ref) .lt. small) s3 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s4)) then
+!AC!      if(abs(s4/ref) .lt. small) s4 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s5)) then
+!AC!      if(abs(s5/ref) .lt. small) s5 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s6)) then
+!AC!      if(abs(s6/ref) .lt. small) s6 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s7)) then
+!AC!      if(abs(s7/ref) .lt. small) s7 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s8)) then
+!AC!      if(abs(s8/ref) .lt. small) s8 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s9)) then
+!AC!      if(abs(s9/ref) .lt. small) s9 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!   if(present(s10)) then
+!AC!      if(abs(s10/ref) .lt. small) s10 = (0.0_ki, 0.0_ki)
+!AC!   end if
+!AC!end  subroutine gtrunc_cm
 
 end module madds
 

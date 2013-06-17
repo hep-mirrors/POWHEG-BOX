@@ -1,6 +1,6 @@
 module     p12_cbbar_hepneg_color
-   ! file:      /home/pcl305a/luisonig/Documents/GoSamPowheg/POWHEG-BOX/HWJ/GoSa
-   ! m/Virtual/p12_cbbar_hepneg/common/color.f90
+   ! file:      /home/gionata/Documenti/Lavoro/GoSamPowheg/POWHEG-BOX/HWJ_tmp/Go
+   ! Sam_POWHEG/Virtual/p12_cbbar_hepneg/common/color.f90
    ! generator: haggies (1.1)
    use p12_cbbar_hepneg_config, only: ki
    use p12_cbbar_hepneg_model, only: NC, Nf

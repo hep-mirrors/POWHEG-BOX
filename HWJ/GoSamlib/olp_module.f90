@@ -12,34 +12,40 @@ contains
       use p6_ubbar_hepneg_config, only: p6_ubbar_hepneg_PSP_rescue => PSP_rescue, &
            & p6_ubbar_hepneg_PSP_verbosity => PSP_verbosity, &
            & p6_ubbar_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
-           & p6_ubbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
+           & p6_ubbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2, &
+           & p6_ubbar_hepneg_PSP_chk_kfactor => PSP_chk_kfactor
       use p12_cbbar_hepneg_matrix, only: p12_cbbar_hepneg_initgolem => initgolem
       use p12_cbbar_hepneg_config, only: p12_cbbar_hepneg_PSP_rescue => PSP_rescue, &
            & p12_cbbar_hepneg_PSP_verbosity => PSP_verbosity, &
            & p12_cbbar_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
-           & p12_cbbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
+           & p12_cbbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2, &
+           & p12_cbbar_hepneg_PSP_chk_kfactor => PSP_chk_kfactor
       use p5_usbar_hepneg_matrix, only: p5_usbar_hepneg_initgolem => initgolem
       use p5_usbar_hepneg_config, only: p5_usbar_hepneg_PSP_rescue => PSP_rescue, &
            & p5_usbar_hepneg_PSP_verbosity => PSP_verbosity, &
            & p5_usbar_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
-           & p5_usbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
+           & p5_usbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2, &
+           & p5_usbar_hepneg_PSP_chk_kfactor => PSP_chk_kfactor
       use p1_dbarc_hepneg_matrix, only: p1_dbarc_hepneg_initgolem => initgolem
       use p1_dbarc_hepneg_config, only: p1_dbarc_hepneg_PSP_rescue => PSP_rescue, &
            & p1_dbarc_hepneg_PSP_verbosity => PSP_verbosity, &
            & p1_dbarc_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
-           & p1_dbarc_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
+           & p1_dbarc_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2, &
+           & p1_dbarc_hepneg_PSP_chk_kfactor => PSP_chk_kfactor
       use p11_csbar_hepneg_matrix, only: p11_csbar_hepneg_initgolem => initgolem
       use p11_csbar_hepneg_config, only: p11_csbar_hepneg_PSP_rescue => PSP_rescue, &
            & p11_csbar_hepneg_PSP_verbosity => PSP_verbosity, &
            & p11_csbar_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
-           & p11_csbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
+           & p11_csbar_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2, &
+           & p11_csbar_hepneg_PSP_chk_kfactor => PSP_chk_kfactor
       use p0_dbaru_hepneg_matrix, only: p0_dbaru_hepneg_initgolem => initgolem
       use p0_dbaru_hepneg_config, only: p0_dbaru_hepneg_PSP_rescue => PSP_rescue, &
            & p0_dbaru_hepneg_PSP_verbosity => PSP_verbosity, &
            & p0_dbaru_hepneg_PSP_chk_threshold1 => PSP_chk_threshold1, &
-           & p0_dbaru_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2
+           & p0_dbaru_hepneg_PSP_chk_threshold2 => PSP_chk_threshold2, &
+           & p0_dbaru_hepneg_PSP_chk_kfactor => PSP_chk_kfactor
       implicit none
-      character(kind=c_char,len=1), intent(in)  :: contract_file_name
+      character(kind=c_char,len=1), intent(in) :: contract_file_name
       integer(kind=c_int), intent(out) :: ierr
       integer(kind=c_int), intent(in) :: stage, rndseed
       interface
@@ -54,7 +60,7 @@ contains
       integer :: l, ferr
       character(len=128) :: line_buf
       character(len=9) :: kw
-      integer :: PSP_verbosity, PSP_chk_threshold1, PSP_chk_threshold2
+      integer :: PSP_verbosity, PSP_chk_threshold1, PSP_chk_threshold2, PSP_chk_kfactor
       logical :: PSP_rescue
 
       ierr = 1
@@ -93,6 +99,42 @@ contains
          call read_slha_file(line_buf(1:l))
       end if
 
+      ! Uncomment to change rescue system setting on all suprocesses
+      ! PSP_rescue = .true.
+      ! PSP_verbosity = 1
+      ! PSP_chk_threshold1 = 3
+      ! PSP_chk_threshold2 = 4
+      ! PSP_chk_kfactor = -1
+      ! p6_ubbar_hepneg_PSP_rescue = PSP_rescue
+      ! p6_ubbar_hepneg_PSP_verbosity =  PSP_verbosity
+      ! p6_ubbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
+      ! p6_ubbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
+      ! p6_ubbar_hepneg_PSP_chk_kfactor = PSP_chk_kfactor
+      ! p12_cbbar_hepneg_PSP_rescue = PSP_rescue
+      ! p12_cbbar_hepneg_PSP_verbosity =  PSP_verbosity
+      ! p12_cbbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
+      ! p12_cbbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
+      ! p12_cbbar_hepneg_PSP_chk_kfactor = PSP_chk_kfactor
+      ! p5_usbar_hepneg_PSP_rescue = PSP_rescue
+      ! p5_usbar_hepneg_PSP_verbosity =  PSP_verbosity
+      ! p5_usbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
+      ! p5_usbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
+      ! p5_usbar_hepneg_PSP_chk_kfactor = PSP_chk_kfactor
+      ! p1_dbarc_hepneg_PSP_rescue = PSP_rescue
+      ! p1_dbarc_hepneg_PSP_verbosity =  PSP_verbosity
+      ! p1_dbarc_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
+      ! p1_dbarc_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
+      ! p1_dbarc_hepneg_PSP_chk_kfactor = PSP_chk_kfactor
+      ! p11_csbar_hepneg_PSP_rescue = PSP_rescue
+      ! p11_csbar_hepneg_PSP_verbosity =  PSP_verbosity
+      ! p11_csbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
+      ! p11_csbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
+      ! p11_csbar_hepneg_PSP_chk_kfactor = PSP_chk_kfactor
+      ! p0_dbaru_hepneg_PSP_rescue = PSP_rescue
+      ! p0_dbaru_hepneg_PSP_verbosity =  PSP_verbosity
+      ! p0_dbaru_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
+      ! p0_dbaru_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
+      ! p0_dbaru_hepneg_PSP_chk_kfactor = PSP_chk_kfactor
       if(stage.lt.0) then
          call p6_ubbar_hepneg_initgolem(.true.)
          call p12_cbbar_hepneg_initgolem(.false.)
@@ -108,36 +150,6 @@ contains
          call p11_csbar_hepneg_initgolem(.false.,stage,rndseed)
          call p0_dbaru_hepneg_initgolem(.false.,stage,rndseed)
       end if
-
-      ! Uncomment to change rescue system setting on all suprocesses
-      ! PSP_rescue = .true.
-      ! PSP_verbosity = 2
-      ! PSP_chk_threshold1 = 4
-      ! PSP_chk_threshold2 = 3
-      ! p6_ubbar_hepneg_PSP_rescue = PSP_rescue
-      ! p6_ubbar_hepneg_PSP_verbosity =  PSP_verbosity
-      ! p6_ubbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
-      ! p6_ubbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
-      ! p12_cbbar_hepneg_PSP_rescue = PSP_rescue
-      ! p12_cbbar_hepneg_PSP_verbosity =  PSP_verbosity
-      ! p12_cbbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
-      ! p12_cbbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
-      ! p5_usbar_hepneg_PSP_rescue = PSP_rescue
-      ! p5_usbar_hepneg_PSP_verbosity =  PSP_verbosity
-      ! p5_usbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
-      ! p5_usbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
-      ! p1_dbarc_hepneg_PSP_rescue = PSP_rescue
-      ! p1_dbarc_hepneg_PSP_verbosity =  PSP_verbosity
-      ! p1_dbarc_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
-      ! p1_dbarc_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
-      ! p11_csbar_hepneg_PSP_rescue = PSP_rescue
-      ! p11_csbar_hepneg_PSP_verbosity =  PSP_verbosity
-      ! p11_csbar_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
-      ! p11_csbar_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
-      ! p0_dbaru_hepneg_PSP_rescue = PSP_rescue
-      ! p0_dbaru_hepneg_PSP_verbosity =  PSP_verbosity
-      ! p0_dbaru_hepneg_PSP_chk_threshold1 = PSP_chk_threshold1
-      ! p0_dbaru_hepneg_PSP_chk_threshold2 = PSP_chk_threshold2
 
    end subroutine OLP_Start
 

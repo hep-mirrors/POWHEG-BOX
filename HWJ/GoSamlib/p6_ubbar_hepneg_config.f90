@@ -9,9 +9,9 @@ module     p6_ubbar_hepneg_config
    ! DOUBLE PRECISION (ki=8):
    integer, parameter :: ki = kind(1.0d0)
 
-   logical, parameter :: debug_lo_diagrams  = .false.
-   logical, parameter :: debug_nlo_diagrams = .false.
-   logical, parameter :: debug_numpolvec    = .false.
+   logical :: debug_lo_diagrams  = .false.
+   logical :: debug_nlo_diagrams = .false.
+   logical :: debug_numpolvec    = .false.
 
    ! If true, the calculation includes terms proportional to eps^2
    ! multiplying double poles.
@@ -38,6 +38,8 @@ module     p6_ubbar_hepneg_config
    ! default value.
    integer :: samurai_istop = 0
    logical :: samurai_group_numerators = .true.
+
+   
 
    ! Options to control the interoperation between different
    ! reduction methods
@@ -115,9 +117,10 @@ module     p6_ubbar_hepneg_config
    ! Note: at the moment it only works for virtual corrections
    ! to Tree level processes.
    logical :: PSP_check = .true.
-   integer :: PSP_verbosity = 2
-   integer :: PSP_chk_threshold1 = 4
+   integer :: PSP_verbosity = 1
+   integer :: PSP_chk_threshold1 = 3
    logical :: PSP_rescue = .true.
-   integer :: PSP_chk_threshold2 = 3
+   integer :: PSP_chk_threshold2 = 4
+   real(ki) :: PSP_chk_kfactor = -1.0_ki
 end module p6_ubbar_hepneg_config
 

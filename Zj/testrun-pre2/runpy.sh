@@ -31,8 +31,6 @@ do
     done
 
     wait
-
-exit 0
     
     for W in W1 W2 W3 W4 W5 W6 W7
     do

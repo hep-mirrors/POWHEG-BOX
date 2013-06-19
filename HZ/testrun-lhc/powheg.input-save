@@ -1,4 +1,3 @@
-idvecbos          -24
 vdecaymode        1
 hdecaymode        -1
 
@@ -8,11 +7,11 @@ hwidth 0.403d-2     ! Higgs boson width
 min_h_mass    10d0      
 max_h_mass 1000d0 
 
-min_w_mass     10d0
-max_w_mass     1000d0
+min_z_mass     10d0
+max_z_mass     1000d0
 
 
-numevts 200000    ! number of events to be generated
+numevts 625000    ! number of events to be generated
 ih1 1             ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2 1             ! hadron 2 (1 for protons, -1 for antiprotons)
 ebeam1 4000d0     ! energy of beam 1
@@ -21,6 +20,7 @@ ebeam2 4000d0     ! energy of beam 2
 bornktmin 0d0      ! (default 0d0) generation cut. Minimum kt in underlying Born
 bornsuppfact 0d0 ! (default 0d0)  mass param for Born suppression factor. If < 0 suppfact = 1
 #pdfreweight 1
+#bornzerodamp  1
 
 
 ! To be set only if using internal (mlm) pdfs

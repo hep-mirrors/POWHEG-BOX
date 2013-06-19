@@ -89,7 +89,7 @@ c     set lepton mass
       decmass=lepmass(Vdecmod)   
 
       if (ph_Wmass2low.lt.decmass**2) then
-         write(*,*) 'wmasslow less than the minimun invariant mass of'
+         write(*,*) 'min_w_mass less than the minimun invariant mass of'
          write(*,*) 'the final-state leptonic system ',decmass
          write(*,*) 'POWHEG aborts'
          call pwhg_exit(-1)
@@ -146,10 +146,10 @@ c madgraph routines not to blow.
       hmass = powheginput('hmass')
       hwidth = powheginput('hwidth')
 
-      ph_Hmass2low=powheginput("hmasslow")**2
-      ph_Hmass2high=powheginput("hmasshigh")**2
-      ph_Wmass2low=powheginput("wmasslow")**2
-      ph_Wmass2high=powheginput("wmasshigh")**2    
+      ph_Hmass2low=powheginput("min_h_mass")**2
+      ph_Hmass2high=powheginput("max_h_mass")**2
+      ph_Wmass2low=powheginput("min_w_mass")**2
+      ph_Wmass2high=powheginput("max_w_mass")**2    
 
       zwidth=2.441d0
       wwidth=2.0476d0

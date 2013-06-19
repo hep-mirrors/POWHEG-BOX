@@ -28,7 +28,8 @@ esac
 i=0
 cat $fil2 | grep '#' | while read line
 do
-title=`echo $line |sed 's/#// ; s/ *index *[0-9]* *// ; s/ *//g'`
+#title=`echo $line |sed 's/#// ; s/ *index *[0-9]* *// ; s/ *//g'`
+title=`echo "$line" |sed 's/#// ; s/ *index *[0-9]* *// '`
 echo "$title"
 
 ttt=`echo "$line"|sed 's/#//g ; s/ /_/g ; s/\//o/g ' `

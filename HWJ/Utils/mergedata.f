@@ -6,7 +6,7 @@ c When the program starts, it expects as input a list of filenames,
 c one per line, to be merged. An empty lines terminates the list.
       implicit none
       integer maxfiles,maxlines
-      parameter (maxfiles=1000,maxlines=20000)
+      parameter (maxfiles=1000,maxlines=25000)
       character *(100) files(maxfiles)
       character *(100) line(maxlines,maxfiles)
       integer nlines(maxfiles)
@@ -161,7 +161,7 @@ c load data
             elseif(imethod.ge.3) then
                err=sqrt(err)
             endif
-            write(12,'(4(1x,d14.8))') v1,v2,y,err
+            write(12,'(4(1x,e15.6e3))') v1,v2,y,err
          endif
       enddo
       end

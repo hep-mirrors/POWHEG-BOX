@@ -550,7 +550,7 @@ c      end
 
       subroutine deltaplot(p1,p2,dsig,prefix,postfix)
       implicit none
-      real * 8 p1(4),p2(4),dsig
+      real * 8 p1(4),p2(4),dsig(7)
       character *(*) prefix,postfix
       real * 8 dy,deta,delphi,dr
       call getdydetadphidr(p1,p2,dy,deta,delphi,dr)
@@ -565,7 +565,11 @@ c      end
       real * 8 p(4),y,eta,pt,mass,pv
       real *8 tiny
       parameter (tiny=5.d-5)
-      y=0.5d0*log((p(4)+p(3))/(p(4)-p(3)))
+      if (p(4).eq.p(3)) then
+         y=1d10
+      else         
+         y=0.5d0*log((p(4)+p(3))/(p(4)-p(3)))
+      endif
       pt=sqrt(p(1)**2+p(2)**2)
       pv=sqrt(pt**2+p(3)**2)
       if(pt.lt.tiny)then

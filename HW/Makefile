@@ -1,6 +1,6 @@
 #-*- Makefile -*-
 ## Choose compiler: gfortran,ifort (g77 not supported, F90 constructs in use!)
-COMPILER=ifort
+COMPILER=gfortran
 FC=$(COMPILER)
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
@@ -25,7 +25,7 @@ F77=gfortran -fno-automatic -J$(OBJ) -I$(OBJ)
 ## Use -O2 to be on the safe side
 OPT=-O2
 ## For debugging uncomment the following
-DEBUG= -ggdb
+#DEBUG= -ggdb
 ifdef DEBUG
 OPT=-O0
 FPE=-ffpe-trap=invalid,zero,overflow,underflow

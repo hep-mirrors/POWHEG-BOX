@@ -421,7 +421,7 @@ c second
       do j=1,4
          pup(j,nup)=pp(j,7)
       enddo
-      pup(5,nup) = mdecwp2
+      pup(5,nup) = mdecwm2
       istup(nup) = 1
       mothup(1,nup)=iwm
       mothup(2,nup)=iwm

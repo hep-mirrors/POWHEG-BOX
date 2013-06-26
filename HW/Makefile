@@ -1,6 +1,6 @@
 #-*- Makefile -*-
 ## Choose compiler: gfortran,ifort (g77 not supported, F90 constructs in use!)
-COMPILER=gfortran
+COMPILER=ifort
 FC=$(COMPILER)
 ## Choose PDF: native,lhapdf
 ## LHAPDF package has to be installed separately
@@ -92,7 +92,7 @@ FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 #PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HWnJ.o reweightifneeded.o
-PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HWnJ.o 
+PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HWnJ.o observables.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 PWHGANAL+= fastjetfortran.o
@@ -127,7 +127,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	reshufflemoms.o \
 	pwhgreweight.o setlocalscales.o mint_upb.o opencount.o      \
 	validflav.o  ubprojections.o \
-	sigcollsoft.o sigvirtual.o  $(PDFPACK) $(USER) $(FPEOBJ)
+	sigcollsoft.o sigvirtual.o $(PDFPACK) $(USER) $(FPEOBJ)
 
 
 # target to generate LHEF output

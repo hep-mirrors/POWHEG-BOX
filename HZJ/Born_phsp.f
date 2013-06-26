@@ -163,6 +163,7 @@ c     now boost everything BACK along z-axis
          kn_cmpborn(mu,1)=sqrt(kn_xb1*kn_xb2)*kn_beams(mu,1)
          kn_cmpborn(mu,2)=sqrt(kn_xb1*kn_xb2)*kn_beams(mu,2)
       enddo
+      kn_minmass = sqrt(ph_Hmass2low+ph_Zmass2low)
 
       end
 

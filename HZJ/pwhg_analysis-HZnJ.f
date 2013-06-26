@@ -562,22 +562,11 @@ c      end
 
       subroutine getyetaptmass(p,y,eta,pt,mass)
       implicit none
-      real * 8 p(4),y,eta,pt,mass,pv
-      real *8 tiny
-      parameter (tiny=5.d-5)
-      if (p(4).eq.p(3)) then
-         y=1d10
-      else         
-         y=0.5d0*log((p(4)+p(3))/(p(4)-p(3)))
-      endif
+      real * 8 p(4),y,eta,pt,mass
+      call pwhg_getrapidity(p,y)      
       pt=sqrt(p(1)**2+p(2)**2)
-      pv=sqrt(pt**2+p(3)**2)
-      if(pt.lt.tiny)then
-         eta=sign(1.d0,p(3))*1.d8
-      else
-         eta=0.5d0*log((pv+p(3))/(pv-p(3)))
-      endif
-      mass=sqrt(abs(p(4)**2-pv**2))
+      call pwhg_getpseudorapidity(p,eta)
+      call pwhg_getinvmass(p,mass)
       end
 
       subroutine getdydetadphidr(p1,p2,dy,deta,dphi,dr)

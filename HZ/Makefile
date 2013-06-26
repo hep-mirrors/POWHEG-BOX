@@ -23,7 +23,7 @@ F77=gfortran -fno-automatic -J$(OBJ) -I$(OBJ)
 ## Use -O2 to be on the safe side
 OPT=-O2
 ## For debugging uncomment the following
-#DEBUG= -ggdb -trapfpe
+#DEBUG= -ggdb 
 ifdef DEBUG
 OPT=-O0
 FPE=-ffpe-trap=invalid,zero,overflow,underflow
@@ -89,7 +89,7 @@ FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
 #PWHGANAL=pwhg_bookhist-new.o pwhg_analysis-HZnJ.o reweightifneeded.o
-PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HZnJ.o 
+PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HZnJ.o observables.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 PWHGANAL+= fastjetfortran.o

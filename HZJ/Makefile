@@ -87,7 +87,7 @@ ifeq ("$(ANALYSIS)","HZnJ")
 FASTJET_CONFIG=$(shell which fastjet-config)
 LIBSFASTJET += $(shell $(FASTJET_CONFIG) --libs --plugins ) -lstdc++
 FJCXXFLAGS+= $(shell $(FASTJET_CONFIG) --cxxflags)
-PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HZnJ.o 
+PWHGANAL=pwhg_bookhist-multi.o pwhg_analysis-HZnJ.o observables.o
 ## Also add required Fastjet drivers to PWHGANAL (examples are reported)
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetCDFMidPointwrap.o fastjetD0RunIIConewrap.o fastjetfortran.o
 #PWHGANAL+= fastjetsisconewrap.o fastjetktwrap.o fastjetfortran.o

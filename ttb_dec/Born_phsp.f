@@ -175,10 +175,10 @@ c--- for comparison with MCFM
          ini=.false.
       endif
       if(fixedscale) then
-c         muf = ph_tmass
-c         mur = ph_tmass
-         muf = ph_zmass
-         mur = ph_zmass
+         muf = ph_tmass
+         mur = ph_tmass
+c         muf = ph_zmass
+c         mur = ph_zmass
       else
          muf=sqrt(kn_cmpborn(0,3)**2-kn_cmpborn(3,3)**2)
          mur=muf

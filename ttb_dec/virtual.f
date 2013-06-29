@@ -150,6 +150,13 @@ C-----Radiation in topdecay only
       if(jnlowhich.eq.0.or.jnlowhich.eq.2)
      1  call dkqqb_QQb_v(mcfmp,msqsl)
 
+C-----Radiation in topdecay only
+      if(jnlowhich.eq.4) then
+c I am not sure if this is correct; both t and anti-t virtual
+c corrections are included, but they should not affect the total
+        call dkqqb_QQb_v(mcfmp,msqsl)
+      endif
+
       if(jnlowhich.eq.0.or.jnlowhich.eq.3 .and.
      &  ((plabel(3) .eq. 'pp') .or. (plabel(7) .eq. 'pp')) ) then
 c Check consistency of MCFM result

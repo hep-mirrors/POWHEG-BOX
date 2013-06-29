@@ -160,7 +160,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	pwhg_analysis_driver.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
 	sigcollsoft.o sigvirtual.o \
-	dgauss.o $(PDFPACK) $(USER) $(FPEOBJ)
+	$(PDFPACK) $(USER) $(FPEOBJ)
 
 
 

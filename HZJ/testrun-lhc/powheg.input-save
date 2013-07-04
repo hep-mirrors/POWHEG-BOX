@@ -1,5 +1,5 @@
-vdecaymode        1
-hdecaymode        -1
+vdecaymode   1  ! 1,2,3 => electron,muon,tau; 4,5,6 => respective neutrinos
+hdecaymode  -1  ! undecayed Higgs boson (for PYTHIA and HERWIG)
 
 hmass  125d0        ! Higgs boson mass 
 hwidth 0.403d-2     ! Higgs boson width 

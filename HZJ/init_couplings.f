@@ -16,24 +16,15 @@ c but never closed ...
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
       data lepmass/0.51099891d-3,0.1056583668d0,1.77684d0/
+      real * 8 ger,gel
+      common/Zlepcoupl/ger,gel
+      real * 8 t3lep,qlep,gev,gea
 
       if(called) then
          return
       else
          called=.true.
       endif
-
-*********************************************************
-***********         MADGRAPH                 ************
-*********************************************************
-c Parameters are read from the MadGraph param_card.dat,
-c except the strong coupling constant, which is defined
-c somewhere else
-      call setpara("param_card.dat",.true.)
-
-      call madtophys
-
-      call golem_initialize
 
 
 c******************************************************
@@ -50,6 +41,12 @@ c     decay products of the vector boson
          vdecaymode=-13
       elseif (Vdecmod.eq.3) then
          vdecaymode=-15
+      elseif (Vdecmod.eq.4) then
+         vdecaymode=-12
+      elseif (Vdecmod.eq.5) then
+         vdecaymode=-14
+      elseif (Vdecmod.eq.6) then
+         vdecaymode=-16
       else
          write(*,*) 'ERROR: The decay mode you selected ',Vdecmod, 
      $        ' is not allowed '
@@ -60,9 +57,58 @@ c     decay products of the vector boson
       if (vdecaymode.eq.-11) write(*,*) '         to e+ e- '
       if (vdecaymode.eq.-13) write(*,*) '         to mu+ mu-'
       if (vdecaymode.eq.-15) write(*,*) '         to tau+ tau-'
+      if (vdecaymode.eq.-12) write(*,*) '         to antinue nue'
+      if (vdecaymode.eq.-14) write(*,*) '         to antinumu numu'
+      if (vdecaymode.eq.-16) write(*,*) '         to antinutau nutau'
+
+
+*********************************************************
+***********         MADGRAPH                 ************
+*********************************************************
+c Parameters are read from the MadGraph param_card.dat,
+c except the strong coupling constant, which is defined
+c somewhere else
+      call setpara("param_card.dat",.true.)
+      call madtophys
+      
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     set parameter for MadGraph
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc      
+c     Here we assign the coupling of the Zll vertex to the neutrino ones, if 
+c     the code has to generate Z -> nu nu
+      if (Vdecmod.gt.3) then
+         gzl(1)=gzn(1)
+         gzl(2)=gzn(2)
+      endif
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     set parameter for GoSam: Z couplings to final-state leptons
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc      
+      if (Vdecmod.le.3) then
+c     electron         
+         t3lep =-1d0/2   
+         qlep = -1d0
+      else
+c     neutrino
+         t3lep =+1d0/2   
+         qlep = 0d0
+      endif
+      gev = (t3lep - 2*qlep*ph_sthw**2)/(2*ph_sthw*sqrt(1-ph_sthw**2))
+      gea = t3lep/(2*ph_sthw*sqrt(1-ph_sthw**2))
+      gel=gev+gea
+      ger=gev-gea
+
+      call golem_initialize
+ 
+
 
 c     set lepton mass
-      decmass=lepmass(Vdecmod)   
+      if (Vdecmod.gt.3) then
+         decmass=0d0
+      else
+         decmass=lepmass(Vdecmod)   
+      endif
          
       if (ph_Zmass2low.lt.4*decmass**2) then
          write(*,*) 'min_z_mass less than the minimun invariant mass of'
@@ -70,6 +116,7 @@ c     set lepton mass
          write(*,*) 'POWHEG aborts'
          call pwhg_exit(-1)
       endif
+
 
       end
 
@@ -234,6 +281,8 @@ c     CKM from PDG 2010 (eq. 11.27)
       ph_CKM(3,2)=Vts
       ph_CKM(3,3)=Vtb
 
+      
+
       end
 
 
@@ -257,6 +306,9 @@ C     ones defined in the POWHEG BOX.
       integer parallelstage,rndiwhichseed
       common/cpwhg_info/parallelstage,rndiwhichseed
       logical massivetop
+      real * 8 ger,gel
+      common/Zlepcoupl/ger,gel
+      
 
       rndiwhichseed=rnd_iwhichseed
       parallelstage=powheginput("#parallelstage")
@@ -265,7 +317,6 @@ C     Read from card of top loops should be included
       if (powheginput("#massivetop").eq.1) massivetop=.true.
 
 C     Parameter definition
-      
       param = 'Nf='
       write(value,'(I1)') st_nlight
       line = trim(param)//trim(adjustl(value))

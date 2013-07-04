@@ -263,6 +263,12 @@ c     from now on, nu is the positron!
                idl=13
             elseif (Vdecmod.eq.3) then
                idl=15
+            elseif (Vdecmod.eq.4) then
+               idl=12
+            elseif (Vdecmod.eq.5) then
+               idl=14
+            elseif (Vdecmod.eq.6) then
+               idl=16
             endif
          else
             idl=11

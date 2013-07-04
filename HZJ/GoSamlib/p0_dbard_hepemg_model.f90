@@ -903,6 +903,9 @@ contains
       real(ki) :: reg17
       real(ki) :: reg18
       real(ki) :: reg19
+!     I've added the following two lines. Carlo Oleari
+      real(ki) :: gerpwg,gelpwg
+      common/Zlepcoupl/gerpwg,gelpwg
       gAPP = (-1.0_ki)
       gWWAA = (-1.0_ki)
       gAAPP = (2.0_ki)
@@ -976,11 +979,15 @@ contains
       gCa = reg8
       gev = -(reg10)
       gea = -(reg8)
-      ger = (gev-gea)
+!     I've commented the following line and added the next one. Carlo Oleari
+!      ger = (gev-gea)
+      ger = gerpwg
       gCv = reg16
       gCl = (gCa+gCv)
       gCr = (gCv-gCa)
-      gel = (gea+gev)
+!     I've commented the following line and added the next one. Carlo Oleari
+!      gel = (gea+gev)
+      gel = gelpwg
       reg17 = ((1.0_ki/4.0_ki)-(1.0_ki/3.0_ki)*reg3)*gZ
       gBv = -(reg17)
       gBr = (gBv-gBa)

@@ -2,6 +2,8 @@
       implicit none
       include "coupl.inc"
       include 'PhysPars.h'
+      include "nlegborn.h"
+      include "pwhg_flst.h"
 
       real * 8 powheginput
       external powheginput
@@ -15,6 +17,7 @@ c but never closed ...
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
       data lepmass/0.51099891d-3,0.1056583668d0,1.77684d0/
+      integer i
 
       if(called) then
          return
@@ -45,6 +48,12 @@ c     decay products of the vector boson
          vdecaymode=-13
       elseif (Vdecmod.eq.3) then
          vdecaymode=-15
+      elseif (Vdecmod.eq.4) then
+         vdecaymode=-12
+      elseif (Vdecmod.eq.5) then
+         vdecaymode=-14
+      elseif (Vdecmod.eq.6) then
+         vdecaymode=-16
       else
          write(*,*) 'ERROR: The decay mode you selected ',Vdecmod, 
      $        ' is not allowed '
@@ -55,9 +64,29 @@ c     decay products of the vector boson
       if (vdecaymode.eq.-11) write(*,*) '         to e+ e- '
       if (vdecaymode.eq.-13) write(*,*) '         to mu+ mu-'
       if (vdecaymode.eq.-15) write(*,*) '         to tau+ tau-'
+      if (vdecaymode.eq.-12) write(*,*) '         to antinue nue'
+      if (vdecaymode.eq.-14) write(*,*) '         to antinumu numu'
+      if (vdecaymode.eq.-16) write(*,*) '         to antinutau nutau'
+
+c     here we change the flavors of the final-state leptons, since the subroutines 
+c     to compute the Born and the real contributions check the id of the fourth particle
+c     in the flavor list
+      do i=1,flst_nborn
+         flst_born(4,i) = vdecaymode
+         flst_born(5,i) = -vdecaymode
+      enddo
+      do i=1,flst_nreal
+         flst_real(4,i) = vdecaymode
+         flst_real(5,i) = -vdecaymode
+      enddo
+
 
 c     set lepton mass
-      decmass=lepmass(Vdecmod)   
+      if (Vdecmod.gt.3) then
+         decmass=0d0
+      else
+         decmass=lepmass(Vdecmod)   
+      endif
 
 
       if (ph_Zmass2low.lt.4*decmass**2) then

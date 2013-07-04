@@ -10,7 +10,7 @@ done
 }
 
 
-prg=../pwhg_main1
+prg=../pwhg_main
 
 parstage=1
 echo "***********************************************"

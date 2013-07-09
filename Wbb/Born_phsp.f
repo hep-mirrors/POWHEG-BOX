@@ -24,13 +24,12 @@
       real * 8 mass(3)
       real * 8 compmass
       external compmass
-      real * 8 virt2,gam,massa,r
+      real * 8 gam,massa,r
       real * 8 random
       external random
       real * 8 xmax,xmin,norm, rmin,rmax,atanxmax, atanxmin
 
 
-      virt2(massa,gam,r)=gam*massa*tan(pi/2*(1-2*r))+massa**2
       
       if(ini) then
 c     set initial- and final-state masses for Born and real         
@@ -264,20 +263,21 @@ c this subroutine performs two rotations
       save ini,pt2supp,pt     
 c CAVEAT!!!  process dependent subroutine
       if (ini) then
-         pt = powheginput("#ptsupp")         
+         pt = powheginput("#bornsuppfact")         
+         if (pt.gt.0d0) then
+            write(*,*)
+            write(*,*) "**** IMPROVED STATISTICS AT HIGH PT_W  ****"
+            write(*,*)
+         endif
          ini = .false.
          pt2supp = pt**2
       endif
-      if (pt.lt.0) then
+      if (pt.le.0) then
          fact=1d0
       else         
-         pt2=kn_pborn(1,5)**2+kn_pborn(2,5)**2
+c     improve statistics at high pt_W with this factor
+         pt2=kn_pborn(1,3)**2+kn_pborn(2,3)**2
          fact=pt2/(pt2+pt2supp)         
-c      if (pt2.gt.10) then
-c         fact = 1d0
-c      else
-c         fact = 0d0
-c      endif
       endif
       end
 

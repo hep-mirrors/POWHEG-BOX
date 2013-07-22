@@ -8,7 +8,7 @@ PDF = native
 ## default analysis may require FASTJET package, that has to be installed separately (see below)
 ANALYSIS=default
 ## For static linking uncomment the following
-STATIC= -static
+#STATIC= -static
 #
 ifeq ("$(COMPILER)","gfortran")	
 F77= gfortran -fno-automatic 	
@@ -112,7 +112,7 @@ PWHG=pwhg_main.o pwhg_init.o bbinit.o btilde.o lhefwrite.o		\
 	init_phys.o powheginput.o pdfcalls.o sigreal.o sigcollremn.o	\
 	pwhg_bookhist.o pwhg_analysis_driver.o checkmomzero.o		\
 	setstrongcoupl.o integrator.o newunit.o mwarn.o sigsoftvirt.o	\
-	sigcollsoft.o sigvirtual.o  $(PDFPACK) $(USER) $(FPEOBJ)
+	sigcollsoft.o sigvirtual.o reshufflemoms.o $(PDFPACK) $(USER) $(FPEOBJ)
 
 # target to generate LHEF output
 pwhg_main:$(PWHG)

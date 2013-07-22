@@ -337,9 +337,10 @@ c     lepton masses
       common/clepmass/lepmass,decmass
 
       call add_resonance(idvecbos,3,4)
-c     The following routine also performs the reshuffling of momenta if
-c     a massive decay is chosen
-      call momenta_reshuffle(3,4,5,decmass)
+c$$$c     The following routine also performs the reshuffling of momenta if
+c$$$c     a massive decay is chosen
+c$$$      call momenta_reshuffle(3,4,5,decmass)
+      call lhefinitemasses
       end
 
 

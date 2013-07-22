@@ -4,6 +4,8 @@
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'LesHouches.h'
+      include 'pwhg_physpar.h'
+      include 'pwhg_st.h'
       integer i1,i2,i3,i4,i5,k,ii(5)
       equivalence (i1,ii(1)),(i2,ii(2)),(i3,ii(3)),
      #  (i4,ii(4)),(i5,ii(5))
@@ -21,6 +23,7 @@ c     lepton masses
       real *8 lepmass(3),decmass
       common/clepmass/lepmass,decmass
       logical condition
+      real * 8 cmass, bmass
 
 c******************************************************
 c     Choose the process to be implemented
@@ -90,6 +93,19 @@ c     not yet implemented
      #        'not yet implemented'
          stop
       endif
+
+c     Set here lepton and quark masses for momentum reshuffle in the LHE event file
+      do j=1,st_nlight         
+         physpar_mq(j)=0d0
+      enddo
+      do j=1,3
+         physpar_ml(j)=lepmass(j)
+      enddo
+c     read eventual c and b masses from the input file
+      cmass=powheginput("#cmass_lhe")
+      if (cmass.gt.0d0) physpar_mq(4)=cmass
+      bmass=powheginput("#bmass_lhe")
+      if (bmass.gt.0d0) physpar_mq(5)=bmass
 
 
 c     index of the first coloured particle in the final state

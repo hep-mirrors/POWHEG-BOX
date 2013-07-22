@@ -111,12 +111,15 @@ c to examine that event in particular
       call resetcnt('vetoed radiation')
       write(*,*)
       write(*,*)' POWHEG: generating events'
-      do j=1,nev
+      j=0
+      do while (j.lt.nev) 
          call pwhgevent
          if(nup.eq.0) then
             write(*,*) ' nup = 0 skipping event'
             goto 111
          endif
+c     valid event... increase j
+         j=j+1
          call lhefwritev(iun)
          if(idwtup.eq.3) then
             weight=rad_totgen*xwgtup*rad_branching

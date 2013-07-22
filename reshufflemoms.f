@@ -269,6 +269,11 @@ c are performed again in reverse.
       integer n,arr(maxnup)
       common/clhfm_push/arr,n
       iret=0
+c     22 July 2013
+c     if n=1 then no reshuffling should be done. 
+c     Otherwise, may happen that the mass of the particle is greater than the mass
+c     of the mother by a tiny amount, leading to the event being discarded
+      if (n.eq.1) return
 c check that reshuffling is possible
       mass=0
       do j=1,n

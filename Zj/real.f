@@ -4,6 +4,7 @@
       include 'pwhg_flst.h'
       include 'pwhg_math.h'
       include 'pwhg_st.h'
+      include 'PhysPars.h'
       real * 8 p(0:3,nlegreal)
       integer rflav(nlegreal),rflavs(nlegreal)
       real * 8 amp2
@@ -12,7 +13,6 @@
 
 c     if present, the gluon is assumed to be the last particle
       call real_ampsq_g_last(p,rflav,amp2)
-
 
 c     if the amplitude is zero, flip last two momenta to have gluon in the 
 c     last position
@@ -33,6 +33,22 @@ c     last position
       endif
 c     cancel as/(2pi) associated with amp2. It will be put back by real_ampsq
       amp2 = amp2/(st_alpha/(2*pi))     
+
+      if(abs(rflav(3)).lt.16.and.abs(rflav(4)).lt.16) then
+c     lepton-antilepton from Z decay
+         continue
+      elseif(rflav(3).eq.95.and.rflav(4).eq.-95) then
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+         amp2 = amp2 * nc
+         if(ZbbNLO) then
+            amp2=amp2*ZbbNLOfac
+         endif
+ccccccccccccccccccccccccccccccc
+      else
+         write(*,*) 'setreal: invalid rflav(3)'
+         call exit(-1)
+      endif        
 
 
 
@@ -69,12 +85,23 @@ c     q q -> e- e+ g g
       real * 8 ferm_charge(nlegreal)
       integer i,j,k,l,count,tmp_type
       real *8 tmp_charge
+
+      if(abs(realflav(3)).lt.16.and.abs(realflav(4)).lt.16) then
 c     lepton-antilepton from Z decay
-      ferm_type(3) = +1
-      ferm_type(4) = -1
-      ferm_charge(3) = -1d0
-      ferm_charge(4) = +1d0
-      
+         ferm_type(3) = +1
+         ferm_charge(3) = -1
+      elseif(realflav(3).eq.95.and.realflav(4).eq.-95) then
+c     Z->bbar
+         ferm_type(3) = +1
+         ferm_charge(3) = -1d0/3d0
+      else
+         write(*,*) 'real_ampsq_g_last: invalid realflav(3)'
+         call exit(-1)
+      endif        
+      ferm_type(4) = -ferm_type(3)
+      ferm_charge(4) = -ferm_charge(3)
+
+     
 c     i is the flavour index of first incoming parton
 c     j is the flavour index of second incoming parton
 c     k,l are the flavours of outgoing partons in the order particle,antiparticle,gluon
@@ -264,15 +291,21 @@ c     utype = -1 otherwise
       endif
       
       if (abs(ferm_charge(3)).eq.1d0) then
+c     Z->ll
          utype_l = -1
          q_l = -1d0
       elseif (abs(ferm_charge(3)).eq.0d0) then
+c     Z->nunu
          utype_l = +1
          q_l = 0d0
+      elseif (abs(ferm_charge(3)).eq.1d0/3) then
+c     Z->bbar
+         utype_l = -1
+         q_l = -1d0/3
       else
          write(*,*) 'What charge is this??',ferm_charge(4)
          stop
-      endif
+      endif      
       
       v_q = utype_q*1.d0/2 - 2*q_q*ph_sthw2
       a_q = utype_q*1.d0/2
@@ -667,11 +700,17 @@ c     utype = -1 otherwise
       endif
       
       if (abs(ferm_charge(3)).eq.1d0) then
+c     Z->ll
          utype_l = -1
          q_l = -1d0
       elseif (abs(ferm_charge(3)).eq.0d0) then
+c     Z->nunu
          utype_l = +1
          q_l = 0d0
+      elseif (abs(ferm_charge(3)).eq.1d0/3) then
+c     Z->bbar
+         utype_l = -1
+         q_l = -1d0/3
       else
          write(*,*) 'What charge is this??',ferm_charge(4)
          stop
@@ -1170,25 +1209,31 @@ c     utype = -1 otherwise
       endif
                  
       if (abs(ferm_charge(3)).eq.1d0) then
+c     Z->ll
          utype_l = -1
          q_l = -1d0
       elseif (abs(ferm_charge(3)).eq.0d0) then
+c     Z->nunu
          utype_l = +1
          q_l = 0d0
+      elseif (abs(ferm_charge(3)).eq.1d0/3) then
+c     Z->bbar
+         utype_l = -1
+         q_l = -1d0/3
       else
          write(*,*) 'What charge is this??',ferm_charge(4)
          stop
-      endif
-            
-      v_q = utype_q*1.d0/2 - 2*q_q*ph_sthw**2 
+      endif      
+
+      v_q = utype_q*1.d0/2 - 2*q_q*ph_sthw2
       a_q = utype_q*1.d0/2
-      
-      v_qp = utype_qp*1.d0/2 - 2*q_qp*ph_sthw**2 
+
+      v_qp = utype_qp*1.d0/2 - 2*q_qp*ph_sthw2
       a_qp = utype_qp*1.d0/2
-      
-      v_l = utype_l*1.d0/2 - 2*q_l*ph_sthw**2 
+
+      v_l = utype_l*1.d0/2 - 2*q_l*ph_sthw2
       a_l = utype_l*1.d0/2
-      
+
       L_q = v_q + a_q
       R_q = v_q - a_q
 
@@ -1423,15 +1468,21 @@ c     utype = -1 otherwise
       endif
       
       if (abs(ferm_charge(3)).eq.1d0) then
+c     Z->ll
          utype_l = -1
          q_l = -1d0
       elseif (abs(ferm_charge(3)).eq.0d0) then
+c     Z->nunu
          utype_l = +1
          q_l = 0d0
+      elseif (abs(ferm_charge(3)).eq.1d0/3) then
+c     Z->bbar
+         utype_l = -1
+         q_l = -1d0/3
       else
          write(*,*) 'What charge is this??',ferm_charge(4)
          stop
-      endif                 
+      endif      
       
       v_q = utype_q*1.d0/2 - 2*q_q*ph_sthw2
       a_q = utype_q*1.d0/2

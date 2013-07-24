@@ -32,6 +32,12 @@ c     muonic decay
 c     tauonic decay
          i3=15
          i4=-15
+      elseif(vdecaymode.eq.5) then
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+         i3=95
+         i4=-95
+cccccccccccccccccccccccccccccccc
       else
 c     default: muonic decay
          i3=13

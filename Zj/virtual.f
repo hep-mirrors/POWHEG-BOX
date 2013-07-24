@@ -8,12 +8,13 @@ c     Use MCFM subroutines
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_st.h'
+      include 'PhysPars.h'
 c     MCFM include
       include 'MCFM_include/scale.f'
       include 'MCFM_include/qcdcouple.f'
       include 'MCFM_include/constants.f' 
       real * 8 p(0:3,nlegborn)
-      integer vflav(nlegborn)      
+      integer vflav(nlegborn)
       real * 8 virtual
       real * 8 pmcfm(mxpart,1:4),pold(0:3,nlegborn)
       real * 8 virt(-nf:nf, -nf:nf)
@@ -51,6 +52,23 @@ c     MCFM fills an array with all processes.
       endif
 c     Now select only the one needed and divide result by as/(2pi)
       virtual=virt(vflav(1),vflav(2))/(st_alpha/(2*pi))
+
+      if(abs(vflav(3)).lt.16.and.abs(vflav(4)).lt.16) then
+c     lepton-antilepton from Z decay
+         continue
+      elseif(vflav(3).eq.95.and.vflav(4).eq.-95) then
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+         virtual = virtual * xn
+         if(ZbbNLO) then
+            virtual=virtual*ZbbNLOfac
+         endif
+ccccccccccccccccccccccccccccccc
+      else
+         write(*,*) 'setvirtual: invalid vflav(3)'
+         call exit(-1)
+      endif        
+
       end
 
 
@@ -83,9 +101,14 @@ c      block data wsalam1
       data Q(+5)/-0.333333333333333d0/
       data tau/1d0,-1d0,1d0,-1d0,1d0,0d0,-1d0,1d0,-1d0,1d0,-1d0/
 c--- Number of active flavours in the initial state
-      data nflav/5/     
+      data nflav/5/
       real * 8 aemmz
       logical gmuscheme
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+      real * 8 powheginput
+      external powheginput
+ccccccccccccccccccccccccccccccc
 
       epinv = 0d0
       epinv2 = 0d0
@@ -108,14 +131,22 @@ c--- Now set up the other derived parameters
       gwsq=fourpi*aemmz/xw
       esq=gwsq*xw
       call couplz(xw)
-      q1=-1d0
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+      if(powheginput("#vdecaymode").eq.5) then
+         q1=-1d0/3d0
+c     Notice that le and re have been changed in couplz
+      else
+         q1=-1d0
+      endif
+ccccccccccccccccccccccccccccccc
       l1=le
       r1=re
+
 c     renormalization scale squared
 c      musq=st_muren2
 c     alpha_s
 c      as = 0.118d0
-
       end
 
 
@@ -127,7 +158,7 @@ c      include 'pwhg_kn.h'
       include 'MCFM_include/constants.f'
       real * 8 cmpborn(0:3,5)
       real * 8 pmcfm(mxpart,1:4)
-      integer i,mu      
+      integer i,mu
       do i=1,2
          pmcfm(i,4)=-cmpborn(0,i)
          do mu=1,3
@@ -151,7 +182,7 @@ c FOURTH momentum must be the antilepton
       include 'pwhg_kn.h'
       include 'MCFM_include/constants.f'
       real * 8 pmcfm(mxpart,1:4)
-      integer i,mu      
+      integer i,mu
       do i=1,2
          pmcfm(i,4)=-kn_cmpborn(0,i)
          do mu=1,3
@@ -730,6 +761,11 @@ c---Modified to notation of DKS (ie divided by 2*sw*cw)
 c---xw=sin^2 theta_w
       integer j
       real * 8 xw
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+      real * 8 powheginput
+      external powheginput
+ccccccccccccccccccccccccccccccc
       sin2w=two*sqrt(xw*(1d0-xw))
       do j=1,nf
       l(j)=(tau(j)-two*Q(j)*xw)/sin2w
@@ -738,6 +774,13 @@ c---xw=sin^2 theta_w
 
       le=(-1d0-two*(-1d0)*xw)/sin2w
       re=(-two*(-1d0)*xw)/sin2w
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+      if(powheginput("#vdecaymode").eq.5) then
+         le=(-1d0-two*(-1d0/3d0)*xw)/sin2w
+         re=(-two*(-1d0/3d0)*xw)/sin2w
+      endif
+ccccccccccccccccccccccccccccccc
 
       ln=(+1d0-two*(+0d0)*xw)/sin2w
       rn=0d0

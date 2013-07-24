@@ -3,6 +3,7 @@
       include 'pwhg_math.h'
       include 'nlegborn.h'
       include 'pwhg_flst.h'
+      include 'PhysPars.h'
       integer nlegs
       parameter (nlegs=nlegborn)
       real * 8 p(0:3,nlegs),bornjk(nlegs,nlegs)
@@ -35,22 +36,23 @@ c where k#i,j
             enddo
          endif
       enddo
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+      if(ZbbNLO) then
+         born=born*ZbbNLOfac
+         bornjk(:,:)=bornjk(:,:)*ZbbNLOfac
+         bmunu(:,:,:)=bmunu(:,:,:)*ZbbNLOfac
+      endif
+ccccccccccccccccccccccccccccccc
       end
 
 
-c     Example
-c     q q~ -> e- e+ g  
       subroutine compborn(p,bflav,born,bmunu)
       implicit none
       include 'nlegborn.h'
       include 'pwhg_flst.h'
-c -*- Fortran -*-
-c      character *2 flav(-5:5)
+      include 'pwhg_math.h'
       real * 8 charge(-5:5)
-c      data (charge(ijkh),ijkh=-5,5) 
-c      data (flav(ijkh),ijkh=-5,5) 
-c      data flav
-c     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
       data charge
      #     / 0.33333333333333333333d0, !   1d0/3
      #      -0.66666666666666666667d0, !  -2d0/3
@@ -63,7 +65,6 @@ c     #     /'b~','c~','s~','u~','d~','g','d','u','s','c','b'/
      #      -0.33333333333333333333d0, !   -1d0/3
      #       0.66666666666666666667d0, !   2d0/3 
      #      -0.33333333333333333333d0/ !   -1d0/3
-c      include 'QuarkFlavs.h'
       integer nleg
       parameter (nleg=nlegborn)
       real * 8 p(0:3,nleg)
@@ -72,26 +73,30 @@ c      include 'QuarkFlavs.h'
       integer ferm_type(nleg)
       integer i,j,k
       real * 8 ferm_charge(nleg)
+      integer colourfact
 
       if (abs(bflav(3)).le.6.or.abs(bflav(4)).le.6) then
          write(*,*) 'born_ampsq: ERROR in flavor assignement'
          stop
       endif
 
+      if(abs(bflav(3)).lt.16.and.abs(bflav(4)).lt.16) then
 c     lepton-antilepton from Z decay
-      ferm_type(3) = +1
-      ferm_charge(3) = -1
+         ferm_type(3) = +1
+         ferm_charge(3) = -1
+         colourfact=1
+      elseif(bflav(3).eq.95.and.bflav(4).eq.-95) then
+c     Z->bbar
+         ferm_type(3) = +1
+         ferm_charge(3) = -1d0/3d0
+         colourfact=nc
+      else
+         write(*,*) 'compborn: invalid bflav(3)'
+         call exit(-1)
+      endif        
       ferm_type(4) = -ferm_type(3)
       ferm_charge(4) = -ferm_charge(3)
-      
-c     i is the flavour index of first incoming parton
-c     j is the flavour index of second incoming parton
-c     k is the flavour of outgoing partons in the order particle,antiparticle,gluon
-c     with the convention:
-c     
-c      -6  -5  -4  -3  -2  -1  0  1  2  3  4  5  6                    
-c      t~  b~  c~  s~  u~  d~  g  d  u  s  c  b  t                    
-      
+           
       i = bflav(1)
       j = bflav(2)
       k = bflav(5)
@@ -130,6 +135,10 @@ c        write(*,*) 'WARNING: returning 0 amplitude!'
       endif
 
       born=amp2
+
+      born = born * colourfact
+      bmunu(:,:)=bmunu(:,:) * colourfact
+
       end
 
 
@@ -228,11 +237,17 @@ c utype = -1 otherwise
       endif
 
       if (abs(ferm_charge(3)).eq.1d0) then
+c     Z->ll
          utype_l = -1
          q_l = -1d0
       elseif (abs(ferm_charge(3)).eq.0d0) then
+c     Z->nunu
          utype_l = +1
          q_l = 0d0
+      elseif (abs(ferm_charge(3)).eq.1d0/3) then
+c     Z->bbar
+         utype_l = -1
+         q_l = -1d0/3
       else
          write(*,*) 'What charge is this??',ferm_charge(4)
          stop
@@ -444,17 +459,22 @@ c utype = -1 otherwise
          stop
       endif
 
-            
       if (abs(ferm_charge(3)).eq.1d0) then
+c     Z->ll
          utype_l = -1
          q_l = -1d0
       elseif (abs(ferm_charge(3)).eq.0d0) then
+c     Z->nunu
          utype_l = +1
          q_l = 0d0
+      elseif (abs(ferm_charge(3)).eq.1d0/3) then
+c     Z->bbar
+         utype_l = -1
+         q_l = -1d0/3
       else
-         write(*,*) 'What charge is this??',ferm_charge(3)
+         write(*,*) 'What charge is this??',ferm_charge(4)
          stop
-      endif
+      endif      
       
       v_q = utype_q*1.d0/2 - 2*q_q*ph_sthw**2 
       a_q = utype_q*1.d0/2
@@ -591,11 +611,19 @@ c neutral particles
       icolup(2,3)=0
       icolup(1,4)=0
       icolup(2,4)=0
+ccccccccccccccccccccccccccccccc
+c     to include Z->bbar
+      if(idup(3).eq.95.and.idup(4).eq.-95) then
+         idup(3)=5
+         idup(4)=-5
+         icolup(1,3)=505
+         icolup(2,3)=0
+         icolup(1,4)=0
+         icolup(2,4)=505
+      endif
+ccccccccccccccccccccccccccccccc
       do j=1,nlegborn
-         if(j.eq.3.or.j.eq.4) then
-            icolup(1,j)=0
-            icolup(2,j)=0
-         else
+         if(j.ne.3.and.j.ne.4) then
             if(idup(j).gt.0.and.idup(j).le.5) then
                if(j.le.2) then
                   icolup(1,j)=icolqi(1)

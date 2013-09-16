@@ -173,22 +173,29 @@ c     now boost everything BACK along z-axis
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
       include 'pwhg_flg.h'
-      real * 8 fact,ptmin
-      real * 8 pt2
+      real * 8 fact,ptmin,ptminW
+      real * 8 pt2,pt2W
       logical ini
       data ini/.true./
       real * 8 powheginput
-      save ini,ptmin    
+      save ini,ptmin,ptminW    
       if (ini) then
          ptmin=powheginput("#bornsuppfact")      
+         ptminW=powheginput("#bornsuppfactW")      
          if (ptmin.lt.0d0) then
             ptmin=0d0
+         endif
+         if (ptminW.lt.0d0) then
+            ptminW=0d0
          endif
          ini=.false.
       endif
       if(flg_weightedev) then
          pt2=kn_cmpborn(1,6)**2+kn_cmpborn(2,6)**2
          fact = pt2/(ptmin**2+pt2)
+         pt2W=(kn_cmpborn(1,4)+kn_cmpborn(1,5))**2+
+     $        (kn_cmpborn(2,4)+kn_cmpborn(2,5))**2
+         fact=fact*(pt2W+1d0)/(pt2W+1d0+ptminW**2)
       else
          fact=1
       endif

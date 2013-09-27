@@ -62,6 +62,8 @@ c first call lhefreadhdr; this sets lprup;
       if (hdecaymode.eq.-1) then
          iproc=-1600
       else
+         write(*,*) 'Sorry, Higgs decay is not supported at the moment'
+         stop
          iproc=-1600-hdecaymode ! Les Houches interface
       endif
 

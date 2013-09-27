@@ -83,12 +83,14 @@ C--- Opens input file and counts number of events, setting MAXEV;
       double precision brat
       COMMON/PYDAT3/MDCY(500,3),MDME(8000,2),BRAT(8000),KFDP(8000,5)
       integer pycomp
-      external pycomp      
-      integer hdecaymode,i      
+      external pycomp
+      integer minchan,maxchan
+      integer hdecaymode,i
       integer maxev
       common/mcmaxev/maxev
+      common/pythiahiggstype/local_higgstype
 
-      integer higgspdg, local_higgstype,local_model
+      integer higgspdg, local_higgstype
       save higgspdg
       real * 8 powheginput
       external powheginput
@@ -110,9 +112,20 @@ C---Decay;
 c     We cannot use the data in the common block since it is set only in POWHEG.
       local_higgstype = powheginput('higgstype')
       if (local_higgstype.eq.1) then
-          higgspdg = 25
+         higgspdg = 25
+         minchan = 210
+         maxchan = 288
+      else if(local_higgstype.eq.2) then
+         higgspdg = 35
+         minchan = 334
+         maxchan = 419
+      else if(local_higgstype.eq.3) then
+         higgspdg = 36
+         minchan = 420
+         maxchan = 502
       else
-          higgspdg = 35
+         write(*,*) 'Error: unrecognized Higgs type: ', local_higgstype
+         stop
       endif
 
 c     choose Higgs decay channel
@@ -121,25 +134,83 @@ c     choose Higgs decay channel
       else   
          mdcy(pycomp(higgspdg),1)=1
          if (hdecaymode.gt.0) then
-            do i=210,288
+            do i=minchan,maxchan
                if (mdme(i,1).ne.-1) mdme(i,1)=0
             enddo
-            if (hdecaymode.eq.12) then
-               mdme(223,1)=1
-            elseif(hdecaymode.eq.11) then
-               mdme(225,1)=1
-            elseif(hdecaymode.eq.10) then
-               mdme(226,1)=1
-            elseif(hdecaymode.eq.7) then
-               mdme(218,1)=1
-            elseif(hdecaymode.eq.8) then
-               mdme(219,1)=1
-            elseif(hdecaymode.eq.9) then
-               mdme(220,1)=1   
-            else
-               mdme(209+hdecaymode,1)=1
-            endif
-         endif      
+c h
+            if(local_higgstype.eq.1) then
+c               gamma gamma
+                if (hdecaymode.eq.12) then
+                   mdme(223,1)=1
+c               z z
+                elseif(hdecaymode.eq.11) then
+                   mdme(225,1)=1
+c               w w
+                elseif(hdecaymode.eq.10) then
+                   mdme(226,1)=1
+c               e e
+                elseif(hdecaymode.eq.7) then
+                   mdme(218,1)=1
+c               mu mu
+                elseif(hdecaymode.eq.8) then
+                   mdme(219,1)=1
+c               tau tau
+                elseif(hdecaymode.eq.9) then
+                   mdme(220,1)=1
+                else
+c               q qbar
+                   mdme(209+hdecaymode,1)=1
+                endif
+c H
+             else if(local_higgstype.eq.2) then
+c               gamma gamma
+                if (hdecaymode.eq.12) then
+                   mdme(347,1)=1
+c               z z
+                elseif(hdecaymode.eq.11) then
+                   mdme(349,1)=1
+c               w w
+                elseif(hdecaymode.eq.10) then
+                   mdme(350,1)=1
+c               e e
+                elseif(hdecaymode.eq.7) then
+                   mdme(342,1)=1
+c               mu mu
+                elseif(hdecaymode.eq.8) then
+                   mdme(343,1)=1
+c               tau tau
+                elseif(hdecaymode.eq.9) then
+                   mdme(344,1)=1
+                else
+c               q qbar
+                   mdme(333+hdecaymode,1)=1
+                endif
+c A
+             else
+c               gamma gamma
+                if (hdecaymode.eq.12) then
+                   mdme(433,1)=1
+c               z z
+                elseif(hdecaymode.eq.11) then
+                   mdme(435,1)=1
+c               w w
+                elseif(hdecaymode.eq.10) then
+                   mdme(436,1)=1
+c               e e
+                elseif(hdecaymode.eq.7) then
+                   mdme(428,1)=1
+c               mu mu
+                elseif(hdecaymode.eq.8) then
+                   mdme(429,1)=1
+c               tau tau
+                elseif(hdecaymode.eq.9) then
+                   mdme(430,1)=1
+                else
+c               q qbar
+                   mdme(419+hdecaymode,1)=1
+                endif
+             endif
+        endif
       endif
       end
 
@@ -181,8 +252,12 @@ c pythia routine to abort event
       double precision bratio
       integer hdecaymode
       integer mint
+      integer local_higgstype
+      real * 8 powheginput
+      external powheginput
       double precision vint
       COMMON/PYINT1/MINT(400),VINT(400)
+      common/pythiahiggstype/local_higgstype
 c     check parameters
       logical verbose
       parameter (verbose=.false.)
@@ -198,23 +273,64 @@ c     check parameters
       endif
       nevhep=nevhep+1
       hdecaymode=lprup(1)-10000
+
       if ((hdecaymode.eq.0).or.(hdecaymode.eq.-1)) then
          bratio=1d0
-      elseif (hdecaymode.eq.12) then
-         bratio=brat(223)
-      elseif(hdecaymode.eq.11) then
-         bratio=brat(225)
-      elseif(hdecaymode.eq.10) then
-         bratio=brat(226)
-      elseif(hdecaymode.eq.7) then
-         bratio=brat(218)
-      elseif(hdecaymode.eq.8) then
-         bratio=brat(219)
-      elseif(hdecaymode.eq.9) then
-         bratio=brat(220)   
       else
-         bratio=brat(209+hdecaymode)
+c      h
+        if (local_higgstype.eq.1) then
+          if (hdecaymode.eq.12) then
+             bratio=brat(223)
+          elseif(hdecaymode.eq.11) then
+             bratio=brat(225)
+          elseif(hdecaymode.eq.10) then
+             bratio=brat(226)
+          elseif(hdecaymode.eq.7) then
+             bratio=brat(218)
+          elseif(hdecaymode.eq.8) then
+             bratio=brat(219)
+          elseif(hdecaymode.eq.9) then
+             bratio=brat(220)
+          else
+             bratio=brat(209+hdecaymode)
+          endif
+c H
+         else if (local_higgstype.eq.2) then
+           if (hdecaymode.eq.12) then
+             bratio=brat(347)
+          elseif(hdecaymode.eq.11) then
+             bratio=brat(349)
+          elseif(hdecaymode.eq.10) then
+             bratio=brat(350)
+          elseif(hdecaymode.eq.7) then
+             bratio=brat(342)
+          elseif(hdecaymode.eq.8) then
+             bratio=brat(343)
+          elseif(hdecaymode.eq.9) then
+             bratio=brat(344)
+          else
+             bratio=brat(333+hdecaymode)
+          endif
+c A
+         else
+           if (hdecaymode.eq.12) then
+             bratio=brat(433)
+          elseif(hdecaymode.eq.11) then
+             bratio=brat(435)
+          elseif(hdecaymode.eq.10) then
+             bratio=brat(436)
+          elseif(hdecaymode.eq.7) then
+             bratio=brat(428)
+          elseif(hdecaymode.eq.8) then
+             bratio=brat(429)
+          elseif(hdecaymode.eq.9) then
+             bratio=brat(430)
+          else
+             bratio=brat(419+hdecaymode)
+          endif
+         endif
       endif
+
       if(abs(idwtup).eq.3) xwgtup=xwgtup*xsecup(1)
       xwgtup=xwgtup*bratio
       call analysis(xwgtup)

@@ -171,8 +171,10 @@ c        TODO: better way to avoid the requirement of having powheg.input in the
          local_higgstype = int(powheginput('higgstype'))
          if (local_higgstype.eq.1) then
             higgspdg = 25
-         else
+         else if (local_higgstype.eq.2) then
             higgspdg = 35
+         else if (local_higgstype.eq.3) then
+            higgspdg = 36
          endif
       endif
 

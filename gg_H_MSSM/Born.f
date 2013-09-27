@@ -123,6 +123,7 @@ c     IMPORTANT: the flux factor 1/2s is intentionally missing
 
 c     1/(2pi) comes from the 2*pi*delta(s-m^2) of phase space
       ampl = dcmplx(0d0)
+      if ((ih.eq.1).or.(ih.eq.2)) then
 
       do i=1,afer
          m12=mfer(i)
@@ -133,7 +134,6 @@ c     1/(2pi) comes from the 2*pi*delta(s-m^2) of phase space
          ampl = ampl+aux
 c         write(*,*) 'fermion ', i , ' ampl ', aux
       end do
-
 c     Scalars with full mass dependence
       if (flg_lhscalars.eq.0) then
          do i=1,asca
@@ -156,7 +156,19 @@ c     Scalars in the light Higgs mass limit
 c            write(*,*) 'scalar ', afer+i , ' ampl ', aux
          end do
       endif
-c      stop
+c     pseudoscalar
+      else
+         do i=1,afer
+            m12=mfer(i)
+            y12=m12**2/mh2
+            x12 = reduced(1d0/y12)
+            aux = lambdafer(i)*trfer(i)*4d0*y12*0.5d0*log(x12)**2
+            ampl = ampl+aux
+c          write(*,*) 'fermion ', i , ' ampl ', aux
+        end do
+c        write(*,*) ampl
+      endif
+
 c     If enabled, here we add the EW corrections
 
       tmp = ampl * dconjg(ampl)

@@ -12,8 +12,8 @@ c     FeynHiggs stuff
       integer error, nmfv,fast,key
       integer mssmpart, fieldren, tanbren, higgsmix, p2approx
       integer looplevel, runningMT, botResum, tlCplxApprox
-      double precision MASf(6,4), MCha(2), MNeu(4)
-      double complex UASf(6,6,4)
+      double precision MSf(2,4,3), MASf(6,4), MCha(2), MNeu(4)
+      double complex USf(2,2,4,3),UASf(6,6,4)
       double complex UCha(2,2), VCha(2,2), ZNeu(4,4)
       double complex DeltaMB
       double precision MGl
@@ -65,9 +65,9 @@ c     FeynHiggs stuff
       endif
       write(*,*) 'Reading from ',filename
       call FHReadRecord(error,record,slhadata,filename)
-      if(error.eq.2) then
+      if(error.eq.0) then
         write(*,*) 'Read succesfully input data from SLHA file'
-      else if (error.eq.1) then
+      else if (error.eq.2) then
         write(*,*) 'Read succesfully input data from FH input file'
       else
         write(*,*) 'Error in reading ', filename, 'at line ',error
@@ -98,7 +98,7 @@ c     FeynHiggs stuff
       mu=-DREAL(mucmplx)
       M3=DREAL(m3cmplx)
 
-      call FHGetPara(error, nmfv, MASf, UASf,
+      call FHGetPara(error, nmfv, MSf, Usf, MASf, UASf,
      $     MCha, UCha, VCha, MNeu, ZNeu, DeltaMB, MGl,
      $     MHtree, SAtree)
 
@@ -119,14 +119,14 @@ c     FeynHiggs stuff
 
       write(*,*) 'Higgs and alpha in FH', mh_int(1), mh_int(2), alpha
 
-      write(*,*) 'Stops in FeynHiggs:',MASf(3,3),MASf(6,3),
-     $     dreal(UASf(3,3,3)),dreal(UASf(3,6,3))
+      write(*,*) 'Stops in FeynHiggs:',MSf(1,3,3),MSf(2,3,3),
+     $     dreal(USf(1,1,3,3)),dreal(USf(1,2,3,3))
       write(*,*) 'Sbots in FeynHiggs:',MSb(1),MSb(2),
      $     dreal(USb(1,1)),dreal(USb(1,2))
 
-      ph_t1 = MASf(3,3)
+      ph_t1 = MSf(1,3,3)
       ph_t1_2 = ph_t1**2
-      ph_t2 = MASf(6,3)
+      ph_t2 = MSf(2,3,3)
       ph_t2_2 = ph_t2**2
 
       ph_b1 = MSb(1)

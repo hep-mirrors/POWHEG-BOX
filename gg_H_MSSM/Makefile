@@ -10,7 +10,7 @@ PDF = lhapdf
 ANALYSIS = default
 ## For static linking uncomment the following
 #STATIC= -static
-LIBS+= -lFH
+LIBS+= -lFH -lchaplin
 #
 ifeq ("$(COMPILER)","gfortran")	
 F77= gfortran -fno-automatic 	
@@ -27,6 +27,7 @@ FFLAGS= -Wall
 ## For debugging uncomment the following
 #DEBUG= -ggdb -pg
 #DEBUG= -ggdb -fwhole-file
+#DEBUG= -ggdb
 endif
 
 ifeq ("$(COMPILER)","g77")
@@ -127,7 +128,7 @@ USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
         real.o btilde.o pt2maxreg.o LesHouchesreg.o $(PWHGANAL)     \
 	nloreal.o nlovirt.o nloutils.o DSgluglu.o  DDSgluexp.o gluglu_bot.o      \
 	hplog.o HPL_full.o ew.o bottomshift.o FeynHiggsInterface.o \
-	decay-util.o SLpolylog.o runmass.o
+	decay-util.o SLpolylog.o runmass.o DDSgluodd.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o lhefwrite.o LesHouches.o		\
 	gen_Born_phsp.o find_regions.o test_Sudakov.o sigborn.o		\
@@ -175,6 +176,3 @@ main-PYTHIA-lhef: $(PYTHIA)
 clean:
 	rm -f obj/*.o *.mod pwhg_main lhef_analysis main-HERWIG-lhef	\
 	main-PYTHIA-lhef
-
-
-

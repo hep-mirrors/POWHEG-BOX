@@ -54,8 +54,10 @@ c     In the MSSM model we give the possibility to choose between the light and 
       ih = int(powheginput('higgstype'))
       if (ih.eq.1) then
          i3 = 25
-      else
+      else if (ih.eq.2) then
          i3 = 35
+      else
+         i3 = 36
       endif
 
       flst_nborn=1

@@ -1,123 +1,102 @@
-	double complex function mylog(z)
-	implicit none
-	double complex z
+      double complex function mylog(z)
+      implicit none
+      double complex z
 #include "HPL.h"
 
         if (abs(dimag(z)).lt.EPS) then
-	   if (abs(z).lt.EPS) then
-	      print*,'divergenza log(0)'
+         if (abs(z).lt.EPS) then
+            print*,'divergenza log(0)'
               stop
-	   else if (dreal(z).lt.0d0) then
-	      mylog = log(-z) -dcmplx(0d0,PI)
-	   else
-	      mylog = log(z)
-	   end if
-	else
-	   mylog = log(z)
-	end if
+         else if (dreal(z).lt.0d0) then
+            mylog = log(-z) -dcmplx(0d0,PI)
+         else
+            mylog = log(z)
+         end if
+      else
+         mylog = log(z)
+      end if
 
-	end function
+      end function
 
 ***************************************************************************
 
-	double complex function myli2(z)
-	implicit none
-	double complex z,mylog,H0m1
-	double precision theta, cl2, ddilog,x,y
+      double complex function myli2(z)
+      implicit none
+      double complex z,mylog,H0m1
+      double precision theta, cl2, ddilog,x,y
 #include "HPL.h"
 
-	external cl2,ddilog,mylog, H0m1
+      external cl2,ddilog,mylog, H0m1
 
         myli2 = -H0m1(-z)
 
-c$$$	x = dreal(z)
-c$$$	y = dimag(z)
+c$$$  x = dreal(z)
+c$$$  y = dimag(z)
 c$$$
-c$$$	if (abs(y).lt.EPS) then
-c$$$	   if (x.gt.1d0) then
-c$$$	      myli2 = ddilog(x)-
+c$$$  if (abs(y).lt.EPS) then
+c$$$     if (x.gt.1d0) then
+c$$$        myli2 = ddilog(x)-
 c$$$     $               dcmplx(0d0,PI)*log(x)
-c$$$	   else if (abs(z-1d0).lt.EPS) then
-c$$$	      myli2 = PI**2/6d0
-c$$$	   else
-c$$$	      myli2 = ddilog(x)
-c$$$	   end if
-c$$$	else
-c$$$	   if (abs(z-1d0).lt.EPS) then
-c$$$	      theta = atan(y/x)
-c$$$	      myli2 = cl2(theta)
-c$$$	   else
+c$$$     else if (abs(z-1d0).lt.EPS) then
+c$$$        myli2 = PI**2/6d0
+c$$$     else
+c$$$        myli2 = ddilog(x)
+c$$$     end if
+c$$$  else
+c$$$     if (abs(z-1d0).lt.EPS) then
+c$$$        theta = atan(y/x)
+c$$$        myli2 = cl2(theta)
+c$$$     else
 c$$$
-c$$$	      print*,'non lo so fare'
-c$$$	      stop
-c$$$	   end if
-c$$$	end if
-	
-	end function
+c$$$        print*,'non lo so fare'
+c$$$        stop
+c$$$     end if
+c$$$  end if
+      
+      end function
 
 ***************************************************************************
 
-	double complex function myli3(z)
-	implicit none
-	double complex z
-	double precision theta, cl3, dtrilog
-	double complex H00m1
+      double complex function myli3(z)
+      implicit none
+      double complex z, H00m1
+      double precision theta, cl3, dtrilog
 #include "HPL.h"
 
-	external cl3, dtrilog, h00m1
+      external cl3, dtrilog, H00m1
 
-	myli3 = - H00m1(-z)
+      myli3 = - H00m1(-z)
 
-	write(*,*) 'myli3', myli3
-
-c$$$	if (abs(dimag(z)).lt.EPS) then
-c$$$	   if (dreal(z).gt.1d0) then
-c$$$	      myli3 = dtrilog(dreal(z)) -
-c$$$     -                   dcmplx(0d0,PI)/2d0*log(z)**2
-c$$$	   else if (abs(z-1d0).lt.EPS) then
-c$$$	      myli3 = 1.2020569031d0
-c$$$	   else
-c$$$	      myli3 = dtrilog(dreal(z))
-c$$$	   end if
-c$$$	else
-c$$$	   if (abs(z-1d0).lt.EPS) then
-c$$$	      theta = atan(dimag(z)/dreal(z))
-c$$$	      myli3 = cl3(theta)
-c$$$	   else
-c$$$	      print*,'non lo so fare'
-c$$$	      stop
-c$$$	   end if
-c$$$	end if
-	
-	end function
+      end function
 
 ***************************************************************************
 
-	double complex function myli4(z)
-	implicit none
-	double complex z, cquadrilog
-	external cquadrilog
+      double complex function myli4(z)
+      implicit none
+      double complex z, cquadrilog
+      external cquadrilog
 #include "HPL.h"
 
-	if (abs(dimag(z)).lt.EPS) then
-	   if (dreal(z).gt.1d0) then
-	      myli4 = dreal(cquadrilog(z)) -
+      if (abs(dimag(z)).lt.EPS) then
+         if (dreal(z).gt.1d0) then
+            myli4 = dreal(cquadrilog(z)) -
      -                   dcmplx(0d0,PI)/6d0*log(z)**3
-	   else if (abs(z-1d0).lt.EPS) then
-	      myli4 = 1.0823232337d0
-	   else
-	      myli4 = cquadrilog(z)
-	   end if
-	else
-	   if (abs(z-1d0).lt.EPS) then
-	      myli4 = cquadrilog(z)
-	   else
-	      print*,'non lo so fare'
-	      stop
-	   end if
-	end if
-	
-	end function
+         else if (abs(z-1d0).lt.EPS) then
+            myli4 = 1.0823232337d0
+         else
+            myli4 = cquadrilog(z)
+         end if
+      else
+         if (abs(z-1d0).lt.EPS) then
+            myli4 = cquadrilog(z)
+         else
+            myli4 = cquadrilog(z)
+c        print*,'non lo so fare',z,myli4
+c        stop
+         end if
+      end if
+      
+      end function
 
 ***************************************************************************
 
@@ -167,7 +146,7 @@ c$$$	end if
       double complex z
       integer in1,in2,in3
       double complex Hm4mrm1,Hmrmrmr,H00m1,H0mrmr,Hmrmrm1,Hmr0m1
-	double complex H000
+      double complex H000
       external Hm4mrm1,Hmrmrmr,H00m1,H0mrmr,Hmrmrm1,Hmr0m1,H000
 
       if ((in1.eq.-4).and.(in2.eq.-2).and.(in3.eq.-1)) H3=Hm4mrm1(z)
@@ -196,18 +175,18 @@ c$$$	end if
       double precision x,y
       double complex z
 
-	x = dreal(z)
+      x = dreal(z)
         y = dimag(z)
 
       if ((x.eq.-1d0).and.(abs(y).lt.EPS)) then
          print*,'errore Hm1: singolare' 
-	 stop
+       stop
       end if
 
       if (abs(y).lt.EPS) then
          Hm1 = log(dcmplx(x+1,-EPS))
       else
-	 Hm1 = log(z+1)
+       Hm1 = log(z+1)
       end if
       end function
 
@@ -218,18 +197,18 @@ c$$$	end if
       double precision x,y
       double complex z
 
-	x = dreal(z)
-	y = dimag(z)
+      x = dreal(z)
+      y = dimag(z)
 
 
       if ((x.eq.0d0).and.(abs(y).lt.EPS)) then
          print*,'errore H0: singolare' 
-	 stop
+       stop
       end if
       if (abs(y).lt.EPS) then
-	 H0 = log(dcmplx(x,-EPS))
+       H0 = log(dcmplx(x,-EPS))
       else
-	 H0 = log(z)
+       H0 = log(z)
       endif
 
       end function
@@ -241,19 +220,19 @@ c$$$	end if
       double precision x,y
       double complex z
 
-	x = dreal(z)
-	y = dimag(z)
+      x = dreal(z)
+      y = dimag(z)
 
       if ((x.eq.1d0).and.(abs(y).lt.EPS)) then
          print*,'errore Hp1: singolare' 
-	 stop
+       stop
       end if
 
 
       if (abs(y).lt.EPS) then
          Hp1 = log(dcmplx(x-1,-EPS))
       else
-	 Hp1 = log(z-1)
+       Hp1 = log(z-1)
       end if
  
       end function
@@ -266,17 +245,17 @@ c$$$	end if
       double precision x,y
       double complex z
 
-	x = dreal(z)
-	y = dimag(z)
+      x = dreal(z)
+      y = dimag(z)
 
 
 
       if ((x.eq.-4d0).and.(abs(y).lt.EPS)) then
          print*,'errore Hm4: singolare' 
-	 stop
+       stop
       end if
 
-	if (abs(y).lt.EPS) y = -EPS
+      if (abs(y).lt.EPS) y = -EPS
 
       Hm4 = log(dcmplx(x+4,y))-log(4d0)
 
@@ -293,8 +272,8 @@ c$$$	end if
       external myasinh,myacosh,myasin
       double complex z,tmp
 
-	x = dreal(z)
-	y = dimag(z)
+      x = dreal(z)
+      y = dimag(z)
 
 
       if (x.ge.0d0) then
@@ -316,152 +295,152 @@ c         Hmr = dcmplx(0d0,tmp)
 
 
 **************************************************************************
-	double complex function H00(z)
-	implicit none
-	double complex z, mylog
-	external mylog
+      double complex function H00(z)
+      implicit none
+      double complex z, mylog
+      external mylog
 #include "HPL.h"
 
-	H00 = 0.5d0*mylog(z)**2
+      H00 = 0.5d0*mylog(z)**2
 
-	end function
+      end function
 
-	double complex function H000(z)
-	implicit none
-	double complex z, mylog
-	external mylog
+      double complex function H000(z)
+      implicit none
+      double complex z, mylog
+      external mylog
 #include "HPL.h"
 
-	H000 = 1d0/6d0*mylog(z)**3
+      H000 = 1d0/6d0*mylog(z)**3
 
-	end function
+      end function
 
-	double complex function H0000(z)
-	implicit none
-	double complex z, mylog
-	external mylog
+      double complex function H0000(z)
+      implicit none
+      double complex z, mylog
+      external mylog
 #include "HPL.h"
 
-	H0000 = 1d0/24d0*mylog(z)**4
+      H0000 = 1d0/24d0*mylog(z)**4
 
-	end function
+      end function
 
 ***************************************************************************
 
-	double complex function H0m10(z)
-	implicit none
-	double complex z, mylog,myli2,myli3
-	external mylog,myli2,myli3
+      double complex function H0m10(z)
+      implicit none
+      double complex z, mylog,myli2,myli3
+      external mylog,myli2,myli3
 #include "HPL.h"
 
         H0m10=  -mylog(z)*myli2(-z) +2d0*myli3(-z);
 
-	end function
+      end function
 
 
-	double complex function H0m100(z)
-	implicit none
-	double complex z, mylog,myli2,myli3,myli4
-	external mylog,myli2,myli3,myli4
+      double complex function H0m100(z)
+      implicit none
+      double complex z, mylog,myli2,myli3,myli4
+      external mylog,myli2,myli3,myli4
 #include "HPL.h"
 
         H0m100= -1d0/2d0* mylog(z)**2 *myli2(-z) +
      -           2d0* mylog(z)* myli3(-z)-3d0* myli4(-z)
 
-	end function
+      end function
 
 
 
-	double complex function H00m10(z)
-	implicit none
-	double complex z, mylog,myli2,myli3,myli4
-	external mylog,myli2,myli3,myli4
+      double complex function H00m10(z)
+      implicit none
+      double complex z, mylog,myli2,myli3,myli4
+      external mylog,myli2,myli3,myli4
 #include "HPL.h"
 
         H00m10= -mylog(z) *myli3(-z) + 3d0* myli4(-z)
 
-	end function
+      end function
 
 
 
-	double complex function H100(z)
-	implicit none
-	double complex z, mylog,myli2,myli3
-	external mylog,myli2,myli3
+      double complex function H100(z)
+      implicit none
+      double complex z, mylog,myli2,myli3
+      external mylog,myli2,myli3
 #include "HPL.h"
 
         H100= -1d0/2d0* mylog(1-z)* mylog(z)**2 - 
      -        mylog(z)* myli2(z) + myli3(z)
 
-	end function
+      end function
 
 
 
-	double complex function H010(z)
-	implicit none
-	double complex z, mylog,myli2,myli3
-	external mylog,myli2,myli3
+      double complex function H010(z)
+      implicit none
+      double complex z, mylog,myli2,myli3
+      external mylog,myli2,myli3
 #include "HPL.h"
 
         H010= mylog(z)* myli2(z)- 2d0* myli3(z)
 
-	end function
+      end function
 
 
 
-	double complex function H1000(z)
-	implicit none
-	double complex z, mylog,myli2,myli3,myli4
-	external mylog,myli2,myli3,myli4
+      double complex function H1000(z)
+      implicit none
+      double complex z, mylog,myli2,myli3,myli4
+      external mylog,myli2,myli3,myli4
 #include "HPL.h"
 
         H1000= -1d0/6d0* mylog(1-z)* mylog(z)**3-
      -          1d0/2d0* mylog(z)**2* myli2(z)+
      -          mylog(z)* myli3(z) - myli4(z)
 
-	end function
+      end function
 
 
 
-	double complex function H0100(z)
-	implicit none
-	double complex z, mylog,myli2,myli3, myli4
-	external mylog,myli2,myli3,myli4
+      double complex function H0100(z)
+      implicit none
+      double complex z, mylog,myli2,myli3, myli4
+      external mylog,myli2,myli3,myli4
 #include "HPL.h"
 
         H0100= 1d0/2d0* mylog(z)**2* myli2(z) -
      -         2d0* mylog(z)* myli3(z) +3d0* myli4(z)
 
-	end function
+      end function
 
 
 
-	double complex function H0001(z)
-	implicit none
-	double complex z, myli4
-	external myli4
+      double complex function H0001(z)
+      implicit none
+      double complex z, myli4
+      external myli4
 #include "HPL.h"
 
-	H0001= myli4(z)
+      H0001= myli4(z)
 
-	end function
+      end function
 
 
 
-	double complex function H0010(z)
-	implicit none
-	double complex z, mylog,myli2,myli3, myli4
-	external mylog,myli2,myli3,myli4
+      double complex function H0010(z)
+      implicit none
+      double complex z, mylog,myli2,myli3, myli4
+      external mylog,myli2,myli3,myli4
 #include "HPL.h"
 
         H0010 = mylog(z)* myli3(z) - 3d0* myli4(z)
 
-	end function
+      end function
 
 
-	double complex function H0m1m10(z)
-	implicit none
-	double complex z
+      double complex function H0m1m10(z)
+      implicit none
+      double complex z
 #include "HPL.h"
 
 c        H0m1m10 = -PI**4/72d0 + PI**2/6d0*mylog(z)*mylog(1+z) -
@@ -470,22 +449,22 @@ c     -            mylog(z)*mylog(1+z)*myli2(-z) -
 c     -            0.5d0*myli2(-z)**2 -
 c     -            mylog(z)*myli3(1+z)
 
-	H0m1m10 = 0d0
-	stop
+      H0m1m10 = 0d0
+      stop
 
-	end function
+      end function
 
 
-	double complex function H10m10(z)
-	implicit none
-	double complex z
+      double complex function H10m10(z)
+      implicit none
+      double complex z
 #include "HPL.h"
 
         H10m10 = 0d0
-	stop
+      stop
 
 
-	end function
+      end function
 
 
 
@@ -523,9 +502,9 @@ c     -            mylog(z)*myli3(1+z)
           if (abs(iy).gt.EPS) then
             call gauleg(0d0,iy,y,w,dim)
             do i=1,dim
-	       iz = dcmplx(x,y(i))
+             iz = dcmplx(x,y(i))
                sum2=sum2+w(i)*log(1+iz)/sqrt(iz*(4+iz))*dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmrm1 = sum*flagreal+sum2*flagcmplx
           endif
 
@@ -547,10 +526,10 @@ c          call gauleg(0d0,asin(sqrt(-x/4d0)),y,w,dim)
           if (abs(iy).gt.EPS) then
             call gauleg(0d0,iy2,y,w,dim)
             do i=1,dim
-	     iz = dcmplx(ix2,y(i))
+           iz = dcmplx(ix2,y(i))
              sum2=sum2+w(i)*log(1-4d0*sin(iz)*sin(iz))*dcmplx(0d0,-2d0)*
      -                 dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmrm1 = Hmrm1*flagreal+sum2*flagcmplx
           endif
 
@@ -575,13 +554,13 @@ c          call gauleg(0d0,asin(sqrt(-x/4d0)),y,w,dim)
 
             call gauleg(0d0,iy2,y,w,dim)
             do i=1,dim
-	       iz = dcmplx(ix2,y(i))
+             iz = dcmplx(ix2,y(i))
                sum2=sum2+w(i)*log(4d0*sin(iz)*sin(iz)-1d0)*
      -                        dcmplx(0d0,-2d0)
 
-	    end do
-	    sum2 = sum2+(-2d0*PI)*iy2
-	    sum2 = sum2*dcmplx(0d0,1d0)
+          end do
+          sum2 = sum2+(-2d0*PI)*iy2
+          sum2 = sum2*dcmplx(0d0,1d0)
 
           Hmrm1 = Hmrm1*flagreal+sum2*flagcmplx
           endif
@@ -602,19 +581,19 @@ c          call gauleg(0d0,asin(sqrt(-x/4d0)),y,w,dim)
      -           dcmplx(0d0,PI))
           end do
           Hmrm1 = Hmrm1+sum
-c	  print*,z,'  sum=',sum
+c    print*,z,'  sum=',sum
           if (abs(iy).gt.EPS) then
 
             call gauleg(0d0,iy2,y,w,dim)
             do i=1,dim
-	       iz = dcmplx(ix2,y(i))
+             iz = dcmplx(ix2,y(i))
                sum2=sum2+w(i)*
      -              2d0*(log((cdexp(iz)+cdexp(-iz))**2-1d0)-
      -              dcmplx(0d0,PI))*dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmrm1 = Hmrm1*flagreal+sum2*flagcmplx
           endif
-c	  Hmrm1=sum
+c    Hmrm1=sum
 
       end if
 
@@ -644,12 +623,12 @@ c	  Hmrm1=sum
       sum2=dcmplx(0d0,0d0)
 
       if (x.gt.0d0) then
-	 call gauleg(0d0,x,y,w,dim)
-	 do i=1,dim
-	    iz = dcmplx(y(i),-EPS)
-	    sum=sum+w(i)*2d0*myasinh(sqrt(iz/4d0))/sqrt(iz*(4+iz))
-	 end do
-	 Hmrmr = sum
+       call gauleg(0d0,x,y,w,dim)
+       do i=1,dim
+          iz = dcmplx(y(i),-EPS)
+          sum=sum+w(i)*2d0*myasinh(sqrt(iz/4d0))/sqrt(iz*(4+iz))
+       end do
+       Hmrmr = sum
 
           if (abs(iy).gt.EPS) then
             call gauleg(0d0,iy,y,w,dim)
@@ -657,7 +636,7 @@ c	  Hmrm1=sum
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*2d0*myasinh(sqrt(iz/4d0))/sqrt(iz*(4+iz))*
      -          dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmrmr = sum*flagreal+sum2*flagcmplx
           endif
 
@@ -674,7 +653,7 @@ c	  Hmrm1=sum
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*myasinh(sqrt(iz/4d0))/sqrt(iz*(4+iz))*
      -       dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmrmr = sum2*flagcmplx
           endif
 
@@ -690,7 +669,7 @@ c$$$            sum2=sum2+
 c$$$     -           w(i)*(-2d0)*myasin(sqrt(-iz/4d0))**2*
 c$$$     -           dcmplx(0d0,1d0)
 c$$$
-c$$$	    end do
+c$$$      end do
 c$$$          Hmrmr = Hmrmr*flagreal+sum2*flagcmplx
          Hmrmr = -2d0*myasin(sqrt(-z)/2d0)*myasin(sqrt(-z)/2d0)
 
@@ -710,7 +689,7 @@ c$$$            do i=1,dim
 c$$$            iz = dcmplx(x,y(i))
 c$$$            sum2=sum2+w(i)*myasin(sqrt(-iz/4d0))**2*
 c$$$     -                dcmplx(0d0,1d0)
-c$$$	    end do
+c$$$      end do
 c$$$          Hmrmr = Hmrmr*flagreal+sum2*flagcmplx
 c$$$          endif
 
@@ -734,12 +713,12 @@ c$$$          endif
       double complex function H0m1(z)
       implicit none
 #include "HPL.h"
-	integer i,dim
+      integer i,dim
         parameter (dim=32)
         double precision yi(dim),w(dim)
       double precision x,y,ddilog
-      double complex z,cli2,iz,mylog,check,sum
-      external cli2,mylog,ddilog
+      double complex z,cli2,iz,mylog,check,sum,Dilog,CCCLI2
+      external cli2,mylog,ddilog,Dilog,CCCLI2
 
       x = dreal(z)
       y = dimag(z)
@@ -747,49 +726,49 @@ c$$$          endif
 
       if (abs(y).lt.EPS) then
 
-	 if (x.ge.-1d0) then
-	    iz = dcmplx(-x,0d0)
-	    H0m1 = -cli2(iz)
-	 else 
-	    iz = dcmplx(-x,1d-10)
-	    H0m1 = -cli2(iz)
-	 end if
-	
+       if (x.ge.-1d0) then
+          iz = dcmplx(-x,0d0)
+          H0m1 = -CCCLI2(iz)
+       else 
+          iz = dcmplx(-x,1d-10)
+          H0m1 = -CCCLI2(iz)
+       end if
+      
 
       else 
 
-	 if (x.ge.-1d0) then
-	    iz = dcmplx(-x,0d0)
-	    H0m1 = -cli2(iz)
+       if (x.ge.-1d0) then
+          iz = dcmplx(-x,0d0)
+          H0m1 = -CCCLI2(iz)
 
-	    sum = dcmplx(0d0,0d0)
-	    call gauleg(0d0,y,yi,w,dim)
-	    do i=1,dim
+          sum = dcmplx(0d0,0d0)
+          call gauleg(0d0,y,yi,w,dim)
+          do i=1,dim
 
-	       iz = dcmplx(x,yi(i))
-	       sum = sum+w(i)*log(iz+1d0)/(iz)
-	    end do
+             iz = dcmplx(x,yi(i))
+             sum = sum+w(i)*log(iz+1d0)/(iz)
+          end do
 
-	    H0m1 = H0m1+sum*dcmplx(0d0,1d0)
+          H0m1 = H0m1+sum*dcmplx(0d0,1d0)
 
-	 else
+       else
 
-	    H0m1 = PI**2*5d0/6d0 -
+          H0m1 = PI**2*5d0/6d0 -
      -                dcmplx(0d0,1d0)*PI*log(z)+
      -                log(-z)*log(-z-1)+
-     -                cli2(dcmplx(x+1,0d0))
+     -                CCCLI2(dcmplx(x+1,0d0))
 
-	    sum = dcmplx(0d0,0d0)
-	    call gauleg(0d0,-y,yi,w,dim)
-	    do i=1,dim
-	       iz = dcmplx(-x,yi(i))
-	       sum = sum+w(i)*(-1d0)*log(iz)/(iz-1d0)
-	    end do
+          sum = dcmplx(0d0,0d0)
+          call gauleg(0d0,-y,yi,w,dim)
+          do i=1,dim
+             iz = dcmplx(-x,yi(i))
+             sum = sum+w(i)*(-1d0)*log(iz)/(iz-1d0)
+          end do
 
 
-	    H0m1 = H0m1+sum*dcmplx(0d0,1d0)
+          H0m1 = H0m1+sum*dcmplx(0d0,1d0)
 
-	   endif
+         endif
 
 
       endif
@@ -802,28 +781,28 @@ c$$$          endif
       implicit none
 #include "HPL.h"
       double precision x,y
-      double complex z,cli2,mylog,iz
-      external cli2,mylog
+      double complex z,cli2,mylog,iz,Dilog,CCCLI2
+      external cli2,mylog,Dilog,CCCLI2
 
-	x = dreal(z)
-	y = dimag(z)
+      x = dreal(z)
+      y = dimag(z)
 
       if (x.gt.0d0) then
 c         iz = dcmplx(x,0d0)
 *         print*,'z1=',z
-         Hm10 = cli2(-z) + log(z)*log(1+z)
+         Hm10 = CCCLI2(-z) + log(z)*log(1+z)
       else if ((x.eq.0d0).and.(abs(y).lt.EPS)) then
          Hm10 = dcmplx(0d0,0d0)
       else if ((x.eq.0d0).and.(abs(y).gt.EPS)) then
-         Hm10 = cli2(-z) + log(z)*log(1+z)
+         Hm10 = CCCLI2(-z) + log(z)*log(1+z)
       else if (x.gt.-1d0.and.x.lt.0d0) then
 c         iz = dcmplx(x,-1d-10)
 *         print*,'z2=',z
-         Hm10 = cli2(-z)+mylog(z)*mylog(1+z)
+         Hm10 = CCCLI2(-z)+mylog(z)*mylog(1+z)
       else if ((x.eq.-1d0).and.(y.eq.0)) then
-	 print*,'Hm10 singular'
+       print*,'Hm10 singular'
       else 
-         Hm10 = cli2(-z)+mylog(z)*mylog(1+z)
+         Hm10 = CCCLI2(-z)+mylog(z)*mylog(1+z)
 
       end if
 
@@ -835,20 +814,24 @@ c         iz = dcmplx(x,-1d-10)
       implicit none
 #include "HPL.h"
       double precision x,y
-      double complex z,cli2,iz
-      external cli2
+      double complex z,cli2,iz,mylog,Dilog,CCCLI2
+      external cli2,mylog,Dilog,CCCLI2
 
-	x = dreal(z)
-	y = dimag(z)
+      x = dreal(z)
+      y = dimag(z)
 
         if (abs(y).lt.EPS) then
-	   iz = dcmplx(x,-EPS)
-	else
-	   iz =z 
-	end if
+         iz = dcmplx(x,-EPS)
+      else
+         iz =z 
+      end if
 
-	H10 = -cli2(1-iz)
-
+c      H10 = mylog(iz)*mylog(1d0-iz)+CCCLI2(iz)
+c       write(*,*) mylog(iz)*mylog(1d0-iz)+CCCLI2(iz)
+c       write(*,*) -cli2(1-iz)
+c       write(*,*) -cccli2(1-iz)
+c       stop
+       H10 = -cli2(1-iz)
 
       end function H10
 
@@ -861,13 +844,13 @@ c         iz = dcmplx(x,-1d-10)
       integer dim,i
       parameter (dim=64)
       double precision y(dim),w(dim)
-      double complex z,sum,H0m1,iz,sum2,cli2
-      external dtrilog,H0m1,cli2
+      double complex z,sum,H0m1,iz,sum2,cli2,Dilog,CCCLI2
+      external dtrilog,H0m1,cli2,Dilog,CCCLI2
 
-	x = dreal(z)
-	iy = dimag(z)
-	sum = dcmplx(0d0,0d0)
-	sum2= dcmplx(0d0,0d0)
+      x = dreal(z)
+      iy = dimag(z)
+      sum = dcmplx(0d0,0d0)
+      sum2= dcmplx(0d0,0d0)
 
       if (x.gt.-1d0) then
           H00m1 = -dtrilog(-x)
@@ -876,9 +859,9 @@ c         iz = dcmplx(x,-1d-10)
            call gauleg(0d0,iy,y,w,dim)
            do i=1,dim
            iz = dcmplx(x,y(i))
-           sum2=sum2+w(i)*cli2(-iz)/(-iz)*dcmplx(0d0,1d0)
-	   end do
-          H00m1 = H00m1*flagreal+sum2*flagcmplx
+           sum2=sum2+w(i)*CCCLI2(-iz)/(-iz)*dcmplx(0d0,1d0)
+         end do
+         H00m1 = H00m1*flagreal+sum2*flagcmplx
           endif
 
       else
@@ -888,18 +871,18 @@ c         iz = dcmplx(x,-1d-10)
           do i=1,dim
             sum=sum+w(i)*H0m1(dcmplx(y(i),0d0))/y(i)
           end do
-c	  print*,'z=',z
+c    print*,'z=',z
 c          print*,'sum=',sum
 c          print*,'cfr=',-dtrilog(-x)
-c	  print*,'  '
+c    print*,'  '
           H00m1 = dcmplx(-dtrilog(-x),dimag(sum))
 
           if (abs(iy).gt.EPS) then
             call gauleg(0d0,iy,y,w,dim)
             do i=1,dim
             iz = dcmplx(x,y(i))
-            sum2=sum2+w(i)*cli2(-iz)/(-iz)*dcmplx(0d0,1d0)
-	    end do
+            sum2=sum2+w(i)*CCCLI2(-iz)/(-iz)*dcmplx(0d0,1d0)
+          end do
           H00m1 = H00m1*flagreal+sum2*flagcmplx
           endif
 
@@ -926,10 +909,10 @@ c	  print*,'  '
 
       fm4 = dcmplx(0d0,5.16771d0)
 
-	x = dreal(z)
-	iy = dimag(z)
-	sum = dcmplx(0d0,0d0)
-	sum2= dcmplx(0d0,0d0)
+      x = dreal(z)
+      iy = dimag(z)
+      sum = dcmplx(0d0,0d0)
+      sum2= dcmplx(0d0,0d0)
 
 
       if (x.gt.0d0) then
@@ -940,9 +923,9 @@ c	  print*,'  '
           call gauleg(0d0,ix2,y,w,dim)
 
           do i=1,dim
-	     ct = 4d0*mysinh(dcmplx(y(i),0d0))**2
+           ct = 4d0*mysinh(dcmplx(y(i),0d0))**2
             sum=sum+w(i)*Hmrmr(ct)*2d0
-c	     t = dcmplx(y(i),0d0)
+c       t = dcmplx(y(i),0d0)
 c            sum=sum+w(i)*Hmrmr(t)/sqrt(y(i)*(4d0+y(i)))
           end do
           Hmrmrmr = sum
@@ -950,7 +933,7 @@ c            sum=sum+w(i)*Hmrmr(t)/sqrt(y(i)*(4d0+y(i)))
           if (abs(iy).gt.EPS) then
             call gauleg(0d0,iy2,y,w,dim)
             do i=1,dim
-	     ct = 4d0*mysinh(dcmplx(ix2,y(i)))**2
+           ct = 4d0*mysinh(dcmplx(ix2,y(i)))**2
 
             sum2=sum2+w(i)*Hmrmr(ct)*2d0*
      -              dcmplx(0d0,1d0)
@@ -958,7 +941,7 @@ c            sum=sum+w(i)*Hmrmr(t)/sqrt(y(i)*(4d0+y(i)))
 c            iz = dcmplx(x,y(i))
 c            sum2=sum2+w(i)*Hmrmr(iz)/sqrt(iz*(4d0+iz))*
 c     -                     dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrmr = Hmrmrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -973,7 +956,7 @@ c     -                     dcmplx(0d0,1d0)
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*Hmrmr(iz)/sqrt(iz*(4d0+iz))*
      -                dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrmr = Hmrmrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -985,7 +968,7 @@ c     -                     dcmplx(0d0,1d0)
           call gauleg(0d0,ix2,y,w,dim)
 
           do i=1,dim
-	     iz=dcmplx(-4d0*sin(y(i))**2,0d0)
+           iz=dcmplx(-4d0*sin(y(i))**2,0d0)
             sum=sum+w(i)*Hmrmr(iz)*
      -                   dcmplx(0d0,-2d0)
           end do
@@ -993,13 +976,13 @@ c     -                     dcmplx(0d0,1d0)
 
           if (abs(iy).gt.EPS) then
             call gauleg(0d0,iy2,y,w,dim)
-	    sum2=dcmplx(0d0,0d0)
+          sum2=dcmplx(0d0,0d0)
             do i=1,dim
             iz = dcmplx(ix2,y(i))
 
             sum2=sum2+w(i)*Hmrmr(-4d0*sin(iz)**2)*
      -                dcmplx(0d0,-2d0)*dcmplx(0d0,1d0)
-	    end do
+          end do
 
             Hmrmrmr = Hmrmrmr*flagreal+sum2*flagcmplx
           endif
@@ -1015,7 +998,7 @@ c     -                     dcmplx(0d0,1d0)
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*Hmrmr(iz)/sqrt(iz*(4d0+iz))*
      -                dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrmr = Hmrmrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -1026,7 +1009,7 @@ c     -                     dcmplx(0d0,1d0)
           call gauleg(0d0,ix2,y,w,dim)
 
           do i=1,dim
-	     t = -4d0*cosh(y(i))**2
+           t = -4d0*cosh(y(i))**2
             sum=sum+w(i)*Hmrmr(dcmplx(t,0d0))*2d0
           end do
           Hmrmrmr = sum+fm4
@@ -1037,7 +1020,7 @@ c     -                     dcmplx(0d0,1d0)
             iz = dcmplx(ix2,y(i))
             sum2=sum2+w(i)*Hmrmr(-4d0*mycosh(iz)**2)*2d0*
      -                dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrmr = Hmrmrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -1064,10 +1047,10 @@ c     -                     dcmplx(0d0,1d0)
 
       fm4 = dcmplx(1.86987d0, 6.89028d0);
 
-	x  = dreal(z)
-	iy = dimag(z)
-	sum = dcmplx(0d0,0d0)
-	sum2= dcmplx(0d0,0d0)
+      x  = dreal(z)
+      iy = dimag(z)
+      sum = dcmplx(0d0,0d0)
+      sum2= dcmplx(0d0,0d0)
 
       if (x.gt.0d0) then
             ix2=dreal(myasinh(sqrt(z/4d0)))
@@ -1086,7 +1069,7 @@ c     -                     dcmplx(0d0,1d0)
             iz = dcmplx(ix2,y(i))
             sum2=sum2+w(i)*Hmrm1(4d0*mysinh(iz)**2)*2d0*
      -                     dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrm1 = Hmrmrm1*flagreal+sum2*flagcmplx
           endif
 
@@ -1104,7 +1087,7 @@ c     -                     dcmplx(0d0,1d0)
             iz = dcmplx(ix2,y(i))
             sum2=sum2+w(i)*Hmrm1(4d0*mysinh(iz)**2)*2d0*
      -                     dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrm1 = Hmrmrm1*flagreal+sum2*flagcmplx
           endif
 
@@ -1121,14 +1104,14 @@ c     -                     dcmplx(0d0,1d0)
           end do
           Hmrmrm1 = sum
           if (abs(iy).gt.EPS) then
-	     sum2=dcmplx(0d0,0d0)
+           sum2=dcmplx(0d0,0d0)
             call gauleg(0d0,iy2,y,w,dim)
             do i=1,dim
             iz = dcmplx(ix2,y(i))
             sum2=sum2+w(i)*Hmrm1(-4d0*sin(iz)**2)*
      -                dcmplx(0d0,-2d0)*
      -                dcmplx(0d0,1d0)
-	    end do
+          end do
             Hmrmrm1 = Hmrmrm1*flagreal+sum2*flagcmplx
           endif
 
@@ -1149,7 +1132,7 @@ c     -                     dcmplx(0d0,1d0)
      -                dcmplx(0d0,-2d0)*
      -                dcmplx(0d0,1d0)
 
-	    end do
+          end do
             Hmrmrm1 = Hmrmrm1*flagreal+sum2*flagcmplx
           endif
 
@@ -1161,7 +1144,7 @@ c     -                     dcmplx(0d0,1d0)
           call gauleg(0d0,ix2,y,w,dim)
           sum = dcmplx(0d0,0d0)
           do i=1,dim
-	     t = dcmplx(y(i),0d0)
+           t = dcmplx(y(i),0d0)
             sum=sum+w(i)*Hmrm1(-4d0*mycosh(t)**2)*2d0
           end do
           Hmrmrm1 = sum+fm4
@@ -1174,7 +1157,7 @@ c     -                     dcmplx(0d0,1d0)
             sum2=sum2+w(i)*Hmrm1(-4d0*mycosh(iz)**2)*2d0*
      -                dcmplx(0d0,1d0)
 
-	    end do
+          end do
             Hmrmrm1 = Hmrmrm1*flagreal+sum2*flagcmplx
           endif
 
@@ -1198,11 +1181,11 @@ c     -                     dcmplx(0d0,1d0)
 
 c        ieps = dcmplx(0d0,1d-9)
         ieps = dimag(z)
-	x = dreal(z)
-	iy = dimag(z)
-	sum = dcmplx(0d0,0d0)
-	sum2= dcmplx(0d0,0d0)
-	sum3= dcmplx(0d0,0d0)
+      x = dreal(z)
+      iy = dimag(z)
+      sum = dcmplx(0d0,0d0)
+      sum2= dcmplx(0d0,0d0)
+      sum3= dcmplx(0d0,0d0)
 
       if (x.gt.-4d0) then
 c$$$          call gauleg(0d0,x,y,w,dim)
@@ -1218,68 +1201,68 @@ c$$$            do i=1,dim
 c$$$            iz = dcmplx(x,y(i))
 c$$$            sum3=sum3+w(i)*Hmrm1(iz)/(4d0+iz)*
 c$$$     -                     dcmplx(0d0,1d0)
-c$$$	    end do
+c$$$      end do
 c$$$          Hm4mrm1 = Hm4mrm1*flagreal+sum3*flagcmplx
 c$$$          endif
-	 
+       
           ccost = (log(z+4d0)-log(4d0))*Hmrm1(z)
 
-	  if (x.gt.-1d0) then
-	     ix2=dreal(myasin(sqrt(-z/4d0)))
-	     iy2=dimag(myasin(sqrt(-z/4d0)))
-	     call gauleg(0d0,ix2,y,w,dim)
-	     do i=1,dim
-		sum=sum+w(i)*log(1d0-4d0*sin(y(i))**2)*
-     -		  (log(cos(y(i))**2))
-	     end do
-	     sum = sum*dcmplx(0d0,-2d0)
+        if (x.gt.-1d0) then
+           ix2=dreal(myasin(sqrt(-z/4d0)))
+           iy2=dimag(myasin(sqrt(-z/4d0)))
+           call gauleg(0d0,ix2,y,w,dim)
+           do i=1,dim
+        sum=sum+w(i)*log(1d0-4d0*sin(y(i))**2)*
+     -      (log(cos(y(i))**2))
+           end do
+           sum = sum*dcmplx(0d0,-2d0)
 
-	     if (abs(iy).gt.EPS) then
-		call gauleg(0d0,iy2,y,w,dim)
-		do i=1,dim
-		   iz = dcmplx(ix2,y(i))
-		   sum2=sum2+w(i)*(log(1d0-4d0*sin(iz)**2))*
-     -		  (log(cos(iz)**2))
-		end do
-		sum2=sum2*dcmplx(0d0,1d0)*dcmplx(0d0,-2d0)
+           if (abs(iy).gt.EPS) then
+        call gauleg(0d0,iy2,y,w,dim)
+        do i=1,dim
+           iz = dcmplx(ix2,y(i))
+           sum2=sum2+w(i)*(log(1d0-4d0*sin(iz)**2))*
+     -      (log(cos(iz)**2))
+        end do
+        sum2=sum2*dcmplx(0d0,1d0)*dcmplx(0d0,-2d0)
 
-	     end if
+           end if
 
 
-	  else if (x.eq.-1d0) then
-	     sum = sum + 0.0665077d0*dcmplx(0d0,-2d0)
-	  else
+        else if (x.eq.-1d0) then
+           sum = sum + 0.0665077d0*dcmplx(0d0,-2d0)
+        else
 
-	     sum = sum + 0.0665077d0
-	     ix2=dreal(myasin(sqrt(-z/4d0)))
-	     iy2=dimag(myasin(sqrt(-z/4d0)))
+           sum = sum + 0.0665077d0
+           ix2=dreal(myasin(sqrt(-z/4d0)))
+           iy2=dimag(myasin(sqrt(-z/4d0)))
 
-	     call gauleg(0.523598775598d0,ix2,y,w,dim)
-	     do i=1,dim
-		sum=sum+
+           call gauleg(0.523598775598d0,ix2,y,w,dim)
+           do i=1,dim
+        sum=sum+
      -            w(i)*(log(4d0*sin(y(i))**2-1d0)-
      -                  PI*dcmplx(0d0,1d0) )*
-     -		  (log(cos(y(i))**2))
-	     end do
+     -      (log(cos(y(i))**2))
+           end do
 
-	     sum = sum*dcmplx(0d0,-2d0)
+           sum = sum*dcmplx(0d0,-2d0)
 
-	     if (abs(iy).gt.EPS) then
-		call gauleg(0d0,iy2,y,w,dim)
-		do i=1,dim
-		   iz = dcmplx(ix2,y(i))
-		   sum2=sum2+w(i)*(log(4d0*sin(iz)**2-1d0)-
+           if (abs(iy).gt.EPS) then
+        call gauleg(0d0,iy2,y,w,dim)
+        do i=1,dim
+           iz = dcmplx(ix2,y(i))
+           sum2=sum2+w(i)*(log(4d0*sin(iz)**2-1d0)-
      -                  PI*dcmplx(0d0,1d0) )*
-     -		  (log(cos(iz)**2))
-		end do
-		sum2=sum2*dcmplx(0d0,1d0)*dcmplx(0d0,-2d0)
+     -      (log(cos(iz)**2))
+        end do
+        sum2=sum2*dcmplx(0d0,1d0)*dcmplx(0d0,-2d0)
 
-	     end if
+           end if
 
 
-	  end if
+        end if
 
-c	  print*,ccost,sum,sum2
+c    print*,ccost,sum,sum2
           Hm4mrm1 = ccost-sum-sum2
 
 
@@ -1314,23 +1297,23 @@ c	  print*,ccost,sum,sum2
      -                     log(cos(iz)**2)*
      -                     dcmplx(0d0,-2d0)*
      -                     dcmplx(0d0,1d0)
-	    end do
+          end do
           Hm4mrm1 = Hm4mrm1*flagreal+sum3*flagcmplx
 
 
 
       else if (x.lt.-4d0) then
 
-c$$$	 if (abs(iy).lt.EPS) then
-c$$$	    ieps = dcmplx(0d0,-1d-9)
-c$$$	 else
-c$$$	    ieps = dcmplx(0d0,iy)
-c$$$	 end if
+c$$$   if (abs(iy).lt.EPS) then
+c$$$      ieps = dcmplx(0d0,-1d-9)
+c$$$   else
+c$$$      ieps = dcmplx(0d0,iy)
+c$$$   end if
 c$$$
-c$$$	 Hm4mrm1 = (log(4d0+x+ieps)-log(4d0))*Hmrm1(z)
+c$$$   Hm4mrm1 = (log(4d0+x+ieps)-log(4d0))*Hmrm1(z)
 c$$$
 c$$$
-c$$$	  ieps = dcmplx(0d0,1d-9)
+c$$$    ieps = dcmplx(0d0,1d-9)
 c$$$
 c$$$          call gauleg(0d0,iy,y,w,dim)
 c$$$          do i=1,dim
@@ -1349,9 +1332,9 @@ c$$$             iz = dcmplx(y(i),iy)
 c$$$            sum2=sum2+w(i)/sqrt(iz*(4d0+iz))*log(1d0+iz)*
 c$$$     -                   (log(4d0+iz)-log(4d0))
 c$$$          end do
-c$$$	  print*, z,Hm4mrm1 ,sum ,sum2
+c$$$    print*, z,Hm4mrm1 ,sum ,sum2
 c$$$
-c$$$	  Hm4mrm1 = Hm4mrm1 - sum - sum2
+c$$$    Hm4mrm1 = Hm4mrm1 - sum - sum2
 c$$$
 
 
@@ -1359,15 +1342,15 @@ c$$$
 c  H(-4,-r,-1) = H(-4) H(-r,-1) - H(-r,-4,-1) - H(-r,-1,-4)
 c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
 
-	 if (abs(iy).lt.EPS) then
-	    ieps = dcmplx(0d0,-1d-9)
-	 else
-	    ieps = dcmplx(0d0,iy)
-	 end if
+       if (abs(iy).lt.EPS) then
+          ieps = dcmplx(0d0,-1d-9)
+       else
+          ieps = dcmplx(0d0,iy)
+       end if
 
           Hm4mrm1 = (log(4d0+x+ieps)-log(4d0))*Hmrm1(z)
 
-	  ieps = dcmplx(0d0,1d-9)
+        ieps = dcmplx(0d0,1d-9)
 
           call gauleg(0d0,PI/2d0,y,w,dim)
           do i=1,dim
@@ -1400,7 +1383,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
      -                      (log(4d0+iz-ieps)-log(4d0))*(2d0))*
      -                dcmplx(0d0,1d0)
 
-	    end do
+          end do
 
           Hm4mrm1 = Hm4mrm1*flagreal+sum3*flagcmplx
           endif
@@ -1425,10 +1408,10 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
       double complex myasinh,myacosh
       external myasinh,myacosh
 
-	x = dreal(z)
-	iy = dimag(z)
-	sum = dcmplx(0d0,0d0)
-	sum2= dcmplx(0d0,0d0)
+      x = dreal(z)
+      iy = dimag(z)
+      sum = dcmplx(0d0,0d0)
+      sum2= dcmplx(0d0,0d0)
 
       if (x.gt.0d0) then
 
@@ -1444,7 +1427,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
             do i=1,dim
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*Hmrmr(iz)/iz*dcmplx(0d0,1d0)
-	    end do
+          end do
           H0mrmr = H0mrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -1458,7 +1441,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
             do i=1,dim
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*Hmrmr(iz)/iz*dcmplx(0d0,1d0)
-	    end do
+          end do
           H0mrmr = H0mrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -1476,7 +1459,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
             do i=1,dim
             iz = dcmplx(x,y(i))
             sum2=sum2+w(i)*Hmrmr(iz)/iz*dcmplx(0d0,1d0)
-	    end do
+          end do
           H0mrmr = H0mrmr*flagreal+sum2*flagcmplx
           endif
 
@@ -1499,10 +1482,10 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
       double complex myasinh,myacosh,mycosh,myasin,mysinh
       external myasinh,myacosh,mycosh,myasin,H0m1,mysinh
 
-	x = dreal(z)
-	iy = dimag(z)
-	sum = dcmplx(0d0,0d0)
-	sum2= dcmplx(0d0,0d0)
+      x = dreal(z)
+      iy = dimag(z)
+      sum = dcmplx(0d0,0d0)
+      sum2= dcmplx(0d0,0d0)
 
       if (x.gt.0d0) then
             ix2=dreal(myasinh(sqrt(z/4d0)))
@@ -1521,7 +1504,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
             do i=1,dim
             iz = 4d0*mysinh(dcmplx(ix2,y(i)))**2
             sum2=sum2+w(i)*H0m1(iz)*2d0*dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmr0m1 = Hmr0m1*flagreal+sum2*flagcmplx
           endif
 
@@ -1529,16 +1512,16 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
          Hmr0m1 = 0d0
 
       else if ((x.eq.0d0).and.(abs(iy).gt.EPS)) then
-	 ix2=dreal(myasinh(sqrt(z/4d0)))
-	 iy2=dimag(myasinh(sqrt(z/4d0)))
+       ix2=dreal(myasinh(sqrt(z/4d0)))
+       iy2=dimag(myasinh(sqrt(z/4d0)))
          Hmr0m1 = 0d0
 
-	 call gauleg(0d0,iy2,y,w,dim)
-	 do i=1,dim
-	    iz = 4d0*mysinh(dcmplx(ix2,y(i)))**2
-	    sum2=sum2+w(i)*H0m1(iz)*dcmplx(0d0,1d0)
-	 end do
-	 Hmr0m1 = Hmr0m1*flagreal+sum2*flagcmplx*2d0
+       call gauleg(0d0,iy2,y,w,dim)
+       do i=1,dim
+          iz = 4d0*mysinh(dcmplx(ix2,y(i)))**2
+          sum2=sum2+w(i)*H0m1(iz)*dcmplx(0d0,1d0)
+       end do
+       Hmr0m1 = Hmr0m1*flagreal+sum2*flagcmplx*2d0
 
 
       else if (x.lt.0d0.and.x.gt.-4d0) then
@@ -1561,7 +1544,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
             iz2 = -4d0*sin(iz)**2
             sum2=sum2+w(i)*H0m1(iz2)*dcmplx(0d0,-2d0)*
      -                dcmplx(0d0,1d0)
-	    end do
+          end do
           Hmr0m1 = Hmr0m1*flagreal+sum2*flagcmplx
           endif
 
@@ -1569,7 +1552,7 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
        else if (x.le.-4d0) then
 
           call gauleg(0d0,PI/2d0,y,w,dim)
-	  sum = dcmplx(0d0,0d0)
+        sum = dcmplx(0d0,0d0)
           do i=1,dim
             t = -4d0*sin(dcmplx(y(i),0d0))**2
             sum=sum+w(i)*H0m1(t)*dcmplx(0d0,-2d0)
@@ -1577,11 +1560,11 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
           ccost = sum
 
 
-	  ix2=dreal(myacosh(sqrt(-z/4d0)))
-	  iy2=dimag(myacosh(sqrt(-z/4d0)))
+        ix2=dreal(myacosh(sqrt(-z/4d0)))
+        iy2=dimag(myacosh(sqrt(-z/4d0)))
 
           call gauleg(0d0,ix2,y,w,dim)
-	  sum = dcmplx(0d0,0d0)
+        sum = dcmplx(0d0,0d0)
           do i=1,dim
             t=-4d0*mycosh(dcmplx(y(i),0d0))**2
             sum=sum+w(i)*H0m1(t)*2d0
@@ -1595,10 +1578,10 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
             iz = dcmplx(ix2,y(i))
             iz2 = -4d0*mycosh(iz)**2
             sum2=sum2+w(i)*H0m1(iz2)*2d0
-	    end do
-	    sum2 = (sum2+0d0*ccost*iy2)*dcmplx(0d0,1d0)
+          end do
+          sum2 = (sum2+0d0*ccost*iy2)*dcmplx(0d0,1d0)
 
-	    Hmr0m1 = Hmr0m1*flagreal+sum2*flagcmplx
+          Hmr0m1 = Hmr0m1*flagreal+sum2*flagcmplx
           endif
 
 
@@ -1652,92 +1635,128 @@ c  H(-r,-4,-1)+H(-r,-1,-4) = \int_0^x dt (1/sqrt(t (t+4)) H(-1) H(-4)
 ******************************************************************************
 
 C     REAL DILOGA
-c$$$      DOUBLE PRECISION FUNCTION DDILOG(X)
-c$$$ 
-c$$$      DOUBLE PRECISION X,Y,T,S,A,PI3,PI6,ZERO,ONE,HALF,MALF,MONE,MTWO
-c$$$      DOUBLE PRECISION C(0:18),H,ALFA,B0,B1,B2
-c$$$ 
-c$$$      DATA ZERO /0.0D0/, ONE /1.0D0/
-c$$$      DATA HALF /0.5D0/, MALF /-0.5D0/, MONE /-1.0D0/, MTWO /-2.0D0/
-c$$$      DATA PI3 /3.28986 81336 96453D0/, PI6 /1.64493 40668 48226D0/
-c$$$ 
-c$$$      DATA C( 0) / 0.42996 69356 08137 0D0/
-c$$$      DATA C( 1) / 0.40975 98753 30771 1D0/
-c$$$      DATA C( 2) /-0.01858 84366 50146 0D0/
-c$$$      DATA C( 3) / 0.00145 75108 40622 7D0/
-c$$$      DATA C( 4) /-0.00014 30418 44423 4D0/
-c$$$      DATA C( 5) / 0.00001 58841 55418 8D0/
-c$$$      DATA C( 6) /-0.00000 19078 49593 9D0/
-c$$$      DATA C( 7) / 0.00000 02419 51808 5D0/
-c$$$      DATA C( 8) /-0.00000 00319 33412 7D0/
-c$$$      DATA C( 9) / 0.00000 00043 45450 6D0/
-c$$$      DATA C(10) /-0.00000 00006 05784 8D0/
-c$$$      DATA C(11) / 0.00000 00000 86121 0D0/
-c$$$      DATA C(12) /-0.00000 00000 12443 3D0/
-c$$$      DATA C(13) / 0.00000 00000 01822 6D0/
-c$$$      DATA C(14) /-0.00000 00000 00270 1D0/
-c$$$      DATA C(15) / 0.00000 00000 00040 4D0/
-c$$$      DATA C(16) /-0.00000 00000 00006 1D0/
-c$$$      DATA C(17) / 0.00000 00000 00000 9D0/
-c$$$      DATA C(18) /-0.00000 00000 00000 1D0/
-c$$$ 
-c$$$      IF(X .EQ. ONE) THEN
-c$$$       DDILOG=PI6
-c$$$       RETURN
-c$$$      ELSE IF(X .EQ. MONE) THEN
-c$$$       DDILOG=MALF*PI6
-c$$$       RETURN
-c$$$      END IF
-c$$$      T=-X
-c$$$      IF(T .LE. MTWO) THEN
-c$$$       Y=MONE/(ONE+T)
-c$$$       S=ONE
-c$$$       A=-PI3+HALF*(LOG(-T)**2-LOG(ONE+ONE/T)**2)
-c$$$      ELSE IF(T .LT. MONE) THEN
-c$$$       Y=MONE-T
-c$$$       S=MONE
-c$$$       A=LOG(-T)
-c$$$       A=-PI6+A*(A+LOG(ONE+ONE/T))
-c$$$      ELSE IF(T .LE. MALF) THEN
-c$$$       Y=(MONE-T)/T
-c$$$       S=ONE
-c$$$       A=LOG(-T)
-c$$$       A=-PI6+A*(MALF*A+LOG(ONE+T))
-c$$$      ELSE IF(T .LT. ZERO) THEN
-c$$$       Y=-T/(ONE+T)
-c$$$       S=MONE
-c$$$       A=HALF*LOG(ONE+T)**2
-c$$$      ELSE IF(T .LE. ONE) THEN
-c$$$       Y=T
-c$$$       S=ONE
-c$$$       A=ZERO
-c$$$      ELSE
-c$$$       Y=ONE/T
-c$$$       S=MONE
-c$$$       A=PI6+HALF*LOG(T)**2
-c$$$      END IF
-c$$$ 
-c$$$      H=Y+Y-ONE
-c$$$      ALFA=H+H
-c$$$      B1=ZERO
-c$$$      B2=ZERO
-c$$$      DO 1 I = 18,0,-1
-c$$$      B0=C(I)+ALFA*B1-B2
-c$$$      B2=B1
-c$$$    1 B1=B0
-c$$$      DDILOG=-(S*(B0-H*B2)+A)
-c$$$      RETURN
-c$$$      END
-c$$$ 
-c$$$
+C      DOUBLE PRECISION FUNCTION DDILOG(X)
+C 
+C      DOUBLE PRECISION X,Y,T,S,A,PI3,PI6,ZERO,ONE,HALF,MALF,MONE,MTWO
+C      DOUBLE PRECISION C(0:18),H,ALFA,B0,B1,B2
+C 
+C      DATA ZERO /0.0D0/, ONE /1.0D0/
+C      DATA HALF /0.5D0/, MALF /-0.5D0/, MONE /-1.0D0/, MTWO /-2.0D0/
+C      DATA PI3 /3.28986 81336 96453D0/, PI6 /1.64493 40668 48226D0/
+C 
+C      DATA C( 0) / 0.42996 69356 08137 0D0/
+C      DATA C( 1) / 0.40975 98753 30771 1D0/
+C      DATA C( 2) /-0.01858 84366 50146 0D0/
+C      DATA C( 3) / 0.00145 75108 40622 7D0/
+C      DATA C( 4) /-0.00014 30418 44423 4D0/
+C      DATA C( 5) / 0.00001 58841 55418 8D0/
+C      DATA C( 6) /-0.00000 19078 49593 9D0/
+C      DATA C( 7) / 0.00000 02419 51808 5D0/
+C      DATA C( 8) /-0.00000 00319 33412 7D0/
+C      DATA C( 9) / 0.00000 00043 45450 6D0/
+C      DATA C(10) /-0.00000 00006 05784 8D0/
+C      DATA C(11) / 0.00000 00000 86121 0D0/
+C      DATA C(12) /-0.00000 00000 12443 3D0/
+C      DATA C(13) / 0.00000 00000 01822 6D0/
+C      DATA C(14) /-0.00000 00000 00270 1D0/
+C      DATA C(15) / 0.00000 00000 00040 4D0/
+C      DATA C(16) /-0.00000 00000 00006 1D0/
+C      DATA C(17) / 0.00000 00000 00000 9D0/
+C      DATA C(18) /-0.00000 00000 00000 1D0/
+C 
+C      IF(X .EQ. ONE) THEN
+C       DDILOG=PI6
+C       RETURN
+C      ELSE IF(X .EQ. MONE) THEN
+C       DDILOG=MALF*PI6
+C       RETURN
+C      END IF
+C      T=-X
+C      IF(T .LE. MTWO) THEN
+C       Y=MONE/(ONE+T)
+C       S=ONE
+C       A=-PI3+HALF*(LOG(-T)**2-LOG(ONE+ONE/T)**2)
+C      ELSE IF(T .LT. MONE) THEN
+C       Y=MONE-T
+C       S=MONE
+C       A=LOG(-T)
+C       A=-PI6+A*(A+LOG(ONE+ONE/T))
+C      ELSE IF(T .LE. MALF) THEN
+C       Y=(MONE-T)/T
+C       S=ONE
+C       A=LOG(-T)
+C       A=-PI6+A*(MALF*A+LOG(ONE+T))
+C      ELSE IF(T .LT. ZERO) THEN
+C       Y=-T/(ONE+T)
+C       S=MONE
+C       A=HALF*LOG(ONE+T)**2
+C      ELSE IF(T .LE. ONE) THEN
+C       Y=T
+C       S=ONE
+C       A=ZERO
+C      ELSE
+C       Y=ONE/T
+C       S=MONE
+C       A=PI6+HALF*LOG(T)**2
+C      END IF
+C 
+C      H=Y+Y-ONE
+C      ALFA=H+H
+C      B1=ZERO
+C      B2=ZERO
+C      DO 1 I = 18,0,-1
+C      B0=C(I)+ALFA*B1-B2
+C      B2=B1
+C    1 B1=B0
+C      DDILOG=-(S*(B0-H*B2)+A)
+C      RETURN
+C      END
+C 
+
 C     COMPLEX DILOG 
-      double COMPLEX FUNCTION CLI2(Z)
+!      DOUBLE COMPLEX FUNCTION CCCLI2(Z)
+!      IMPLICIT NONE
+!      DOUBLE COMPLEX Z,Z1,CLI20,MOD2
+!      INTEGER ITE,LAB
+!      DOUBLE PRECISION MOD,PI3,PI6
+!      DATA PI6/1.6449341/,PI3/3.2898681/
+!
+!      IF(Z.EQ.(1.,0.)) THEN
+!        CCCLI2=CMPLX(PI6,0.)
+!        RETURN
+!      ENDIF
+!      LAB=0
+!      Z1=Z
+!      CLI20=(0.,0.)
+!      MOD=SQRT(REAL(Z)**2+AIMAG(Z)**2)
+!      IF(MOD.GE.1.)  Z1=1./Z
+!      IF(REAL(Z1).GE.0.5)  THEN
+!          LAB=1
+!          Z1=1.-Z1
+!      ENDIF
+!      DO 20 ITE=1,100
+!      MOD2=Z1**ITE/(ITE**2)
+!      CLI20=MOD2+CLI20
+!      IF(SQRT(REAL(MOD2)**2+AIMAG(MOD2)**2).LE.10E-07) GO TO 30
+!20    CONTINUE
+!30    IF(LAB.EQ.1)  CLI20=-CLI20+PI6-LOG(Z1)*LOG(1.-Z1)
+!      IF(MOD.LE.1) THEN
+!        CCCLI2=CLI20
+!        RETURN
+!      ELSE
+!        CCCLI2=-PI6-CLI20-CDLOG(-Z)**2/2.
+!      ENDIF
+!      RETURN
+!      END
+
+C     COMPLEX DILOG
+      double COMPLEX FUNCTION CCCLI2(Z)
       double COMPLEX Z,Z1,CLI20,MOD2
       REAL MOD,PI3,PI6
       DATA PI6/1.6449341/,PI3/3.2898681/
 
       IF(Z.EQ.(1.,0.)) THEN
-        CLI2=CMPLX(PI6,0.)
+        CCCLI2=CMPLX(PI6,0.)
         RETURN
       ENDIF
       LAB=0
@@ -1756,10 +1775,10 @@ C     COMPLEX DILOG
 20    CONTINUE
 30    IF(LAB.EQ.1)  CLI20=-CLI20+PI6-LOG(Z1)*LOG(1.-Z1)
       IF(MOD.LE.1) THEN
-        CLI2=CLI20
+        CCCLI2=CLI20
         RETURN
       ELSE
-        CLI2=-PI6-CLI20-CDLOG(-Z)**2/2.
+        CCCLI2=-PI6-CLI20-CDLOG(-Z)**2/2.
       ENDIF
       RETURN
       END
@@ -2287,115 +2306,115 @@ C     ZETA3=.12020569032D1
 C***********************************************************************
       END
  
-	 
-	double complex function myasin(z)
-	implicit none
-	double precision x,y
-	double complex z
+       
+      double complex function myasin(z)
+      implicit none
+      double precision x,y
+      double complex z
 #include "HPL.h"
 
-	x = dreal(z)
-	y = dimag(z)
-	if (y.eq.0d0) then
-	   if (abs(z).lt.1d0) then
-	      myasin = log(z+sqrt(1d0-z*z)*dcmplx(0d0,1d0))
-	   else
-	      print*,'arcsin out of range'
-	      stop
-	   end if
-	else
-	myasin = log(z+sqrt(z*z-1d0))
+      x = dreal(z)
+      y = dimag(z)
+      if (y.eq.0d0) then
+         if (abs(z).lt.1d0) then
+            myasin = log(z+sqrt(1d0-z*z)*dcmplx(0d0,1d0))
+         else
+            print*,'arcsin out of range'
+            stop
+         end if
+      else
+      myasin = log(z+sqrt(z*z-1d0))
 
-	endif
+      endif
 
         myasin = myasin*dcmplx(0d0,1d0)
         myasin = myasin+PI/2d0
 
-	end function myasin
+      end function myasin
 
-	double complex function myasinh(z)
-	implicit none
-	double complex z
+      double complex function myasinh(z)
+      implicit none
+      double complex z
 
-	myasinh = log(z+cdsqrt(z*z+1))
+      myasinh = log(z+cdsqrt(z*z+1))
 
-	end function myasinh
+      end function myasinh
 
 
-	double complex function myacosh(z)
-	implicit none
-	double complex z
+      double complex function myacosh(z)
+      implicit none
+      double complex z
 
-	myacosh = log(z+sqrt(z*z-1))
+      myacosh = log(z+sqrt(z*z-1))
 
-	end function myacosh
+      end function myacosh
 
-	double complex function mycosh(z)
-	implicit none
-	double complex z
+      double complex function mycosh(z)
+      implicit none
+      double complex z
 
-	mycosh = 0.5d0*(cdexp(z)+cdexp(-z))
+      mycosh = 0.5d0*(cdexp(z)+cdexp(-z))
 
-	end function mycosh
+      end function mycosh
 
-	double complex function mysinh(z)
-	implicit none
-	double complex z
+      double complex function mysinh(z)
+      implicit none
+      double complex z
 
-	mysinh = 0.5d0*(cdexp(z)-cdexp(-z))
+      mysinh = 0.5d0*(cdexp(z)-cdexp(-z))
 
-	end function mysinh
+      end function mysinh
 
 *************************************************************************
-	double precision function phaseover2factor(z1,z2)
-	implicit none
+      double precision function phaseover2factor(z1,z2)
+      implicit none
 #include "HPL.h"
 
-	double complex z1,z2
-	double precision phi1,phi2,phase
+      double complex z1,z2
+      double precision phi1,phi2,phase
 
-	if (abs(dimag(z1)).gt.EPS) then
-	   phi1 = atan(dimag(z1)/dreal(z1))
-	else
-	   if (dreal(z1).lt.0d0) then
-	      phi1 = PI
-	   else
-	      phi1 = 0d0
-	   end if
-	end if
+      if (abs(dimag(z1)).gt.EPS) then
+         phi1 = atan(dimag(z1)/dreal(z1))
+      else
+         if (dreal(z1).lt.0d0) then
+            phi1 = PI
+         else
+            phi1 = 0d0
+         end if
+      end if
 
-	if (abs(dimag(z2)).gt.EPS) then
-	   phi2 = atan(dimag(z2)/dreal(z2))
-	else
-	   if (dreal(z2).lt.0d0) then
-	      phi2 = PI
-	   else
-	      phi2 = 0d0
-	   end if
-	end if
+      if (abs(dimag(z2)).gt.EPS) then
+         phi2 = atan(dimag(z2)/dreal(z2))
+      else
+         if (dreal(z2).lt.0d0) then
+            phi2 = PI
+         else
+            phi2 = 0d0
+         end if
+      end if
 
-	phase = phi1+phi2
+      phase = phi1+phi2
 
 
-c$$$	if (phi1+phi2.gt.PI) then
-c$$$	   phase = phi1+phi2-2d0*PI
-c$$$	else if (((phi1+phi2).lt.PI).and.
+c$$$  if (phi1+phi2.gt.PI) then
+c$$$     phase = phi1+phi2-2d0*PI
+c$$$  else if (((phi1+phi2).lt.PI).and.
 c$$$    -           ((phi1+phi2).gt.-PI)) then
-c$$$	   phase = phi1+phi2
-c$$$	else if (phi1+phi2.lt.-PI) then
-c$$$	   phase = phi1+phi2+2d0*PI
+c$$$     phase = phi1+phi2
+c$$$  else if (phi1+phi2.lt.-PI) then
+c$$$     phase = phi1+phi2+2d0*PI
 c$$$        end if
 
-	phaseover2factor = exp(phase/2d0*dcmplx(0d0,1d0))
+      phaseover2factor = exp(phase/2d0*dcmplx(0d0,1d0))
 
-	end function
+      end function
 
 *************************************************************************
 
-	double complex function cquadrilog(x)
-	double complex x
+      double complex function cquadrilog(x)
+      double complex x
 
-	cquadrilog=x+
+      cquadrilog=x+
      &  x**2/16. + x**3/81. + x**4/256. + x**5/625. + x**6/1296. + 
      -  x**7/2401. + x**8/4096. + x**9/6561. + x**10/10000. + 
      -  x**11/14641. + x**12/20736. + x**13/28561. + x**14/38416. + 
@@ -2409,7 +2428,7 @@ c$$$        end if
      -  x**40/2.56e6
 
 
-	end function
+      end function
 
 
 

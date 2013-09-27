@@ -10,7 +10,7 @@ PDF = lhapdf
 ANALYSIS = default
 ## For static linking uncomment the following
 #STATIC= -static
-LIBS+= -lFH
+LIBS+= -lFH -lchaplin
 #
 ifeq ("$(COMPILER)","gfortran")	
 F77= gfortran -fno-automatic 	
@@ -26,7 +26,8 @@ FPE=-ffpe-trap=invalid,zero,overflow,underflow
 #OPT=-O2
 ## For debugging uncomment the following
 #DEBUG= -ggdb -pg
-DEBUG= -ggdb -fwhole-file
+#DEBUG= -ggdb -fwhole-file
+DEBUG= -ggdb
 endif
 
 ifeq ("$(COMPILER)","g77")
@@ -123,11 +124,14 @@ FeynHiggsInterface.o: FeynHiggsInterface.f
 %.o: %.cc
 	$(CXX) $(DEBUG) -c -o obj/$@ $^ $(FJCXXFLAGS)
 
+DDSgluodd-abdv.o: DDSgluodd-abdv.f
+	gfortran -c -o obj/$@ $<
+
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o \
         real.o btilde.o pt2maxreg.o LesHouchesreg.o $(PWHGANAL)     \
 	nloreal.o nlovirt.o nloutils.o DSgluglu.o  DDSgluexp.o gluglu_bot.o      \
 	hplog.o HPL_full.o ew.o bottomshift.o FeynHiggsInterface.o \
-	decay-util.o SLpolylog.o runmass.o
+	decay-util.o SLpolylog.o runmass.o DDSgluodd.o
 
 PWHG=pwhg_main.o pwhg_init.o bbinit.o lhefwrite.o LesHouches.o		\
 	gen_Born_phsp.o find_regions.o test_Sudakov.o sigborn.o		\

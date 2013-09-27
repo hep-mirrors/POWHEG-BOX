@@ -3,9 +3,13 @@
       include 'PhysPars.h'
       include 'Flags.h'
       include 'pwhg_st.h'
-      integer i
+      integer i,OSdivita
       double precision cf,cffer,cfsca,ca,m0,m12,y0,y12,mum
-      double complex twoloop, twoloopT0
+      double complex twoloop, twoloopT0,twoloop_pseudo,twoloop_divita
+      external twoloop
+      external twoloopT0
+      external twoloop_pseudo
+      external twoloop_divita
 
 c     amp1loop is the 1-loop amplitude with EXACT mass dependence
       double precision bornqcd
@@ -21,7 +25,11 @@ c     amp1loop is the 1-loop amplitude with EXACT mass dependence
       double complex a1_bot_nosm,a2_bot_nosm
 
       double precision g2l
-      double complex bot2l,top2l
+      double complex bot2l,top2l,bot2ldivita,top2ldivita
+
+      double precision glutop0,glutop1
+      double complex glutop,glubot
+
 
       cf = 4d0/3d0
       cffer = 4d0/3d0
@@ -33,22 +41,37 @@ c     Top/Stops sector contribution
         call DSgluglu(ih,mh,ph_Zmass,ph_Wmass,ph_topmass,ph_mg,
      $     ph_t1_2, ph_t2_2,ph_stt,ph_ctt,q,ph_mumssm,ph_tanb,
      $     ph_alpha,massren,0,a1_full_top_nosm,a1_top_nosm,a2_top_nosm)
-      else
+c     Heavy higgs
+      else if (ih.eq.2) then
         call DDSgluexp(ih,mh,ph_Zmass,ph_Wmass,ph_topmass,ph_mg,
      $     ph_t1_2, ph_t2_2,ph_stt,ph_ctt,q,ph_mumssm,ph_tanb,ph_alpha,
      $     massren,0,a1_full_top_nosm,a1_top_nosm,a2_top_nosm)
+c     Pseudoscalar
+      else
+        call DDSgluodd(1,massren,0,ph_ma_pole,ph_topmass,ph_bottommass,
+     $ ph_mbsb,ph_mbrun,ph_mg,
+     $ ph_t1_2,ph_t2_2,2*ph_stt*ph_ctt,ph_b1_2,ph_b2_2,2*ph_stb*ph_ctb,
+     $ ph_mumssm,ph_tanb,
+     $ At,Ab,q,a1_full_top_nosm,a1_full_bot_nosm,
+     $ a1_top_nosm,a1_bot_nosm,a2_top_nosm,a2_bot_nosm)
       endif
 
-c     Bottom/Sbottoms sector contribution
-      call gluglu_bot(ih,mh,ph_Zmass,ph_Wmass,ph_bottommass,
+!      write(*,*) '1-loop top',a1_full_top_nosm
+!     write(*,*) '1-loop bot',a1_full_bot_nosm
+!      stop
+
+c     Bottom/Sbottoms sector contribution for light/heavy higgs.
+      if ((ih.eq.1).or.(ih.eq.2)) then
+        call gluglu_bot(ih,mh,ph_Zmass,ph_Wmass,ph_bottommass,
      $     ph_mbsb,ph_mbrun,ph_bottommass_mh,ph_mg,ph_b1_2,ph_b2_2,
      $     ph_stb,ph_ctb,q,
      $     ph_mumssm,ph_tanb,ph_alpha,massrenb,flg_mssm_q_mh,0,
      $     a1_full_bot_nosm,
      $     a1_bot_nosm,a2_bot_nosm)
+      endif
 
 c     Two loop SM contributions with full mass dependence
-
+      if( (ih.eq.1).or.(ih.eq.2)) then
 c     Top quark
       m12=mfer(1)
       y12=m12**2/mh2
@@ -60,25 +83,165 @@ c     Bottom quark
       y12=m12**2/mh2
       bot2l = lambdafer(2)*twoloop(1d0/y12,trfer(2),
      $     cf,ca,ferlogmratio(2),2)
+      else
+!
+!      write(*,*)' FOOOOOOOOO',mh
+!      call getgluABDV(massren,mh,mfer(1),mfer(2),q,
+!    $     glutop,glutop0,glutop1,glubot)
+!      write(*,*) 'full',glutop
+!      write(*,*) 'ma->0',glutop0
+!      write(*,*) 'asimptotic', glutop1
+
+      if(massren.eq.2) then
+        OSdivita=1
+      elseif (massren.eq.1) then
+        OSdivita=0
+      else
+        write(*,*) massren,'Unrecognized divita renorm scheme'
+        stop
+      endif
+
+c     Top quark
+      m12=mfer(1)
+      y12=m12**2/mh2
+!      top2l = lambdafer(1)*twoloop_pseudo(y12,trfer(1),cf,ca,
+!     $ferlogmratio(1),1)
+!      top2ldivita = lambdafer(1)*trfer(1)*glutop
+      call getgluABDV(OSdivita,mh,m12,q,lambdafer(1),top2l)
+
+c     Bottom quark
+      m12=mfer(2)
+      y12=m12**2/mh2
+!      bot2l = lambdafer(2)*twoloop_pseudo(y12,trfer(2),cf,ca,
+!     $ferlogmratio(2),2)
+!      bot2ldivita = lambdafer(2)*trfer(2)*glubot
+      call getgluABDV(OSdivita,mh,m12,q,lambdafer(2),bot2l)
+      endif
+
 
       if (flg_noscalars.le.0) then
          ampl = a2_top_nosm + a2_bot_nosm + bot2l + top2l
-!      write(*,*) 'a2_stops', a2_top_nosm
-!      write(*,*) 'a2_bot_nosm', a2_bot_nosm
-!      write(*,*) 'a2lnp',a2_top_nosm+a2_bot_nosm
-!      write(*,*) 'top2l', top2l
-!      write(*,*) 'bot2l', bot2l
-!      stop
+!      write(*,*) 'gb',lambdafer(2)
+!      write(*,*) 'a2bot ', Real(3*bot2l),Imag(3*bot2l)
+!      write(*,*) 'a2botdivita ', Real(3*bot2ldivita),
+!     $  Imag(3*bot2ldivita)
+!      write(*,*) 'a2top ', Real(3*top2l),Imag(3*top2l)
+!      write(*,*) 'a2topdivita ', Real(3*top2ldivita),
+!     $Imag(3*top2ldivita)
+!      write(*,*) 'a2np_stops', 3*a2_top_nosm
+!      write(*,*) 'a2np_sbots', 3*a2_bot_nosm
+!      write(*,*) 'a2lnp',3*a2_top_nosm+3*a2_bot_nosm
       else
          ampl = bot2l + top2l
       endif
 
       g2l = ampl/ampl1loop + dconjg(ampl/ampl1loop)
-c     write(*,*) g2l
-c      stop
+!      write(*,*) '2loop',3d0*ampl
+!      write(*,*) '1loop',3d0/2d0*ampl1loop
+!      write(*,*) 'g2l',g2l
+!      stop
       end
 
+c     DiVita - Chaplin subroutine
+c     DiVita subroutines
+      subroutine getgluABDV(OS,mA,mq,q,zzq,ampl)
 
+c     subroutine obtained by modifying getglu with the addition of the
+c     full top-gluon result in terms of HPL's (S. Di Vita, 2012/06/18)
+
+c     DESCRIPTION: two-loop quark-gluon contributions to the ggA vertex
+c     eqs.(19)-(26) of [arXiv:1107.0914], supplemented with the
+c     explicit formulae for the functions F1t, F2t, F3t valid for
+c     arbitrary values of mA/mt, see below eq.(20), reported in
+c     ref. [hep-ph/0611266]
+c
+c     NOTE: the top-gluon contribution is:
+c     ampl  -> full result in terms of HPL. See 1107.0914 and the
+c                explicit formulae in .
+c
+c     WARNING: this subroutine needs to be linked against the CHAPLIN library
+c              which implements the evaluation of (Complex) HPL's in FORTRAN
+c              [arXiv:1106.5739].
+c
+      implicit none
+
+      integer OS
+      double precision mA,mq,q
+      double complex ampl
+
+      double precision CF,CA,TR,tauq,z2,z3,pi,logq,zzq
+
+      double complex F1q,F2q,F3q
+      double complex HPL1,HPL2,HPL3,HPL4,x,H1,H2
+
+      logical debugflag
+      common/debug/debugflag
+
+      parameter (pi = 3.1415926535897932384626433832795029D0)
+
+      CF = 4d0/3d0
+      CA = 3d0
+      TR = 1d0/2d0
+      z2 = 1.6449340668482264365d0
+      z3 = 1.2020569031595942854d0
+
+      tauq = 4*mq**2/mA**2
+      logq = 2*log(mq/q)
+
+c     full result in terms of HPL's.
+c     recall that x := (sqrt(1d0-tauq) - 1d0) / (sqrt(1d0-tauq) + 1d0)
+
+
+      if(tauq>=1.d0) then
+         x = (-2d0 + (0d0,2d0)*Sqrt(-1d0 + tauq) + tauq)/tauq
+      else
+         x = (-2d0 + 2d0*Sqrt(1d0 - tauq) + tauq)/tauq
+      endif
+
+      H1 = (9d0*z2**2)/10d0 + 2d0*z3*HPL1(0,x) + z2*HPL2(0,0,x) -
+     $     2*HPL4(0,-1,0,0,x) + 4*HPL4(0,0,-1,0,x) +
+     $     HPL4(0,0,0,0,x)/4d0 - HPL4(0,0,1,0,x) +
+     $     (7*HPL4(0,1,0,0,x))/2d0
+
+      H2 = (4d0*z2**2)/5d0 + 2d0*z3 + (3d0*z3*HPL1(0,x))/2d0 +
+     $     3d0*z3*HPL1(1,x) + ((1d0 + 2d0*z2)*HPL2(0,0,x))/4d0 +
+     $     z2*HPL2(1,0,x) - 2*HPL3(1,0,0,x) +
+     $     HPL4(0,0,-1,0,x) + HPL4(0,0,0,0,x)/4d0 +
+     $     2d0*HPL4(1,0,-1,0,x) - HPL4(1,0,0,0,x)
+
+
+      F1q = (-8*x*(1 + x**2)*H1)/((-1 + x)**3*(1 + x)) +
+     $     (4*x*(2*(1 - x)**2 -
+     $     (1 - x**2)*z2)*HPL1(0,x))/((-1 + x)**3*(1 + x)) +
+     $  (8*x*(1 - x**2)*HPL2(0,0,x))/((-1 + x)**3*(1 + x)) +
+     $     (6*x*(1 + x)*HPL3(0,0,0,x))/(-1 + x)**3 -
+     $  (4*x*(z3 - 4*HPL3(0,-1,0,x) + HPL3(0,1,0,x) -
+     $     5*HPL3(1,0,0,x)))/(-1 + x)**2
+
+      F2q = (-6*x*HPL1(0,x))/((-1+x)*(1 + x)) +
+     $     (6*x*HPL2(0,0,x))/(-1+x)**2
+
+      F3q = (12d0*x**2*HPL3(0,0,0,x))/(-1+x)**3 + (4d0*x*(z3 - 2d0*H2 -
+     $     HPL3(1,0,0,x)))/(-1 + x)**2
+
+      if (debugflag) then
+        write(*,*) 'x', x
+        write(*,*) 'F1',F1q
+        write(*,*) 'F2',F2q
+        write(*,*) 'F3',F3q
+      endif
+
+      if(OS.eq.0) then
+         ampl = CF*(F1q  +F2q  *(logq-1d0/3d0))+CA*F3q
+      else
+         ampl = CF*(F1q  +4d0/3d0*F2q  )+CA*F3q
+      endif
+      ampl = TR*zzq*ampl
+
+      return
+      end
+
+c     h/H
       double complex function twoloop(s,TR,CF,CA,logmassratio,numfer)
       implicit none
       include 'Flags.h'
@@ -648,7 +811,7 @@ c     F_{1/2}**(2l,a):
      $ - 192*HAr2(0,1)*z2/(1.d0+x)**5
      $ + 480*HAr2(0,1)*z2/(1.d0+x)**4
      $ - 480*HAr2(0,1)*z2/(1.d0+x)**3
-     $ + 240*HAr2(0,1)*z2/(1.d0+x)**2
+     $ + 240*HAr2(0,1)*z2/(1.d0+x)**2*l
      $ - 48*HAr2(0,1)*z2/(1.d0+x)
      $ - 16*HAr3(-1,0,0)/(1.d0+x)**4
      $ + 32*HAr3(-1,0,0)/(1.d0+x)**3
@@ -1901,16 +2064,660 @@ c     F_{1}**(1l):
       parameter ( pi   = 3.1415926535897932385d0 )
       parameter ( z2   = 1.6449340668482264365d0 )
       parameter ( z3   = 1.2020569031595942854d0 )
-      parameter ( aln2  = 0.6931471805599453094d0 ) 
-       if(s.lt.4.d0) then 
-      ri1f1 = 0.d0
-       endif
-       if(s.ge.4.d0) then
+      parameter ( aln2  = 0.6931471805599453094d0 )
+
+      if(s.lt.4.d0) then
+        ri1f1 = 0.d0
+      endif
+      if(s.ge.4.d0) then
       ri1f1 = pi * (
      $ + 24*Hr1(0)/(1.d0+x)**4
      $ - 48*Hr1(0)/(1.d0+x)**3
      $ + 36*Hr1(0)/(1.d0+x)**2
      $ - 12*Hr1(0)/(1.d0+x) )
-       endif
+      endif
       return
       end
+
+c     Pseudoscalar
+
+      double complex function twoloop_pseudo(s,TR,CF,CA,
+     $logmassratio,numfer)
+      implicit none
+      include  'Flags.h'
+      double precision s,tr,cf,ca
+      double complex x,reduced,z
+      external reduced
+      double precision ReK121l, RiK121l,ReK122la,RiK122la,
+     -                 ReK122lb,RiK122lb,RK12OSre,RK12OSim,
+     -                 ReKA122l,RiKA122l,ReK12t2l,RiK12t2l
+
+      double complex rek12a, rek12b, reka12
+      external rek12a, rek12b, reka12
+
+      double complex zi(12),ztmp
+      integer i
+      double complex myli2,myli3,myli4
+      external myli2,myli3,myli4
+      integer numfer
+
+      double precision logmassratio
+
+      double complex ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+      common/ahpl/ ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+
+*
+*
+      x=reduced(1d0/s)
+
+c      if (1>2) then
+
+!      zi(1) = dcmplx(-4d0,0.5d0)
+!      zi(2) = dcmplx(-0.75d0,0.5d0)
+!      zi(3) = dcmplx(0.75d0,0.5d0)
+!      zi(4) = dcmplx(4d0,0.5d0)
+!      zi(5) = dcmplx(-4d0,-0.5d0)
+!      zi(6) = dcmplx(-0.75d0,-0.5d0)
+!      zi(7) = dcmplx(0.75d0,-0.5d0)
+!      zi(8) = dcmplx(4d0,-0.5d0)
+!      zi(9) = dcmplx(-4d0,0d0)
+!      zi(10) = dcmplx(-0.75d0,0d0)
+!      zi(11) = dcmplx(0.75d0,0d0)
+!      zi(12) = dcmplx(4d0,0d0)
+
+c      do i=1,12
+c         print*,'z=',i,zi(i)
+c         print*,'li2=',myli2(zi(i))
+c         print*,'li3=',myli3(zi(i))
+c         print*,'li4=',myli4(zi(i))
+c        print*,' '
+c       end do
+
+c      endif
+
+      call myhpl(x)
+
+cccccccccccccccccccccccccccccccccccccccccccc
+!      if (1>2) then
+!         print*,'z     =',x
+!         print*,'ah0   =',ah0
+!         print*,'ah00  =',ah00
+!         print*,'ah000 =',ah000
+!         print*,'ah0000=',ah0000
+!         print*,'ah0m10=',ah0m10
+!         print*,'ah010 =',ah010
+!         print*,'ah100 =',ah100
+!         print*,'ah1000=',ah1000
+!         print*,'ah0100=',ah0100
+!         print*,'ah0010=',ah0010
+!         print*,'ah0m100=',ah0m100
+!         print*,'ah00m10=',ah00m10
+!         print*,'ah1   =',ah1
+!         print*,'ah10  =',ah10
+!         print*,'ah10m10 =',ah10m10
+!      end if
+
+
+* One-loop functions:
+*
+
+c      ReK121l = dble(4d0/s*ah00)
+c      RiK121l = dimag(4d0/s*ah00)
+
+*
+* Two-loop functions:
+*
+       ReK122la  = dble(rek12a(x))
+       RiK122la  = dimag(rek12a(x))
+       ReK122lb  = dble(rek12b(x))
+       RiK122lb  = dimag(rek12b(x))
+
+
+*
+*******
+c     DRBAR
+       if (massren.eq.1) then
+          RK12OSre = ReK122la + ReK122lb*logmassratio
+          RK12OSim = RiK122la + RiK122lb*logmassratio
+c     OS
+       else if (massren.eq.2) then
+          RK12OSre = ReK122la + 4.d0/3*ReK122lb
+          RK12OSim = RiK122la + 4.d0/3*RiK122lb
+       end if
+*
+*******
+*
+       ReKA122l  = dble(reka12(x))
+       RiKA122l  = dimag(reka12(x))
+
+!       write(*,*), -4d0/(3d0*4d0*s)
+!       write(*,*), rek12a(x)
+!       write(*,*),-1d0/(4d0*s)
+!       write(*,*), rek12b(x)
+!       write(*,*), -2d0-1d0/(6d0*s)
+!       write(*,*), reka12(x)
+!       stop
+
+*
+*
+       ReK12t2l = TR*( CF*RK12OSre + CA*ReKA122l )
+       RiK12t2l = TR*( CF*RK12OSim + CA*RiKA122l )
+
+c       print*,'ReK12t2l=',TR*CF*RK12OSre ,TR* CA*ReKA122l
+*
+c       print*,'rek12a=',rek12a(x)
+c       print*,'rek12b=',rek12b(x)
+c       print*,'reka12=',reka12(x)
+c       print*,'twoloop pseudo=',ReK12t2l,RiK12t2l
+       twoloop_pseudo = ReK12t2l + dcmplx(0d0,1d0)*RiK12t2l
+
+c       stop
+
+       return
+       end
+*
+
+
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      double complex function rek12a(x)
+      implicit none
+      double precision pi,z2,z3,aln2
+      double complex x
+      parameter ( pi   = 3.1415926535897932385d0 )
+      parameter ( z2   = 1.6449340668482264365d0 )
+      parameter ( z3   = 1.2020569031595942854d0 )
+      parameter ( aln2  = 0.6931471805599453094d0 )
+
+      double complex p1,p2,p3,p4,p5,p5num,p5den
+
+      double complex ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+      common/ahpl/ ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+      p1 =  -4.d0*x/(x-1d0)**2*(z3-4d0*ah0m10+ah010-5d0*ah100)
+
+!      print*,'p1=',p1
+!      print*,'x=',x
+!      print*,'prefac',-4.d0*x/(x-1d0)**2
+!      print*,'parantesi', z3-4d0*ah0m10+ah010-5d0*ah100
+!      print*,-4d0*ah0m10+ah010-5d0*ah100
+!      print*, 'HPL(0,-1,0;x) = ',ah0m10
+!      print*, 'HPL(0,1,0;x) = ',ah010
+!      print*, 'HPL(1,0,0;x) = ',ah100
+
+      p2 =   4d0*x*(2d0*(1d0-x)**2-z2*(1d0-x**2))/(x-1d0)**3/(1d0+x)*
+     -         ah0
+
+      p3 =  8d0*x*(1d0-x**2)/(x-1d0)**3/(1d0+x)*ah00
+      p4 =  6d0*x*(1d0+x)/(x-1d0)**3*ah000
+
+      if (abs(1-x).lt.1d-1) then
+         p5=1-dcmplx(0d0,1d0)*9*pi*(x-2d0)*(-1d0+x)**2
+      else
+         p5 =  -8d0*x*(1d0+x**2)/(x-1d0)**3/(1d0+x)*
+     -           (9d0/10d0*z2**2 +2d0*z3*ah0 + z2*ah00 +ah0000/4d0+
+     -           7d0/2d0*ah0100-2d0*ah0m100+4d0*ah00m10-ah0010 )
+      endif
+
+C$$$      p5num =
+C$$$     -         (9d0/10d0*z2**2 +2d0*z3*ah0 + z2*ah00 +ah0000/4d0+
+C$$$     -          7d0/2d0*ah0100-2d0*ah0m100+4d0*ah00m10-ah0010 )
+C$$$      p5den =    -8d0*x*(1d0+x**2)/(x-1d0)**3/(1d0+x)
+
+
+
+
+c$$$      print*,'p2=',p2
+c$$$      print*,'p3=',p3
+c$$$      print*,'p4=',p4
+c$$$      print*,'p5=',p5
+c$$$      print*,'t1=',9d0/10d0*z2**2
+c$$$      print*,'t2=',+2d0*z3*ah0
+c$$$      print*,'t3=',z2*ah00
+c$$$      print*,'t4=',ah0000/4d0
+c$$$      print*,'t5=',7d0/2d0*ah0100
+c$$$      print*,'t6=',-2d0*ah0m100
+c$$$      print*,'t7=',4d0*ah00m10
+c$$$      print*,'t8=',-ah0010
+c      print*,'p5num=',p5num
+c      print*,'p5den=',p5den
+
+      rek12a=-4.d0*x/(x-1d0)**2*(
+     -         z3-4d0*ah0m10 + ah010 - 5d0*ah100 )+
+     -         4d0*x*(2d0*(1d0-x)**2-z2*(1d0-x**2))/(x-1d0)**3/(1d0+x)*
+     -         ah0+
+     -         8d0*x*(1d0-x**2)/(x-1d0)**3/(1d0+x)*ah00+
+     -         6d0*x*(1d0+x)/(x-1d0)**3*ah000+
+     -         p5
+
+
+c     -         -8d0*x*(1d0+x**2)/(x-1d0)**3/(1d0+x)*
+c     -         (9d0/10d0*z2**2 +2d0*z3*ah0 + z2*ah00 +ah0000/4d0+
+c     -          7d0/2d0*ah0100-2d0*ah0m100+4d0*ah00m10-ah0010 )
+
+c      print*,'rek12a=',rek12a,x
+
+      end function
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      double complex function rek12b(x)
+      implicit none
+      double precision pi,z2,z3,aln2
+      double complex x
+
+      parameter ( pi   = 3.1415926535897932385d0 )
+      parameter ( z2   = 1.6449340668482264365d0 )
+      parameter ( z3   = 1.2020569031595942854d0 )
+      parameter ( aln2  = 0.6931471805599453094d0 )
+
+      double complex ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+      common/ahpl/ ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+
+      rek12b=-6.d0*x/(x-1d0)/(x+1d0)*ah0+
+     -        6.d0*x/(x-1d0)**2*ah00
+
+c      print*,'rek12b=',rek12b
+
+      end function
+
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      double complex function reka12(x)
+      implicit none
+      double precision pi,z2,z3,aln2
+      double complex x
+      parameter ( pi   = 3.1415926535897932385d0 )
+      parameter ( z2   = 1.6449340668482264365d0 )
+      parameter ( z3   = 1.2020569031595942854d0 )
+      parameter ( aln2  = 0.6931471805599453094d0 )
+
+      double complex ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+      common/ahpl/ ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+
+      reka12 = 4.d0*x/(x-1d0)**2*
+     -         (z3-ah100-
+     -          2d0*( 4d0/5d0*z2**2+ 2d0*z3 + 3d0/2d0*z3*ah0+
+     -                3d0*z3*ah1 +z2*ah10 +1d0/4d0*(1d0+2d0*z2)*ah00-
+     -                2d0*ah100 +ah00m10 +1d0/4d0*ah0000 +
+     -                2d0*ah10m10 -ah1000)
+     -         ) +
+     -         12.d0*x**2/(x-1d0)**3*ah000
+
+c      print*,'reka12=',reka12
+
+
+c$$$      print*,'q1=',4.d0*x/(x-1d0)**2*(z3-ah100)
+c$$$      print*,'h2=',-4.d0*x/(x-1d0)**2*
+c$$$     -           2d0*( 4d0/5d0*z2**2+ 2d0*z3 + 3d0/2d0*z3*ah0+
+c$$$     -                3d0*z3*ah1 +z2*ah10 +1d0/4d0*(1d0+2d0*z2)*ah00-
+c$$$     -                2d0*ah100 +ah00m10 +1d0/4d0*ah0000 +
+c$$$     -                2d0*ah10m10 -ah1000)
+c$$$      print*,'q2=',4d0/5d0*z2**2+ 2d0*z3 + 3d0/2d0*z3*ah0+3d0*z3*ah1
+c$$$      print*,'q3=', +z2*ah10 +1d0/4d0*(1d0+2d0*z2)*ah00
+c$$$      print*,'q4=',-2d0*ah100 +ah00m10 +1d0/4d0*ah0000
+c$$$      print*,'q5=',2d0*ah10m10 -ah1000
+c$$$      print*,'q6=',12.d0*x**2/(x-1d0)**3*ah000
+c$$$      print*,'hpl10m10=',x,ah10m10
+
+      end function
+
+
+
+
+
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      subroutine myhpl(z)
+      implicit none
+#include "HPL.h"
+      double precision x,y
+      double complex z,iz,al,ali2,ali3,ali4,al1mz,ali2mz,ali3mz,ali4mz
+      double complex mylog,myli2,myli3,myli4,cli2,h10m10exp
+c      integer n1,n2,n3,n4
+      double complex HPL4,duhr
+      external HPL4
+      external mylog,myli2,myli3,myli4,cli2,h10m10exp
+
+      double complex ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+      common/ahpl/ ah0,ah00,ah000,ah0000,ah0m10,ah010,ah100,
+     -               ah1000,ah0100,ah0010,
+     -               ah0m100,ah00m10,
+     -               ah1,ah10,ah10m10
+
+
+      x = dreal(z)
+      y = dimag(z)
+
+      al=log(z)
+      ali2=myli2(z)
+      ali3=myli3(z)
+      ali4=myli4(z)
+      al1mz=log(1d0-z)
+      ali2mz=myli2(-z)
+      ali3mz=myli3(-z)
+      ali4mz=myli4(-z)
+
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      ah0=al
+      ah00=1d0/2d0*al**2
+      ah000=1d0/6d0*al**3
+      ah0000=1d0/24d0*al**4
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      if ((x.eq.1d0).and.(abs(y).lt.EPS)) then
+         print *,'errore Hp1: singolare'
+      stop
+      end if
+
+      if (abs(y).lt.EPS) then
+         ah1 = -log(dcmplx(1-x,-EPS))
+      else
+      ah1 = -log(1-z)
+      end if
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      if (abs(y).lt.EPS) then
+         iz = dcmplx(x,EPS)
+      else
+         iz =z
+      end if
+
+      ah10 = -log(iz)*log(1d0-iz)-ali2
+
+ccccccccccccccccccccccccccccccccccccccccc
+c        H0m10=  -log(z)*myli2(-z) +2d0*myli3(-z);
+
+      ah0m10=  -al*ali2mz +2d0*ali3mz
+
+ccccccccccccccccccccccccccccccccccccccccc
+c        H010= log(z)* myli2(z)- 2d0* myli3(z)
+
+      ah010= al*ali2-2d0*ali3
+
+ccccccccccccccccccccccccccccccccccccccccc
+c        H100= -1d0/2d0* log(1-z)* log(z)**2 -
+c     -        log(z)* myli2(z) + myli3(z)
+
+      ah100= -0.5d0*al1mz*al**2-al*ali2+ali3
+
+
+
+ccccccccccccccccccccccccccccccccccccccccccc
+c        H1000= -1d0/6d0* log(1-z)* log(z)**3-
+c     -          1d0/2d0* log(z)**2* myli2(z)+
+c     -          log(z)* myli3(z) - myli4(z)
+
+      ah1000=-1d0/6d0*al1mz*al**3 -0.5d0*al**2*ali2+al*ali3-ali4
+
+ccccccccccccccccccccccccccccccccccccccccccc
+c        H0100= 1d0/2d0* log(z)**2* myli2(z) -
+c     -         2d0* log(z)* myli3(z) +3d0* myli4(z)
+
+      ah0100=0.5d0*al**2*ali2-2d0*al*ali3+3d0*ali4
+
+cccccccccccccccccccccccccccccccccccccccccccc
+c        H0010 = log(z)* myli3(z) - 3d0* myli4(z)
+
+      ah0010=al*ali3-3d0*ali4
+
+cccccccccccccccccccccccccccccccccccccccccccc
+c        H0m100= -1d0/2d0* log(z)**2 *myli2(-z) +
+c     -           2d0* log(z)* myli3(-z)-3d0* myli4(-z)
+
+      ah0m100=-0.5d0*al**2*ali2mz +2d0*al*ali3mz -3d0*ali4mz
+
+
+cccccccccccccccccccccccccccccccccccccccccccc
+c        H00m10= -log(z) *myli3(-z) + 3d0* myli4(-z)
+
+      ah00m10=-al*ali3mz+3d0*ali4mz
+
+cccccccccccccccccccccccccccccccccccccccccccc
+
+
+c      ah10m10=-dconjg(h10m10exp(z,ali3mz))
+c      ah10m10=-h10m10exp(z,ali3mz)
+
+      ah10m10=HPL4(1,0,-1,0,z)
+c      print*,'chaplin=',ah10m10/duhr
+c      stop
+
+cccccccccccccccccccccccccccccccccccccccccccc
+!      if (1>0) then
+!         print*,'z     =',z
+!         print*,'al  =',al
+!         print*,'al1mz=',al1mz
+!         print*,'prod=',al1mz*al
+!         print*,'ali2=',ali2
+!         print*,'ali3=',ali3
+!         print*,'ali4=',ali4
+!         print*,'ah0   =',ah0
+!         print*,'ah00  =',ah00
+!         print*,'ah000 =',ah000
+!         print*,'ah0000=',ah0000
+!         print*,'ah0m10=',ah0m10
+!         print*,'ah010 =',ah010
+!         print*,'ah100 =',ah100
+!         print*,'ah1000=',ah1000
+!         print*,'ah0100=',ah0100
+!         print*,'ah0010=',ah0010
+!         print*,'ah0m100=',ah0m100
+!         print*,'ah00m10=',ah00m10
+!         print*,'ah1   =',ah1
+!         print*,'ah10  =',ah10
+!         print*,'ah10m10 =',ah10m10
+!      end if
+
+
+      end subroutine
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      double complex function h10m10exp(z,ali3mz)
+      implicit none
+      double complex z, lm1, l1pz, imag, cone,R,ali3mz
+      double precision x1,az
+
+      x1=sqrt(2.d0)-1.d0
+      cone=dcmplx(1.d0,0.d0)
+      imag=dcmplx(0d0,1d0)
+      l1pz=log(1d0+z)
+      az=abs(z)
+c      if (az-1d0.lt.1d-7.and.az-1d0.gt.0d0) az=1d0
+      if (abs(az-1d0).lt.1d-7) az=1d0
+
+c      if (az.lt.x1.or.(dreal(z).lt.0d0.and.dreal(z).gt.-1d0)) then
+      if (az.lt.x1) then
+
+
+      h10m10exp=
+     -  -0.75d0*z**2 - 0.08333333333333333d0*z**3 -
+     -   0.10590277777777778d0*z**4-
+     -   0.03194444444444444d0*z**5 - 0.037800925925925925d0*z**6 -
+     -   0.016547619047619047d0*z**7 - 0.018921928146258503d0*z**8 -
+     -   0.010069339464180734d0*z**9 - 0.011262161438649533d0*z**10 -
+     -   0.006760017980256075d0*z**11 - 0.007442647978719257d0*z**12 -
+     -   0.004847823632996793d0*z**13 - 0.005274535704406641d0*z**14 -
+     -   0.0036448769463264226d0*z**15 - 0.003929237187347079d0*z**16 -
+     -   0.002839569229646677d0*z**17 - 0.0030384952655659624d0*z**18 -
+     -   0.0022742639756987808d0*z**19 - 0.0024188341474120963d0*z**20 -
+     -   0.0018623115154869682d0*z**21 +
+     -   dcmplx(0.,3.141592653589793d0)*
+     -   (2.d0*z - 0.25d0*z**2 + 0.07407407407407407d0*z**3 -
+     -    0.03125d0*z**4 + 0.016d0*z**5 - 0.009259259259259259d0*z**6 +
+     -    0.0058309037900874635d0*z**7 - 0.00390625d0*z**8 +
+     -    0.0027434842249657062d0*z**9 - 0.002d0*z**10 +
+     -    0.0015026296018031556d0*z**11 - 0.0011574074074074073d0*z**12+
+     -    0.0009103322712790169d0*z**13 - 0.0007288629737609329d0*z**14+
+     -    0.0005925925925925926d0*z**15 - 0.00048828125d0*z**16 +
+     -    0.0004070832485243232d0*z**17 - 0.0003429355281207133d0*z**18+
+     -    0.000291587694999271d0*z**19 - 0.00025d0*z**20 +
+     -    0.00021595939963286903d0*z**21) -
+     -   (0.5d0*z**2 + 0.25d0*z**3 + 0.2152777777777778d0*z**4 +
+     -    0.1597222222222222d0*z**5 + 0.13976851851851851d0*z**6 +
+     -    0.11583333333333333d0*z**7 + 0.10390518707482993d0*z**8 +
+     -    0.0906240551776266d0*z**9 + 0.08279621756109852d0*z**10 +
+     -    0.07436019778281683d0*z**11 + 0.06885221986840855d0*z**12 +
+     -    0.0630217072289583d0*z**13 + 0.05894281098141226d0*z**14 +
+     -    0.054673154194896344d0*z**15 + 0.0515338598354931d0*z**16 +
+     -    0.048272676903993506d0*z**17 + 0.045783095276685906d0*z**18 +
+     -    0.04321101553827684d0*z**19 + 0.04118896891648765d0*z**20 +
+     -    0.039108541825226335d0*z**21)*Log(z) +
+     -    2.d0*Log(-1d0 + z)*ali3mz
+
+
+c      h10m10exp = dconjg(h10m10exp)
+
+      else if (abs(z+1d0).lt.1d0) then
+c         print*,'primo caso    espansione a -1'
+         h10m10exp=
+     - -2.280817610900722d0*imag*l1pz + 0.11321718146422866d0*z +
+     -   1.9366297195871596d0*imag*z - 8.83759933384843d0*imag*l1pz*z -
+     -   1.7971335658472096d0*z**2 + 7.458432323981219d0*imag*z**2 -
+     -   18.124620950085397d0*imag*l1pz*z**2 - 2.212510377635992d0*z**3
+     -   + 9.516100393596233d0*imag*z**3 -
+     -   28.971218919354445d0*imag*l1pz*z**3 -
+     -   2.39032622544374d0*z**4 + 10.770176106217972d0*imag*z**4 -
+     -   38.128275839505406d0*imag*l1pz*z**4 -2.1797616160793183d0*z**5+
+     -   10.155926819594914d0*imag*z**5 -
+     -   39.46363971684379d0*imag*l1pz*z**5 -
+     -   1.590027271433481d0*z**6 + 7.57548130578779d0*imag*z**6 -
+     -   31.24575693382848d0*imag*l1pz*z**6 -0.8889991719181687d0*z**7 +
+     -   4.299725764968794d0*imag*z**7 -
+     -   18.46433682234858d0*imag*l1pz*z**7 -
+     -   0.3644614252133116d0*z**8 + 1.7813435329862448d0*imag*z**8 -
+     -   7.872214091339067d0*imag*l1pz*z**8-0.10287606548977135d0*z**9 +
+     -   0.5066522638626342d0*imag*z**9 -
+     -   2.287212429280188d0*imag*l1pz*z**9 -
+     -   0.017837132747888007d0*z**10+0.08834742326834674d0*imag*z**10 -
+     -   0.4054150519632543d0*imag*l1pz*z**10-
+     -   0.0014309694018715818d0*z**11+
+     -   0.007118844201256682d0*imag*z**11 -
+     -   0.03309325594690547d0*imag*l1pz*z**11
+
+c         print*,'primo caso=',h10m10exp
+
+
+      else if (abs(z-dcmplx(0d0,1d0)).lt.1d0) then
+c        print*,'secondo caso    espansione a I'
+
+         h10m10exp=
+     - (-0.03559859360446671,-0.12660767776867576)*z -
+     -   (1.786728017959732,-0.5391359284688395)*z**2 -
+     -   (0.30490894562404236,0.793347155117714)*z**3 +
+     -   (0.12761447859865527,1.1933345989121786)*z**4 -
+     -   (2.5074053130003833,-0.5354638590790448)*z**5 -
+     -   (1.0918224794770355,2.521280318690634)*z**6 +
+     -   (1.601785339625966,-1.0421014534744675)*z**7 +
+     -   (0.5861100516954767,0.6791194326068375)*z**8 -
+     -   (0.18849491235514926,-0.20236884532443217)*z**9 -
+     -   (0.040149373299117906,0.03124600690815199)*z**10 +
+     -   (0.0023590435153782955,-0.003535859686762603)*z**11
+
+      else if (abs(z-1d0).lt.1d0) then
+c         print*,'terzo caso    espansione a 1'
+
+         h10m10exp=
+     -   dcmplx(0.d0,-5.664559704244618d0) + 1.7096016334563628*z -
+     -   1.0822781184271921*z**2 +
+     -   1.124241119852468*z**3 - 1.2516329001154851*z**4 +
+     -   1.1971179853737333*z**5 - 0.9066115861791575*z**6 +
+     -   0.5207725424746439*z**7 - 0.21770366674265507*z**8 +
+     -   0.0623431719879346*z**9 - 0.010928428423301925*z**10 +
+     -   0.0008842491721175998*z**11 + 1.8030853547393915*log(-1.d0 + z)
+
+c$$$      else if (az.ge.x1.and.az.le.1d0.and.z.ne.cone.and.
+c$$$     -         dreal(z).gt.0d0) then
+c$$$
+c$$$         R=(1d0-z)/(1d0+z)
+c$$$
+c$$$
+c$$$         h10m10exp= dcmplx(-1.1499683541129118d0,5.664559704244638d0) -
+c$$$     -   0.6354287544374789d0*R +
+c$$$     -   4.389213155945145d0*R**2 - 5.592980384997291d0*R**3 +
+c$$$     -   6.126818858603301d0*R**4 -
+c$$$     -   6.352522802450248d0*R**5 + 6.442270066137144d0*R**6 -
+c$$$     -   6.451123939870898d0*R**7 +
+c$$$     -   6.419603482600606d0*R**8 - 6.361355499815401d0*R**9 +
+c$$$     -   6.289983176870297d0*R**10 -
+c$$$     -   6.2095364094729355d0*R**11 + 6.125563523668329d0*R**12 -
+c$$$     -   6.039256407447986d0*R**13 + 5.953171210542008d0*R**14 -
+c$$$     -   5.867532571420974d0*R**15 + 5.7836170581989945d0*R**16 -
+c$$$     -   5.70130826324406d0*R**17 + 5.6212788129824345d0*R**18 -
+c$$$     -   5.543300484403453d0*R**19 + 5.467739551904498d0*R**20 -
+c$$$     -   5.394344244614558d0*R**21 -
+c$$$     -   dcmplx(0.d0,1.d0)*
+c$$$     -  (10.335425560099937d0*R - 8.710344361214407d0*R**2 +
+c$$$     -    7.633932058153036d0*R**3 -
+c$$$     -    6.854093792006203d0*R**4 + 6.255875316806378d0*R**5 -
+c$$$     -    5.778404016136387d0*R**6 + 5.38602689019586d0*R**7 -
+c$$$     -    5.05628577725861d0*R**8 + 4.7742328797098d0*R**9 -
+c$$$     -    4.529480038499598d0*R**10 + 4.3145522496837305d0*R**11 -
+c$$$     -    4.12391443833463d0*R**12 + 3.953368460940621d0*R**13 -
+c$$$     -    3.799664555537424d0*R**14 + 3.6602425267928673d0*R**15 -
+c$$$     -    3.533054371635497d0*R**16 + 3.4164396810570286d0*R**17 -
+c$$$     -    3.309036202422582d0*R**18 + 3.2097144028173683d0*R**19 -
+c$$$     -    3.117528772333088d0*R**20 + 3.0316810292496017d0*R**21) -
+c$$$     -   R*(3.2898681336964524d0 - 2.7725887222397807d0*R +
+c$$$     -      2.429956044565484d0*R**2 - 2.1817258148265206d0*R**3 +
+c$$$     -      1.9913069600726236d0*R**4 - 1.8393231247003325d0*R**5 +
+c$$$     -      1.7144256064010803d0*R**6 - 1.609465750271908d0*R**7 +
+c$$$     -      1.5196855245553378d0*R**8 - 1.4417782755265587d0*R**9 +
+c$$$     -      1.3733646355308462d0*R**10 - 1.3126827354979873d0*R**11 +
+c$$$     -      1.2583962648445968d0*R**12 - 1.209470792209701d0*R**13 +
+c$$$     -      1.165091382108508d0*R**14 - 1.1246061349164391d0*R**15 +
+c$$$     -      1.087486526031049d0*R**16 - 1.0532989369711752d0*R**17 +
+c$$$     -      1.0216838262432704d0*R**18 - 0.9923402286960379d0*R**19 +
+c$$$     -      0.965014043365998d0*R**20)*Log(R) +
+c$$$     -     2.*Log(-1.d0 + z)*ali3mz
+c$$$
+         else
+            print*,'not defined',abs(z),x1
+            stop
+         end if
+
+
+
+      end function
+
+
+
+

@@ -222,7 +222,7 @@ C     inside the btilde function before che construction of the real phase space
          if (ini) then
             write(*,*) '*************************************'
             write(*,*) '    Factorization and renormalization '
-            write(*,*) '    scales set to the H mass '
+            write(*,*) '    scales set to the Higgs mass '
             write(*,*) '*************************************'
             ini=.false.
          endif

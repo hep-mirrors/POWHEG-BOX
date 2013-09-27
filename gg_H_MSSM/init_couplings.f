@@ -1,5 +1,6 @@
       subroutine init_couplings
       implicit none
+      include 'LesHouches.h'
       include 'PhysPars.h'
       include 'Flags.h'
       include 'pwhg_st.h'
@@ -12,16 +13,15 @@
       common /ew/ewamplitude
       external amplew
 
-      real * 8 foo
-
 c     number of light flavors
       st_nlight = 5
 
       massren = int(powheginput('scheme'))
       if (massren.eq.0) then
          massrenb = 0
-         write(*,*) 'Unknown renormalization scheme selected. Abor
+         write(*,*) 'Unknow renormalization scheme selected. Abor
      $ing.'
+c     Original OS scheme disabled
          stop
          write(*,*) 'On-shell renormalization scheme selected.'
       else if (massren.eq.1) then
@@ -55,25 +55,47 @@ c     This is a common factor which actually cancel out in the MSSM amplitudes a
 c     was in the BDV formalism to make the coupling adimensional
       mmaa = 256d0
       ih = int(powheginput('higgstype'))
+      if ((ih.ne.1).and.(ih.ne.2).and.(ih.ne.3)) then
+        write(*,*) 'Unrecognized value for higgstype'
+        write(*,*) '1 -> Light CP-even neutral Higgs'
+        write(*,*) '2 -> Heavy CP-even neutral Higgs'
+        write(*,*) '3 -> CP-odd neutral Higgs'
+        stop
+      endif
+
+!      flg_hHweightevents = int(powheginput('#flg_hHweightevents'))
+!      if (flg_hHweightevents.gt.0) then
+!         write(*,*) 'Weighted events generation enabled'
+!         idwtup = -4
+!         flg_hHweightevents = 1
+!      endif
+
 
       call genmssmvar()
       call init_higgs()
 
 c     EW corrections
       flg_ew = int(powheginput('ew'))
+
       if (flg_ew.le.0) then
          flg_ew = 0
          write(*,*) '2-loops EW corrections disabled'
       else
-         flg_ew = 1
-         write(*,*) '2-loops EW corrections enabled'
+         if(ih.eq.3) then
+            write (*,*) 'Warning: there no EW corrections for the pseudo
+     $scalar. Disabling. Please check your input file'
+            flg_ew = 0
+         else
+            flg_ew = 1
+            write(*,*) '2-loops EW corrections enabled'
 
-         flg_fast_ew = int(powheginput('#fastew'))
-         if (flg_fast_ew.gt.0) then
-            write (*,*) 'Enable fast ew corrections evaluations
+            flg_fast_ew = int(powheginput('#fastew'))
+            if (flg_fast_ew.gt.0) then
+             write (*,*) 'Enable fast ew corrections evaluations
      $ by mass sampling'
-            flg_fast_ew = 1
-            call init_cached_ew_corr
+              flg_fast_ew = 1
+             call init_cached_ew_corr
+            endif
          endif
       endif
 
@@ -98,8 +120,11 @@ c     EW corrections
       write(*,*) asca
       write(*,*) 'Scalar masses'
       write(*,*) msca
-      write(*,*) 'Scalar couplings'
-      write(*,*) lambdasca
+!     These are only valid for h/H
+      if(ih.ne.3) then
+        write(*,*) 'Scalar couplings'
+         write(*,*) lambdasca
+      endif
       write(*,*) 'mumass2'
       write(*,*) mumass2
       write(*,*) '1/alphaem = ',1d0/ph_alphaem
@@ -123,10 +148,19 @@ c     If fast_ew is enabled, create the array with the campionazied deltaew valu
       write(*,*) 'Starting cached EW corrections array initialization'
       open(unit=33,file="ew.dat")
 c     Cannot loop on real, see fortran standards
-      do imh=1,2500
-         mh=REAL(imh)
+      do imh=0,2500
+c first bin caveat
+        if(imh.eq.0) then
+            mh = 0.5d0
+        else
+            mh=REAL(imh)
+        endif
+c        mh=REAL(imh)
          value = 0d0
-c     write(*,*) 'mh', mh
+c      write(*,*) ''
+c      write(*,*) 'imh',imh
+c      write(*,*) 'mh', mh
+c      write(*,*) 'nint(mh)', nint(mh)
          ampl = dcmplx(0d0)
          do i=1,afer
             m12=mfer(i)
@@ -152,8 +186,9 @@ c     write(*,*) 'mh', mh
      &              (-1d0/3d0-8d0/(45d0*4d0*y0))
             end do
          endif
-         cached_ew_corr(nint(mh)) = deltaew(ampl)
-         write(33,*) 'deltaew',mh, cached_ew_corr(nint(mh))
+         cached_ew_corr(imh) = deltaew(ampl)
+         write(33,*) 'deltaew',mh, imh, cached_ew_corr(imh),
+     &REAL(ampl),AIMAG(ampl)
       end do
       close(33)
       write(*,*) 'Finished cached EW corrections array initialization'
@@ -167,7 +202,7 @@ c     Initialize Higgs mass
       include 'nlegborn.h'
       include 'pwhg_kn.h'
       include 'pwhg_math.h'
-      real * 8 masswindow
+      real * 8 masswindow,masswindow_high,masswindow_low
       real * 8 powheginput
       external powheginput
       logical verbose
@@ -181,20 +216,33 @@ c     Higgs is produced on-shell
          ph_Hmass2high = ph_Hmass2low
          ph_HmHw = 0d0
       else
+
+
 c     set mass windows around H-mass peak in unit of ph_Hwidth
 c     It is used in the generation of the Born phase space
 c     masswindow is an optonal  parameter passed by the user
-c     the default vale is 10 
-         masswindow = powheginput("#masswindow")
-         if(masswindow.lt.0d0) masswindow=10d0
-c     ph_Hmass2low=(ph_Hmass-masswindow*ph_Hwidth)^2
-         ph_Hmass2low=max(0.5d0,ph_Hmass-masswindow*ph_Hwidth)
-         ph_Hmass2low= ph_Hmass2low**2
-c     ph_Hmass2high=(ph_Hmass+masswindow*ph_Hwidth)^2
-         ph_Hmass2high=min(kn_sbeams,(ph_Hmass+masswindow*ph_Hwidth)**2)
-         ph_HmHw = ph_Hmass * ph_Hwidth
-         ph_unit_e = sqrt(4*pi*ph_alphaem)
+c     the default vale is 10
+c     Keep compatibility with old input file
+      masswindow = powheginput("#masswindow")
+      if(masswindow.gt.0d0) then
+        masswindow_low = masswindow
+        masswindow_high = masswindow
+      else
+        masswindow_low = powheginput("#masswindow_low")
+        if(masswindow_low.lt.0d0) masswindow_low=10d0
+        masswindow_high = powheginput("#masswindow_high")
+        if(masswindow_high.lt.0d0) masswindow_high=10d0
       endif
+
+      ph_Hmass2low=max(0.5d0,ph_Hmass-masswindow_low*ph_Hwidth)
+      ph_Hmass2low= ph_Hmass2low**2
+      ph_Hmass2high=ph_Hmass+masswindow_high*ph_Hwidth
+      ph_Hmass2high= min(kn_sbeams,ph_Hmass2high**2)
+      ph_HmHw = ph_Hmass * ph_Hwidth
+      endif
+
+      ph_unit_e = sqrt(4*pi*ph_alphaem)
+
       if(verbose) then
          write(*,*) '*************************************'
          write(*,*) 'H mass = ',ph_Hmass
@@ -301,18 +349,27 @@ c     Physcal parameters needed to calculate lambdafer e lambdasca
 
 c     sin(2beta)
       sin2b = 2d0 * ph_sb * ph_cb
-
-      lambdat = 1d0/ph_sb
-      lambdab = 1d0/ph_cb
+      if ((ih.eq.1).or.(ih.eq.2)) then
+        lambdat = 1d0/ph_sb
+        lambdab = 1d0/ph_cb
+c     pseudoscalar
+      else
+        lambdat = 1/ph_tanb
+        lambdab = ph_tanb
+      endif
 
 c     Light Higgs
       if (ih.eq.1) then
          hmixfact1 = -sina
          hmixfact2 = cosa
 c     Heavy Higgs
-      else
+      else if (ih.eq.2) then
          hmixfact1 = cosa
          hmixfact2 = sina
+c     Pseudoscalar
+      else
+         hmixfact1 = 1d0
+         hmixfact2 = 1d0
       endif
 
 c     fermion 1  (top)
@@ -426,6 +483,7 @@ c     scalar 2  (sbottom 2)
       real * 8 mstop2(2),msbot2(2)
       real * 8 powheginput
       real * 8 q_yb_mh,v_mh,yb_mh
+      real * 8 ma_slha
       external powheginput
       character*50 valname
       integer error
@@ -435,7 +493,6 @@ c     SLHALib definition
 c     First implementation of quarks mass renormalised at mh scale.
 c     These are the only two model parameter we actually retrive from the powheg.input file
       ph_GF= powheginput('gfermi')
-
 
 c     The others are read from the SLHA file
       call SLHAclear(slhadata)
@@ -447,6 +504,9 @@ c     CP-Even neutral Higgs double masses
       mh_1 = checkvalue(Mass_Mh0,valname)
       valname = "Heavy CP-even Higgs mass"
       mh_2 = checkvalue(Mass_MHH,valname)
+c     CP-ODD neutral Higgs mass
+      valname = 'CP-odd Higgs mass'
+      ph_ma_pole = checkvalue(Mass_MA0,valname)
 c     Higgsino mass parameters
       valname = "Higgsino mass parameter"
       ph_mumssm = checkvalue(HMix_MUE,valname)
@@ -571,12 +631,14 @@ c     In the DRBAR scheme we fix these to the DRBAR values
       if (ih.eq.1) then
          write(*,*) 'Light neutral CP-even Higgs selected'
          ph_Hmass = mh_1
-         ph_Hmass2 = mh_1**2
-      else
+      elseif (ih.eq.2) then
          write(*,*) 'Heavy neutral CP-even Higgs selected'
          ph_Hmass = mh_2
-         ph_Hmass2 = mh_2**2
+      else
+         write(*,*) 'Neutral CP-odd Higgs selected'
+         ph_Hmass = ph_ma_pole
       endif
+      ph_Hmass2 = ph_Hmass**2
 
       flg_mssm_q_mh = int(powheginput('#mssmmbatmh'))
       if (flg_mssm_q_mh.eq.1) then
@@ -683,9 +745,13 @@ c      ph_bottommass = 4.75d0
       if (ih.eq.1) then
          write(*,*) 'Light neutral CP-even Higgs selected'
          ph_Hmass = mh_int(1)
-      else
+      elseif (ih.eq.2) then
          write(*,*) 'Heavy neutral CP-even Higgs selected'
          ph_Hmass = mh_int(2)
+      else
+        write(*,*) 'Neutral CP-odd Higgs selected'
+         ph_Hmass = ph_ma_mz
+         ph_ma_pole = ph_ma_mz
       end if
       ph_Hmass2 = ph_Hmass**2
 

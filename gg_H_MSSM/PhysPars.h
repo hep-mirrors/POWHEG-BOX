@@ -7,7 +7,7 @@ c     the value of massaren
      $     ph_Hmass2low,ph_Hmass2high,ph_HmHw,ph_unit_e,ph_alphaemmz,
      $     ph_CKM(3,3),ph_GF,ph_topmass,ph_bottommass,ph_charmmass,
      $     ph_bottommass_mh,ph_cb_mh,ph_tanb_mh,ph_tanb_mz,ph_ma_mz,
-     $     ph_MSUSY,ph_mbmb,ph_asmz_nnlo,ph_mbrun
+     $     ph_MSUSY,ph_mbmb,ph_asmz_nnlo,ph_mbrun,ph_ma_pole
       common/ph_common/ph_alphaem,ph_Zmass,ph_Zwidth,ph_Wmass,
      $     ph_Wwidth,ph_cthw,ph_cthw2,ph_sthw,ph_sthw2,
      $     ph_Hmass,ph_Hmass2,ph_Hwidth,ph_Hmass2low,ph_alphaemmz,
@@ -15,7 +15,7 @@ c     the value of massaren
      $     ph_unit_e,ph_CKM,ph_GF,ph_topmass,ph_bottommass,
      $     ph_charmmass,ph_bottommass_mh,ph_tanb_mh,ph_cb_mh,
      $     ph_tanb_mz,ph_ma_mz,ph_MSUSY,ph_mbmb,ph_asmz_nnlo,
-     $     ph_mbrun
+     $     ph_mbrun,ph_ma_pole
 
 c     Simulation parameters used in the calculations
       real * 8 ph_t1, ph_t2, ph_t1_2,ph_t2_2, ph_mbsb,

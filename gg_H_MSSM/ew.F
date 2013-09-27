@@ -135,10 +135,11 @@ c$$$      write(*,*) 'wh', wh
      -  ph_sthw2*ph_sthw2)*A1(zh)+
      -  4d0*A1(wh)
 
-!      write(*,*) '***** INNER AMPLS ******'
-!      write(*,*) wh, A1(wh)
-!      write(*,*) zh, A1(zh)
-!      write(*,*) '*****  ******'
+c      write(*,*) '***** INNER AMPLS ******'
+c      write(*,*) wh, A1(wh)
+c      write(*,*) zh, A1(zh)
+c      write(*,*) '*****  ******'
+c      stop
       end function amp_glu_fus_2lew_lf
 
       double complex function A1(x)
@@ -162,5 +163,19 @@ c     -   dcmplx(0d0,1d0)*sqrt(4d0*x-dcmplx(0d0,IEPS)-1d0)*
      -              3d0* (-1d0+2d0* x)* H3(-4,-2,-1,-1d0/x) +
      -        2d0* (-1d0+2d0* x)* H3(-2, 0,-1,-1d0/x) +
      -        2d0* (-1d0+2d0* x)* H3(-2,-2,-2,-1d0/x)   )
+
+c       write(*,*) 
+c       write(*,*) x
+c       write(*,*) 'h1 1',H1(-1,-1d0/x)
+c       write(*,*) 'h2 1',H2(0,-1,-1d0/x)
+c       write(*,*) 'h3 2',H3(0,0,-1,-1d0/x)
+c       write(*,*) 'h3 3',H3(0,-2,-2,-1d0/x)
+c       write(*,*) 'h3 4',H3(-2,-2,-1,-1d0/x)
+c       write(*,*) 'h1 2',H1(-2,-1d0/x)
+c       write(*,*) 'h3 5',H3(-4,-2,-1,-1d0/x)
+c       write(*,*) 'h3 6',H3(-2, 0,-1,-1d0/x)
+c       write(*,*) 'h3 7',H3(-2,-2,-2,-1d0/x)
+c       write(*,*) 
+c       stop
 
       end function A1

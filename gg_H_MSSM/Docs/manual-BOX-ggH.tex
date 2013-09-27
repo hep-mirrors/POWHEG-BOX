@@ -120,7 +120,8 @@ parameters specific to $gg\to \phi~~ (\phi=h, H, A)$ implementation.
 
 \section{System requirements}
 
-Feynhiggs version >= 2.8.0 is required to compile and use this MC event generator.
+Feynhiggs version >= 2.9.5 is required to compile and use this MC event generator.
+Chaplin version >= 1.2 is required to compile and use this MC event generator.
 
 \section{Generation of events}
 
@@ -168,7 +169,7 @@ hdecaymode -1      ! PDG code for first decay product of the higgs\\
 !                      12  gamma gamma\\
 runningscale 0 ! Use running scale\\
 ! **** Mandatory parameters for the MSSM model ****\\
-higgstype 1 ! CP-even, neutral, higgs type: 1 = light higgs; 2 = heavy higgs\\
+higgstype 1 ! CP-even, neutral, higgs type: 1 = light higgs; 2 = heavy higgs; 3 = pseudoscalar\\
 scheme 2    ! Renormalization scheme. 2 = OS (Feynhiggs), 1 = DRBAR (Softsusy)\\ 
 ! **** Optional parameters for the MSSM model  ****\\
 nosquarks 0 ! 1 = No scalars, 0/not defined = scalars enabled\\

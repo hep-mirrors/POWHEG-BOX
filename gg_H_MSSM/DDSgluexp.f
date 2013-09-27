@@ -589,16 +589,7 @@ c$$$      Ghalf = -2*x*(1 + (1- x)*myff(x))
 c$$$      
 c$$$      return
 c$$$      end
-      
-      function Khalf(x)
 
-      double precision x
-      double complex Khalf,myff
-
-      Khalf = -2*x*myff(x)
-      
-      return
-      end
       
 c$$$      function myff(x)
 c$$$

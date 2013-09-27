@@ -44,7 +44,12 @@ endif
 ifeq ("$(COMPILER)","ifort")
 F77 = ifort -save  -extend_source
 CXX = icpc
-LIBS = -limf
+# This is the location of the intel library
+INTELDIR=/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64/
+LIBS += -L$(INTELDIR) -Wl,-rpath=$(INTELDIR) -limf
+# If some of the library, e.g. Chaplin, FeynHiggs were compiled with gfortran enable this
+#LIBGFORTRANPATH=/usr/lib/gcc/x86_64-redhat-linux/4.1.2
+#LIBS += -L-L$(LIBGFORTRANPATH)  -lgfortranbegin -lgfortran 
 #FFLAGS =  -check
 ## For floating point exception trapping  uncomment the following 
 #FPE = -fpe0

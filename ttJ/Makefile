@@ -160,7 +160,7 @@ lhef_analysis:$(LHEF)
 
 
 # target to read event file, shower events with HERWIG + analysis
-HERWIG=main-HERWIG.o herwig.o boostrot.o powheginput.o			\
+HERWIG=main-HERWIG.o herwig.o boostrot.o powheginput.o newunit.o			\
 	pwhg_bookhist.o pwhg_bookhist_add.o $(PWHGANAL) lhefread.o		\
 	pdfdummies.o cernroutines.o opencount.o printleshouches.o
 
@@ -178,7 +178,7 @@ main-HERWIG-UE-lhef: $(HERWIG) $(HERWIG_DRIVER_UE)
 # target to read event file, shower events with PYTHIA + analysis
 PYTHIA=main-PYTHIA.o  pythia.o boostrot.o powheginput.o	\
 	pwhg_bookhist.o pwhg_bookhist_add.o $(PWHGANAL) lhefread.o pdfdummies.o			\
-        cernroutines.o opencount.o printleshouches.o
+        cernroutines.o opencount.o printleshouches.o newunit.o
 
 PYTHIA_DRIVER_NOMPI=setup-PYTHIA-lhef.o
 

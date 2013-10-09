@@ -136,8 +136,7 @@ pwhg_main:gosamlib.a $(PWHG) $(MADLIBS)
 	$(FF) $(patsubst %,$(OBJ)/%,$(PWHG)) $(LINKMGLIBS) $(LIBS) $(LIBSFASTJET) $(STATIC)  $(OBJ)/gosamlib.a -o $@
 
 gosamlib.a: $(GOSAMLIBS)
-	 echo $(GOSAMLIBS)>GoSamlib.lst ; cd $(OBJ) ; \rm gosamlib.a ; ar cru gosamlib.a $(GOSAMLIBS)
-
+	\rm $(OBJ)/gosamlib.a ; $(PWD)/GoSamlib/compile_gosamlib.sh $(PWD)/$(OBJ)
 
 LHEF=lhef_analysis.o boostrot.o random.o cernroutines.o		\
      opencount.o powheginput.o $(PWHGANAL)	\

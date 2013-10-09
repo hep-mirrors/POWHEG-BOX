@@ -28,7 +28,7 @@ then
 fi
 
 # If input is 'CLEANVIRT':
-if [ "$1" = "cleanvirt" ] || [ "$1" = "allvirt" ]
+if [ "$1" = "cleanvirt" ]
 then
     echo "This will delete the files for the virtual amplitude."
     echo "Are you sure you want to proceed? (Yes/No)"
@@ -98,7 +98,10 @@ then
     cd $VIRDIR
     echo "---> Generating code for virtual amplitudes ..."
     make source
-    exit
+    if [ "$1" = "virtual" ]
+    then
+	exit
+    fi
 fi
 
 
@@ -146,7 +149,10 @@ then
     echo "Please before compiling generate a standalone version  "
     echo "of the virtual code.                                   "
     echo "*******************************************************"
-    exit
+    if [ "$1" = "interface" ]
+    then
+	exit
+    fi
 fi
 
 # STANDALONE
@@ -212,6 +218,8 @@ then
 	
 	cat $GOSAMSTUFFDIR/StandAlone/Makefile.nodeps deps.txt > $GOSAMLIBDIR/Makefile.virt.dep
 	
+	cp -f $GOSAMSTUFFDIR/StandAlone/compile_gosamlib.sh $GOSAMLIBDIR/compile_gosamlib.sh
+	
 	echo "done"
 	echo "---> Copying generation files to:"
 	echo $RUNDIR"/GoSamlib/ ..."
@@ -230,6 +238,10 @@ then
 	echo "the code can be found in the folder:                   "
 	echo $GOSAMSTUFFDIR/StandAlone
 	echo "*******************************************************"
+    fi
+    if [ "$1" = "standalone" ]
+    then
+	exit
     fi
 fi
 

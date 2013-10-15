@@ -307,7 +307,7 @@ c      endif
 c -- this scale is unobservable, but use it still
       else
          pww = kn_cmpborn(:,3)+kn_cmpborn(:,4) +
-     .        kn_cmpborn(:,5)+kn_cmpborn(:,6)
+     1        kn_cmpborn(:,5)+kn_cmpborn(:,6)
          muf = sqrt(pww(0)**2-pww(1)**2-pww(2)**2-pww(3)**2)
          mur=muf
       endif

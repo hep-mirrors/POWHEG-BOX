@@ -131,6 +131,7 @@ c all colours with those computed using the planar approximation
 c to the real cross section
       call realcolour_lh
       call ttdecay
+      call lhefinitemasses
       END
 
 

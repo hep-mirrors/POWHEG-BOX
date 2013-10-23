@@ -1,5 +1,5 @@
 c     computation of the born amplitude (result from
-c      maple+average over initial spin and colour)
+c     maple+average over initial spin and colour)
       subroutine setborn(p,bflav,born,bornjk,bmunu)
       implicit none
       include 'nlegborn.h'
@@ -205,7 +205,10 @@ c     colored particles
 
 
 
-      subroutine finalize_lh
+
+       subroutine finalize_lh
+       implicit none
+       integer id5,id6
 c     Set up the resonances whose mass must be preserved
 c     on the Les Houches interface.
 c     

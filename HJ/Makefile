@@ -137,7 +137,7 @@ endif
 	$(CXX) $(DEBUG) -c -o $(OBJ)/$@ $^ $(FJCXXFLAGS)
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-     real.o $(PWHGANAL)
+     real.o matchcolour.o $(PWHGANAL)
 
 MCFMFILES=i2mcfm_2_POWHEG.o set_interface_MCFM.o i2mcfm_fill.o \
 	gg_hg_vi.o gg_hg_eval_v.o hjetfill.o dotem.o set_epinv.o coupling.o 

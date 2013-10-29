@@ -122,7 +122,7 @@ endif
 	$(CXX) $(DEBUG) -c -o $(OBJ)/$@ $^ $(FJCXXFLAGS)
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-     real.o $(PWHGANAL)
+     real.o matchcolour.o $(PWHGANAL)
 
 H2JVIRTFILES=Ampvirt_AQgg.o GZHggggvsqPoles.o HAQggvsqanal.o Hqaggvsq.o Hqaqavsqanal.o\
 	Hqarbvsqanal.o	checkegzres.o	gg_hgg_vi.o Ampvirt_gggg.o GZHqaggvsqPoles.o\

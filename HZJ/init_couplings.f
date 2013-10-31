@@ -2,8 +2,6 @@
       implicit none
       include "coupl.inc"
       include 'PhysPars.h'
-
-
       real * 8 powheginput
       external powheginput
 c Avoid multiple calls to this subroutine. The parameter file is opened
@@ -25,7 +23,6 @@ c but never closed ...
       else
          called=.true.
       endif
-
 
 c******************************************************
 c     Choose the process to be implemented
@@ -281,8 +278,6 @@ c     CKM from PDG 2010 (eq. 11.27)
       ph_CKM(3,2)=Vts
       ph_CKM(3,3)=Vtb
 
-      
-
       end
 
 
@@ -306,9 +301,6 @@ C     ones defined in the POWHEG BOX.
       integer parallelstage,rndiwhichseed
       common/cpwhg_info/parallelstage,rndiwhichseed
       logical massivetop
-      real * 8 ger,gel
-      common/Zlepcoupl/ger,gel
-      
 
       rndiwhichseed=rnd_iwhichseed
       parallelstage=powheginput("#parallelstage")

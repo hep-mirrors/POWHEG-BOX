@@ -11,7 +11,6 @@ c signal we will begin by computing Born type contributions
       call set_fac_ren_scales(muf,mur)
       st_mufact2= muf**2*st_facfact**2
       st_muren2 = mur**2*st_renfact**2
-c      print*, 'btilde' !ER:
       st_alpha  = pwhg_alphas(st_muren2,st_lambda5MSB,st_nlight)
       end
 
@@ -136,19 +135,47 @@ c     threshold, so that PDF's are evaluated with a safe value for
 c     mufact (50 is an arbitrary choice).
       if(rad_kinreg.ge.2) st_mufact2=50.**2
       st_muren2=ptsq
-c      print*, 'rad,  mur= ',sqrt(st_muren2),rad_kinreg !ER:
+c      print*, 'rad,  mur= ',sqrt(st_muren2),rad_kinreg !:
       st_alpha = pwhg_alphas(st_muren2,st_lambda5MSB,-1)
       if(st_muren2.lt.rad_charmthr2) then
          nf=3
-c         print*, 'nf=3 ',q2min,rad_charmthr2,st_alpha !ER:
+c         print*, 'nf=3 ',q2min,rad_charmthr2,ptsq,st_alpha !:
+c         print*, st_alpha *
+c     #   (1+st_alpha/(2*pi)*((67d0/18-pi**2/6)*ca-5d0/9*nf))
       elseif(st_muren2.lt.rad_bottomthr2) then
          nf=4
       else
          nf=5
-         nf=4 !ER:
+         nf=4 !:
       endif
       st_alpha = st_alpha *
      #   (1+st_alpha/(2*pi)*((67d0/18-pi**2/6)*ca-5d0/9*nf))
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     !: 28-10-2013: Fix for bug reported by Dominic Hirschbuehl 
+c
+c     Freeze CMW alphas when it gets > 1.  
+c
+c     Another possible fix would be to compute, before maxrat, the
+c     maximum value CMW alphas can assume, use it in the upper
+c     bounding function, and then, in gen_radiation.f, replace
+c     
+c     elseif(rad_iupperfsr.eq.2) then
+c     tmp=st_alpha
+c
+c     with
+c     
+c     elseif(rad_iupperfsr.eq.2) then
+c     tmp=st_alpha/max_alphasCMW
+c     
+c     However, since when alphas is > 1 we are in a region where
+c     the proper physics description is not known, we just adopt
+c     a more crude approach, and freeze CMW alphas when it gets
+c     bigger than 1.
+
+      if(st_alpha.gt.1d0) st_alpha=0.9999d0
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
       end
 
       subroutine init_rad_lambda
@@ -160,10 +187,10 @@ c         print*, 'nf=3 ',q2min,rad_charmthr2,st_alpha !ER:
       include 'pwhg_rad.h'
       real * 8 b0,mu0sq,as,pwhg_alphas
       external pwhg_alphas
-      print*, 'called init rad lambda' !ER:
+      print*, 'called init rad lambda' !:
 c      stop
       b0=(33-2*5)/(12*pi)
-      b0=(33-2*4)/(12*pi) !ER:
+      b0=(33-2*4)/(12*pi) !:
       mu0sq=(2*st_lambda5MSB)**2
 c running value of alpha at initial scale (see notes: running_coupling)
       as=pwhg_alphas(mu0sq,st_lambda5MSB,-1)
@@ -229,10 +256,8 @@ c$$$         write(*,*) '****************************************'
          write(*,*) '      USING alphasPDF from LHAPDF '
          write(*,*) '****************************************'
          write(*,*) '****************************************'
-
          ini = .false.         
       endif           
-c$$$      return
 
       if(xlam.ne.olam) then
         olam = xlam
@@ -260,7 +285,7 @@ c$$$      return
       if( nf .lt. 0) then
         if( q .gt. xmb ) then
           nf = 5
-          nf = 4 !ER:
+          nf = 4 !:
         elseif( q .gt. xmc ) then
           nf = 4
         else
@@ -269,15 +294,10 @@ c$$$      return
       endif
 
 
-c$$$      pwhg_alphas = 1/(b4 * xlq) -  bp4/(b4 * xlq)**2 * xllq
-c$$$      print*, 'alfas = ',nf,pwhg_alphas
-c$$$      return
-
-
       if    ( nf .eq. 5 ) then
-        pwhg_alphas = 1/(b5 * xlq) -  bp5/(b5 * xlq)**2 * xllq
+         pwhg_alphas = 1/(b5 * xlq) -  bp5/(b5 * xlq)**2 * xllq
       elseif( nf .eq. 4 ) then
-         c45=0d0 !ER: needed to have this alpha to match pdf's alphas
+         c45=0d0 !: needed to have this alpha to match pdf's alphas
         pwhg_alphas =
      #    1/( 1/(1/(b4 * xlq) - bp4/(b4 * xlq)**2 * xllq) + c45 )
       elseif( nf .eq. 3 ) then
@@ -288,9 +308,11 @@ c$$$      return
         call exit(1)
       endif
 ccccccccccccccccccccccccccccccccccccccc
-c     !ER:
-c$$$      print*, '-->',nf,c45,q,pwhg_alphas,alphasPDF(q),
-c$$$     $     pwhg_alphas/alphasPDF(q)
+c     !:
+c$$$      if(dabs(pwhg_alphas/alphasPDF(q)-1).gt.0.01) then
+c$$$         print*, '-->',nf,c45,q,pwhg_alphas,alphasPDF(q),
+c$$$     $        pwhg_alphas/alphasPDF(q)
+c$$$      endif
       pwhg_alphas=alphasPDF(q)
 ccccccccccccccccccccccccccccccccccccccc
       return

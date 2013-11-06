@@ -60,6 +60,10 @@
       integer idvecbos,vdecaymode
       common/cvecbos/idvecbos,vdecaymode
       integer jborn
+c     -11 positron
+c      11 electron
+c      24  W+
+
 
       flst_born(   1,   1)=          -1
       flst_born(   2,   1)=           2

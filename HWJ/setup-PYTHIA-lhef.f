@@ -204,24 +204,20 @@ c pythia routine to abort event
       subroutine pyaend
       implicit none
       include 'pwhg_rnd.h'
+       character * 100 filename
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix
       if(rnd_cwhichseed.eq.'none') then
-         open(unit=99,file=pwgprefix(1:lprefix)//
-     1     'POWHEG+PYTHIA-output.top',status='unknown')
+         filename=pwgprefix(1:lprefix)//
+     1        'POWHEG+PYTHIA-output'
       else
-         open(unit=99,file=pwgprefix(1:lprefix)//'-'//
+         filename=pwgprefix(1:lprefix)//'-'//
      1        rnd_cwhichseed //'-'//
-     2     'POWHEG+PYTHIA-output.top',status='unknown')
+     2        'POWHEG+PYTHIA-output'
       endif
       call pwhgsetout
-
-
-      write(*,*) 'FIX pwhgtopout  **************'
-      stop
-
-      call pwhgtopout
+      call pwhgtopout(filename)
       close(99)
       end
 

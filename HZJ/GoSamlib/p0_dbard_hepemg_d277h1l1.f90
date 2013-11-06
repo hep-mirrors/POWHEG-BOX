@@ -21,150 +21,150 @@ contains
       complex(ki), intent(in) :: mu2
       complex(ki) :: brack
       complex(ki) :: acc277(63)
-      complex(ki) :: Qspvak5k6
+      complex(ki) :: Qspvae6k4
       complex(ki) :: Qspe6
       complex(ki) :: Qspk6
       complex(ki) :: QspQ
-      complex(ki) :: Qspvak6k4
-      complex(ki) :: Qspvae6k4
       complex(ki) :: Qspvak5e6
       complex(ki) :: Qspvak2e6
       complex(ki) :: Qspvae6k1
+      complex(ki) :: Qspvak6k4
+      complex(ki) :: Qspvak5k6
       complex(ki) :: Qspvae6k2
       complex(ki) :: Qspvak1e6
       complex(ki) :: Qspvak2k1
-      complex(ki) :: Qspvak5k1
-      complex(ki) :: Qspvak6k1
       complex(ki) :: Qspvak2k6
+      complex(ki) :: Qspvak6k1
+      complex(ki) :: Qspvak5k1
       complex(ki) :: Qspvak2k4
       complex(ki) :: Qspvak5k4
       complex(ki) :: Qspk1
       complex(ki) :: Qspk2
-      Qspvak5k6 = dotproduct(Q,spvak5k6)
+      Qspvae6k4 = dotproduct(Q,spvae6k4)
       Qspe6 = dotproduct(Q,e6)
       Qspk6 = dotproduct(Q,k6)
       QspQ = dotproduct(Q,Q)
-      Qspvak6k4 = dotproduct(Q,spvak6k4)
-      Qspvae6k4 = dotproduct(Q,spvae6k4)
       Qspvak5e6 = dotproduct(Q,spvak5e6)
       Qspvak2e6 = dotproduct(Q,spvak2e6)
       Qspvae6k1 = dotproduct(Q,spvae6k1)
+      Qspvak6k4 = dotproduct(Q,spvak6k4)
+      Qspvak5k6 = dotproduct(Q,spvak5k6)
       Qspvae6k2 = dotproduct(Q,spvae6k2)
       Qspvak1e6 = dotproduct(Q,spvak1e6)
       Qspvak2k1 = dotproduct(Q,spvak2k1)
-      Qspvak5k1 = dotproduct(Q,spvak5k1)
-      Qspvak6k1 = dotproduct(Q,spvak6k1)
       Qspvak2k6 = dotproduct(Q,spvak2k6)
+      Qspvak6k1 = dotproduct(Q,spvak6k1)
+      Qspvak5k1 = dotproduct(Q,spvak5k1)
       Qspvak2k4 = dotproduct(Q,spvak2k4)
       Qspvak5k4 = dotproduct(Q,spvak5k4)
       Qspk1 = dotproduct(Q,k1)
       Qspk2 = dotproduct(Q,k2)
       acc277(1)=abb277(16)
-      acc277(2)=abb277(18)
-      acc277(3)=abb277(19)
-      acc277(4)=abb277(20)
-      acc277(5)=abb277(21)
-      acc277(6)=abb277(22)
-      acc277(7)=abb277(23)
-      acc277(8)=abb277(24)
-      acc277(9)=abb277(25)
-      acc277(10)=abb277(26)
-      acc277(11)=abb277(27)
-      acc277(12)=abb277(28)
-      acc277(13)=abb277(29)
-      acc277(14)=abb277(30)
-      acc277(15)=abb277(31)
-      acc277(16)=abb277(32)
-      acc277(17)=abb277(33)
-      acc277(18)=abb277(34)
-      acc277(19)=abb277(35)
-      acc277(20)=abb277(36)
-      acc277(21)=abb277(37)
-      acc277(22)=abb277(38)
-      acc277(23)=abb277(39)
-      acc277(24)=abb277(40)
-      acc277(25)=abb277(42)
-      acc277(26)=abb277(43)
-      acc277(27)=abb277(44)
-      acc277(28)=abb277(45)
-      acc277(29)=abb277(46)
-      acc277(30)=abb277(47)
-      acc277(31)=abb277(48)
-      acc277(32)=abb277(49)
-      acc277(33)=abb277(50)
-      acc277(34)=abb277(51)
-      acc277(35)=abb277(52)
-      acc277(36)=abb277(53)
-      acc277(37)=abb277(56)
-      acc277(38)=abb277(57)
-      acc277(39)=abb277(60)
-      acc277(40)=abb277(61)
+      acc277(2)=abb277(17)
+      acc277(3)=abb277(18)
+      acc277(4)=abb277(19)
+      acc277(5)=abb277(20)
+      acc277(6)=abb277(21)
+      acc277(7)=abb277(22)
+      acc277(8)=abb277(23)
+      acc277(9)=abb277(24)
+      acc277(10)=abb277(25)
+      acc277(11)=abb277(26)
+      acc277(12)=abb277(27)
+      acc277(13)=abb277(28)
+      acc277(14)=abb277(29)
+      acc277(15)=abb277(30)
+      acc277(16)=abb277(31)
+      acc277(17)=abb277(32)
+      acc277(18)=abb277(33)
+      acc277(19)=abb277(34)
+      acc277(20)=abb277(35)
+      acc277(21)=abb277(36)
+      acc277(22)=abb277(37)
+      acc277(23)=abb277(38)
+      acc277(24)=abb277(39)
+      acc277(25)=abb277(40)
+      acc277(26)=abb277(41)
+      acc277(27)=abb277(42)
+      acc277(28)=abb277(43)
+      acc277(29)=abb277(44)
+      acc277(30)=abb277(45)
+      acc277(31)=abb277(46)
+      acc277(32)=abb277(47)
+      acc277(33)=abb277(48)
+      acc277(34)=abb277(49)
+      acc277(35)=abb277(50)
+      acc277(36)=abb277(51)
+      acc277(37)=abb277(52)
+      acc277(38)=abb277(54)
+      acc277(39)=abb277(56)
+      acc277(40)=abb277(59)
       acc277(41)=abb277(62)
       acc277(42)=abb277(63)
       acc277(43)=abb277(65)
       acc277(44)=abb277(66)
       acc277(45)=abb277(67)
       acc277(46)=abb277(68)
-      acc277(47)=acc277(1)*Qspvak5k6
-      acc277(48)=acc277(14)*Qspe6
-      acc277(49)=acc277(15)*Qspk6
+      acc277(47)=acc277(9)*Qspvae6k4
+      acc277(48)=acc277(16)*Qspe6
+      acc277(49)=acc277(17)*Qspk6
       acc277(50)=acc277(18)*QspQ
-      acc277(51)=acc277(19)*Qspvak6k4
-      acc277(52)=acc277(21)*Qspvae6k4
-      acc277(53)=acc277(25)*Qspvak5e6
-      acc277(54)=acc277(27)*Qspvak2e6
-      acc277(55)=acc277(35)*Qspvae6k1
-      acc277(56)=Qspvae6k2*acc277(4)
-      acc277(57)=Qspvak1e6*acc277(8)
+      acc277(51)=acc277(20)*Qspvak5e6
+      acc277(52)=acc277(23)*Qspvak2e6
+      acc277(53)=acc277(25)*Qspvae6k1
+      acc277(54)=acc277(32)*Qspvak6k4
+      acc277(55)=acc277(36)*Qspvak5k6
+      acc277(56)=Qspvae6k2*acc277(8)
+      acc277(57)=Qspvak1e6*acc277(4)
       acc277(47)=acc277(57)+acc277(56)+acc277(55)+acc277(54)+acc277(53)+acc277(&
-      &52)+acc277(51)+acc277(50)+acc277(49)+acc277(48)+acc277(12)+acc277(47)
+      &52)+acc277(51)+acc277(50)+acc277(49)+acc277(48)+acc277(11)+acc277(47)
       acc277(47)=Qspvak2k1*acc277(47)
-      acc277(48)=acc277(9)*Qspvak5k1
-      acc277(49)=acc277(20)*QspQ
-      acc277(50)=acc277(41)*Qspvak6k1
-      acc277(51)=acc277(43)*Qspvak2k6
+      acc277(48)=acc277(26)*QspQ
+      acc277(49)=acc277(33)*Qspvak2k6
+      acc277(50)=acc277(42)*Qspvak6k1
+      acc277(51)=acc277(43)*Qspvak5k1
       acc277(52)=acc277(45)*Qspvak2k4
       acc277(48)=acc277(52)+acc277(51)+acc277(50)+acc277(49)+acc277(48)+acc277(&
       &5)
       acc277(48)=Qspe6*acc277(48)
-      acc277(49)=acc277(2)*Qspvak5e6
-      acc277(50)=acc277(11)*Qspvae6k4
-      acc277(51)=acc277(13)*Qspvak2k4
-      acc277(52)=acc277(24)*Qspvak5k1
+      acc277(49)=acc277(2)*Qspvak2k4
+      acc277(50)=acc277(6)*Qspvae6k4
+      acc277(51)=acc277(12)*Qspvak5e6
+      acc277(52)=acc277(13)*Qspvak5k1
       acc277(49)=acc277(52)+acc277(51)+acc277(50)+acc277(49)
       acc277(49)=QspQ*acc277(49)
-      acc277(50)=acc277(17)*Qspvae6k1
-      acc277(51)=acc277(39)*Qspvak2e6
-      acc277(52)=acc277(40)*Qspvak6k1
-      acc277(53)=acc277(44)*Qspvak2k6
-      acc277(50)=acc277(53)+acc277(52)+acc277(51)+acc277(29)+acc277(50)
+      acc277(50)=acc277(3)*Qspvak2e6
+      acc277(51)=acc277(21)*Qspvak2k6
+      acc277(52)=acc277(24)*Qspvak6k1
+      acc277(53)=acc277(40)*Qspvae6k1
+      acc277(50)=acc277(53)+acc277(30)+acc277(52)+acc277(51)+acc277(50)
       acc277(50)=Qspvak5k4*acc277(50)
-      acc277(51)=acc277(32)*Qspvak5e6
-      acc277(52)=-acc277(36)*Qspe6
-      acc277(53)=-acc277(38)*Qspvae6k4
-      acc277(51)=acc277(52)+acc277(53)+acc277(51)
+      acc277(51)=-acc277(35)*Qspe6
+      acc277(52)=-acc277(37)*Qspvak5e6
+      acc277(53)=acc277(39)*Qspvae6k4
+      acc277(51)=acc277(51)+acc277(53)+acc277(52)
       acc277(52)=Qspk1+Qspk2
       acc277(51)=acc277(52)*acc277(51)
-      acc277(53)=-acc277(22)*Qspvae6k1
-      acc277(54)=acc277(26)*Qspvak2e6
+      acc277(53)=acc277(14)*Qspvae6k1
+      acc277(54)=-acc277(19)*Qspvak2e6
       acc277(53)=acc277(53)+acc277(54)
       acc277(52)=acc277(52)+Qspk6+QspQ
       acc277(52)=acc277(52)*acc277(53)
-      acc277(53)=acc277(30)*Qspvak5k1
+      acc277(53)=acc277(44)*Qspvak5k1
       acc277(54)=acc277(46)*Qspvak2k4
-      acc277(53)=acc277(54)+acc277(53)+acc277(10)
+      acc277(53)=acc277(54)+acc277(53)+acc277(15)
       acc277(53)=Qspk6*acc277(53)
-      acc277(54)=acc277(6)*Qspvak5k1
-      acc277(55)=acc277(7)*Qspvak2k4
-      acc277(56)=acc277(16)*Qspk1
-      acc277(57)=acc277(23)*Qspvak6k4
-      acc277(58)=acc277(28)*Qspvak5e6
-      acc277(59)=acc277(31)*Qspvak2e6
-      acc277(60)=acc277(33)*Qspvae6k1
+      acc277(54)=acc277(7)*Qspvak5k1
+      acc277(55)=acc277(10)*Qspvak2k4
+      acc277(56)=acc277(22)*Qspk1
+      acc277(57)=acc277(27)*Qspvak5e6
+      acc277(58)=acc277(28)*Qspvak2e6
+      acc277(59)=acc277(29)*Qspvak6k4
+      acc277(60)=acc277(31)*Qspvak5k6
       acc277(61)=acc277(34)*Qspk2
-      acc277(62)=acc277(37)*Qspvae6k4
-      acc277(63)=acc277(42)*Qspvak5k6
-      brack=acc277(3)+acc277(47)+acc277(48)+acc277(49)+acc277(50)+acc277(51)+ac&
+      acc277(62)=acc277(38)*Qspvae6k4
+      acc277(63)=acc277(41)*Qspvae6k1
+      brack=acc277(1)+acc277(47)+acc277(48)+acc277(49)+acc277(50)+acc277(51)+ac&
       &c277(52)+acc277(53)+acc277(54)+acc277(55)+acc277(56)+acc277(57)+acc277(5&
       &8)+acc277(59)+acc277(60)+acc277(61)+acc277(62)+acc277(63)
    end  function brack_1

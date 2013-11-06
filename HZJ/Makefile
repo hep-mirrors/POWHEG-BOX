@@ -40,7 +40,7 @@ F77 = ifort -save  -extend_source  -module $(OBJ)
 #FFLAGS =  -checkm
 ## For floating point exception trapping  uncomment the following 
 #FPE = -fpe0
-OPT = -O3 #-fast
+OPT = -O1 #-fast
 ## For debugging uncomment the following
 #DEBUG= -debug -g
 ifdef DEBUG
@@ -110,7 +110,7 @@ endif
 	$(CXX) $(DEBUG) -c -o $(OBJ)/$@ $^ $(FJCXXFLAGS)
 
 USER=init_couplings.o init_processes.o Born_phsp.o Born.o virtual.o	\
-     real.o  matchcolour.o phi1_2.o phi1_2m_nobw_ktmin.o phi3m0.o \
+     real.o  phi1_2.o phi1_2m_nobw_ktmin.o phi3m0.o \
      phi3m.o boost.o breit.o $(PWHGANAL)
 
 

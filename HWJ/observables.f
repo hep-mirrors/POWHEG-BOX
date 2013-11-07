@@ -105,14 +105,22 @@ c     should NEVER enter here
       real * 8 p(4),azi
       real * 8 pi,pi2
       parameter(pi = 3.141592653589793D0, pi2 = 9.869604401089358D0)
-      azi = atan(p(2)/p(1))
-      if (p(1).lt.0d0) then
-         if (azi.gt.0d0) then               
-            azi = azi - pi
-         else
-            azi = azi + pi
-         endif
-      endif    
+      azi=atan2(p(2),p(1))
+      return
+c$$$
+c$$$      if (p(1).ne.0d0) then
+c$$$         azi = atan(p(2)/p(1))
+c$$$      else
+c$$$         azi = sign(pi/2,p(2))
+c$$$      return
+c$$$      endif      
+c$$$      if (p(1).lt.0d0) then
+c$$$         if (azi.gt.0d0) then               
+c$$$            azi = azi - pi
+c$$$         else
+c$$$            azi = azi + pi
+c$$$         endif
+c$$$      endif   
       end
 
       function pwhg_azi(p)

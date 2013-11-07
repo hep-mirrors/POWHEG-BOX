@@ -2,7 +2,7 @@
       implicit none
       include 'pwhg_rnd.h'
       integer maxev
-      character * 30 file
+      character * 50 file
       character * 20 pwgprefix
       integer lprefix
       common/cpwgprefix/pwgprefix,lprefix

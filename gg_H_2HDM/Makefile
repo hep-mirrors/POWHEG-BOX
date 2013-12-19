@@ -26,7 +26,7 @@ FFLAGS= -Wall
 #OPT=-O2
 ## For debugging uncomment the following
 #DEBUG= -ggdb -pg
-DEBUG= -ggdb -fwhole-file
+#DEBUG= -ggdb -fwhole-file
 #DEBUG= -ggdb
 endif
 

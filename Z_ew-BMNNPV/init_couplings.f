@@ -25,6 +25,8 @@ c     1 -> alpha(mz)
 c     2 -> gmu
       integer cmpmass
       integer iftoptmp
+      real * 8 cmass, bmass
+      integer j
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccc   INDEPENDENT QUANTITIES       
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -78,6 +80,25 @@ c Lepton masses
 
       ph_mTau = powheginput("#Taumass")
       if (ph_mTau.le.0d0) ph_mTau = 1.77699d0
+
+
+      physpar_ml(1)=ph_mEl
+      physpar_ml(2)=ph_mMuon
+      physpar_ml(3)=ph_mTau
+
+c     Set here lepton and quark masses for momentum reshuffle in the LHE event file
+
+c     number of light flavors
+      st_nlight = 5
+
+      do j=1,st_nlight         
+         physpar_mq(j)=0d0
+      enddo
+c     read eventual c and b masses from the input file
+      cmass=powheginput("#cmass_lhe")
+      if (cmass.gt.0d0) physpar_mq(4)=cmass
+      bmass=powheginput("#bmass_lhe")
+      if (bmass.gt.0d0) physpar_mq(5)=bmass
 
 
       scheme = powheginput("#scheme")

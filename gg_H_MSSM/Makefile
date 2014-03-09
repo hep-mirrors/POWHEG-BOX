@@ -13,11 +13,13 @@ ANALYSIS = default
 LIBS+= -lFH -lchaplin
 #
 ifeq ("$(COMPILER)","gfortran")	
-F77= gfortran -fno-automatic 	
+F77= gfortran
 ## -fbounds-check sometimes causes a weird error due to non-lazy evaluation
 ## of boolean in gfortran.
 #FFLAGS= -Wall -Wimplicit-interface -fbounds-check
 #FFLAGS= -Wall -Wimplicit-interface
+# WARNING: This is defined separately since the FH interface does not work with it
+PWHGFLAGS= -fno-automatic
 FFLAGS= -Wall
 ## For floating point exception trapping  uncomment the following 
 #FPE=-ffpe-trap=invalid,zero,overflow,underflow 
@@ -32,6 +34,7 @@ endif
 
 ifeq ("$(COMPILER)","g77")
 F77= g77 -fno-automatic 
+PWHGFLAGS= -fno-automatic
 #FFLAGS= -Wall -ffortran-bounds-check
 ## For floating point exception trapping  uncomment the following 
 #FPEOBJ=trapfpe.o
@@ -42,7 +45,8 @@ endif
 
 
 ifeq ("$(COMPILER)","ifort")
-F77 = ifort -save  -extend_source
+F77 = ifort -extend_source
+PWHGFLAGS= -save
 CXX = icpc
 # This is the location of the intel library
 INTELDIR=/opt/intel/composer_xe_2011_sp1.6.233/compiler/lib/intel64/
@@ -68,7 +72,9 @@ INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
 INCLUDE2=$(shell dirname $(PWD))/include
 INCLUDE3 = /usr/local/include/
-FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) -I$(INCLUDE3)
+FF=$(F77) $(PWHGFLAGS) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) -I$(INCLUDE3)
+# Apparently, there are some problems with FH 2.10 and compiler options
+FHF77=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) -I$(INCLUDE3)
 
 
 INCLUDE =$(wildcard *.h *.h include/*.h)
@@ -115,7 +121,7 @@ init_couplings.o: init_couplings.f
 	$(FF) -ffixed-line-length-none -cpp -c -o obj/$@ $^
 
 FeynHiggsInterface.o: FeynHiggsInterface.f
-	$(FF) -cpp -c -o obj/$@ $^
+	$(FHF77) -cpp -c -o obj/$@ $^
 
 %.o: %.f $(INCLUDE)
 	$(FF) -c -o obj/$@ $<

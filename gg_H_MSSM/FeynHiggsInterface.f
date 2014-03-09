@@ -12,8 +12,8 @@ c     FeynHiggs stuff
       integer error, nmfv,fast,key
       integer mssmpart, fieldren, tanbren, higgsmix, p2approx
       integer looplevel, runningMT, botResum, tlCplxApprox
-      double precision MSf(2,4,3), MASf(6,4), MCha(2), MNeu(4)
-      double complex USf(2,2,4,3),UASf(6,6,4)
+      double precision MSf(2,5,3), MASf(6,5), MCha(2), MNeu(4)
+      double complex USf(2,2,5,3), UASf(6,6,5)
       double complex UCha(2,2), VCha(2,2), ZNeu(4,4)
       double complex DeltaMB
       double precision MGl
@@ -110,8 +110,8 @@ c     FeynHiggs stuff
       mh_int(2) = MHiggs(2)
       alpha = asin(dreal(SAeff))
 
-      mst(1) = MASf(3,3)
-      mst(2) = MASf(6,3)
+      mst(1) = MSf(1,3,3)
+      mst(2) = MSf(2,3,3)
       Ust(1,1) = UASf(3,3,3)
       Ust(1,2) = UASf(3,6,3)
       Ust(2,1) = UASf(6,3,3)

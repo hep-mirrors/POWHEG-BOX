@@ -106,7 +106,6 @@ c     FeynHiggs stuff
 
       call FHHiggsCorr(error, MHiggs, SAeff, UHiggs, ZHiggs)
 
-
       mh_int(1) = MHiggs(1)
       mh_int(2) = MHiggs(2)
       alpha = asin(dreal(SAeff))
@@ -120,14 +119,14 @@ c     FeynHiggs stuff
 
       write(*,*) 'Higgs and alpha in FH', mh_int(1), mh_int(2), alpha
 
-      write(*,*) 'Stops in FeynHiggs:',MASf(3,3),MASf(6,3),
-     $     dreal(UASf(3,3,3)),dreal(UASf(3,6,3))
+      write(*,*) 'Stops in FeynHiggs:',MSf(1,3,3),MSf(2,3,3),
+     $     dreal(USf(1,1,3,3)),dreal(USf(1,2,3,3))
       write(*,*) 'Sbots in FeynHiggs:',MSb(1),MSb(2),
      $     dreal(USb(1,1)),dreal(USb(1,2))
 
-      ph_t1 = MASf(3,3)
+      ph_t1 = MSf(1,3,3)
       ph_t1_2 = ph_t1**2
-      ph_t2 = MASf(6,3)
+      ph_t2 = MSf(2,3,3)
       ph_t2_2 = ph_t2**2
 
       ph_b1 = MSb(1)
@@ -154,6 +153,7 @@ c     We use the same indexing of FH for the Higgses.
       call SLHAClear(slhadata)
       call FHOutputSLHA(error, slhadata, 255)
       call SLHAWrite(error, slhadata, slhafilename)
+
 
       return
       end

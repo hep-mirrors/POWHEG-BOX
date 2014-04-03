@@ -19,6 +19,8 @@
 c     lepton masses
       real * 8 lepmass(3)
       data lepmass /0.51099891d-3,0.1056583668d0,1.77684d0/
+      real * 8 qlmass(5)
+      data qlmass /0.33d0,0.33d0,0.5d0,1.5d0,4.8d0/
 
       par_isrtinycsi = 1d-8
       par_isrtinyy = 1d-8
@@ -42,12 +44,31 @@ c     number of light flavors
       kn_masses(5)=0
       kn_minmass=2*qmass
 
+      physpar_mq = 0
       do j=1,st_nlight         
-         physpar_mq(j)=0d0
+         physpar_mq(j)=qlmass(j)
       enddo
+
+      physpar_ml = 0
       do j=1,3
          physpar_ml(j)=lepmass(j)
       enddo
+
+      if(st_nlight .eq. 5) then
+c doing top production
+         if(powheginput("#topdecaymode").gt.0) then
+c get lepton and quark masses from powheg.input
+            physpar_ml(1)=powheginput('tdec/emass')
+            physpar_ml(2)=powheginput('tdec/mumass')
+            physpar_ml(3)=powheginput('tdec/taumass')
+            physpar_mq(1)=powheginput('tdec/dmass')
+            physpar_mq(2)=powheginput('tdec/umass')
+            physpar_mq(3)=powheginput('tdec/smass')
+            physpar_mq(4)=powheginput('tdec/cmass')
+            physpar_mq(5)=powheginput('tdec/bmass')
+         endif
+      endif
+
 c     read eventual c and b masses from the input file
       cmass=powheginput("#cmass_lhe")
       if (cmass.gt.0d0) physpar_mq(4)=cmass

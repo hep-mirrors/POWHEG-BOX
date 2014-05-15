@@ -290,10 +290,18 @@ c      endif
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
+      include 'pwhg_st.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
       save ini
+      real * 8 pv1(0:3),pv2(0:3),q1sq,q2sq,aveq
+      real * 8 dotp
+      external dotp
+      logical dynamical
+      parameter (dynamical=.true.)
+      real * 8 pwhg_alphas
+      external pwhg_alphas
       muf=ph_Hmass
       mur=ph_Hmass
       if (ini) then
@@ -303,5 +311,25 @@ c      endif
          write(*,*) '**********************************'
          ini=.false.
       endif
-
+      
+      if (dynamical) then 
+         pV1(:) = kn_cmpborn(:,4) - kn_cmpborn(:,1)
+         pV2(:) = kn_cmpborn(:,5) - kn_cmpborn(:,2)
+         
+         q1sq = -dotp(pV1,pV1)
+         q2sq = -dotp(pV2,pV2)
+         
+         q1sq = max(0.4d0,q1sq)
+         q2sq = max(0.4d0,q2sq)
+         aveq = st_lambda5MSB*exp(0.5d0*sqrt(
+     $        log(q1sq/st_lambda5MSB**2)*
+     $        log(q2sq/st_lambda5MSB**2)))
+         
+c         write(*,*) pwhg_alphas(q1sq,st_lambda5MSB,st_nlight)*
+c     $        pwhg_alphas(q2sq,st_lambda5MSB,st_nlight)/
+c     $        pwhg_alphas(aveq**2,st_lambda5MSB,st_nlight)**2
+         
+         muf=aveq
+         mur=aveq
+      endif
       end

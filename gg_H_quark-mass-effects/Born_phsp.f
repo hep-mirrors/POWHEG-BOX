@@ -208,45 +208,68 @@ C     inside the btilde function before che construction of the real phase space
       include 'nlegborn.h'
       include 'pwhg_flst.h'
       include 'pwhg_kn.h'
+      include 'pwhg_flg.h'
       real * 8 muf,mur
       logical ini
       data ini/.true./
+      save ini
       real *8 muref
       real *8 dotp
       external dotp
-      logical runningscales
+      integer runningscales
       save runningscales
+      real * 8 pt2
       real * 8 powheginput
       external powheginput
       if(ini) then
-         if(powheginput('#runningscale').ge.1) then
-            runningscales=.true.
+         runningscales=powheginput('#runningscale')
+         if(runningscales.eq.1) then
+            write(*,*) ""
+            write(*,*) '*****************************************'
+            write(*,*) '    runningscale = 1:                    '
+            write(*,*) '    Factorization and renormalization    '
+            write(*,*) '    scales set to the H virtuality       '
+            write(*,*) '*****************************************'
+         elseif(runningscales.eq.2) then
+            write(*,*) ""
+            write(*,*) '*****************************************'
+            write(*,*) '    runningscale = 2:                    '
+            write(*,*) '    Factorization and renormalization    '
+            write(*,*) '    scales set to H on-shell mass in     '
+            write(*,*) '    Born-like kinematic contributions    '
+            write(*,*) '                                         '
+            write(*,*) '    Factorization and renormalization    '
+            write(*,*) '    scales set to the sqrt(pT(H)^2+mH^2) '
+            write(*,*) '    real emission contributions          '
+            write(*,*) '*****************************************'
+         elseif(runningscales.gt.2) then
+            write(*,*) ""
+            write(*,*) "*****************************************"
+            write(*,*) " subroutine set_fac_ren_scales(muf,mur)"
+            write(*,*) " runningscale value not allowed"
+            write(*,*) " runningscale value in input = ",runningscales
+            write(*,*) " runningscale must be less than 2."
+            write(*,*) "*****************************************"
+            call exit(1)
          else
-            runningscales=.false.
+            write(*,*) ""
+            write(*,*) '*****************************************'
+            write(*,*) '    runningscale <= 0:                   '
+            write(*,*) '    Factorization and renormalization    '
+            write(*,*) '    scales set to Higgs on-shell mass    '
+            write(*,*) '*****************************************'
          endif
+         ini=.false.
       endif
-      if (runningscales) then
-         if (ini) then
-            write(*,*) '*************************************'
-            write(*,*) '    Factorization and renormalization '
-            if (powheginput('#runningscale').eq.1) then
-               write(*,*) '    scales set to the H virtuality '
-            else 
-               write(*,*) "runningscale value not allowed"
-               call exit(1)
-            endif
-            write(*,*) '*************************************'
-            ini=.false.
-         endif
+      if(runningscales.eq.1) then
          muref=sqrt(dotp(kn_pborn(0,3),kn_pborn(0,3)))
-      else
-         if (ini) then
-            write(*,*) '*************************************'
-            write(*,*) '    Factorization and renormalization '
-            write(*,*) '    scales set to the H mass '
-            write(*,*) '*************************************'
-            ini=.false.
+      elseif(runningscales.eq.2) then
+         muref=ph_Hmass
+         if(flg_btildepart.eq.'r') then
+            pt2=kn_preal(1,4)**2+kn_preal(2,4)**2
+            muref=sqrt(pt2+ph_Hmass**2)
          endif
+      else
          muref=ph_Hmass
       endif
       muf=muref

@@ -35,7 +35,11 @@ lhans1 21100       ! pdf set for hadron 1 (LHA numbering)
 lhans2 21100       ! pdf set for hadron 2 (LHA numbering)
 ! To be set only if using different pdf sets for the two incoming hadrons
 ! QCDLambda5  0.25 ! for not equal pdf sets 
-!runningscale 0    ! 0 = muref,mufac equal to the Higgs mass, 1 = muref,mufac equal to the Higgs virtuality
+! mur,muf settings
+runningscale 0    ! 0 = scales equal to the Higgs pole mass; 1  = scales equal to the Higgs virtuality; 
+                  ! 2 = scales equal to the Higgs pole mass for Born-like configuration and to the transverse mass for real emission contribution
+! When using 2 uncomment the following option
+! btlscalereal 1
 !renscfact  1   ! (default 1d0) ren scale factor: muren  = muref * renscfact
 !facscfact  1   ! (default 1d0) fac scale factor: mufact = muref * facscfact
 !ptsqmin    0.8   ! (default 0.8 GeV) minimum pt for generation of radiation

@@ -269,7 +269,7 @@ c     Keep compatibility with old input file
       external powheginput
 
       flg_hdecay = int(powheginput('#hdecaywidth'))
-      flg_fhdecay = int(powheginput('#fhdecaywidth'))
+      flg_fhdecay = int(powheginput('#FHdecaywidth'))
       if ((flg_hdecay.gt.0).and.(flg_fhdecay.le.0)) then
          write(*,*) 'Higgs width from hdecay'
          call hdecayparser(ph_Hmass,ph_Hwidth)

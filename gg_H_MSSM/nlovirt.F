@@ -75,14 +75,23 @@ c     Two loop SM contributions with full mass dependence
 c     Top quark
       m12=mfer(1)
       y12=m12**2/mh2
-      top2l = lambdafer(1)*twoloop(1d0/y12,trfer(1),
+      if (flg_notop.ge.1) then
+        top2l = 0d0
+      else
+        top2l = lambdafer(1)*twoloop(1d0/y12,trfer(1),
      $     cf,ca,ferlogmratio(1),1)
+      endif
 
 c     Bottom quark
       m12=mfer(2)
       y12=m12**2/mh2
-      bot2l = lambdafer(2)*twoloop(1d0/y12,trfer(2),
+      if (flg_nobot.ge.1) then
+        bot2l = 0d0
+      else
+        bot2l = lambdafer(2)*twoloop(1d0/y12,trfer(2),
      $     cf,ca,ferlogmratio(2),2)
+      endif
+
       else
 !
 !      write(*,*)' FOOOOOOOOO',mh
@@ -107,7 +116,11 @@ c     Top quark
 !      top2l = lambdafer(1)*twoloop_pseudo(y12,trfer(1),cf,ca,
 !     $ferlogmratio(1),1)
 !      top2ldivita = lambdafer(1)*trfer(1)*glutop
-      call getgluABDV(OSdivita,mh,m12,q,lambdafer(1),top2l)
+      if (flg_notop.ge.1) then
+        top2l = 0d0
+      else
+        call getgluABDV(OSdivita,mh,m12,q,lambdafer(1),top2l)
+      endif
 
 c     Bottom quark
       m12=mfer(2)
@@ -115,7 +128,12 @@ c     Bottom quark
 !      bot2l = lambdafer(2)*twoloop_pseudo(y12,trfer(2),cf,ca,
 !     $ferlogmratio(2),2)
 !      bot2ldivita = lambdafer(2)*trfer(2)*glubot
-      call getgluABDV(OSdivita,mh,m12,q,lambdafer(2),bot2l)
+      if (flg_nobot.ge.1) then
+        bot2l = 0d0
+      else
+        call getgluABDV(OSdivita,mh,m12,q,lambdafer(2),bot2l)
+      endif
+
       endif
 
 

@@ -29,7 +29,7 @@ c     number of light flavors
          stop
       endif
       
-      flg_2HDMtype=int(powheginput('2HDMtype'))
+      flg_2HDMtype = int(powheginput('2HDMtype'))
       if (flg_2HDMtype.eq.1) then
         write(*,*) 'Type I 2HDM selected'
       else if (flg_2HDMtype.eq.2) then
@@ -44,6 +44,9 @@ c     number of light flavors
         write(*,*) 'Aborting.'
         stop
       endif
+
+      flg_notop = int(powheginput('#notop'))
+      flg_nobot = int(powheginput('#nobot'))
 
 
 c     This is a common factor which actually cancel out in the MSSM amplitudes and it
@@ -344,6 +347,16 @@ c     Flipped 2HDM selected
               lambdafer(2) = ph_tanb
           endif
       endif
+c     Disable specific quark if requested
+      if(flg_notop.ge.1) then
+        write(*,*) 'Top quark disabled'
+        lambdafer(1) = 0d0
+      endif
+      if(flg_nobot.ge.1) then
+        write(*,*) 'Bottom quark disabled'
+        lambdafer(2) = 0d0
+      endif
+
       end subroutine
 
 

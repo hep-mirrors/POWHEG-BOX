@@ -51,6 +51,8 @@ c     Original OS scheme disabled
       else
          asca = 0
       endif
+      flg_notop = int(powheginput('#notop'))
+      flg_nobot = int(powheginput('#nobot'))
 c     This is a common factor which actually cancel out in the MSSM amplitudes and it
 c     was in the BDV formalism to make the coupling adimensional
       mmaa = 256d0
@@ -375,7 +377,12 @@ c     Pseudoscalar
 c     fermion 1  (top)
       trfer(1) = 1d0/2d0
       mfer(1) = ph_topmass
-      lambdafer(1) = lambdat * hmixfact2
+      if (flg_notop.ge.1) then
+        write(*,*) 'Disabling top quark'
+        lambdafer(1) = 0d0
+      else
+        lambdafer(1) = lambdat * hmixfact2
+      endif
       if (massren.eq.1) then
          ferlogmratio(1) = log(mfer(1)**2/q**2)-1d0/3d0
       end if
@@ -387,7 +394,12 @@ c     fermion 2  (bottom)
       else
          mfer(2) = ph_bottommass
       end if
-      lambdafer(2) = lambdab * hmixfact1 * botcouplfac
+      if (flg_nobot.ge.1) then
+        write(*,*) 'Disabling bottom quark'
+        lambdafer(2) = 0d0
+      else
+        lambdafer(2) = lambdab * hmixfact1 * botcouplfac
+      end if
       if (massren.eq.1) then
          if (flg_mssm_q_mh.eq.1) then
             ferlogmratio(2) = log(mfer(2)**2/ph_Hmass**2)-1d0/3d0

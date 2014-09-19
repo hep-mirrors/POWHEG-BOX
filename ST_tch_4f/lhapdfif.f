@@ -1,5 +1,7 @@
 
       subroutine genericpdfset(ndns)
+      implicit none
+      include 'pwhg_pdf.h'
 c wrap for pdfset; avoids subsequent
 c calls to pdfset (you never know)
       integer ndns
@@ -15,13 +17,25 @@ c calls to pdfset (you never know)
       common/w50512/qcdl4,qcdl5
       data ndns0/-1/
       save ndns0
-      integer nfmax
-      real *8 Q
       if(ndns.ne.ndns0) then
          ndns0=ndns
          parm(1)='DEFAULT'
          val(1)=ndns
          call pdfset(parm,val)
+ 
+
+c     find q2min and store it in common block 
+         call GetQ2min(0,pdf_q2min)
+
+c     Workaround for lhapdf-6 bug:
+c     re-initialise the pdf set, since getq2min in lhapdf v6
+c     can change what was chosen with the first call to pdfset
+         ndns0=ndns
+         parm(1)='DEFAULT'
+         val(1)=ndns
+         call pdfset(parm,val)
+     
+
          asmz=alphasPDF(mz)
          write(*,*) ' check: alpha_s(Mz)=',asmz
          call GetOrderAs(iord)
@@ -166,6 +180,23 @@ c 1 is proton, -1 is antiproton, 3 is pi+, -3 is pi-
             fx(j)=fx(-j)
             fx(-j)=tmp
          enddo
+c Do the neutron (Suggested by Jan Kretzschmar, 17/4/2013)
+      elseif(abs(ih).eq.2) then
+c 2 is neutron: exchange u and d pdfs
+         tmp=fx(1)
+         fx(1)=fx(2)
+         fx(2)=tmp
+         tmp=fx(-1)
+         fx(-1)=fx(-2)
+         fx(-2)=tmp
+         if(ih.eq.-2) then
+c -2 is anti-neutron: exchange quarks and anti-quarks, then u and d pdfs
+            do j=1,6
+               tmp=fx(j)
+               fx(j)=fx(-j)
+               fx(-j)=tmp
+            enddo
+         endif
       elseif(ih.eq.3) then
          tmp=fx(1)
          fx(1)=fx(-1)

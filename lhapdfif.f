@@ -1,5 +1,7 @@
 
       subroutine genericpdfset(ndns)
+      implicit none
+      include 'pwhg_pdf.h'
 c wrap for pdfset; avoids subsequent
 c calls to pdfset (you never know)
       integer ndns
@@ -20,6 +22,20 @@ c calls to pdfset (you never know)
          parm(1)='DEFAULT'
          val(1)=ndns
          call pdfset(parm,val)
+ 
+
+c     find q2min and store it in common block 
+         call GetQ2min(0,pdf_q2min)
+
+c     Workaround for lhapdf-6 bug:
+c     re-initialise the pdf set, since getq2min in lhapdf v6
+c     can change what was chosen with the first call to pdfset
+         ndns0=ndns
+         parm(1)='DEFAULT'
+         val(1)=ndns
+         call pdfset(parm,val)
+     
+
          asmz=alphasPDF(mz)
          write(*,*) ' check: alpha_s(Mz)=',asmz
          call GetOrderAs(iord)

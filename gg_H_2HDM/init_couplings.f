@@ -401,7 +401,7 @@ c     For the moment we force both top and bottom present
       afer = 0
       ph_topmass = powheginput('topmass')
       if (ph_topmass.ne.-1000000d0) then
-         write(*,*) "Top Quark enabled"
+c         write(*,*) "Top Quark enabled"
          afer = afer + 1
          trfer(afer) = 1d0/2d0
          mfer(afer) = getRSmass(ph_topmass,massren,ph_Hmass,alpha_s)
@@ -411,9 +411,9 @@ c     For the moment we force both top and bottom present
             ferlogmratio(afer) = ferlogmratio(afer) - 1d0/3d0
          endif
       endif
-      ph_bottommass = powheginput('#bottommass')
+      ph_bottommass = powheginput('bottommass')
       if (ph_bottommass.ne.-1000000d0) then
-         write(*,*) "Bottom Quark enabled"
+c         write(*,*) "Bottom Quark enabled"
          afer = afer+1
          trfer(afer) = 1d0/2d0
          mfer(afer) = getRSmass(ph_bottommass,massren,ph_Hmass,alpha_s)

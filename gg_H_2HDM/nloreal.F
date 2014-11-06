@@ -1,6 +1,7 @@
       subroutine agg(s,t,u,agg2)
       implicit none
       include 'PhysPars.h'
+      include 'Flags.h'
       double precision s,t,u,agg2,aijgg
       double precision mbot,mtop,l1,l2
       double complex bdva2, bdva4
@@ -18,19 +19,25 @@ c     gg->Ag
           l2 = lambdafer(2)
 
 ccccccccccccc    top top
-          agg2 = agg2 + aijgg(mtop,mtop,l1,l1,mh,u,s,t)
-          agg2 = agg2 + aijgg(mtop,mtop,l1,l1,mh,t,u,s)
-          agg2 = agg2 + aijgg(mtop,mtop,l1,l1,mh,s,t,u)
+          if (flg_notop.le.0) then
+             agg2 = agg2 + aijgg(mtop,mtop,l1,l1,mh,u,s,t)
+             agg2 = agg2 + aijgg(mtop,mtop,l1,l1,mh,t,u,s)
+             agg2 = agg2 + aijgg(mtop,mtop,l1,l1,mh,s,t,u)
+          endif
 
 ccccccccccccc    bottom bottom
-          agg2 = agg2 + aijgg(mbot,mbot,l2,l2,mh,u,s,t)
-          agg2 = agg2 + aijgg(mbot,mbot,l2,l2,mh,t,u,s)
-          agg2 = agg2 + aijgg(mbot,mbot,l2,l2,mh,s,t,u)
+          if (flg_nobot.le.0) then
+             agg2 = agg2 + aijgg(mbot,mbot,l2,l2,mh,u,s,t)
+             agg2 = agg2 + aijgg(mbot,mbot,l2,l2,mh,t,u,s)
+             agg2 = agg2 + aijgg(mbot,mbot,l2,l2,mh,s,t,u)
+          endif
 
 ccccccccccccc    top bottom
-          agg2 = agg2 + 2d0*aijgg(mtop,mbot,l1,l2,mh,u,s,t)
-          agg2 = agg2 + 2d0*aijgg(mtop,mbot,l1,l2,mh,t,u,s)
-          agg2 = agg2 + 2d0*aijgg(mtop,mbot,l1,l2,mh,s,t,u)
+          if ((flg_notop.le.0).or.(flg_nobot.le.0)) then
+             agg2 = agg2 + 2d0*aijgg(mtop,mbot,l1,l2,mh,u,s,t)
+             agg2 = agg2 + 2d0*aijgg(mtop,mbot,l1,l2,mh,t,u,s)
+             agg2 = agg2 + 2d0*aijgg(mtop,mbot,l1,l2,mh,s,t,u)
+          endif
 
 ccccccccccccc tf**2
           agg2 = agg2*trfer(1)**2

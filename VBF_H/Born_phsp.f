@@ -299,11 +299,11 @@ c      endif
       real * 8 dotp
       external dotp
       logical dynamical
-      parameter (dynamical=.true.)
+      parameter (dynamical=.false.)
       real * 8 pwhg_alphas
       external pwhg_alphas
-      muf=ph_Hmass
-      mur=ph_Hmass
+      muf=ph_Wmass
+      mur=ph_Wmass
       if (ini) then
          write(*,*) '**********************************'
          write(*,*) 'RENORMALIZATION SCALE = ',mur

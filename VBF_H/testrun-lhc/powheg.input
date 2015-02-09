@@ -1,4 +1,5 @@
-numevts 500000    ! number of events to be generated
+#numevts 0    ! number of events to be generated
+numevts 150000    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)
 ebeam1 7000d0     ! energy of beam 1
@@ -20,14 +21,14 @@ lhans2  10050         ! pdf set for hadron 2 (LHA numbering)
 use-old-grid    1 ! if 1 use old grid if file pwggrids.dat is present (<> 1 regenerate)
 use-old-ubound  1 ! if 1 use norm of upper bounding function stored in pwgubound.dat, if present; <> 1 regenerate
 
-ncall1 50000   ! number of calls for initializing the integration grid
+ncall1 100000   ! number of calls for initializing the integration grid
 itmx1    5     ! number of iterations for initializing the integration grid
-ncall2 50000   ! number of calls for computing the integral and finding upper bounding envelope
+ncall2 100000   ! number of calls for computing the integral and finding upper bounding envelope
 itmx2    5     ! number of iterations for computing the integral and finding upper bouding envelope
-foldcsi   2    ! number of folds on csi integration
-foldy     5    ! number of folds on  y  integration
+foldcsi   1    ! number of folds on csi integration
+foldy     1    ! number of folds on  y  integration
 foldphi   1    ! number of folds on phi integration
-nubound 100000 ! number of calls to set up the upper bounding norms for radiation
+nubound 500000 ! number of calls to set up the upper bounding norms for radiation
 
 
 ! OPTIONAL PARAMETERS
@@ -44,7 +45,7 @@ withdamp    1      ! (default 0, do not use) use Born-zero damping factor
 #rand1     0       !  skipping  rand2*100000000+rand1 numbers.         
 #rand2     0       !  (see RM48 short writeup in CERNLIB)              
 
-#manyseeds 1       ! Used to perform multiple runs with different random
+manyseeds 1       ! Used to perform multiple runs with different random
                    ! seeds in the same directory.
                    ! If set to 1, the program asks for an integer j.
                    ! The file pwgseeds.dat at line j is read, and the
@@ -52,8 +53,8 @@ withdamp    1      ! (default 0, do not use) use Born-zero damping factor
                    ! sequence for the generation of the events.
                    ! The event file is called pwgevents-'j'.lhe
 
-hmass    120d0       ! Higgs boson mass
-hwidth	 0.00437d0   ! Higgs boson width   
+hmass    125d0       ! Higgs boson mass
+hwidth   4.14d-03    ! Higgs boson width   
 
 #higgsfixedwidth  1  ! if 1, use old behaviour with fixed width Breit-Wigner
                      ! default is running width

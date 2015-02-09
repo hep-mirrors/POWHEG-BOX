@@ -56,7 +56,7 @@ VPATH= ./:../:obj/
 INCLUDE0=$(PWD)
 INCLUDE1=$(PWD)/include
 INCLUDE2=$(shell dirname $(PWD))/include
-FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2)
+FF=$(F77) $(FFLAGS) $(FPE) $(OPT) $(DEBUG) -I$(INCLUDE0) -I$(INCLUDE1) -I$(INCLUDE2) -Jobj/
 
 
 INCLUDE =$(wildcard ../include/*.h *.h include/*.h)
@@ -149,6 +149,6 @@ main-PYTHIA-lhef: $(PYTHIA)
 # target to cleanup
 .PHONY: clean
 clean:
-	rm -f obj/*.o pwhg_main lhef_analysis main-HERWIG-lhef	\
+	rm -f obj/*.o obj/*.mod pwhg_main lhef_analysis main-HERWIG-lhef	\
 	main-PYTHIA-lhef
 

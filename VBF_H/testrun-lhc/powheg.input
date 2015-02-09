@@ -1,4 +1,3 @@
-#numevts 0    ! number of events to be generated
 numevts 150000    ! number of events to be generated
 ih1   1           ! hadron 1 (1 for protons, -1 for antiprotons)
 ih2   1           ! hadron 2 (1 for protons, -1 for antiprotons)

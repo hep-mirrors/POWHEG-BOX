@@ -99,6 +99,9 @@ C
       call bookupeqbins('aslogweights',0.1d0,-3d0,10d0)    
       call bookupeqbins('nlogweights',0.1d0,-3d0,10d0)    
  
+      call bookupeqbins('costhstar',0.2d0,-1d0,1d0)      
+
+
       end
      
       subroutine analysis(dsig0)
@@ -124,7 +127,8 @@ c     we need to tell to this analysis file which program is running it
       integer maxjet 
       parameter (maxjet=2048)
       real * 8  ktj(maxjet),etaj(maxjet),rapj(maxjet),phi(maxjet), 
-     1    phij(maxjet),pj(4,maxjet),rr,ptrel(4),pjet_in(4,maxjet) 
+     1    phij(maxjet),pj(4,maxjet),rr,ptrel(4),pjet_in(4,maxjet),
+     2     pcosth(4),costhstar
       character * 1 cnum(0:9)
       data cnum/'0','1','2','3','4','5','6','7','8','9'/
       real * 8 pw(4),p_el(4),p_nu(4)
@@ -211,11 +215,29 @@ C     select electron and neutrino
          return
       endif
 
+
+      call boost2reson4(pw,1,pw,pcosth)
+      if((pcosth(1)**2+pcosth(1)**2+pcosth(1)**2)/pcosth(4)**2.gt.1d-6)
+     1     then
+         write(*,*) 'using boost2reson4 the wrong way'
+         call exit(-1)
+      endif
+      call boost2reson4(pw,1,p_el,pcosth)
+
+      costhstar = dot_product(pcosth(1:3),pw(1:3))
+     1     /sqrt(dot_product(pw(1:3),pw(1:3)))
+     2     /sqrt(dot_product(pcosth(1:3),pcosth(1:3)))
+
+
 C     -- build jets in anti-kt algorithm 
       rr=0.4d0
       ptmin=20d0
       call buildjets(1,rr,ptmin,mjets,ktj,etaj,rapj,phij,ptrel,pj,yijs)
-      
+
+      if(mjets.ge.2) then
+         call filld('costhstar',costhstar,dsig)
+      endif
+
 C     -- now loop over jet cuts (20 and 30 GeV) 
       do jetcut = 1,2 
          if (jetcut == 1) then 
@@ -689,4 +711,41 @@ c bubble sort
          endif
       enddo
       sonofhep = .false.
+      end
+
+
+
+      subroutine boost2reson4(pres,nm,pin,pout)
+      implicit none
+      integer nm
+      real * 8 pres(4),pin(4,nm),pout(4,nm)
+      real * 8 vec(3),beta
+      beta=sqrt(pres(1)**2+pres(2)**2+pres(3)**2)/pres(4)
+      vec(1)=pres(1)/(beta*pres(4))
+      vec(2)=pres(2)/(beta*pres(4))
+      vec(3)=pres(3)/(beta*pres(4))
+      call mboost4(nm,vec,-beta,pin,pout)
+      end
+
+      subroutine mboost4(m,vec,beta,vin,vout)
+c     boosts the m vectors vin(4,m) into the vectors vout(4,m) (that can
+c     be the same) in the direction of vec(3) (|vec|=1) with velocity
+c     beta.  Lorents convention: (t,x,y,z).
+      implicit none
+      integer m
+      real * 8 vec(3),beta,vin(4,m),vout(4,m)
+      real * 8 betav,gamma
+      real * 8 vdotb
+      integer ipart,idim
+      gamma=1/sqrt(1-beta**2)
+      do ipart=1,m
+         vdotb=vin(1,ipart)*vec(1)
+     #         +vin(2,ipart)*vec(2)+vin(3,ipart)*vec(3)
+         do idim=1,3
+            vout(idim,ipart)=vin(idim,ipart)
+     #           +vec(idim)*((gamma-1)*vdotb
+     #           +gamma*beta*vin(4,ipart))
+         enddo
+         vout(4,ipart)=gamma*(vin(4,ipart)+vdotb*beta)
+      enddo
       end

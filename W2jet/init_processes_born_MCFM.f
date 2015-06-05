@@ -51,8 +51,8 @@ c         open (unit=66,file='MCFMlordWp.dat',status='unknown')
             awx=nea_pdg
             lwx=el_pdg	 
          elseif (vdecaymodeW .eq. 13) then 
-            awx=13
-            lwx=-14 
+            awx=-14
+            lwx=13 
          endif
 c         open (unit=66,file='MCFMlordWm.dat',status='unknown')
       else

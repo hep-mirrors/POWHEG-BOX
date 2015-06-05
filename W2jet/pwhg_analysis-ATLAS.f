@@ -168,8 +168,13 @@ c     we need to tell to this analysis file which program is running it
 C     select W boson 
       if(WHCPRG.eq.'NLO') then
          pw=phep(1:4,3)+phep(1:4,4)
-         p_nu = phep(1:4,3)
-         p_el = phep(1:4,4)
+         if(mod(idhep(3),2) .eq. 0) then
+            p_nu = phep(1:4,3)
+            p_el = phep(1:4,4)
+         else
+            p_nu = phep(1:4,4)
+            p_el = phep(1:4,3)
+         endif
       else
 C     select electron and neutrino 
          do ihep=1,nhep

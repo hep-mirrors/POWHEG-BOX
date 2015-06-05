@@ -50,8 +50,8 @@ c         open (unit=66,file='MCFMrealWp.dat',status='unknown')
             awx=nea_pdg
             lwx=el_pdg	 
          elseif (vdecaymodeW .eq. 13) then 
-            awx=13
-            lwx=-14 
+            awx=-14
+            lwx=13 
          endif
 c         open (unit=66,file='MCFMrealWm.dat',status='unknown')
       else

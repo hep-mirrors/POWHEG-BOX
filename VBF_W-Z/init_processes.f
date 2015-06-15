@@ -696,8 +696,8 @@ ccccccupper quarkline unchanged
                j=j+1
                flst_born(1,j)=i
                flst_born(2,j)=k
-               flst_born(3,j)=neutrino
-               flst_born(4,j)=lepton
+               flst_born(3,j)=lepton
+               flst_born(4,j)=neutrino
                flst_born(5,j)=i  
                flst_born(6,j)=k-1
 
@@ -716,8 +716,8 @@ ccccccupper quarkline unchanged
                j=j+1
                flst_born(1,j)=i
                flst_born(2,j)=k
-               flst_born(3,j)=neutrino
-               flst_born(4,j)=lepton
+               flst_born(3,j)=lepton
+               flst_born(4,j)=neutrino
                flst_born(5,j)=i  
                flst_born(6,j)=k-1  
                
@@ -741,8 +741,8 @@ cccccclower quarkline unchanged
                j=j+1
                flst_born(1,j)=k
                flst_born(2,j)=i
-               flst_born(3,j)=neutrino
-               flst_born(4,j)=lepton
+               flst_born(3,j)=lepton
+               flst_born(4,j)=neutrino
                flst_born(5,j)=k-1  
                flst_born(6,j)=i
 
@@ -760,8 +760,8 @@ cccccclower quarkline unchanged
                j=j+1
                flst_born(1,j)=k
                flst_born(2,j)=i
-               flst_born(3,j)=neutrino
-               flst_born(4,j)=lepton
+               flst_born(3,j)=lepton
+               flst_born(4,j)=neutrino
                flst_born(5,j)=k-1  
                flst_born(6,j)=i    
                
@@ -815,8 +815,8 @@ cccccclower quarkline unchanged
                k=k+1        ! upper quarkline q q -> j only (anti)quark
                flst_real(1,k)=0   
                flst_real(2,k)=l
-               flst_real(3,k)=neutrino
-               flst_real(4,k)=lepton
+               flst_real(3,k)=lepton
+               flst_real(4,k)=neutrino
                flst_real(5,k)=j
                flst_real(6,k)=l-1
                flst_real(7,k)=-j
@@ -836,8 +836,8 @@ cccccclower quarkline unchanged
                        k=k+1
                flst_real(1,k)=0   
                flst_real(2,k)=l
-               flst_real(3,k)=neutrino
-               flst_real(4,k)=lepton
+               flst_real(3,k)=lepton
+               flst_real(4,k)=neutrino
                flst_real(5,k)=j
                flst_real(6,k)=l-1
                flst_real(7,k)=-j
@@ -856,8 +856,8 @@ cccccclower quarkline unchanged
                k=k+1        ! lower quarkline q q -> j only (anti)quark
                flst_real(1,k)=l               
                flst_real(2,k)=0   
-               flst_real(3,k)=neutrino
-               flst_real(4,k)=lepton
+               flst_real(3,k)=lepton
+               flst_real(4,k)=neutrino
                flst_real(5,k)=l-1               
                flst_real(6,k)=j
                flst_real(7,k)=-j
@@ -877,8 +877,8 @@ cccccclower quarkline unchanged
                        k=k+1
                flst_real(1,k)=l
                flst_real(2,k)=0   
-               flst_real(3,k)=neutrino
-               flst_real(4,k)=lepton
+               flst_real(3,k)=lepton
+               flst_real(4,k)=neutrino
                flst_real(5,k)=l-1               
                flst_real(6,k)=j
                flst_real(7,k)=-j
@@ -905,8 +905,8 @@ cccccclower quarkline unchanged
                flst_real(1,k)=j                           
                flst_real(2,k)=0
 
-               flst_real(3,k)=neutrino
-               flst_real(4,k)=lepton
+               flst_real(3,k)=lepton
+               flst_real(4,k)=neutrino
                
                flst_real(5,k)=j 
                flst_real(6,k)=l-1
@@ -928,8 +928,8 @@ cccccclower quarkline unchanged
                            k=k+1
                flst_real(1,k)=0
                flst_real(2,k)=j                           
-               flst_real(3,k)=neutrino
-               flst_real(4,k)=lepton
+               flst_real(3,k)=lepton
+               flst_real(4,k)=neutrino
                flst_real(5,k)=l-1               
                flst_real(6,k)=j 
                flst_real(7,k)=-l

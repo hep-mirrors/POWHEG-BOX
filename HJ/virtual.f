@@ -17,8 +17,12 @@ c Virtual needs to be provided by the user and put here
 
       virtual_DR=res(0)/(st_alpha/(2*pi))
 
-c from dimensional reduction to dimensional regularization
-      call from_DR_to_CDR(p,vflav,virtual_DR,virtual)
+c     The virtual contribution computed by MCFM is ALREADY in CDR, and NOT in DR, as
+c     previously thought. So no need to DR -> CDR conversion
+c$$$  
+c$$$c from dimensional reduction to dimensional regularization
+c$$$      call from_DR_to_CDR(p,vflav,virtual_DR,virtual)
+      virtual = virtual_DR
 
 
 cc The following code is used to check the double pole
